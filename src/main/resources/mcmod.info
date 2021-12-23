@@ -1,0 +1,16 @@
+[
+{
+  "modid": "landdev",
+  "name": "Land Developer",
+  "description": "Another Land Protection and this time also Development mod.",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["FEX___96"],
+  "credits": "",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": [ "fcl" ]
+}
+]
