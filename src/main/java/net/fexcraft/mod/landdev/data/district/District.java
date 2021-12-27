@@ -1,6 +1,7 @@
-package net.fexcraft.mod.landdev.data;
+package net.fexcraft.mod.landdev.data.district;
 
 import net.fexcraft.app.json.JsonMap;
+import net.fexcraft.mod.landdev.data.*;
 
 public class District implements Saveable, Layer {
 	
@@ -11,6 +12,7 @@ public class District implements Saveable, Layer {
 	public ColorData color = new ColorData();
 	public NeighborData neighbors = new NeighborData();
 	public MailData mail = new MailData();
+	public DistrictType type;
 	//TODO manageable
 	//TODO ruleholder
 	public long chunks;
@@ -28,6 +30,7 @@ public class District implements Saveable, Layer {
 		color.save(map);
 		neighbors.save(map);
 		mail.save(map);
+		type.save();
 		//
 		map.add("chunks", chunks);
 	}
@@ -40,6 +43,7 @@ public class District implements Saveable, Layer {
 		color.load(map);
 		neighbors.load(map);
 		mail.load(map);
+		type = DistrictType.get(map);
 		//
 		chunks = map.getLong("chunks", 0);
 	}

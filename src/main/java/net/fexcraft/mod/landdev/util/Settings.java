@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.fexcraft.mod.landdev.data.IconHolder;
+import net.fexcraft.mod.landdev.data.district.DistrictType;
 import net.minecraftforge.common.config.ConfigElement;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.client.config.IConfigElement;
@@ -38,6 +39,8 @@ public class Settings {
 		config.setCategoryComment(CLIENT_CAT, "Client Settings.");
 		refresh();
 		config.save();
+		//
+		DistrictType.loadConfig(CONFIG_PATH);
 	}
 
 	public static List<IConfigElement> getList(){
