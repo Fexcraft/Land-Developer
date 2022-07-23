@@ -13,8 +13,8 @@ public class District implements Saveable, Layer {
 	public NeighborData neighbors = new NeighborData();
 	public MailData mail = new MailData();
 	public DistrictType type;
-	//TODO manageable
-	//TODO ruleholder
+	public Manageable manage = new Manageable(false);
+	public Norms norms = new Norms();
 	public long chunks;
 	
 	public District(int id){
@@ -31,6 +31,8 @@ public class District implements Saveable, Layer {
 		neighbors.save(map);
 		mail.save(map);
 		type.save();
+		manage.save();
+		norms.save();
 		//
 		map.add("chunks", chunks);
 	}
@@ -44,6 +46,8 @@ public class District implements Saveable, Layer {
 		neighbors.load(map);
 		mail.load(map);
 		type = DistrictType.get(map);
+		manage.load(map);
+		norms.load(map);
 		//
 		chunks = map.getLong("chunks", 0);
 	}
