@@ -74,12 +74,12 @@ public class ChunkCapabilityUtil implements ICapabilitySerializable<NBTBase>{
         }
         
         @Override
-        public Chunk_ getStatesChunk(){
-            return getStatesChunk(false);
+        public Chunk_ getLDChunk(){
+            return getLDChunk(false);
         }
 
         @Override
-        public Chunk_ getStatesChunk(boolean allownull){
+        public Chunk_ getLDChunk(boolean allownull){
             if(allownull){ return chunk_; }
             if(chunk_ == null){
                 chunk_ = ResManager.getChunk(chunk.x, chunk.z);
