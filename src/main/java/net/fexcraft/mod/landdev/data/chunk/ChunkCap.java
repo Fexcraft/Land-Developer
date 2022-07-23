@@ -15,8 +15,8 @@ public interface ChunkCap {
     
     public void setChunk(Chunk chunk);
     
-    public Chunk_ getStatesChunk();
+    public Chunk_ getLDChunk();
 
-    public Chunk_ getStatesChunk(boolean allownull);
+    public Chunk_ getLDChunk(boolean allownull);
 
 }
