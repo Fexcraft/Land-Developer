@@ -16,7 +16,7 @@ public interface Database {
 	
 	public boolean exists(String table, String id);
 	
-	/** If this database (handler) is internal (integrated in states mods). */
+	/** If this database (handler) is internal (integrated in land-dev mod). */
 	public boolean internal();
 
 }
