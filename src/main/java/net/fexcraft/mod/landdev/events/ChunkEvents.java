@@ -1,7 +1,6 @@
 package net.fexcraft.mod.landdev.events;
 
 import net.fexcraft.app.json.JsonMap;
-import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fsmm.FSMM;
 import net.fexcraft.mod.landdev.LandDev;
 import net.fexcraft.mod.landdev.data.chunk.ChunkCap;
@@ -25,7 +24,7 @@ public class ChunkEvents {
     		if(event.getWorld().isRemote) return;
     		if(!FSMM.isDataManagerLoaded()) FSMM.loadDataManager();
     		LandDev.updateSaveDirectory(event.getWorld());
-			Print.log("Initializing States default World Data...");
+			//Print.log("Initializing LandDev default World Data...");
 			//TODO load states, counties, muns, districts
     	}
     	Chunk_ chunk = new Chunk_(event.getWorld(), event.getChunk().x, event.getChunk().z);
