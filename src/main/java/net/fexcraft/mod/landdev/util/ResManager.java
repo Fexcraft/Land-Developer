@@ -56,11 +56,13 @@ public class ResManager {
 	}
 
 	public static void unload(){
-		//
+		CHUNKS.values().forEach(save -> LandDev.DB.save(save));
+		DISTRICTS.values().forEach(save -> LandDev.DB.save(save));
 	}
 
 	public static void clear(){
-		//
+		CHUNKS.clear();
+		DISTRICTS.clear();
 	}
 
 }
