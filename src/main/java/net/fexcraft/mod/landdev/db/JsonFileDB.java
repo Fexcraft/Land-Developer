@@ -21,7 +21,7 @@ public class JsonFileDB implements Database {
 	}
 
 	@Override
-	public Object load(String table, String id){
+	public JsonMap load(String table, String id){
 		return JsonHandler.parse(new File(LandDev.SAVE_DIR, table + "/" + id + ".json"));
 	}
 
