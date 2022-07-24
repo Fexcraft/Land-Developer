@@ -7,6 +7,8 @@ import net.fexcraft.mod.landdev.data.Layers;
 import net.fexcraft.mod.landdev.data.Saveable;
 import net.fexcraft.mod.landdev.data.Sellable;
 import net.fexcraft.mod.landdev.data.Taxable;
+import net.fexcraft.mod.landdev.data.district.District;
+import net.fexcraft.mod.landdev.util.ResManager;
 import net.minecraft.world.World;
 
 public class Chunk_ implements Saveable, Layer {
@@ -19,6 +21,7 @@ public class Chunk_ implements Saveable, Layer {
 	public AccessList access = new AccessList();
 	public ChunkOwner owner = new ChunkOwner();
 	public Taxable tax = new Taxable(this);
+	public District district;
 
 	public Chunk_(World world, int x, int z){
 		key = new ChunkKey(x, z);
@@ -34,6 +37,7 @@ public class Chunk_ implements Saveable, Layer {
 		if(link != null) link.save(map);
 		access.save(map);
 		tax.save(map);
+		map.add("district", district.id);
 	}
 
 	@Override
@@ -48,6 +52,7 @@ public class Chunk_ implements Saveable, Layer {
 		}
 		access.load(map);
 		tax.load(map);
+		district = ResManager.getDistrict(map.getInteger("district", -1), true);
 	}
 	
 	@Override
