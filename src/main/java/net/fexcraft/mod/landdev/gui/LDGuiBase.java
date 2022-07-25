@@ -10,6 +10,7 @@ public class LDGuiBase extends GenericGui<LDGuiContainer> {
 
 	public LDGuiBase(EntityPlayer player, int x, int y, int z){
 		super(TEXTURE, new LDGuiContainer(player), player);
+		ySize = 224;
 	}
 	
 }
