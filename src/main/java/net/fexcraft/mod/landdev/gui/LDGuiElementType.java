@@ -3,6 +3,7 @@ package net.fexcraft.mod.landdev.gui;
 public enum LDGuiElementType {
 	
 	TOP(0, 0, 225, 19),
+	BOTTOM(0, 251, 225, 6),
 	ELM_GREEN(0, 19, 225, 14),
 	ELM_RED(0, 33, 225, 14),
 	ELM_BLUE(0, 47, 225, 14),
@@ -22,8 +23,13 @@ public enum LDGuiElementType {
 	SCROLL_DOWN(229, 34, 11, 11),
 	;
 	
+	public int x, y, w, h;
+	
 	LDGuiElementType(int x, int y, int w, int h){
-		
+		this.x = x;
+		this.y = y;
+		this.w = w;
+		this.h = h;
 	}
 
 }
