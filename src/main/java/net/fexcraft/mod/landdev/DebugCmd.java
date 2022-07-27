@@ -1,25 +1,31 @@
 package net.fexcraft.mod.landdev;
 
-import net.fexcraft.lib.mc.api.registry.fCommand;
+import java.util.List;
+
+import net.fexcraft.mod.landdev.util.AliasLoader;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
 
-@fCommand
-public class TestCmd extends CommandBase {
+public class DebugCmd extends CommandBase {
 	
-    public TestCmd(){}
+    public DebugCmd(){}
     
-    @Override 
-    public String getName(){ 
-        return "ldt";
-    } 
+	@Override
+	public String getName(){
+		return AliasLoader.getOverride("ld-debug");
+	}
 
-    @Override         
-    public String getUsage(ICommandSender sender){ 
-        return "/ldt";
-    }
+	@Override
+	public String getUsage(ICommandSender sender){
+		return "/" + getName();
+	}
+	
+	@Override
+	public List<String> getAliases(){
+		return AliasLoader.getAlias("ld-debug");
+	}
     
     @Override
     public boolean checkPermission(MinecraftServer server, ICommandSender sender){

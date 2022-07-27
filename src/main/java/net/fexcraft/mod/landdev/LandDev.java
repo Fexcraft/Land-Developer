@@ -8,6 +8,7 @@ import net.fexcraft.mod.landdev.data.chunk.ChunkCap;
 import net.fexcraft.mod.landdev.db.Database;
 import net.fexcraft.mod.landdev.db.JsonFileDB;
 import net.fexcraft.mod.landdev.gui.GuiHandler;
+import net.fexcraft.mod.landdev.util.AliasLoader;
 import net.fexcraft.mod.landdev.util.ChunkCapabilityUtil;
 import net.fexcraft.mod.landdev.util.Settings;
 import net.minecraft.world.World;
@@ -16,6 +17,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 
 @Mod(modid = LandDev.MODID, name = LandDev.NAME, version = LandDev.VERSION,
@@ -44,6 +46,13 @@ public class LandDev {
     public void init(FMLInitializationEvent event){
         NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
     }
+    
+    @Mod.EventHandler
+	public void serverStarting(FMLServerStartingEvent event){
+    	//TODO webhook
+		AliasLoader.load();
+		event.registerServerCommand(new DebugCmd());
+	}
 	
 	public static final File updateSaveDirectory(World world){
 		return SAVE_DIR = new File(world.getSaveHandler().getWorldDirectory(), "states/");
