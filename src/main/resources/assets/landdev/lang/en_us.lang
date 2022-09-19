@@ -1,0 +1,9 @@
+# Land Developer Translation File | English
+
+landdev.district.norm.name=Unnamed District
+landdev.district.wilderness.name=Wilderness
+landdev.district.spawnzone.name=Spawn District
+
+landdev.municipality.norm.name=Unnamed Place
+landdev.municipality.wilderness.name=Wilderness
+landdev.municipality.spawnzone.name=Spawn Town
