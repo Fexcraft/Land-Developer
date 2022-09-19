@@ -9,6 +9,8 @@ public enum Layers {
 	MUNICIPALITY,
 	COUNTY,
 	STATE,
-	UNION;
+	UNION,
+	
+	NONE;
 
 }
