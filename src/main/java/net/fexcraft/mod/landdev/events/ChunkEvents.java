@@ -24,8 +24,6 @@ public class ChunkEvents {
     		if(event.getWorld().isRemote) return;
     		if(!FSMM.isDataManagerLoaded()) FSMM.loadDataManager();
     		LandDev.updateSaveDirectory(event.getWorld());
-			//Print.log("Initializing LandDev default World Data...");
-			//TODO load states, counties, muns, districts
     	}
     	Chunk_ chunk = new Chunk_(event.getWorld(), event.getChunk().x, event.getChunk().z);
         if(ResManager.CHUNKS.containsKey(chunk.key)) return;
