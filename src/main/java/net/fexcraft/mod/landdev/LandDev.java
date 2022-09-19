@@ -52,6 +52,7 @@ public class LandDev {
     	//TODO webhook
 		AliasLoader.load();
 		event.registerServerCommand(new DebugCmd());
+		event.registerServerCommand(new LDCmd());
 	}
 	
 	public static final File updateSaveDirectory(World world){
