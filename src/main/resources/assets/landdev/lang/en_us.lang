@@ -7,3 +7,15 @@ landdev.district.spawnzone.name=Spawn District
 landdev.municipality.norm.name=Unnamed Place
 landdev.municipality.wilderness.name=Wilderness
 landdev.municipality.spawnzone.name=Spawn Town
+
+landdev.gui.loading.title=loading...
+landdev.gui.main.title=Land Developer
+landdev.gui.main.player=My Profile
+landdev.gui.main.mail=My Mail
+landdev.gui.main.property=My Properties
+landdev.gui.main.company=My Company
+landdev.gui.main.chunk=Chunk
+landdev.gui.main.district=District
+landdev.gui.main.municipality=Municipality
+landdev.gui.main.county=County
+landdev.gui.main.state=State
