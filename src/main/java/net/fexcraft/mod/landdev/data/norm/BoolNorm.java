@@ -41,4 +41,11 @@ public class BoolNorm extends Norm {
 		value = obj.bool();
 	}
 
+	@Override
+	public void set(Object val){
+		if(val instanceof Boolean) value = (boolean)val;
+		if(val instanceof String) value = val.toString().toLowerCase().equals("true");
+		if(val instanceof Number) value = ((Number)val).intValue() > 0;
+	}
+
 }
