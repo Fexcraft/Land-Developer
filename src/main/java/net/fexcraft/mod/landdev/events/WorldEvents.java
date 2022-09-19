@@ -1,6 +1,7 @@
 package net.fexcraft.mod.landdev.events;
 
 import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.util.ResManager;
 import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.event.world.WorldEvent;
@@ -29,7 +30,8 @@ public class WorldEvents {
 	@SubscribeEvent
 	public static void onExplosion(ExplosionEvent event){
 		if(event.getWorld().provider.getDimension() != 0 || event.getWorld().isRemote) return;
-		//TODO
+		Chunk_ chunk = ResManager.getChunk(event.getExplosion().getPosition());
+		event.setCanceled(!chunk.district.norms.get("explosions").bool());
 	}
 	
 }
