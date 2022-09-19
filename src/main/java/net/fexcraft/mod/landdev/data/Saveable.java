@@ -30,4 +30,6 @@ public interface Saveable {
 		return null;
 	}
 
+	public default void gendef(){};
+
 }
