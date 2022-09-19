@@ -1,7 +1,11 @@
 package net.fexcraft.mod.landdev.data.district;
 
+import static net.fexcraft.mod.landdev.util.TranslationUtil.translate;
+
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.mod.landdev.data.*;
+import net.fexcraft.mod.landdev.data.norm.BoolNorm;
+import net.fexcraft.mod.landdev.data.norm.StringNorm;
 
 public class District implements Saveable, Layer {
 	
@@ -15,10 +19,13 @@ public class District implements Saveable, Layer {
 	public DistrictType type;
 	public Manageable manage = new Manageable(false);
 	public Norms norms = new Norms();
+	public DistrictOwner owner = new DistrictOwner();
 	public long chunks;
 	
 	public District(int id){
 		this.id = id;
+		norms.add(new StringNorm("name", translate("district.norm.name")));
+		norms.add(new BoolNorm("explosions", false));
 	}
 
 	@Override
@@ -33,7 +40,7 @@ public class District implements Saveable, Layer {
 		type.save();
 		manage.save();
 		norms.save();
-		//
+		owner.save();
 		map.add("chunks", chunks);
 	}
 
@@ -48,8 +55,19 @@ public class District implements Saveable, Layer {
 		type = DistrictType.get(map);
 		manage.load(map);
 		norms.load(map);
-		//
+		owner.load(map);
 		chunks = map.getLong("chunks", 0);
+	}
+	
+	@Override
+	public void gendef(){
+		if(id == -1){
+			norms.get("name").set(translate("district.wilderness.name"));
+		}
+		else if(id == 0){
+			norms.get("name").set(translate("district.spawnzone.name"));
+		}
+		else return;
 	}
 	
 	@Override
@@ -69,7 +87,7 @@ public class District implements Saveable, Layer {
 
 	@Override
 	public Layers getParentLayer(){
-		return Layers.MUNICIPALITY;
+		return owner.county ? Layers.COUNTY : Layers.MUNICIPALITY;
 	}
 
 }
