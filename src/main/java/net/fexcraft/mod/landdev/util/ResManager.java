@@ -8,6 +8,8 @@ import net.fexcraft.mod.landdev.data.Saveable;
 import net.fexcraft.mod.landdev.data.chunk.ChunkKey;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.data.district.District;
+import net.fexcraft.mod.landdev.data.municipality.Municipality;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.chunk.Chunk;
 
 /**
@@ -22,6 +24,7 @@ public class ResManager {
 	public static final String CONSOLE_UUID = "f78a4d8d-d51b-4b39-98a3-230f2de0c670";
 	public static ConcurrentHashMap<ChunkKey, Chunk_> CHUNKS = new ConcurrentHashMap<>();
 	public static ConcurrentHashMap<Integer, District> DISTRICTS = new ConcurrentHashMap<>();
+	public static ConcurrentHashMap<Integer, Municipality> MUNICIPALITIES = new ConcurrentHashMap<>();
 
 	public static Chunk_ getChunk(int x, int z){
 		for(Chunk_ ck : CHUNKS.values()){
@@ -37,6 +40,14 @@ public class ResManager {
 		return null;
 	}
 
+	public static Chunk_ getChunk(Vec3d pos){
+		int x = (int)pos.x >> 4, z = (int)pos.z >> 4;
+		for(Chunk_ ck : CHUNKS.values()){
+			if(ck.key.x == x && ck.key.z == z) return ck;
+		}
+		return null;
+	}
+
 	public static void remChunk(Chunk chunk){
 		CHUNKS.remove(new ChunkKey(chunk.x, chunk.z));
 	}
@@ -48,10 +59,18 @@ public class ResManager {
 		return dis;
 	}
 
+	public static Municipality getMunicipality(int idx, boolean load){
+		if(!load) return MUNICIPALITIES.get(idx);
+		Municipality mun = MUNICIPALITIES.get(idx);
+		if(mun == null) MUNICIPALITIES.put(idx, load(mun = new Municipality(idx)));
+		return mun;
+	}
+
 	private static <S> S load(Saveable save){
 		if(!LandDev.DB.exists(save.saveTable(), save.saveId())) return (S)save;
 		JsonMap map = LandDev.DB.load(save.saveTable(), save.saveId());
 		if(map != null) save.load(map);
+		else save.gendef();
 		return (S)save;
 	}
 
