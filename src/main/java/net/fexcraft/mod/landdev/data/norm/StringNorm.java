@@ -41,4 +41,9 @@ public class StringNorm extends Norm {
 		value = obj.string_value();
 	}
 
+	@Override
+	public void set(Object val){
+		value = val.toString();
+	}
+
 }
