@@ -1,5 +1,7 @@
 package net.fexcraft.mod.landdev.data.norm;
 
+import org.apache.commons.lang3.math.NumberUtils;
+
 import net.fexcraft.app.json.JsonObject;
 
 public class FloatNorm extends Norm {
@@ -39,6 +41,17 @@ public class FloatNorm extends Norm {
 	@Override
 	public void load(JsonObject obj){
 		value = obj.float_value();
+	}
+
+	@Override
+	public void set(Object val){
+		if(val instanceof Number) value = ((Number)val).floatValue();
+		if(val instanceof Boolean) value = ((Boolean)val) ? 1 : 0;
+		if(val instanceof String){
+			String str = val.toString();
+			if(!NumberUtils.isCreatable(val.toString())) return;
+			value = Float.parseFloat(str);
+		}
 	}
 
 }
