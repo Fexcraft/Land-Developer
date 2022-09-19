@@ -32,4 +32,8 @@ public class Norms implements Saveable {
 		});
 	}
 
+	public Norm get(String key){
+		return norms.get(key);
+	}
+
 }
