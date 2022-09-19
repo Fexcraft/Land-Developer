@@ -23,13 +23,17 @@ public enum LDGuiElementType {
 	SCROLL_DOWN(229, 34, 11, 11),
 	;
 	
-	public int x, y, w, h;
+	public int x, y, w, h, px;
 	
 	LDGuiElementType(int x, int y, int w, int h){
 		this.x = x;
 		this.y = y;
 		this.w = w;
 		this.h = h;
+	}
+
+	boolean icon(){
+		return ordinal() >= 8 && ordinal() < 16;
 	}
 
 }
