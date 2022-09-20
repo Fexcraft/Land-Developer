@@ -9,6 +9,7 @@ import net.fexcraft.mod.landdev.data.chunk.ChunkKey;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.data.district.District;
 import net.fexcraft.mod.landdev.data.municipality.Municipality;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.chunk.Chunk;
 
@@ -41,11 +42,11 @@ public class ResManager {
 	}
 
 	public static Chunk_ getChunk(Vec3d pos){
-		int x = (int)pos.x >> 4, z = (int)pos.z >> 4;
-		for(Chunk_ ck : CHUNKS.values()){
-			if(ck.key.x == x && ck.key.z == z) return ck;
-		}
-		return null;
+		return getChunk((int)pos.x >> 4, (int)pos.z >> 4);
+	}
+
+	public static Chunk_ getChunk(EntityPlayer player){
+		return getChunk((int)player.posX >> 4, (int)player.posZ >> 4);
 	}
 
 	public static void remChunk(Chunk chunk){
