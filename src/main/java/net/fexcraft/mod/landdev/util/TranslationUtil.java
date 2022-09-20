@@ -6,7 +6,7 @@ import net.minecraft.util.text.translation.I18n;
 public class TranslationUtil {
 
 	public static String translate(String key){
-		return I18n.translateToLocal("landdev" + key);
+		return I18n.translateToLocal("landdev." + key);
 	}
 
 }
