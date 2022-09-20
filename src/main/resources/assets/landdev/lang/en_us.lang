@@ -3,6 +3,7 @@
 landdev.district.norm.name=Unnamed District
 landdev.district.wilderness.name=Wilderness
 landdev.district.spawnzone.name=Spawn District
+landdev.district.not_part_of_municipality=District not part of a Municipality.
 
 landdev.municipality.norm.name=Unnamed Place
 landdev.municipality.wilderness.name=Wilderness
