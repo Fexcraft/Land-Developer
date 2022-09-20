@@ -17,17 +17,18 @@ public class GuiHandler implements IGuiHandler {
 	public static final int PLAYER = 8;
 	public static final int POLL = 9;
 	public static final int MAILBOX = 10;
+	public static final int CLAIM = 100;
 	
 
 	@Override
 	public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z){
-		if(ID <= 10) return new LDGuiContainer(player);
+		if(ID <= 8) return new LDGuiContainer(player);
 		return null;
 	}
 
 	@Override
 	public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z){
-		if(ID <= 10) return new LDGuiBase(ID, player, x, y, z);
+		if(ID <= 8) return new LDGuiBase(ID, player, x, y, z);
 		return null;
 	}
 
