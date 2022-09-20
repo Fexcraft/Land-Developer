@@ -6,6 +6,7 @@ import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.mod.landdev.data.*;
 import net.fexcraft.mod.landdev.data.norm.BoolNorm;
 import net.fexcraft.mod.landdev.data.norm.StringNorm;
+import net.fexcraft.mod.landdev.util.ResManager;
 
 public class District implements Saveable, Layer {
 	
@@ -63,9 +64,14 @@ public class District implements Saveable, Layer {
 	public void gendef(){
 		if(id == -1){
 			norms.get("name").set(translate("district.wilderness.name"));
+			owner.owid = -1;
+			owner.county = true;
 		}
 		else if(id == 0){
 			norms.get("name").set(translate("district.spawnzone.name"));
+			owner.owid = 0;
+			owner.county = false;
+			owner.municipality = ResManager.getMunicipality(0, true);
 		}
 		else return;
 	}
