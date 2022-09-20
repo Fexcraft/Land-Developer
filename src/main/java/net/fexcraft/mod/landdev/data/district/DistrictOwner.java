@@ -29,4 +29,8 @@ public class DistrictOwner implements Saveable {
 		else municipality = ResManager.getMunicipality(owid, true);
 	}
 
+	public int county_id(){
+		return county ? owid : municipality.id;
+	}
+
 }
