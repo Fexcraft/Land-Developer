@@ -56,6 +56,11 @@ public class Chunk_ implements Saveable, Layer {
 	}
 	
 	@Override
+	public void gendef(){
+		district = ResManager.getDistrict(-1, true);
+	}
+	
+	@Override
 	public String saveId(){
 		return key.toString();
 	}
