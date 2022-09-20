@@ -30,6 +30,7 @@ public enum LDGuiElementType {
 		this.y = y;
 		this.w = w;
 		this.h = h;
+		this.px = x;
 	}
 
 	boolean icon(){
