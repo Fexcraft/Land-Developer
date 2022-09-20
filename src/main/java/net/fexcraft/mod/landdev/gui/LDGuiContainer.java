@@ -6,6 +6,7 @@ import net.fexcraft.lib.mc.gui.GenericContainer;
 import net.fexcraft.lib.mc.gui.GenericGui.BasicText;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.gui.modules.Main;
+import net.fexcraft.mod.landdev.gui.modules.Missing;
 import net.fexcraft.mod.landdev.util.ResManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTBase;
@@ -39,6 +40,7 @@ public class LDGuiContainer extends GenericContainer {
 			NBTTagCompound com = new NBTTagCompound();
 			switch(type){
 				case MAIN:{ Main.INST.sync_packet(this, com); break; }
+				default: Missing.INST.sync_packet(this, com); break;
 			}
 			send(Side.CLIENT, com);
 		}
@@ -47,6 +49,7 @@ public class LDGuiContainer extends GenericContainer {
 			Chunk_ chunk = ResManager.getChunk(player);
 			switch(type){
 				case MAIN:{ Main.INST.on_interact(packet, index, player, chunk); break; }
+				default: Missing.INST.on_interact(packet, index, player, chunk); break;
 			}
 		}
 	}
