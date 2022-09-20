@@ -68,7 +68,10 @@ public class ResManager {
 	}
 
 	private static <S> S load(Saveable save){
-		if(!LandDev.DB.exists(save.saveTable(), save.saveId())) return (S)save;
+		if(!LandDev.DB.exists(save.saveTable(), save.saveId())){
+			save.gendef();
+			return (S)save;
+		}
 		JsonMap map = LandDev.DB.load(save.saveTable(), save.saveId());
 		if(map != null) save.load(map);
 		else save.gendef();
