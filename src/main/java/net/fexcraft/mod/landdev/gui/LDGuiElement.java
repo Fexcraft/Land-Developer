@@ -2,6 +2,8 @@ package net.fexcraft.mod.landdev.gui;
 
 import net.fexcraft.lib.mc.gui.GenericGui.BasicButton;
 import net.fexcraft.lib.mc.gui.GenericGui.BasicText;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.fml.relauncher.Side;
 
 public class LDGuiElement {
 	
@@ -24,8 +26,20 @@ public class LDGuiElement {
 		return this;
 	}
 
-	public LDGuiElement button(LDGuiBase gui, Runnable run){
-		if(run != null) gui.add(new BasicButton(index, gui.getGuiLeft() + 208, gui.getGuiTop() + pos, type.x, type.y, type.w, type.h, true));
+	public LDGuiElement button(LDGuiBase gui, boolean button){
+		if(!button) return this;
+		gui.add(new BasicButton(index, gui.getGuiLeft() + 208, gui.getGuiTop() + pos, type.x, type.y, type.w, type.h, true){
+			
+			@Override
+			public boolean onclick(int x, int y, int b){
+				NBTTagCompound com = new NBTTagCompound();
+				com.setString("interact", index);
+				if(gui.hasField(index)) com.setString("field", gui.getField(index));
+				gui.container().send(Side.SERVER, com);
+				return true;
+			}
+			
+		});
 		return this;
 	}
 
