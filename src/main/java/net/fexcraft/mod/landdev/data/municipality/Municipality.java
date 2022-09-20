@@ -63,9 +63,12 @@ public class Municipality implements Saveable, Layer {
 	public void gendef(){
 		if(id == -1){
 			norms.get("name").set(translate("municipality.wilderness.name"));
+			districts.clear();
 		}
 		else if(id == 0){
 			norms.get("name").set(translate("municipality.spawnzone.name"));
+			districts.clear();
+			districts.add(0);
 		}
 		else return;
 	}
