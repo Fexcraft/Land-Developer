@@ -1,5 +1,6 @@
 package net.fexcraft.mod.landdev.gui;
 
+import static net.fexcraft.mod.landdev.gui.GuiHandler.CHUNK;
 import static net.fexcraft.mod.landdev.gui.GuiHandler.MAIN;
 
 import net.fexcraft.lib.mc.gui.GenericContainer;
@@ -18,7 +19,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class LDGuiContainer extends GenericContainer {
 
 	protected String prefix;
-	private int type;
+	public final int type, x, y, z;
 	@SideOnly(Side.CLIENT)
 	public LDGuiBase gui;
 
@@ -26,7 +27,11 @@ public class LDGuiContainer extends GenericContainer {
 		super(player);
 		switch(type = id){
 			case MAIN: prefix = "main"; break;
+			case CHUNK: prefix = "chunk"; break;
 		}
+		this.x = x;
+		this.y = y;
+		this.z = z;
 	}
 
 	@Override
@@ -38,8 +43,10 @@ public class LDGuiContainer extends GenericContainer {
 	private void server_packet(NBTTagCompound packet, EntityPlayer player){
 		if(packet.getBoolean("sync")){
 			NBTTagCompound com = new NBTTagCompound();
+			Chunk_ chunk = ResManager.getChunk(player);
 			switch(type){
-				case MAIN:{ Main.INST.sync_packet(this, com); break; }
+				case MAIN: Main.INST.sync_packet(this, com); break;
+				case CHUNK: chunk.sync_packet(this, com); break;
 				default: Missing.INST.sync_packet(this, com); break;
 			}
 			send(Side.CLIENT, com);
@@ -48,7 +55,8 @@ public class LDGuiContainer extends GenericContainer {
 			String index = packet.getString("interact");
 			Chunk_ chunk = ResManager.getChunk(player);
 			switch(type){
-				case MAIN:{ Main.INST.on_interact(packet, index, player, chunk); break; }
+				case MAIN: Main.INST.on_interact(packet, index, player, chunk); break;
+				case CHUNK: chunk.on_interact(packet, index, player, chunk); break;
 				default: Missing.INST.on_interact(packet, index, player, chunk); break;
 			}
 		}
@@ -69,8 +77,13 @@ public class LDGuiContainer extends GenericContainer {
 			LDGuiElementType elm = LDGuiElementType.valueOf(lis.getStringTagAt(1));
 			LDGuiElementType icon = LDGuiElementType.valueOf(lis.getStringTagAt(2));
 			String bools = lis.getStringTagAt(3);
-			gui.addElm(index, elm, icon, idx++, bools.charAt(0) == '1', bools.charAt(1) == '1');
+			String val = lis.tagCount() > 4 ? lis.getStringTagAt(4) : null;
+			gui.addElm(index, elm, icon, idx++, bools.charAt(0) == '1', bools.charAt(1) == '1', val);
 		}
+	}
+
+	public EntityPlayer player(){
+		return player;
 	}
 	
 }
