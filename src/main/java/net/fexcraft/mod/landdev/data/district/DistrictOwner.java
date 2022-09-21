@@ -1,6 +1,7 @@
 package net.fexcraft.mod.landdev.data.district;
 
 import net.fexcraft.app.json.JsonMap;
+import net.fexcraft.mod.landdev.data.Manageable;
 import net.fexcraft.mod.landdev.data.Saveable;
 import net.fexcraft.mod.landdev.data.municipality.Municipality;
 import net.fexcraft.mod.landdev.util.ResManager;
@@ -31,6 +32,10 @@ public class DistrictOwner implements Saveable {
 
 	public int county_id(){
 		return county ? owid : municipality.id;
+	}
+
+	public Manageable manageable(){
+		return county ? null : municipality.manage;//TODO
 	}
 
 }
