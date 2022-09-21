@@ -11,7 +11,7 @@ public class ChunkLink implements Saveable {
 
 	public ArrayList<ChunkKey> linked;
 	public ChunkKey root_key;
-	public Chunk_ chunk, root;
+	public Chunk_ chunk;
 
 	public ChunkLink(Chunk_ chunk_){
 		chunk = chunk_;
@@ -34,14 +34,15 @@ public class ChunkLink implements Saveable {
 
 	@Override
 	public void load(JsonMap map){
-		if(map.has("linked")){
+		JsonObject<?> elm = map.get("linked");
+		if(elm.isArray()){
 			linked = new ArrayList<>();
-			for(JsonObject<?> obj : map.getArray("linked").value){
+			for(JsonObject<?> obj : elm.asArray().value){
 				linked.add(new ChunkKey(obj.value.toString()));
 			}
 		}
-		else if(map.has("link")){
-			root_key = new ChunkKey(map.getString("link", null));
+		else{
+			root_key = new ChunkKey(map.getString("linked", null));
 		}
 	}
 
