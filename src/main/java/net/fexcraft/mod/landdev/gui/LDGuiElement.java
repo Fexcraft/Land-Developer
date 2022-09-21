@@ -2,6 +2,7 @@ package net.fexcraft.mod.landdev.gui;
 
 import net.fexcraft.lib.mc.gui.GenericGui.BasicButton;
 import net.fexcraft.lib.mc.gui.GenericGui.BasicText;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.relauncher.Side;
 
@@ -21,8 +22,11 @@ public class LDGuiElement {
 		return this;
 	}
 
-	public LDGuiElement text(LDGuiBase gui, String text){
-		if(text != null) gui.add(index, new BasicText(gui.getGuiLeft() + 8, gui.getGuiTop() + pos + 3, 196, 0xcdcdcd, "landdev.gui." + (gui.prefix()) + "." + text).translate().autoscale());
+	public LDGuiElement text(LDGuiBase gui, String text, String val){
+		if(text != null || val != null){
+			BasicText telm = new BasicText(gui.getGuiLeft() + 8, gui.getGuiTop() + pos + 3, 196, 0xcdcdcd, "landdev.gui." + (gui.prefix()) + "." + text);
+			gui.add(index, (val == null ? telm.translate() : telm.translate(I18n.format(val))).autoscale());
+		}
 		return this;
 	}
 
