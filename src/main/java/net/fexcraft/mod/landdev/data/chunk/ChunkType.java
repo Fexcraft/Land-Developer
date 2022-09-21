@@ -27,4 +27,8 @@ public enum ChunkType {
 		return NORMAL;
 	}
 
+	public String lang(){
+		return "landdev.chunk_type." + name().toLowerCase();
+	}
+
 }
