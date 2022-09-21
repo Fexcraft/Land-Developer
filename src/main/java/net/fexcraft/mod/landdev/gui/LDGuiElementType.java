@@ -18,6 +18,8 @@ public enum LDGuiElementType {
 	ICON_BLANK(208, 90, 12, 12),
 	ICON_LIST(208, 104, 12, 12),
 	ICON_EMPTY(208, 118, 12, 12),
+	ICON_ENABLED(208, 132, 12, 12),
+	ICON_DISABLED(208, 146, 12, 12),
 	SCROLLBAR(226, 17, 17, 32),
 	SCROLL_UP(229, 21, 11, 11),
 	SCROLL_DOWN(229, 34, 11, 11),
@@ -34,7 +36,7 @@ public enum LDGuiElementType {
 	}
 
 	boolean icon(){
-		return ordinal() >= 8 && ordinal() < 16;
+		return ordinal() >= 8 && ordinal() < 18;
 	}
 
 }
