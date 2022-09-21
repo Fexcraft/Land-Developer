@@ -1,5 +1,10 @@
 package net.fexcraft.mod.landdev.data.chunk;
 
+import static net.fexcraft.mod.fsmm.util.Config.getWorthAsString;
+import static net.fexcraft.mod.landdev.gui.LDGuiElementType.*;
+
+import java.util.UUID;
+
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.mod.landdev.data.Createable;
 import net.fexcraft.mod.landdev.data.Layer;
@@ -8,10 +13,15 @@ import net.fexcraft.mod.landdev.data.Saveable;
 import net.fexcraft.mod.landdev.data.Sellable;
 import net.fexcraft.mod.landdev.data.Taxable;
 import net.fexcraft.mod.landdev.data.district.District;
+import net.fexcraft.mod.landdev.gui.LDGuiContainer;
+import net.fexcraft.mod.landdev.gui.modules.LDGuiModule;
 import net.fexcraft.mod.landdev.util.ResManager;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
 
-public class Chunk_ implements Saveable, Layer {
+public class Chunk_ implements Saveable, Layer, LDGuiModule {
 	
 	public ChunkKey key;
 	public Createable created = new Createable();
@@ -46,7 +56,7 @@ public class Chunk_ implements Saveable, Layer {
 		owner.load(map);
 		type = ChunkType.l1(map.getString("type", "N"));
 		sell.load(map);
-		if(map.has(true, "link", "linked")){
+		if(map.has("linked")){
 			link = new ChunkLink(this);
 			link.load(map);
 		}
@@ -78,6 +88,55 @@ public class Chunk_ implements Saveable, Layer {
 	@Override
 	public Layers getParentLayer(){
 		return Layers.DISTRICT;
+	}
+
+	public boolean can_manage(EntityPlayer player){
+		UUID uuid = player.getGameProfile().getId();
+		if(owner.playerchunk && owner.player.equals(uuid)) return true;
+		if(owner.owner.is(Layers.DISTRICT) && (district.manage.isManager(uuid) || district.owner.manageable().isManager(uuid))) return true;
+		if(owner.owner.is(Layers.MUNICIPALITY) && district.owner.manageable().isManager(uuid)) return true;
+		//TODO
+		return false;
+	}
+
+	@Override
+	public void sync_packet(LDGuiContainer container, NBTTagCompound com){
+		com.setString("title_lang", "chunk.title");
+		NBTTagList list = new NBTTagList();
+		if(container.x == 0){
+			boolean canman = !can_manage(container.player());
+			addToList(list, "key", ELM_GENERIC, ICON_BLANK, false, false, key.comma());
+			if(link == null){
+				addToList(list, "link", ELM_GENERIC, canman ? ICON_ADD : ICON_EMPTY, true, false, null);
+			}
+			else if(link.linked != null){
+				addToList(list, "links", ELM_GENERIC, ICON_LIST, true, false, link.linked.size());
+			}
+			else if(link.root_key != null){
+				addToList(list, "linked", ELM_GENERIC, ICON_REM, true, false, link.root_key.comma());
+			}
+			addToList(list, "type", ELM_GENERIC, canman ? ICON_OPEN : ICON_EMPTY, canman, false, type.lang());
+			addToList(list, "district", ELM_GENERIC, ICON_OPEN, true, false, district.name());
+			addToList(list, "spacer", ELM_BLANK, ICON_BLANK, false, false, null);
+			addToList(list, "owner", ELM_GENERIC, ICON_OPEN, true, false, owner.name());
+			if(sell.price > 0){
+				addToList(list, "price", ELM_GENERIC, ICON_OPEN, true, false, sell.price_formatted());
+			}
+			else if(canman){
+				addToList(list, "set_price", ELM_GENERIC, ICON_OPEN, true, false, null);
+			}
+			addToList(list, "tax", ELM_GENERIC, ICON_ADD, true, false, getWorthAsString(tax.custom_tax == 0 ? district.tax() : tax.custom_tax));
+			addToList(list, "spacer", ELM_BLANK, ICON_BLANK, false, false, null);
+			addToList(list, "access_interact", ELM_GENERIC, canman ? access.interact ? ICON_ENABLED : ICON_DISABLED : ICON_EMPTY, canman, false, access.interact ? LANG_YES : LANG_NO);
+			addToList(list, "access_player", ELM_GENERIC, ICON_LIST, true, false, access.players.size());
+			addToList(list, "access_company", ELM_GENERIC, ICON_LIST, true, false, access.companies.size());
+		}
+		com.setTag("elements", list);
+	}
+
+	@Override
+	public void on_interact(NBTTagCompound packet, String index, EntityPlayer player, Chunk_ chunk){
+		//
 	}
 
 }
