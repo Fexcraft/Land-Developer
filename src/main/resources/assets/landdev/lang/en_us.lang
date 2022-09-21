@@ -1,5 +1,10 @@
 # Land Developer Translation File | English
 
+landdev.chunk_type.private=Private
+landdev.chunk_type.normal=Normal
+landdev.chunk_type.restricted=Restricted
+landdev.chunk_type.public=Public
+
 landdev.district.norm.name=Unnamed District
 landdev.district.wilderness.name=Wilderness
 landdev.district.spawnzone.name=Spawn District
@@ -9,6 +14,8 @@ landdev.municipality.norm.name=Unnamed Place
 landdev.municipality.wilderness.name=Wilderness
 landdev.municipality.spawnzone.name=Spawn Town
 
+landdev.gui.no=No
+landdev.gui.yes=Yes
 landdev.gui.loading.title=loading...
 landdev.gui.missing.title=Interface not found. Might be WIP?
 landdev.gui.main.title=Land Developer
@@ -21,3 +28,18 @@ landdev.gui.main.district=District
 landdev.gui.main.municipality=Municipality
 landdev.gui.main.county=County
 landdev.gui.main.state=State
+landdev.gui.chunk.title=Chunk Overview
+landdev.gui.chunk.key=Key: %s
+landdev.gui.chunk.link=Not linked to other chunks.
+landdev.gui.chunk.links=Linked to %s chunks.
+landdev.gui.chunk.linked=Linked to %s.
+landdev.gui.chunk.type=Type: %s
+landdev.gui.chunk.district=District: %s
+landdev.gui.chunk.owner=Owner: %s
+landdev.gui.chunk.unowned=none
+landdev.gui.chunk.price=Price: %s
+landdev.gui.chunk.set_price=Set Price
+landdev.gui.chunk.tax=Tax: %s
+landdev.gui.chunk.access_interact=Interaction allowed? %s
+landdev.gui.chunk.access_player=Players with access: %s
+landdev.gui.chunk.access_company=Companies with access: %s
