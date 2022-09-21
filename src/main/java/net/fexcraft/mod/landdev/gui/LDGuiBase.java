@@ -33,8 +33,8 @@ public class LDGuiBase extends GenericGui<LDGuiContainer> {
 		container.send(Side.SERVER, com);
 	}
 
-	protected void addElm(String id, LDGuiElementType elm, LDGuiElementType icon, int idx, boolean text, boolean button){
-		elements.add(new LDGuiElement(id + "_elm", elm).pos(idx, 0).text(this, text ? id : null));
+	protected void addElm(String id, LDGuiElementType elm, LDGuiElementType icon, int idx, boolean text, boolean button, String val){
+		elements.add(new LDGuiElement(id + "_elm", elm).pos(idx, 0).text(this, text ? id : null, val));
 		elements.add(new LDGuiElement(id, icon).pos(idx, 1).button(this, button));
 	}
 
