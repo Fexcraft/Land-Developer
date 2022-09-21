@@ -1,8 +1,10 @@
 package net.fexcraft.mod.landdev.util;
 
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.fexcraft.app.json.JsonMap;
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.landdev.LandDev;
 import net.fexcraft.mod.landdev.data.Saveable;
 import net.fexcraft.mod.landdev.data.chunk.ChunkKey;
@@ -86,6 +88,10 @@ public class ResManager {
 	public static void clear(){
 		CHUNKS.clear();
 		DISTRICTS.clear();
+	}
+
+	public static String getPlayerName(UUID uuid){
+		return Static.getPlayerNameByUUID(uuid);
 	}
 
 }
