@@ -3,7 +3,9 @@ package net.fexcraft.mod.landdev.data.chunk;
 import java.util.UUID;
 
 import net.fexcraft.app.json.JsonMap;
+import net.fexcraft.mod.landdev.data.Layers;
 import net.fexcraft.mod.landdev.data.Saveable;
+import net.fexcraft.mod.landdev.util.ResManager;
 
 /**
  * For Chunks and Properties
@@ -13,30 +15,53 @@ import net.fexcraft.mod.landdev.data.Saveable;
  */
 public class ChunkOwner implements Saveable {
 	
-	public boolean unowned;
-	public boolean player;
-	public UUID owner;
-	public int company;
+	public boolean unowned, playerchunk;
+	public Layers owner = Layers.NONE;
+	public UUID player;
+	public int owid;
 
 	@Override
 	public void save(JsonMap map){
-		if(!unowned) map.add("owner", player ? owner.toString() : "com:" + company);
+		if(unowned) return;
+		map.add("owner_type", owner.toString());
+		if(owner.is(Layers.PLAYER)){
+			map.add("owner", player.toString());
+		}
+		else{
+			map.add("owner", owid);
+		}
 	}
 
 	@Override
 	public void load(JsonMap map){
-		String val = map.getString("owner", null);
-		if(!(unowned = val == null)){
-			if(val.startsWith("com:")){
-				player = false;
-				company = Integer.parseInt(val.substring(4));
-			}
-			else{
-				player = true;
-				owner = UUID.fromString(val);
-			}
+		if(unowned = !map.has("owner")) return;
+		owner = Layers.valueOf(map.getString("owner_type", "NONE"));
+		if(!owner.isValidChunkOwner()){
+			owner = Layers.NONE;
+			unowned = true;
+			return;
 		}
-		
+		if(playerchunk = owner.is(Layers.PLAYER)) player = UUID.fromString(map.getString("owner", ResManager.CONSOLE_UUID));
+		else owid = map.getInteger("owner", -1);
+	}
+	
+	public void set(Layers layer, UUID uuid, int id){
+		if(unowned = !layer.isValidChunkOwner()){
+			owner = Layers.NONE;
+			playerchunk = false;
+			player = null;
+			owid = -1;
+		}
+		else{
+			owner = layer;
+			playerchunk = (owner = layer).is(Layers.PLAYER);
+			player = playerchunk ? uuid : null;
+			owid = playerchunk ? -1 : id;
+		}
+	}
+
+	public String name(){
+		return unowned ? "landdev.gui.chunk.unowned" : playerchunk ? ResManager.getPlayerName(player) : owner.name() + ":" + owid;
 	}
 
 }
