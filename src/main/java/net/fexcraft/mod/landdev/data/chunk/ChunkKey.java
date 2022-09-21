@@ -42,5 +42,9 @@ public class ChunkKey implements Comparable<ChunkKey> {
 		}
 		return 0;
 	}
+
+	public String comma(){
+		return x + ", " + z;
+	}
 	
 }
