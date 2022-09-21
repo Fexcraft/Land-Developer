@@ -11,6 +11,15 @@ public enum Layers {
 	STATE,
 	UNION,
 	
+	PLAYER,
 	NONE;
+
+	public boolean is(Layers other){
+		return this == other;
+	}
+
+	public boolean isValidChunkOwner(){
+		return this != NONE && this.ordinal() > 1;
+	}
 
 }
