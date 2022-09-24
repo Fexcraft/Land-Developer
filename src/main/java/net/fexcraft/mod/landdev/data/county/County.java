@@ -40,8 +40,8 @@ public class County implements Saveable, Layer {
 		color.save(map);
 		neighbors.save(map);
 		mail.save(map);
-		manage.save();
-		norms.save();
+		manage.save(map);
+		norms.save(map);
 		JsonArray darray = map.addArray("districts").asArray();
 		districts.forEach(dis -> darray.add(dis));
 		JsonArray marray = map.addArray("municipalities").asArray();
@@ -78,12 +78,14 @@ public class County implements Saveable, Layer {
 			norms.get("name").set(translate("county.wilderness.name"));
 			districts.clear();
 			state = ResManager.getState(-1, true);
+			color.set(0x009900);
 		}
 		else if(id == 0){
 			norms.get("name").set(translate("county.spawnzone.name"));
 			districts.clear();
 			districts.add(0);
 			state = ResManager.getState(0, true);
+			color.set(0xff9900);
 		}
 		else return;
 	}
@@ -106,6 +108,10 @@ public class County implements Saveable, Layer {
 	@Override
 	public Layers getParentLayer(){
 		return Layers.STATE;
+	}
+
+	public String name(){
+		return norms.get("name").string();
 	}
 
 }

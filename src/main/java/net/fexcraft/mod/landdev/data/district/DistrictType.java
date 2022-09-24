@@ -187,4 +187,8 @@ public class DistrictType implements Saveable {
 		DEFAULT = def;
 	}
 
+	public static DistrictType getDefault(){
+		return TYPES.get(DEFAULT);
+	}
+
 }

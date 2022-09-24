@@ -101,11 +101,17 @@ public class ResManager {
 	public static void unload(){
 		CHUNKS.values().forEach(save -> LandDev.DB.save(save));
 		DISTRICTS.values().forEach(save -> LandDev.DB.save(save));
+		MUNICIPALITIES.values().forEach(save -> LandDev.DB.save(save));
+		COUNTIES.values().forEach(save -> LandDev.DB.save(save));
+		STATES.values().forEach(save -> LandDev.DB.save(save));
 	}
 
 	public static void clear(){
 		CHUNKS.clear();
 		DISTRICTS.clear();
+		MUNICIPALITIES.clear();
+		COUNTIES.clear();
+		STATES.clear();
 	}
 
 	public static String getPlayerName(UUID uuid){

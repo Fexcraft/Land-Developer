@@ -23,12 +23,14 @@ public class GuiHandler implements IGuiHandler {
 	@Override
 	public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z){
 		if(ID <= 8) return new LDGuiContainer(player, ID, x, y, z);
+		if(ID == CLAIM) return new LDGuiClaimCon(player, x, y, z);
 		return null;
 	}
 
 	@Override
 	public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z){
 		if(ID <= 8) return new LDGuiBase(ID, player, x, y, z);
+		if(ID == CLAIM) return new LDGuiClaim(player, x, y, z);
 		return null;
 	}
 

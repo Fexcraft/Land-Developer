@@ -19,7 +19,8 @@ public class Manageable implements Saveable {
 	public void save(JsonMap map){
 		if(manager != null) map.add("manager", manager.toString());
 		if(staff != null){
-			JsonArray array = map.addArray("staff").asArray();
+			map.addArray("staff");
+			JsonArray array = map.getArray("staff");
 			staff.forEach(staff -> array.add(staff.toString()));
 		}
 	}

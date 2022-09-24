@@ -40,4 +40,8 @@ public class DistrictOwner implements Saveable {
 		return is_county ? county.manage : municipality.manage;
 	}
 
+	public String name(){
+		return is_county ? county.name() : municipality.name();
+	}
+
 }

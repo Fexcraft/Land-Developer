@@ -41,10 +41,10 @@ public class District implements Saveable, Layer {
 		color.save(map);
 		neighbors.save(map);
 		mail.save(map);
-		type.save();
-		manage.save();
-		norms.save();
-		owner.save();
+		type.save(map);
+		manage.save(map);
+		norms.save(map);
+		owner.save(map);
 		map.add("chunks", chunks);
 	}
 
@@ -65,17 +65,20 @@ public class District implements Saveable, Layer {
 	
 	@Override
 	public void gendef(){
+		type = DistrictType.getDefault();
 		if(id == -1){
 			norms.get("name").set(translate("district.wilderness.name"));
 			owner.owid = -1;
 			owner.is_county = true;
-			owner.county = ResManager.getCounty(-1, false);
+			owner.county = ResManager.getCounty(-1, true);
+			color.set(0x009900);
 		}
 		else if(id == 0){
 			norms.get("name").set(translate("district.spawnzone.name"));
 			owner.owid = 0;
 			owner.is_county = false;
 			owner.municipality = ResManager.getMunicipality(0, true);
+			color.set(0xff9900);
 		}
 		else return;
 	}

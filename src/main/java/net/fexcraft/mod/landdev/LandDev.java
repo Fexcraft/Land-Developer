@@ -53,10 +53,11 @@ public class LandDev {
 		AliasLoader.load();
 		event.registerServerCommand(new DebugCmd());
 		event.registerServerCommand(new LDCmd());
+		event.registerServerCommand(new CkCmd());
 	}
 	
 	public static final File updateSaveDirectory(World world){
-		return SAVE_DIR = new File(world.getSaveHandler().getWorldDirectory(), "states/");
+		return SAVE_DIR = new File(world.getSaveHandler().getWorldDirectory(), "landdev/");
 	}
 	
 	public static final File getSaveDirectory(){

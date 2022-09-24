@@ -9,7 +9,7 @@ import net.fexcraft.mod.landdev.util.ResManager;
 public class Createable implements Saveable {
 	
 	private long created, updated;
-	private UUID creator;
+	private UUID creator = UUID.fromString(ResManager.CONSOLE_UUID);
 
 	@Override
 	public void load(JsonMap map){

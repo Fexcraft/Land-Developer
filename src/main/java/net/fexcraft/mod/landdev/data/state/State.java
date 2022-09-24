@@ -36,8 +36,8 @@ public class State implements Saveable, Layer {
 		color.save(map);
 		neighbors.save(map);
 		mail.save(map);
-		manage.save();
-		norms.save();
+		manage.save(map);
+		norms.save(map);
 		JsonArray array = map.addArray("counties").asArray();
 		counties.forEach(mun -> array.add(mun));
 	}
@@ -65,11 +65,13 @@ public class State implements Saveable, Layer {
 			norms.get("name").set(translate("state.wilderness.name"));
 			counties.clear();
 			counties.add(-1);
+			color.set(0x009900);
 		}
 		else if(id == 0){
 			norms.get("name").set(translate("state.spawnzone.name"));
 			counties.clear();
 			counties.add(0);
+			color.set(0xff9900);
 		}
 		else return;
 	}
