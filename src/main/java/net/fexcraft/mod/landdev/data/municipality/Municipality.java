@@ -8,6 +8,7 @@ import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.mod.landdev.data.*;
 import net.fexcraft.mod.landdev.data.norm.StringNorm;
+import net.fexcraft.mod.landdev.util.ResManager;
 
 public class Municipality implements Saveable, Layer {
 	
@@ -21,6 +22,7 @@ public class Municipality implements Saveable, Layer {
 	public Manageable manage = new Manageable(true);
 	public Norms norms = new Norms();
 	public ArrayList<Integer> districts = new ArrayList<>();
+	public County county;
 	
 	public Municipality(int id){
 		this.id = id;
@@ -40,6 +42,7 @@ public class Municipality implements Saveable, Layer {
 		norms.save();
 		JsonArray array = map.addArray("districts").asArray();
 		districts.forEach(dis -> array.add(dis));
+		map.add("county", county.id);
 	}
 
 	@Override
@@ -57,6 +60,7 @@ public class Municipality implements Saveable, Layer {
 			districts.clear();
 			array.value.forEach(elm -> districts.add(elm.integer_value()));
 		}
+		county = ResManager.getCounty(map.getInteger("county", -1), true);
 	}
 	
 	@Override
@@ -64,11 +68,13 @@ public class Municipality implements Saveable, Layer {
 		if(id == -1){
 			norms.get("name").set(translate("municipality.wilderness.name"));
 			districts.clear();
+			county = ResManager.getCounty(-1, true);
 		}
 		else if(id == 0){
 			norms.get("name").set(translate("municipality.spawnzone.name"));
 			districts.clear();
 			districts.add(0);
+			county = ResManager.getCounty(0, true);
 		}
 		else return;
 	}
@@ -90,7 +96,7 @@ public class Municipality implements Saveable, Layer {
 
 	@Override
 	public Layers getParentLayer(){
-		return Layers.STATE;
+		return Layers.COUNTY;
 	}
 
 }
