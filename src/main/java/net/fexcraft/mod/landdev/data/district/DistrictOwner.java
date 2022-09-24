@@ -3,6 +3,7 @@ package net.fexcraft.mod.landdev.data.district;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.mod.landdev.data.Manageable;
 import net.fexcraft.mod.landdev.data.Saveable;
+import net.fexcraft.mod.landdev.data.municipality.County;
 import net.fexcraft.mod.landdev.data.municipality.Municipality;
 import net.fexcraft.mod.landdev.util.ResManager;
 
@@ -13,29 +14,30 @@ import net.fexcraft.mod.landdev.util.ResManager;
 public class DistrictOwner implements Saveable {
 	
 	public Municipality municipality;
-	public boolean county;
+	public County county;
+	public boolean is_county;
 	public int owid;
 
 	@Override
 	public void save(JsonMap map){
-		map.add("county", county);
+		map.add("county", is_county);
 		map.add("owner", owid);
 	}
 
 	@Override
 	public void load(JsonMap map){
-		county = map.getBoolean("county", county);
+		is_county = map.getBoolean("county", is_county);
 		owid = map.getInteger("owner", -1);
-		if(county) return;
+		if(is_county) county = ResManager.getCounty(owid, true);
 		else municipality = ResManager.getMunicipality(owid, true);
 	}
 
 	public int county_id(){
-		return county ? owid : municipality.id;
+		return is_county ? county.id : municipality.id;
 	}
 
 	public Manageable manageable(){
-		return county ? null : municipality.manage;//TODO
+		return is_county ? county.manage : municipality.manage;
 	}
 
 }
