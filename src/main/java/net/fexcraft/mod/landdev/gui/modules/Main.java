@@ -52,7 +52,7 @@ public class Main implements LDGuiModule {
 			case "chunk": player.openGui(INSTANCE, CHUNK, player.world, 0, chunk.key.x, chunk.key.z); return;
 			case "district": player.openGui(INSTANCE, DISTRICT, player.world, 0, chunk.district.id, 0); return;
 			case "municipality":{
-				if(!chunk.district.owner.county){
+				if(!chunk.district.owner.is_county){
 					player.openGui(INSTANCE, MUNICIPALITY, player.world, 0, chunk.district.owner.municipality.id, 0);
 				}
 				else{
@@ -65,7 +65,7 @@ public class Main implements LDGuiModule {
 				player.openGui(INSTANCE, MUNICIPALITY, player.world, 0, chunk.district.owner.county_id(), 0);
 				return;
 			}
-			case "state": player.openGui(INSTANCE, STATE, player.world, 0, 0, 0); return;
+			case "state": player.openGui(INSTANCE, STATE, player.world, 0, chunk.district.state().id, 0); return;
 		}
 	}
 
