@@ -7,6 +7,7 @@ import net.fexcraft.mod.landdev.data.*;
 import net.fexcraft.mod.landdev.data.norm.BoolNorm;
 import net.fexcraft.mod.landdev.data.norm.IntegerNorm;
 import net.fexcraft.mod.landdev.data.norm.StringNorm;
+import net.fexcraft.mod.landdev.data.state.State;
 import net.fexcraft.mod.landdev.util.ResManager;
 
 public class District implements Saveable, Layer {
@@ -67,12 +68,13 @@ public class District implements Saveable, Layer {
 		if(id == -1){
 			norms.get("name").set(translate("district.wilderness.name"));
 			owner.owid = -1;
-			owner.county = true;
+			owner.is_county = true;
+			owner.county = ResManager.getCounty(-1, false);
 		}
 		else if(id == 0){
 			norms.get("name").set(translate("district.spawnzone.name"));
 			owner.owid = 0;
-			owner.county = false;
+			owner.is_county = false;
 			owner.municipality = ResManager.getMunicipality(0, true);
 		}
 		else return;
@@ -95,7 +97,7 @@ public class District implements Saveable, Layer {
 
 	@Override
 	public Layers getParentLayer(){
-		return owner.county ? Layers.COUNTY : Layers.MUNICIPALITY;
+		return owner.is_county ? Layers.COUNTY : Layers.MUNICIPALITY;
 	}
 
 	public String name(){
@@ -104,6 +106,10 @@ public class District implements Saveable, Layer {
 
 	public long tax(){
 		return norms.get("chunk-tax").integer();
+	}
+
+	public State state(){
+		return owner.is_county ? owner.county.state : owner.municipality.county.state;
 	}
 
 }
