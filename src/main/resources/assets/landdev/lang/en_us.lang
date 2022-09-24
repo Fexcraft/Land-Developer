@@ -14,6 +14,15 @@ landdev.municipality.norm.name=Unnamed Place
 landdev.municipality.wilderness.name=Wilderness
 landdev.municipality.spawnzone.name=Spawn Town
 
+landdev.county.norm.name=Unnamed County
+landdev.county.wilderness.name=Wilderness
+landdev.county.spawnzone.name=Spawn County
+
+landdev.state.norm.name=Unnamed State
+landdev.state.wilderness.name=Wilderness
+landdev.state.spawnzone.name=Spawn State
+
+
 landdev.gui.no=No
 landdev.gui.yes=Yes
 landdev.gui.loading.title=loading...
