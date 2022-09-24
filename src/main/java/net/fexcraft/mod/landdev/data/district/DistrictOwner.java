@@ -3,7 +3,7 @@ package net.fexcraft.mod.landdev.data.district;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.mod.landdev.data.Manageable;
 import net.fexcraft.mod.landdev.data.Saveable;
-import net.fexcraft.mod.landdev.data.municipality.County;
+import net.fexcraft.mod.landdev.data.county.County;
 import net.fexcraft.mod.landdev.data.municipality.Municipality;
 import net.fexcraft.mod.landdev.util.ResManager;
 
