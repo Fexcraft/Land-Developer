@@ -10,7 +10,9 @@ import net.fexcraft.mod.landdev.data.Saveable;
 import net.fexcraft.mod.landdev.data.chunk.ChunkKey;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.data.district.District;
+import net.fexcraft.mod.landdev.data.municipality.County;
 import net.fexcraft.mod.landdev.data.municipality.Municipality;
+import net.fexcraft.mod.landdev.data.state.State;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.chunk.Chunk;
@@ -28,6 +30,8 @@ public class ResManager {
 	public static ConcurrentHashMap<ChunkKey, Chunk_> CHUNKS = new ConcurrentHashMap<>();
 	public static ConcurrentHashMap<Integer, District> DISTRICTS = new ConcurrentHashMap<>();
 	public static ConcurrentHashMap<Integer, Municipality> MUNICIPALITIES = new ConcurrentHashMap<>();
+	public static ConcurrentHashMap<Integer, County> COUNTIES = new ConcurrentHashMap<>();
+	public static ConcurrentHashMap<Integer, State> STATES = new ConcurrentHashMap<>();
 
 	public static Chunk_ getChunk(int x, int z){
 		for(Chunk_ ck : CHUNKS.values()){
@@ -67,6 +71,20 @@ public class ResManager {
 		Municipality mun = MUNICIPALITIES.get(idx);
 		if(mun == null) MUNICIPALITIES.put(idx, load(mun = new Municipality(idx)));
 		return mun;
+	}
+
+	public static County getCounty(int idx, boolean load){
+		if(!load) return COUNTIES.get(idx);
+		County cty = COUNTIES.get(idx);
+		if(cty == null) COUNTIES.put(idx, load(cty = new County(idx)));
+		return cty;
+	}
+
+	public static State getState(int idx, boolean load){
+		if(!load) return STATES.get(idx);
+		State stt = STATES.get(idx);
+		if(stt == null) STATES.put(idx, load(stt = new State(idx)));
+		return stt;
 	}
 
 	private static <S> S load(Saveable save){
