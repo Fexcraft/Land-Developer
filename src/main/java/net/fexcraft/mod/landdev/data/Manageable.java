@@ -1,27 +1,36 @@
 package net.fexcraft.mod.landdev.data;
 
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.TreeMap;
 import java.util.UUID;
 
-import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonMap;
+import net.fexcraft.mod.landdev.data.PermAction.PermActions;
+import net.fexcraft.mod.landdev.data.norm.Norm;
+import net.minecraft.entity.player.EntityPlayer;
 
-public class Manageable implements Saveable {
+public class Manageable implements Saveable, PermInteractive {
 	
-	public UUID manager;
-	public ArrayList<UUID> staff = null;
+	protected UUID manager;
+	protected TreeMap<UUID, Staff> staff = null;
+	protected PermActions actions;
+	public Norms norms = new Norms();
 	
-	public Manageable(boolean hasstaff){
-		if(hasstaff) staff = new ArrayList<>();
+	public Manageable(boolean hasstaff, PermActions actions){
+		if(hasstaff) staff = new TreeMap<>();
+		this.actions = actions;
 	}
 
 	@Override
 	public void save(JsonMap map){
 		if(manager != null) map.add("manager", manager.toString());
 		if(staff != null){
-			map.addArray("staff");
-			JsonArray array = map.getArray("staff");
-			staff.forEach(staff -> array.add(staff.toString()));
+			JsonMap sta = map.getMap("staff");
+			staff.forEach((key, staff) -> {
+				JsonMap stf = new JsonMap();
+				staff.save(stf);
+				sta.add(key.toString(), stf);
+			});
 		}
 	}
 
@@ -30,7 +39,11 @@ public class Manageable implements Saveable {
 		manager = map.getUUID("manager", null);
 		if(staff != null && map.has("staff")){
 			staff.clear();
-			map.getArray("staff").elements().forEach(elm -> staff.add(UUID.fromString(elm.string_value())));
+			map.getMap("staff").value.forEach((key, val) -> {
+				Staff stf = new Staff(UUID.fromString(key), norms);
+				stf.load(val.asMap());
+				staff.put(stf.uuid, stf);
+			});
 		}
 	}
 	
@@ -39,8 +52,45 @@ public class Manageable implements Saveable {
 	}
 	
 	public boolean isStaff(UUID uuid){
-		if(staff == null) return false;
-		return staff.contains(uuid);
+		return staff == null ? false : staff.get(uuid) != null;
+	}
+	
+	public static class Staff implements Saveable {
+		
+		protected HashMap<String, Norm> norms = new HashMap<>();
+		protected UUID uuid;
+		
+		public Staff(UUID uiid, Norms nerms){
+			uuid = uiid;
+			nerms.norms.forEach((key, norm) -> norms.put(key, norm.copy()));
+		}
+
+		@Override
+		public void save(JsonMap map){
+			norms.forEach((key, val) -> map.add(key, val.save()));
+		}
+		
+		@Override
+		public void load(JsonMap map){
+			map.entries().forEach(entry -> {
+				Norm norm = norms.get(entry.getKey());
+				if(norm != null) norm.load(entry.getValue());
+			});
+		}
+
+		public boolean isNormTrue(String key){
+			Norm norm = norms.get(key);
+			return norm != null && norm.bool();
+		}
+		
+	}
+
+	@Override
+	public boolean can(PermAction act, EntityPlayer player, UUID uuid){
+		if(!actions.isValid(act)) return false;
+		boolean man = manager != null && manager.equals(uuid);
+		Staff sta = staff.get(uuid);
+		return man || (sta != null && sta.norms.get(act.norm).bool());
 	}
 
 }
