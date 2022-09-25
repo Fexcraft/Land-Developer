@@ -1,13 +1,17 @@
 package net.fexcraft.mod.landdev.gui;
 
+import static net.fexcraft.mod.landdev.data.PermAction.ACT_CLAIM;
+
 import java.util.HashMap;
 
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.gui.GenericContainer;
+import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.data.district.District;
 import net.fexcraft.mod.landdev.util.ResManager;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -19,6 +23,7 @@ public class LDGuiClaimCon extends GenericContainer {
 
 	protected ChunkData[][] chunks = new ChunkData[15][15];
 	protected HashMap<Integer, DisData> dists = new HashMap<>();
+	protected District district;
 	public final int x, z, dis;
 	@SideOnly(Side.CLIENT)
 	public LDGuiClaim gui;
@@ -33,6 +38,9 @@ public class LDGuiClaimCon extends GenericContainer {
 			NBTTagCompound com = new NBTTagCompound();
 			com.setBoolean("sync", true);
 			send(Side.SERVER, com);
+		}
+		else{
+			district = ResManager.getDistrict(dis, false);
 		}
 	}
 
@@ -70,6 +78,16 @@ public class LDGuiClaimCon extends GenericContainer {
 				compound.setTag("dis", list);
 				send(Side.CLIENT, compound);
 			}
+			else if(packet.hasKey("claim")){
+				int[] key = packet.getIntArray("claim");
+				Chunk_ chunk = ResManager.getChunk(key[0] - 7 + x, key[1] - 7 + z);
+				NBTTagCompound com = new NBTTagCompound();
+				if(!district.can(ACT_CLAIM, player, player.getGameProfile().getId())){
+					com.setString("msg", "landdev.gui.claim.no_perm_district");
+				}
+				else com.setString("msg", "pass");
+				send(Side.CLIENT, com);
+			}
 		}
 		else{
 			if(packet.hasKey("ckdata")){
@@ -94,7 +112,7 @@ public class LDGuiClaimCon extends GenericContainer {
 				}
 			}
 			else if(packet.hasKey("msg")){
-				
+				LDGuiClaim.title.string = Formatter.format(I18n.format(packet.getString("msg")));
 			}
 		}
 	}
