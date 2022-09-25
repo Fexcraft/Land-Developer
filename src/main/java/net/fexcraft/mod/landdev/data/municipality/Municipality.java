@@ -1,5 +1,6 @@
 package net.fexcraft.mod.landdev.data.municipality;
 
+import static net.fexcraft.mod.landdev.data.PermAction.ACT_CLAIM;
 import static net.fexcraft.mod.landdev.util.TranslationUtil.translate;
 
 import java.util.ArrayList;
@@ -7,12 +8,14 @@ import java.util.ArrayList;
 import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.mod.landdev.data.*;
+import net.fexcraft.mod.landdev.data.PermAction.PermActions;
 import net.fexcraft.mod.landdev.data.county.County;
 import net.fexcraft.mod.landdev.data.norm.StringNorm;
 import net.fexcraft.mod.landdev.util.ResManager;
 
 public class Municipality implements Saveable, Layer {
-	
+
+	public static PermActions actions = new PermActions(ACT_CLAIM);
 	public final int id;
 	public Createable created = new Createable();
 	public Sellable sell = new Sellable(this);
@@ -20,7 +23,7 @@ public class Municipality implements Saveable, Layer {
 	public ColorData color = new ColorData();
 	public NeighborData neighbors = new NeighborData();
 	public MailData mail = new MailData();
-	public Manageable manage = new Manageable(true);
+	public Manageable manage = new Manageable(true, actions);
 	public Norms norms = new Norms();
 	public ArrayList<Integer> districts = new ArrayList<>();
 	public County county;
