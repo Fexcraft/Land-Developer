@@ -1,17 +1,23 @@
 package net.fexcraft.mod.landdev.data.district;
 
+import static net.fexcraft.mod.landdev.data.PermAction.ACT_CLAIM;
 import static net.fexcraft.mod.landdev.util.TranslationUtil.translate;
+
+import java.util.UUID;
 
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.mod.landdev.data.*;
+import net.fexcraft.mod.landdev.data.PermAction.PermActions;
 import net.fexcraft.mod.landdev.data.norm.BoolNorm;
 import net.fexcraft.mod.landdev.data.norm.IntegerNorm;
 import net.fexcraft.mod.landdev.data.norm.StringNorm;
 import net.fexcraft.mod.landdev.data.state.State;
 import net.fexcraft.mod.landdev.util.ResManager;
+import net.minecraft.entity.player.EntityPlayer;
 
-public class District implements Saveable, Layer {
+public class District implements Saveable, Layer, PermInteractive {
 	
+	public static PermActions actions = new PermActions(ACT_CLAIM);
 	public final int id;
 	public Createable created = new Createable();
 	public Sellable sell = new Sellable(this);
@@ -20,7 +26,7 @@ public class District implements Saveable, Layer {
 	public NeighborData neighbors = new NeighborData();
 	public MailData mail = new MailData();
 	public DistrictType type;
-	public Manageable manage = new Manageable(false);
+	public Manageable manage = new Manageable(false, actions);
 	public Norms norms = new Norms();
 	public DistrictOwner owner = new DistrictOwner();
 	public long chunks;
@@ -30,6 +36,7 @@ public class District implements Saveable, Layer {
 		norms.add(new StringNorm("name", translate("district.norm.name")));
 		norms.add(new BoolNorm("explosions", false));
 		norms.add(new IntegerNorm("chunk-tax", 1000));
+		manage.norms.add(new BoolNorm("claim", false));
 	}
 
 	@Override
@@ -113,6 +120,14 @@ public class District implements Saveable, Layer {
 
 	public State state(){
 		return owner.is_county ? owner.county.state : owner.municipality.county.state;
+	}
+
+	@Override
+	public boolean can(PermAction act, EntityPlayer player, UUID uuid){
+		if(act == ACT_CLAIM){
+			return manage.isManager(uuid) || owner.manageable().can(act, player, uuid);
+		}
+		return false;
 	}
 
 }
