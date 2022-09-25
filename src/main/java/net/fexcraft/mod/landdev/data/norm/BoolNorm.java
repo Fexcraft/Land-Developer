@@ -48,4 +48,9 @@ public class BoolNorm extends Norm {
 		if(val instanceof Number) value = ((Number)val).intValue() > 0;
 	}
 
+	@Override
+	public Norm copy(){
+		return new BoolNorm(id, value);
+	}
+
 }
