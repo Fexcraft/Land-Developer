@@ -54,4 +54,9 @@ public class FloatNorm extends Norm {
 		}
 	}
 
+	@Override
+	public Norm copy(){
+		return new FloatNorm(id, value);
+	}
+
 }
