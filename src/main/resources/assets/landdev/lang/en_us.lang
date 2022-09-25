@@ -33,6 +33,7 @@ landdev.gui.claim.chunk_price=&7Price/Fee: &b%s
 landdev.gui.claim.district=&7District: &6%s
 landdev.gui.claim.municipality=&7Municipality of &6%s
 landdev.gui.claim.county=&6%s &7County
+landdev.gui.claim.no_perm_district=&4No permission to claim for this District.
 landdev.gui.main.title=Land Developer
 landdev.gui.main.player=My Profile
 landdev.gui.main.mail=My Mail
