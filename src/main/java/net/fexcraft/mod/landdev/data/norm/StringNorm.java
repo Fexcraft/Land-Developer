@@ -46,4 +46,9 @@ public class StringNorm extends Norm {
 		value = val.toString();
 	}
 
+	@Override
+	public Norm copy(){
+		return new StringNorm(id, value);
+	}
+
 }
