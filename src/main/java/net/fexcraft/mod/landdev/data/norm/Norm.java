@@ -25,5 +25,7 @@ public abstract class Norm {
 	public abstract void load(JsonObject obj);
 
 	public abstract void set(Object val);
+	
+	public abstract Norm copy();
 
 }
