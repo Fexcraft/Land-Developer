@@ -10,13 +10,16 @@ import net.fexcraft.mod.landdev.gui.LDGuiClaimCon.ChunkData;
 import net.fexcraft.mod.landdev.gui.LDGuiClaimCon.DisData;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.relauncher.Side;
 
 public class LDGuiClaim extends GenericGui<LDGuiClaimCon> {
 	
 	private static final ResourceLocation TEXTURE = new ResourceLocation("landdev:textures/gui/claim.png");
 	private static ArrayList<String> info = new ArrayList<>();
 	private static Button[][] ckbuttons = new Button[15][15];
+	protected static BasicText title;
 
 	public LDGuiClaim(EntityPlayer player, int x, int y, int z){
 		super(TEXTURE, new LDGuiClaimCon(player, x, y, z), player);
@@ -26,7 +29,7 @@ public class LDGuiClaim extends GenericGui<LDGuiClaimCon> {
 	
 	@Override
 	public void init(){
-		texts.put("title", new BasicText(guiLeft + 8, guiTop + 8, 196, 0x0e0e0e, "landdev.gui.claim.title").autoscale().translate());
+		texts.put("title", title = new BasicText(guiLeft + 8, guiTop + 8, 165, 0x0e0e0e, "landdev.gui.claim.title").hoverable(true).autoscale().translate());
 		for(int i = 0; i < ckbuttons.length; i++){
 			for(int k = 0; k < ckbuttons[i].length; k++){
 				buttons.put(i + "_" + k, ckbuttons[i][k] = new Button(i + "_" + k, guiLeft + 6 + i * 13, guiTop + 20 + k * 13, 6, 20));
@@ -62,6 +65,7 @@ public class LDGuiClaim extends GenericGui<LDGuiClaimCon> {
 				}
 			}
 		}
+		if(title.hovered) info.add(title.string);
 		if(info.size() > 0) drawHoveringText(info, mouseX, mouseY);
 	}
 
@@ -79,5 +83,20 @@ public class LDGuiClaim extends GenericGui<LDGuiClaimCon> {
 		}
     	
     }
+	
+	@Override
+	public boolean buttonClicked(int mx, int my, int mb, String key, BasicButton button){
+		for(int i = 0; i < ckbuttons.length; i++){
+			for(int k = 0; k < ckbuttons[i].length; k++){
+				if(ckbuttons[i][k].name.equals(key)){
+					NBTTagCompound compound = new NBTTagCompound();
+					compound.setIntArray("claim", new int[]{ i, k });
+					container.send(Side.SERVER, compound);
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 	
 }
