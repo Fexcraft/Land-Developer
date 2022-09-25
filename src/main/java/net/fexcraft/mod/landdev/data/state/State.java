@@ -1,5 +1,6 @@
 package net.fexcraft.mod.landdev.data.state;
 
+import static net.fexcraft.mod.landdev.data.PermAction.ACT_CLAIM;
 import static net.fexcraft.mod.landdev.util.TranslationUtil.translate;
 
 import java.util.ArrayList;
@@ -7,10 +8,12 @@ import java.util.ArrayList;
 import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.mod.landdev.data.*;
+import net.fexcraft.mod.landdev.data.PermAction.PermActions;
 import net.fexcraft.mod.landdev.data.norm.StringNorm;
 
 public class State implements Saveable, Layer {
-	
+
+	public static PermActions actions = new PermActions(ACT_CLAIM);
 	public final int id;
 	public Createable created = new Createable();
 	public Sellable sell = new Sellable(this);
@@ -18,7 +21,7 @@ public class State implements Saveable, Layer {
 	public ColorData color = new ColorData();
 	public NeighborData neighbors = new NeighborData();
 	public MailData mail = new MailData();
-	public Manageable manage = new Manageable(true);
+	public Manageable manage = new Manageable(true, actions);
 	public Norms norms = new Norms();
 	public ArrayList<Integer> counties = new ArrayList<>();
 	
