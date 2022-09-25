@@ -54,4 +54,9 @@ public class IntegerNorm extends Norm {
 		}
 	}
 
+	@Override
+	public Norm copy(){
+		return new IntegerNorm(id, value);
+	}
+
 }
