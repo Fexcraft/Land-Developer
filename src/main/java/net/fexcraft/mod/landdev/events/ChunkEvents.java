@@ -19,11 +19,11 @@ public class ChunkEvents {
     @SubscribeEvent
     public static void onLoad(ChunkEvent.Load event){
         if(event.getWorld().provider.getDimension() != 0) return;
-    	if(!ResManager.LOADED){
-    		ResManager.LOADED = true;
+    	if(!ResManager.INSTANCE.LOADED){
     		if(event.getWorld().isRemote) return;
     		if(!FSMM.isDataManagerLoaded()) FSMM.loadDataManager();
     		LandDev.updateSaveDirectory(event.getWorld());
+    		ResManager.INSTANCE.load();
     	}
     	Chunk_ chunk = new Chunk_(event.getWorld(), event.getChunk().x, event.getChunk().z);
         if(ResManager.CHUNKS.containsKey(chunk.key)) return;

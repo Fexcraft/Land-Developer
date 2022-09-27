@@ -7,8 +7,12 @@ import java.util.ArrayList;
 
 import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonMap;
+import net.fexcraft.mod.fsmm.api.Account;
+import net.fexcraft.mod.fsmm.util.DataManager;
 import net.fexcraft.mod.landdev.data.*;
 import net.fexcraft.mod.landdev.data.PermAction.PermActions;
+import net.fexcraft.mod.landdev.data.norm.BoolNorm;
+import net.fexcraft.mod.landdev.data.norm.IntegerNorm;
 import net.fexcraft.mod.landdev.data.norm.StringNorm;
 import net.fexcraft.mod.landdev.data.state.State;
 import net.fexcraft.mod.landdev.util.ResManager;
@@ -27,11 +31,15 @@ public class County implements Saveable, Layer {
 	public Norms norms = new Norms();
 	public ArrayList<Integer> districts = new ArrayList<>();
 	public ArrayList<Integer> municipalities = new ArrayList<>();
+	public Account account;
 	public State state;
 	
 	public County(int id){
 		this.id = id;
+		account = DataManager.getAccount("county:" + id, false, true);
 		norms.add(new StringNorm("name", translate("county.norm.name")));
+		norms.add(new BoolNorm("new-municipalities", false));
+		norms.add(new IntegerNorm("new-municipality-fee", 100000));
 	}
 
 	@Override
@@ -45,11 +53,14 @@ public class County implements Saveable, Layer {
 		mail.save(map);
 		manage.save(map);
 		norms.save(map);
-		JsonArray darray = map.addArray("districts").asArray();
+		JsonArray darray = new JsonArray();
 		districts.forEach(dis -> darray.add(dis));
-		JsonArray marray = map.addArray("municipalities").asArray();
+		map.add("districts", darray);
+		JsonArray marray = new JsonArray();
 		municipalities.forEach(mun -> marray.add(mun));
+		map.add("municipalities", marray);
 		map.add("state", state.id);
+		DataManager.save(account);
 	}
 
 	@Override
@@ -79,6 +90,7 @@ public class County implements Saveable, Layer {
 	public void gendef(){
 		if(id == -1){
 			norms.get("name").set(translate("county.wilderness.name"));
+			norms.get("new-municipalities").set(true);
 			districts.clear();
 			state = ResManager.getState(-1, true);
 			color.set(0x009900);

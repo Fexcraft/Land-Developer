@@ -6,8 +6,11 @@ import static net.fexcraft.mod.landdev.util.TranslationUtil.translate;
 import java.util.UUID;
 
 import net.fexcraft.app.json.JsonMap;
+import net.fexcraft.mod.fsmm.api.Account;
 import net.fexcraft.mod.landdev.data.*;
 import net.fexcraft.mod.landdev.data.PermAction.PermActions;
+import net.fexcraft.mod.landdev.data.county.County;
+import net.fexcraft.mod.landdev.data.municipality.Municipality;
 import net.fexcraft.mod.landdev.data.norm.BoolNorm;
 import net.fexcraft.mod.landdev.data.norm.IntegerNorm;
 import net.fexcraft.mod.landdev.data.norm.StringNorm;
@@ -128,6 +131,18 @@ public class District implements Saveable, Layer, PermInteractive {
 			return manage.isManager(uuid) || owner.manageable().can(act, player, uuid);
 		}
 		return false;
+	}
+
+	public County county(){
+		return owner.is_county ? owner.county : owner.municipality.county;
+	}
+
+	public Account account(){
+		return owner.is_county ? owner.county.account : owner.municipality.account;
+	}
+
+	public Municipality municipality(){
+		return owner.is_county ? null : owner.municipality;
 	}
 
 }

@@ -9,4 +9,8 @@ public class TranslationUtil {
 		return I18n.translateToLocal("landdev." + key);
 	}
 
+	public static String translateCmd(String key){
+		return I18n.translateToLocal("landdev.cmd." + key);
+	}
+
 }

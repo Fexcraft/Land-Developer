@@ -20,7 +20,7 @@ public class Settings {
 	public static final String BROADCASTER = "http://fexcraft.net/files/mod_data/landdev/broadcaster_icon.png";
 	public static IconHolder SERVER_ICONHOLDER = new IconHolder(SERVER_ICON);
 	public static boolean SAVE_SPACED_JSON, PROTECT_WILDERNESS, LOCUP_SIDE;
-	public static long DEFAULT_CHUNK_PRICE;
+	public static long DEFAULT_CHUNK_PRICE, MUNICIPALITY_CREATION_FEE;
 	//
 	public static final String DEFAULT_CAT = "default_settings";
 	public static final String CLIENT_CAT = "client_settings";
@@ -60,6 +60,7 @@ public class Settings {
 		DEFAULT_ICON = config.getString("default_icon", DEFAULT_CAT, DEFAULT_ICON, "Default Dis/Mun/Cou/State Icon to be shown in the Location Update GUI.");
 		SAVE_SPACED_JSON = config.getBoolean("save_spaced_json", DEFAULT_CAT, false, "If true, the JSON will be formatted to be easily readable, otherwise if false it will not have any spacing, to save on disk and load time.");
 		DEFAULT_CHUNK_PRICE = config.getInt("default_chunk_price", DEFAULT_CAT, 100000, 0, 1000000000, "Default price for unclaimed chunks. (1000 = 1$)");
+		MUNICIPALITY_CREATION_FEE = config.getInt("municipality_creation_fee", DEFAULT_CAT, 25000000, 0, Integer.MAX_VALUE, "Server fee for creating a municipality, half of it goes to the new Municipality.");
 		//
 		LOCUP_SIDE = config.getBoolean("location_update_on_left", CLIENT_CAT, true, "Set to false if the Location Update GUI should be on the right side.");
 	}

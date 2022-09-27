@@ -4,6 +4,10 @@ import java.io.File;
 
 import org.apache.logging.log4j.Logger;
 
+import net.fexcraft.mod.landdev.cmd.CkCmd;
+import net.fexcraft.mod.landdev.cmd.DebugCmd;
+import net.fexcraft.mod.landdev.cmd.LDCmd;
+import net.fexcraft.mod.landdev.cmd.MunCmd;
 import net.fexcraft.mod.landdev.data.chunk.ChunkCap;
 import net.fexcraft.mod.landdev.db.Database;
 import net.fexcraft.mod.landdev.db.JsonFileDB;
@@ -54,6 +58,7 @@ public class LandDev {
 		event.registerServerCommand(new DebugCmd());
 		event.registerServerCommand(new LDCmd());
 		event.registerServerCommand(new CkCmd());
+		event.registerServerCommand(new MunCmd());
 	}
 	
 	public static final File updateSaveDirectory(World world){

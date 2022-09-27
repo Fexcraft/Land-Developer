@@ -1,5 +1,12 @@
 # Land Developer Translation File | English
 
+landdev.cmd.unknown_argument=&7Unknown Command Argument
+landdev.cmd.account=&6Account&0: &a
+landdev.cmd.mun.no_new_municipalities=County does not allow creation of new Municipalities.
+landdev.cmd.mun.no_create_permit=You do not have a Municipality creation permit.
+landdev.cmd.mun.not_enough_money=Not enough money to pay the creation fees.
+landdev.cmd.mun.not_in_a_municipality=You are not currently in a Municipality.
+
 landdev.chunk_type.private=Private
 landdev.chunk_type.normal=Normal
 landdev.chunk_type.restricted=Restricted

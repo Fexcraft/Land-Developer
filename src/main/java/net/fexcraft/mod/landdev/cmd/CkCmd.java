@@ -1,7 +1,8 @@
-package net.fexcraft.mod.landdev;
+package net.fexcraft.mod.landdev.cmd;
 
 import java.util.List;
 
+import net.fexcraft.mod.landdev.LandDev;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.gui.GuiHandler;
 import net.fexcraft.mod.landdev.util.AliasLoader;

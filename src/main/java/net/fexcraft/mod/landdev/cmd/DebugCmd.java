@@ -1,7 +1,8 @@
-package net.fexcraft.mod.landdev;
+package net.fexcraft.mod.landdev.cmd;
 
 import java.util.List;
 
+import net.fexcraft.mod.landdev.LandDev;
 import net.fexcraft.mod.landdev.util.AliasLoader;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;

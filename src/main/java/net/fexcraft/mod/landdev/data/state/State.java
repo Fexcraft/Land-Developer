@@ -7,6 +7,8 @@ import java.util.ArrayList;
 
 import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonMap;
+import net.fexcraft.mod.fsmm.api.Account;
+import net.fexcraft.mod.fsmm.util.DataManager;
 import net.fexcraft.mod.landdev.data.*;
 import net.fexcraft.mod.landdev.data.PermAction.PermActions;
 import net.fexcraft.mod.landdev.data.norm.StringNorm;
@@ -24,9 +26,11 @@ public class State implements Saveable, Layer {
 	public Manageable manage = new Manageable(true, actions);
 	public Norms norms = new Norms();
 	public ArrayList<Integer> counties = new ArrayList<>();
+	public Account account;
 	
 	public State(int id){
 		this.id = id;
+		account = DataManager.getAccount("state:" + id, false, true);
 		norms.add(new StringNorm("name", translate("state.norm.name")));
 	}
 
@@ -41,8 +45,10 @@ public class State implements Saveable, Layer {
 		mail.save(map);
 		manage.save(map);
 		norms.save(map);
-		JsonArray array = map.addArray("counties").asArray();
+		JsonArray array = new JsonArray();
 		counties.forEach(mun -> array.add(mun));
+		map.add("counties", array);
+		DataManager.save(account);
 	}
 
 	@Override

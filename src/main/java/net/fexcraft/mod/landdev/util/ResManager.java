@@ -12,7 +12,9 @@ import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.data.county.County;
 import net.fexcraft.mod.landdev.data.district.District;
 import net.fexcraft.mod.landdev.data.municipality.Municipality;
+import net.fexcraft.mod.landdev.data.player.Player;
 import net.fexcraft.mod.landdev.data.state.State;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.chunk.Chunk;
@@ -23,15 +25,21 @@ import net.minecraft.world.chunk.Chunk;
  * @author Ferdnand Calo' (FEX___96)
  *
  */
-public class ResManager {
+public class ResManager implements Saveable {
 	
-	public static boolean LOADED;
+	public boolean LOADED = false;
+	public static ResManager INSTANCE = new ResManager();
 	public static final String CONSOLE_UUID = "f78a4d8d-d51b-4b39-98a3-230f2de0c670";
 	public static ConcurrentHashMap<ChunkKey, Chunk_> CHUNKS = new ConcurrentHashMap<>();
 	public static ConcurrentHashMap<Integer, District> DISTRICTS = new ConcurrentHashMap<>();
 	public static ConcurrentHashMap<Integer, Municipality> MUNICIPALITIES = new ConcurrentHashMap<>();
 	public static ConcurrentHashMap<Integer, County> COUNTIES = new ConcurrentHashMap<>();
 	public static ConcurrentHashMap<Integer, State> STATES = new ConcurrentHashMap<>();
+	public static ConcurrentHashMap<UUID, Player> PLAYERS = new ConcurrentHashMap<>();
+	//
+	public static ConcurrentHashMap<Integer, ChunkKey> MUN_CENTERS = new ConcurrentHashMap<>();
+	public static ConcurrentHashMap<Integer, ChunkKey> CT_CENTERS = new ConcurrentHashMap<>();
+	public static ConcurrentHashMap<Integer, ChunkKey> ST_CENTERS = new ConcurrentHashMap<>();
 
 	public static Chunk_ getChunk(int x, int z){
 		for(Chunk_ ck : CHUNKS.values()){
@@ -51,7 +59,7 @@ public class ResManager {
 		return getChunk((int)pos.x >> 4, (int)pos.z >> 4);
 	}
 
-	public static Chunk_ getChunk(EntityPlayer player){
+	public static Chunk_ getChunk(Entity player){
 		return getChunk((int)player.posX >> 4, (int)player.posZ >> 4);
 	}
 
@@ -87,6 +95,17 @@ public class ResManager {
 		return stt;
 	}
 
+	public static Player getPlayer(UUID uuid, boolean load){
+		if(!load) return PLAYERS.get(uuid);
+		Player ply = PLAYERS.get(uuid);
+		if(ply == null) PLAYERS.put(uuid, load(ply = new Player(uuid)));
+		return ply;
+	}
+
+	public static Player getPlayer(EntityPlayer player){
+		return PLAYERS.get(player.getGameProfile().getId());
+	}
+
 	private static <S> S load(Saveable save){
 		if(!LandDev.DB.exists(save.saveTable(), save.saveId())){
 			save.gendef();
@@ -98,12 +117,21 @@ public class ResManager {
 		return (S)save;
 	}
 
+	public void load(){
+		clear();
+		JsonMap map = LandDev.DB.load(saveTable(), saveId());
+		if(map != null) load(map);
+		LOADED = true;
+	}
+
 	public static void unload(){
 		CHUNKS.values().forEach(save -> LandDev.DB.save(save));
 		DISTRICTS.values().forEach(save -> LandDev.DB.save(save));
 		MUNICIPALITIES.values().forEach(save -> LandDev.DB.save(save));
 		COUNTIES.values().forEach(save -> LandDev.DB.save(save));
 		STATES.values().forEach(save -> LandDev.DB.save(save));
+		INSTANCE.save();
+		INSTANCE.LOADED = false;
 	}
 
 	public static void clear(){
@@ -112,10 +140,76 @@ public class ResManager {
 		MUNICIPALITIES.clear();
 		COUNTIES.clear();
 		STATES.clear();
+		MUN_CENTERS.clear();
+		CT_CENTERS.clear();
+		ST_CENTERS.clear();
 	}
 
 	public static String getPlayerName(UUID uuid){
 		return Static.getPlayerNameByUUID(uuid);
+	}
+
+	@Override
+	public void save(JsonMap map){
+		JsonMap mc = new JsonMap();
+		MUN_CENTERS.forEach((key, val) -> {
+			mc.add(key + "", val.toString());
+		});
+		map.add("municipality-centers", mc);
+		JsonMap cc = new JsonMap();
+		CT_CENTERS.forEach((key, val) -> {
+			cc.add(key + "", val.toString());
+		});
+		map.add("county-centers", cc);
+		JsonMap sc = new JsonMap();
+		ST_CENTERS.forEach((key, val) -> {
+			sc.add(key + "", val.toString());
+		});
+		map.add("state-centers", sc);
+	}
+
+	@Override
+	public void load(JsonMap map){
+		if(map.has("municipality-centers")){
+			map.get("municipality-centers").asMap().value.forEach((key, val) -> {
+				try{
+					MUN_CENTERS.put(Integer.parseInt(key), new ChunkKey(val.string_value()));
+				}
+				catch(Exception e){
+					e.printStackTrace();
+				}
+			});
+		}
+		if(map.has("county-centers")){
+			map.get("county-centers").asMap().value.forEach((key, val) -> {
+				try{
+					CT_CENTERS.put(Integer.parseInt(key), new ChunkKey(val.string_value()));
+				}
+				catch(Exception e){
+					e.printStackTrace();
+				}
+			});
+		}
+		if(map.has("state-centers")){
+			map.get("state-centers").asMap().value.forEach((key, val) -> {
+				try{
+					ST_CENTERS.put(Integer.parseInt(key), new ChunkKey(val.string_value()));
+				}
+				catch(Exception e){
+					e.printStackTrace();
+				}
+			});
+		}
+	}
+	
+	@Override
+	public String saveId(){
+		return "resources";
+	}
+	
+	@Override
+	public String saveTable(){
+		return "general";
 	}
 
 }

@@ -21,10 +21,9 @@ public class WorldEvents {
 	@SubscribeEvent(priority = EventPriority.LOW)
 	public static void onWorldUnload(WorldEvent.Unload event){
 		if(event.getWorld().provider.getDimension() != 0 || event.getWorld().isRemote) return;
-		Print.log("Unloading States World Data...");
+		Print.log("Unloading LandDev World Data...");
 		ResManager.unload();
 		ResManager.clear();
-		ResManager.LOADED = false;
 	}
 	
 	@SubscribeEvent

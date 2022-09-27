@@ -7,13 +7,20 @@ import java.util.ArrayList;
 
 import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonMap;
+import net.fexcraft.mod.fsmm.api.Account;
+import net.fexcraft.mod.fsmm.util.DataManager;
 import net.fexcraft.mod.landdev.data.*;
 import net.fexcraft.mod.landdev.data.PermAction.PermActions;
+import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.data.county.County;
 import net.fexcraft.mod.landdev.data.norm.StringNorm;
+import net.fexcraft.mod.landdev.gui.LDGuiContainer;
+import net.fexcraft.mod.landdev.gui.modules.LDGuiModule;
 import net.fexcraft.mod.landdev.util.ResManager;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
 
-public class Municipality implements Saveable, Layer {
+public class Municipality implements Saveable, Layer, LDGuiModule {
 
 	public static PermActions actions = new PermActions(ACT_CLAIM);
 	public final int id;
@@ -26,10 +33,12 @@ public class Municipality implements Saveable, Layer {
 	public Manageable manage = new Manageable(true, actions);
 	public Norms norms = new Norms();
 	public ArrayList<Integer> districts = new ArrayList<>();
+	public Account account;
 	public County county;
 	
 	public Municipality(int id){
 		this.id = id;
+		account = DataManager.getAccount("municipality:" + id, false, true);
 		norms.add(new StringNorm("name", translate("municipality.norm.name")));
 	}
 
@@ -44,9 +53,11 @@ public class Municipality implements Saveable, Layer {
 		mail.save(map);
 		manage.save(map);
 		norms.save(map);
-		JsonArray array = map.addArray("districts").asArray();
+		JsonArray array = new JsonArray();
 		districts.forEach(dis -> array.add(dis));
+		map.add("districts", array);
 		map.add("county", county.id);
+		DataManager.save(account);
 	}
 
 	@Override
@@ -107,6 +118,20 @@ public class Municipality implements Saveable, Layer {
 
 	public String name(){
 		return norms.get("name").string();
+	}
+	
+	public static final int UI_CREATE = -1;
+
+	@Override
+	public void sync_packet(LDGuiContainer container, NBTTagCompound com){
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void on_interact(NBTTagCompound packet, String index, EntityPlayer player, Chunk_ chunk){
+		// TODO Auto-generated method stub
+		
 	}
 
 }
