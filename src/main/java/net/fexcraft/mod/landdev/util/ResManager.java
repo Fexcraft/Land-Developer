@@ -130,6 +130,7 @@ public class ResManager implements Saveable {
 		MUNICIPALITIES.values().forEach(save -> LandDev.DB.save(save));
 		COUNTIES.values().forEach(save -> LandDev.DB.save(save));
 		STATES.values().forEach(save -> LandDev.DB.save(save));
+		PLAYERS.values().forEach(save -> LandDev.DB.save(save));
 		INSTANCE.save();
 		INSTANCE.LOADED = false;
 	}
@@ -140,6 +141,7 @@ public class ResManager implements Saveable {
 		MUNICIPALITIES.clear();
 		COUNTIES.clear();
 		STATES.clear();
+		PLAYERS.clear();
 		MUN_CENTERS.clear();
 		CT_CENTERS.clear();
 		ST_CENTERS.clear();
