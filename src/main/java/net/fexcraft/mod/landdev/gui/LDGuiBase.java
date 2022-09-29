@@ -40,7 +40,7 @@ public class LDGuiBase extends GenericGui<LDGuiContainer> {
 	protected void addElm(String id, LDGuiElementType elm, LDGuiElementType icon, int idx, boolean text, boolean button, boolean field, String val){
 		if(!field) elements().add(new LDGuiElement(id + "_elm", elm).pos(idx, 0).text(this, text ? id : null, val));
 		else elements().add(new LDGuiElement(id + "_elm", elm).pos(idx, 0).field(this, val, icon == LDGuiElementType.ICON_BLANK));
-		if(icon != LDGuiElementType.ICON_BLANK) elements().add(new LDGuiElement(id, icon).pos(idx, 1).button(this, button));
+		elements().add(new LDGuiElement(id, icon).pos(idx, 1).button(this, button));
 	}
 
 	protected void sizeOf(int elms){
