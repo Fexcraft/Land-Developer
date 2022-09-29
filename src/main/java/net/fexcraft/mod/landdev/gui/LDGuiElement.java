@@ -45,7 +45,7 @@ public class LDGuiElement {
 					ty = type.y;
 					return true;
 				}
-				if(gui.container().form() && !index.equals("submit")) return true;
+				if(gui.container().form() && !index.contains("submit")) return true;
 				NBTTagCompound com = new NBTTagCompound();
 				com.setString("interact", index);
 				if(gui.hasField(index)) com.setString("field", gui.getField(index));
