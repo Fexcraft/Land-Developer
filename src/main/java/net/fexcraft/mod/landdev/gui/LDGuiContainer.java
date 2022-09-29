@@ -51,9 +51,10 @@ public class LDGuiContainer extends GenericContainer {
 	}
 
 	private void server_packet(NBTTagCompound packet, EntityPlayer player){
+		Player ply = ResManager.getPlayer(player);
+		Chunk_ chunk = ResManager.getChunk(y, z);
 		if(packet.getBoolean("sync")){
 			NBTTagCompound com = new NBTTagCompound();
-			Chunk_ chunk = ResManager.getChunk(player);
 			switch(type){
 				case MAIN:{
 					Main.INST.sync_packet(this, com);
@@ -80,28 +81,27 @@ public class LDGuiContainer extends GenericContainer {
 		}
 		if(packet.hasKey("interact")){
 			String index = packet.getString("interact");
-			Chunk_ chunk = ResManager.getChunk(player);
 			switch(type){
 				case MAIN:{
-					Main.INST.on_interact(packet, index, player, chunk);
+					Main.INST.on_interact(this, ply, packet, index);
 					break;
 				}
 				case CHUNK:{
-					chunk.on_interact(packet, index, player, chunk);
+					chunk.on_interact(this, ply, packet, index);
 					break;
 				}
 				case MUNICIPALITY:{
 					if(x < 0){
-						ResManager.getMunicipality(-1, true).on_interact(packet, index, player, chunk);
+						ResManager.getMunicipality(-1, true).on_interact(this, ply, packet, index);
 						break;
 					}
 					Municipality mun = ResManager.getMunicipality(y, y > -2);
 					if(mun != null){
-						mun.on_interact(packet, index, player, chunk);
+						mun.on_interact(this, ply, packet, index);
 						break;
 					}
 				}
-				default: Missing.INST.on_interact(packet, index, player, chunk); break;
+				default: Missing.INST.on_interact(this, ply, packet, index); break;
 			}
 		}
 	}
