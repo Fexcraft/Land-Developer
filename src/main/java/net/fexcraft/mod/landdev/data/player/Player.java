@@ -77,6 +77,8 @@ public class Player implements Saveable {
 	@Override
 	public void gendef(){
 		joined = Time.getDate();
+		municipality = ResManager.getMunicipality(-1, true);
+		state = municipality.county.state;
 	}
 	
 	public String saveId(){
