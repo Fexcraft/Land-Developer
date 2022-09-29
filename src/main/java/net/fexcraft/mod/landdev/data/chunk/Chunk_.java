@@ -13,6 +13,7 @@ import net.fexcraft.mod.landdev.data.Saveable;
 import net.fexcraft.mod.landdev.data.Sellable;
 import net.fexcraft.mod.landdev.data.Taxable;
 import net.fexcraft.mod.landdev.data.district.District;
+import net.fexcraft.mod.landdev.data.player.Player;
 import net.fexcraft.mod.landdev.gui.LDGuiContainer;
 import net.fexcraft.mod.landdev.gui.modules.LDGuiModule;
 import net.fexcraft.mod.landdev.util.ResManager;
@@ -90,8 +91,8 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 		return Layers.DISTRICT;
 	}
 
-	public boolean can_manage(EntityPlayer player){
-		UUID uuid = player.getGameProfile().getId();
+	public boolean can_manage(Player player){
+		UUID uuid = player.uuid;
 		if(owner.playerchunk && owner.player.equals(uuid)) return true;
 		if(owner.owner.is(Layers.DISTRICT) && (district.manage.isManager(uuid) || district.owner.manageable().isManager(uuid))) return true;
 		if(owner.owner.is(Layers.MUNICIPALITY) && district.owner.manageable().isManager(uuid)) return true;
