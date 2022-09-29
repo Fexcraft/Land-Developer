@@ -14,6 +14,7 @@ import java.util.ArrayList;
 
 import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonMap;
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fsmm.api.Account;
 import net.fexcraft.mod.fsmm.util.DataManager;
 import net.fexcraft.mod.landdev.data.*;
@@ -21,10 +22,10 @@ import net.fexcraft.mod.landdev.data.PermAction.PermActions;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.data.county.County;
 import net.fexcraft.mod.landdev.data.norm.StringNorm;
+import net.fexcraft.mod.landdev.data.player.Player;
 import net.fexcraft.mod.landdev.gui.LDGuiContainer;
 import net.fexcraft.mod.landdev.gui.modules.LDGuiModule;
 import net.fexcraft.mod.landdev.util.ResManager;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 
@@ -137,7 +138,7 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 		switch(container.x){
 			case UI_CREATE:{
 				com.setString("title_lang", "municipality.create.title");
-				Chunk_ chunk = ResManager.getChunk(container.player().player);
+				Chunk_ chunk = ResManager.getChunk(container.player().entity);
     			County county = chunk.district.county();
     			boolean cn = county.norms.get("new-municipalities").bool();
     			boolean pp = container.player.hasPermit(ACT_CREATE_LAYER, county.getLayer(), county.id);
@@ -158,9 +159,13 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 	}
 
 	@Override
-	public void on_interact(NBTTagCompound packet, String index, EntityPlayer player, Chunk_ chunk){
-		// TODO Auto-generated method stub
-		
+	public void on_interact(LDGuiContainer container, Player player, NBTTagCompound packet, String index){
+		switch(index){
+			case "create.submit":{
+				Print.debug(packet);
+				return;
+			}
+		}
 	}
 
 }
