@@ -39,6 +39,8 @@ public class District implements Saveable, Layer, PermInteractive {
 		norms.add(new StringNorm("name", translate("district.norm.name")));
 		norms.add(new BoolNorm("explosions", false));
 		norms.add(new IntegerNorm("chunk-tax", 1000));
+		norms.add(new BoolNorm("municipality-can-form", false));
+		norms.add(new BoolNorm("municipality-can-claim", false));
 		manage.norms.add(new BoolNorm("claim", false));
 	}
 
