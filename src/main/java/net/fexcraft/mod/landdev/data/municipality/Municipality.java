@@ -3,8 +3,10 @@ package net.fexcraft.mod.landdev.data.municipality;
 import static net.fexcraft.mod.landdev.data.PermAction.ACT_CLAIM;
 import static net.fexcraft.mod.landdev.data.PermAction.ACT_CREATE_LAYER;
 import static net.fexcraft.mod.landdev.gui.LDGuiElementType.ELM_BLANK;
+import static net.fexcraft.mod.landdev.gui.LDGuiElementType.ELM_BLUE;
 import static net.fexcraft.mod.landdev.gui.LDGuiElementType.ELM_GENERIC;
 import static net.fexcraft.mod.landdev.gui.LDGuiElementType.ICON_BLANK;
+import static net.fexcraft.mod.landdev.gui.LDGuiElementType.ICON_OPEN;
 import static net.fexcraft.mod.landdev.gui.LDGuiElementType.checkbox;
 import static net.fexcraft.mod.landdev.util.TranslationUtil.translate;
 
@@ -146,6 +148,8 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 				addToList(list, "create.name", ELM_GENERIC, ICON_BLANK, false, false, null);
 				addToList(list, "create.name_field", ELM_BLANK, ICON_BLANK, false, true, null);
 				addToList(list, "create.county_funded", ELM_GENERIC, checkbox(pp), true, false, null);
+				addToList(list, "create.claim_district", ELM_GENERIC, checkbox(pp), true, false, null);
+				addToList(list, "create.submit", ELM_BLUE, ICON_OPEN, true, false, null);
 				com.setBoolean("form", true);
 				break;
 			}
