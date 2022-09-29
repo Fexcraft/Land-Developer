@@ -75,4 +75,6 @@ landdev.gui.chunk.access_company=Companies with access: %s
 landdev.gui.municipality.create.title=Municipality Creation UI
 landdev.gui.municipality.create.no_perm=No permission or permit to create.
 landdev.gui.municipality.create.name=New Municipality's Name:
-landdev.gui.municipality.create.county_funded=Creation funded by the county?
+landdev.gui.municipality.create.county_funded=Creation funded by the County?
+landdev.gui.municipality.create.claim_district=Claim Current District for Municipality?
+landdev.gui.municipality.create.submit=Submit Municipality Creation
