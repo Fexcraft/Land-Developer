@@ -34,6 +34,9 @@ landdev.gui.no=No
 landdev.gui.yes=Yes
 landdev.gui.loading.title=loading...
 landdev.gui.missing.title=Interface not found. Might be WIP?
+landdev.gui.icon_checkbox_checked=Checkbox: &6checked
+landdev.gui.icon_checkbox_unchecked=Checkbox: &cunchecked
+//
 landdev.gui.claim.title=Chunk Claiming Interface
 landdev.gui.claim.chunk_coord=&7Chunk: &a%s, %s
 landdev.gui.claim.chunk_price=&7Price/Fee: &b%s
@@ -41,6 +44,7 @@ landdev.gui.claim.district=&7District: &6%s
 landdev.gui.claim.municipality=&7Municipality of &6%s
 landdev.gui.claim.county=&6%s &7County
 landdev.gui.claim.no_perm_district=&4No permission to claim for this District.
+//
 landdev.gui.main.title=Land Developer
 landdev.gui.main.player=My Profile
 landdev.gui.main.mail=My Mail
@@ -51,6 +55,7 @@ landdev.gui.main.district=District
 landdev.gui.main.municipality=Municipality
 landdev.gui.main.county=County
 landdev.gui.main.state=State
+//
 landdev.gui.chunk.title=Chunk Overview
 landdev.gui.chunk.key=Key: %s
 landdev.gui.chunk.link=Not linked to other chunks.
@@ -66,3 +71,8 @@ landdev.gui.chunk.tax=Tax: %s
 landdev.gui.chunk.access_interact=Interaction allowed? %s
 landdev.gui.chunk.access_player=Players with access: %s
 landdev.gui.chunk.access_company=Companies with access: %s
+//
+landdev.gui.municipality.create.title=Municipality Creation UI
+landdev.gui.municipality.create.no_perm=No permission or permit to create.
+landdev.gui.municipality.create.name=New Municipality's Name:
+landdev.gui.municipality.create.county_funded=Creation funded by the county?
