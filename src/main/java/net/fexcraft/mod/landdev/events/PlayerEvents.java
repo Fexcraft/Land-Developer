@@ -16,7 +16,7 @@ public class PlayerEvents {
     public static void onPlayerLogin(PlayerLoggedInEvent event){
     	if(event.player.world.isRemote) return;
     	Player player = ResManager.getPlayer(event.player.getGameProfile().getId(), true);
-		player.player = event.player;
+		player.entity = event.player;
 		player.offline = false;
 		player.login = Time.getDate();
     }
@@ -31,14 +31,14 @@ public class PlayerEvents {
 			player.last_logout = Time.getDate();
 			player.login = 0;
 			player.offline = true;
-			player.player = null;
+			player.entity = null;
 		}
 	}
 	
 	@SubscribeEvent
 	public static void onPlayerRespawn(PlayerRespawnEvent event){
 		Player player = ResManager.getPlayer(event.player.getGameProfile().getId(), false);
-		if(player != null) player.player = event.player;
+		if(player != null) player.entity = event.player;
 	}
 
 }
