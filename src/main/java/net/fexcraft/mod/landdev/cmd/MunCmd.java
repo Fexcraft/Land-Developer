@@ -71,7 +71,7 @@ public class MunCmd extends CommandBase {
 			    			Print.chat(sender, translateCmd("account") + acc.getTypeAndId());
 	    					return;
 	    				}*/
-	    				ply.player.openGui(LandDev.INSTANCE, GuiHandler.MUNICIPALITY, sender.getEntityWorld(), Municipality.UI_CREATE, 0, 0);
+	    				ply.entity.openGui(LandDev.INSTANCE, GuiHandler.MUNICIPALITY, sender.getEntityWorld(), Municipality.UI_CREATE, 0, 0);
 	    			}
 	    			return;
 	    		}
@@ -86,7 +86,7 @@ public class MunCmd extends CommandBase {
     			Print.chat(sender, translateCmd("mun.not_in_a_municipality"));
     			return;
     		}
-        	ply.player.openGui(LandDev.INSTANCE, GuiHandler.MUNICIPALITY, sender.getEntityWorld(), 0, chunk.district.municipality().id, 0);
+        	ply.entity.openGui(LandDev.INSTANCE, GuiHandler.MUNICIPALITY, sender.getEntityWorld(), 0, chunk.district.municipality().id, 0);
     	}
     }
 
