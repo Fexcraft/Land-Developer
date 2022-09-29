@@ -1,8 +1,7 @@
 package net.fexcraft.mod.landdev.gui.modules;
 
-import net.fexcraft.mod.landdev.data.chunk.Chunk_;
+import net.fexcraft.mod.landdev.data.player.Player;
 import net.fexcraft.mod.landdev.gui.LDGuiContainer;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 
@@ -16,7 +15,7 @@ public class Missing implements LDGuiModule {
 		com.setTag("elements", new NBTTagList());
 	}
 
-	public void on_interact(NBTTagCompound packet, String index, EntityPlayer player, Chunk_ chunk){
+	public void on_interact(LDGuiContainer container, Player player, NBTTagCompound packet, String index){
 		//
 	}
 
