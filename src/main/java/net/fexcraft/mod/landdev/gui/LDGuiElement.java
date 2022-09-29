@@ -45,7 +45,20 @@ public class LDGuiElement {
 					ty = type.y;
 					return true;
 				}
-				if(gui.container().form() && !index.contains("submit")) return true;
+				if(gui.container().form()){
+					if(!index.contains("submit")) return true;
+					NBTTagCompound com = new NBTTagCompound();
+					com.setBoolean("submit", true);
+					com.setString("interact", index);
+					NBTTagCompound cbs = new NBTTagCompound();
+					gui.container().checkboxes.forEach((key, val) -> cbs.setBoolean(key, val));
+					com.setTag("checkboxes", cbs);
+					NBTTagCompound fields = new NBTTagCompound();
+					gui.fields().forEach((key, val) -> fields.setString(key, val.getText()));
+					com.setTag("fields", fields);
+					gui.container().send(Side.SERVER, com);
+					return true;
+				}
 				NBTTagCompound com = new NBTTagCompound();
 				com.setString("interact", index);
 				if(gui.hasField(index)) com.setString("field", gui.getField(index));
