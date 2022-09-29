@@ -1,6 +1,11 @@
 package net.fexcraft.mod.landdev.data.municipality;
 
 import static net.fexcraft.mod.landdev.data.PermAction.ACT_CLAIM;
+import static net.fexcraft.mod.landdev.data.PermAction.ACT_CREATE_LAYER;
+import static net.fexcraft.mod.landdev.gui.LDGuiElementType.ELM_BLANK;
+import static net.fexcraft.mod.landdev.gui.LDGuiElementType.ELM_GENERIC;
+import static net.fexcraft.mod.landdev.gui.LDGuiElementType.ICON_BLANK;
+import static net.fexcraft.mod.landdev.gui.LDGuiElementType.checkbox;
 import static net.fexcraft.mod.landdev.util.TranslationUtil.translate;
 
 import java.util.ArrayList;
@@ -19,6 +24,7 @@ import net.fexcraft.mod.landdev.gui.modules.LDGuiModule;
 import net.fexcraft.mod.landdev.util.ResManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 
 public class Municipality implements Saveable, Layer, LDGuiModule {
 
@@ -124,8 +130,27 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 
 	@Override
 	public void sync_packet(LDGuiContainer container, NBTTagCompound com){
-		// TODO Auto-generated method stub
-		
+		com.setString("title_lang", "municipality.title");
+		NBTTagList list = new NBTTagList();
+		switch(container.x){
+			case UI_CREATE:{
+				com.setString("title_lang", "municipality.create.title");
+				Chunk_ chunk = ResManager.getChunk(container.player().player);
+    			County county = chunk.district.county();
+    			boolean cn = county.norms.get("new-municipalities").bool();
+    			boolean pp = container.player.hasPermit(ACT_CREATE_LAYER, county.getLayer(), county.id);
+    			if(!cn && !pp){
+    				addToList(list, "create.no_perm", ELM_GENERIC, ICON_BLANK, false, false, null);
+    				break;
+    			}
+				addToList(list, "create.name", ELM_GENERIC, ICON_BLANK, false, false, null);
+				addToList(list, "create.name_field", ELM_BLANK, ICON_BLANK, false, true, null);
+				addToList(list, "create.county_funded", ELM_GENERIC, checkbox(pp), true, false, null);
+				com.setBoolean("form", true);
+				break;
+			}
+		}
+		com.setTag("elements", list);
 	}
 
 	@Override
