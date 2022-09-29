@@ -8,6 +8,7 @@ import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.mod.fsmm.api.Account;
 import net.fexcraft.mod.fsmm.util.DataManager;
+import net.fexcraft.mod.landdev.LandDev;
 import net.fexcraft.mod.landdev.data.Layers;
 import net.fexcraft.mod.landdev.data.PermAction;
 import net.fexcraft.mod.landdev.data.Saveable;
@@ -15,12 +16,13 @@ import net.fexcraft.mod.landdev.data.municipality.Municipality;
 import net.fexcraft.mod.landdev.data.state.State;
 import net.fexcraft.mod.landdev.util.ResManager;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.world.World;
 
 public class Player implements Saveable {
 
 	public UUID uuid;
 	public boolean offline;
-	public EntityPlayer player;
+	public EntityPlayer entity;
 	public long joined, login, last_login, last_logout;
 	public String nickname, colorcode;
 	public Account account;
@@ -101,6 +103,14 @@ public class Player implements Saveable {
 			if(perm.action == act && perm.origin_layer == layer && perm.origin_id == id && !perm.expired()) return perm;
 		}
 		return null;
+	}
+
+	public World world(){
+		return entity.world;
+	}
+
+	public void openGui(int ID, int x, int y, int z){
+		entity.openGui(LandDev.INSTANCE, ID, entity.world, x, y, z);
 	}
 
 }
