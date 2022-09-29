@@ -66,11 +66,11 @@ public class MunCmd extends CommandBase {
 	    				if(!pp) sum += county.norms.get("new-municipality-fee").integer(); 
 	    				Permit perm = pp ? ply.getPermit(ACT_CREATE_LAYER, county.getLayer(), county.id) : null;
 	    				Account acc = pp ? perm.getAccount() : ply.account;
-	    				if(acc.getBalance() < sum){
+	    				/*if(acc.getBalance() < sum){
 			    			Print.chat(sender, translateCmd("mun.not_enough_money"));
 			    			Print.chat(sender, translateCmd("account") + acc.getTypeAndId());
 	    					return;
-	    				}
+	    				}*/
 	    				ply.player.openGui(LandDev.INSTANCE, GuiHandler.MUNICIPALITY, sender.getEntityWorld(), Municipality.UI_CREATE, 0, 0);
 	    			}
 	    			return;
