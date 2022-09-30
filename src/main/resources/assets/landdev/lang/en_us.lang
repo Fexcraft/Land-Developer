@@ -4,7 +4,6 @@ landdev.cmd.unknown_argument=&7Unknown Command Argument
 landdev.cmd.account=&6Account&0: &a
 landdev.cmd.mun.no_new_municipalities=County does not allow creation of new Municipalities.
 landdev.cmd.mun.no_create_permit=You do not have a Municipality creation permit.
-landdev.cmd.mun.not_enough_money=Not enough money to pay the creation fees.
 landdev.cmd.mun.not_in_a_municipality=You are not currently in a Municipality.
 
 landdev.chunk_type.private=Private
@@ -78,3 +77,8 @@ landdev.gui.municipality.create.name=New Municipality's Name:
 landdev.gui.municipality.create.county_funded=Creation funded by the County?
 landdev.gui.municipality.create.claim_district=Claim Current District for Municipality?
 landdev.gui.municipality.create.submit=Submit Municipality Creation
+landdev.gui.municipality.create.no_fund_permit=You need a Permit to use County funds.
+landdev.gui.municipality.create.not_enough_money=Not enough money to pay the creation fees.
+landdev.gui.municipality.create.name_too_short=&4Name is too short!
+landdev.gui.municipality.create.name_too_long=&bName is too long!
+landdev.gui.municipality.create.district_no_forming=District Norm does not allow full integration.
