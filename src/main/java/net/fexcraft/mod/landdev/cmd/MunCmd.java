@@ -6,17 +6,14 @@ import static net.fexcraft.mod.landdev.util.TranslationUtil.translateCmd;
 import java.util.List;
 
 import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.mod.fsmm.api.Account;
 import net.fexcraft.mod.landdev.LandDev;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.data.county.County;
 import net.fexcraft.mod.landdev.data.municipality.Municipality;
-import net.fexcraft.mod.landdev.data.player.Permit;
 import net.fexcraft.mod.landdev.data.player.Player;
 import net.fexcraft.mod.landdev.gui.GuiHandler;
 import net.fexcraft.mod.landdev.util.AliasLoader;
 import net.fexcraft.mod.landdev.util.ResManager;
-import net.fexcraft.mod.landdev.util.Settings;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
@@ -62,15 +59,6 @@ public class MunCmd extends CommandBase {
 		    			Print.chat(sender, translateCmd("mun.no_create_permit"));
 	    			}
 	    			else{
-	    				long sum = Settings.MUNICIPALITY_CREATION_FEE;
-	    				if(!pp) sum += county.norms.get("new-municipality-fee").integer(); 
-	    				Permit perm = pp ? ply.getPermit(ACT_CREATE_LAYER, county.getLayer(), county.id) : null;
-	    				Account acc = pp ? perm.getAccount() : ply.account;
-	    				/*if(acc.getBalance() < sum){
-			    			Print.chat(sender, translateCmd("mun.not_enough_money"));
-			    			Print.chat(sender, translateCmd("account") + acc.getTypeAndId());
-	    					return;
-	    				}*/
 	    				ply.entity.openGui(LandDev.INSTANCE, GuiHandler.MUNICIPALITY, sender.getEntityWorld(), Municipality.UI_CREATE, 0, 0);
 	    			}
 	    			return;
