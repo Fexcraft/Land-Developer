@@ -8,12 +8,14 @@ import java.util.HashMap;
 
 import net.fexcraft.lib.mc.gui.GenericContainer;
 import net.fexcraft.lib.mc.gui.GenericGui.BasicText;
+import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.data.municipality.Municipality;
 import net.fexcraft.mod.landdev.data.player.Player;
 import net.fexcraft.mod.landdev.gui.modules.Main;
 import net.fexcraft.mod.landdev.gui.modules.Missing;
 import net.fexcraft.mod.landdev.util.ResManager;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -79,7 +81,7 @@ public class LDGuiContainer extends GenericContainer {
 			}
 			send(Side.CLIENT, com);
 		}
-		if(packet.hasKey("interact")){
+		else if(packet.hasKey("interact")){
 			String index = packet.getString("interact");
 			switch(type){
 				case MAIN:{
@@ -107,11 +109,15 @@ public class LDGuiContainer extends GenericContainer {
 	}
 
 	private void client_packet(NBTTagCompound packet, EntityPlayer player){
-		if(!packet.hasKey("elements")) return;
+		if(packet.hasKey("msg")){
+			gui.title.string = Formatter.format(I18n.format(packet.getString("msg")));
+			return;
+		}
+		else if(!packet.hasKey("elements")) return;
 		NBTTagList list = (NBTTagList)packet.getTag("elements");
 		gui.clear();
 		gui.sizeOf(list.tagCount());
-		gui.title = new BasicText(gui.getGuiLeft() + 8, gui.getGuiTop() + 8, 196, 0x0e0e0e, "landdev.gui." + packet.getString("title_lang")).autoscale().translate();
+		gui.title = new BasicText(gui.getGuiLeft() + 8, gui.getGuiTop() + 8, 196, 0x0e0e0e, "landdev.gui." + packet.getString("title_lang")).hoverable(true).autoscale().translate();
 		gui.add("title", gui.title);
 		gui.elements().clear();
 		if(packet.hasKey("title")) gui.title.string = String.format(gui.title.string, packet.getString("title"));
@@ -137,6 +143,16 @@ public class LDGuiContainer extends GenericContainer {
 
 	public boolean form(){
 		return form;
+	}
+
+	public void sendMsg(String string, boolean addprefix){
+		NBTTagCompound com = new NBTTagCompound();
+		com.setString("msg", addprefix ? "landdev.gui." + prefix + "." + string : string);
+		send(Side.CLIENT, com);
+	}
+
+	public void sendMsg(String string){
+		sendMsg(string, true);
 	}
 	
 }
