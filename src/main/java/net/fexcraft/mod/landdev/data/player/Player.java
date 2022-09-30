@@ -113,4 +113,17 @@ public class Player implements Saveable {
 		entity.openGui(LandDev.INSTANCE, ID, entity.world, x, y, z);
 	}
 
+	public boolean isInManagement(Layers layer){
+		if(layer == Layers.MUNICIPALITY){
+			
+		}
+		else if(layer == Layers.COUNTY){
+			
+		}
+		else if(layer == Layers.STATE){
+			
+		}
+		return false;
+	}
+
 }
