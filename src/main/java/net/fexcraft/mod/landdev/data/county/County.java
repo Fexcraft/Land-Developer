@@ -19,7 +19,8 @@ import net.fexcraft.mod.landdev.util.ResManager;
 
 public class County implements Saveable, Layer {
 
-	public static PermActions actions = new PermActions(ACT_CLAIM);
+	public static PermActions mactions = new PermActions(ACT_CLAIM);
+	public static PermActions cactions = new PermActions(ACT_CLAIM);
 	public final int id;
 	public Createable created = new Createable();
 	public Sellable sell = new Sellable(this);
@@ -27,10 +28,11 @@ public class County implements Saveable, Layer {
 	public ColorData color = new ColorData();
 	public NeighborData neighbors = new NeighborData();
 	public MailData mail = new MailData();
-	public Manageable manage = new Manageable(true, actions);
+	public Manageable manage = new Manageable(true, mactions);
 	public Norms norms = new Norms();
 	public ArrayList<Integer> districts = new ArrayList<>();
 	public ArrayList<Integer> municipalities = new ArrayList<>();
+	public Citizens citizens = new Citizens(cactions);
 	public Account account;
 	public State state;
 	
@@ -52,6 +54,7 @@ public class County implements Saveable, Layer {
 		neighbors.save(map);
 		mail.save(map);
 		manage.save(map);
+		citizens.save(map);
 		norms.save(map);
 		JsonArray darray = new JsonArray();
 		districts.forEach(dis -> darray.add(dis));
@@ -72,6 +75,7 @@ public class County implements Saveable, Layer {
 		neighbors.load(map);
 		mail.load(map);
 		manage.load(map);
+		citizens.load(map);
 		norms.load(map);
 		if(map.has("districts")){
 			JsonArray array = map.getArray("districts");
