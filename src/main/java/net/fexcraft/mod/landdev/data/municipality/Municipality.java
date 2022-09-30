@@ -9,6 +9,7 @@ import static net.fexcraft.mod.landdev.gui.LDGuiElementType.ICON_BLANK;
 import static net.fexcraft.mod.landdev.gui.LDGuiElementType.ICON_OPEN;
 import static net.fexcraft.mod.landdev.gui.LDGuiElementType.checkbox;
 import static net.fexcraft.mod.landdev.util.TranslationUtil.translate;
+import static net.fexcraft.mod.landdev.util.TranslationUtil.translateCmd;
 
 import java.util.ArrayList;
 
@@ -22,16 +23,19 @@ import net.fexcraft.mod.landdev.data.PermAction.PermActions;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.data.county.County;
 import net.fexcraft.mod.landdev.data.norm.StringNorm;
+import net.fexcraft.mod.landdev.data.player.Permit;
 import net.fexcraft.mod.landdev.data.player.Player;
 import net.fexcraft.mod.landdev.gui.LDGuiContainer;
 import net.fexcraft.mod.landdev.gui.modules.LDGuiModule;
 import net.fexcraft.mod.landdev.util.ResManager;
+import net.fexcraft.mod.landdev.util.Settings;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 
 public class Municipality implements Saveable, Layer, LDGuiModule {
 
-	public static PermActions actions = new PermActions(ACT_CLAIM);
+	public static PermActions mactions = new PermActions(ACT_CLAIM);
+	public static PermActions cactions = new PermActions();
 	public final int id;
 	public Createable created = new Createable();
 	public Sellable sell = new Sellable(this);
@@ -39,9 +43,10 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 	public ColorData color = new ColorData();
 	public NeighborData neighbors = new NeighborData();
 	public MailData mail = new MailData();
-	public Manageable manage = new Manageable(true, actions);
+	public Manageable manage = new Manageable(true, mactions);
 	public Norms norms = new Norms();
 	public ArrayList<Integer> districts = new ArrayList<>();
+	public Citizens citizens = new Citizens(cactions);
 	public Account account;
 	public County county;
 	
@@ -61,6 +66,7 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 		neighbors.save(map);
 		mail.save(map);
 		manage.save(map);
+		citizens.save(map);
 		norms.save(map);
 		JsonArray array = new JsonArray();
 		districts.forEach(dis -> array.add(dis));
@@ -78,6 +84,7 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 		neighbors.load(map);
 		mail.load(map);
 		manage.load(map);
+		citizens.load(map);
 		norms.load(map);
 		if(map.has("districts")){
 			JsonArray array = map.getArray("districts");
@@ -162,6 +169,45 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 	public void on_interact(LDGuiContainer container, Player player, NBTTagCompound packet, String index){
 		switch(index){
 			case "create.submit":{
+				long sum = Settings.MUNICIPALITY_CREATION_FEE;
+    			boolean cn = county.norms.get("new-municipalities").bool();
+    			boolean pp = player.hasPermit(ACT_CREATE_LAYER, county.getLayer(), county.id);
+    			if(!cn && !pp){
+	    			Print.chat(player.entity, translateCmd("mun.no_new_municipalities"));
+	    			Print.chat(player.entity, translateCmd("mun.no_create_permit"));
+    				return;
+    			}
+    			if(player.isInManagement(Layers.MUNICIPALITY)){
+    				
+    			}
+    			String name = packet.getCompoundTag("fields").getString("create.name_field");
+    			if(name.length() < 1){
+					container.sendMsg("create.name_too_short");
+					return;
+    			}
+    			if(name.length() > 32){
+					container.sendMsg("create.name_too_long");
+					return;
+    			}
+				if(!pp) sum += county.norms.get("new-municipality-fee").integer(); 
+				Permit perm = pp ? player.getPermit(ACT_CREATE_LAYER, county.getLayer(), county.id) : null;
+				boolean uca = packet.getCompoundTag("checkboxes").getBoolean("create.county_funded");
+				if(!pp && uca){
+					container.sendMsg("create.no_fund_permit");
+					return;
+				}
+				Account acc = pp && uca ? perm.getAccount() : player.account;
+				if(acc.getBalance() < sum){
+					container.sendMsg("create.not_enough_money");
+					return;
+				}
+				Chunk_ chunk = ResManager.getChunk(container.player().entity);
+				boolean claim = packet.getCompoundTag("checkboxes").getBoolean("create.claim_district");
+				if(claim && !chunk.district.norms.get("municipality-can-form").bool()){
+					container.sendMsg("create.district_no_forming");
+					return;
+				}
+				container.sendMsg("&6//TODO", false);
 				Print.debug(packet);
 				return;
 			}
