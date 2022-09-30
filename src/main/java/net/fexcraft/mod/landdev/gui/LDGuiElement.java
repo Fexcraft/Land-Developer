@@ -71,7 +71,7 @@ public class LDGuiElement {
 	}
 
 	public LDGuiElement field(LDGuiBase gui, String val, boolean wide){
-		gui.add(index, new TextField(pos, gui.fontrenderer(), gui.getGuiLeft() + 7, gui.getGuiTop() + pos + 2, wide ? 212 : 198, 10));
+		gui.add(index, new TextField(pos, gui.fontrenderer(), gui.getGuiLeft() + 7, gui.getGuiTop() + pos + 2, wide ? 212 : 198, 10).setMaxLength(256));
 		if(val != null) gui.setField(index, val);
 		return this;
 	}
