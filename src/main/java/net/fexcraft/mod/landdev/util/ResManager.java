@@ -5,6 +5,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.mod.fsmm.api.Account;
+import net.fexcraft.mod.fsmm.util.DataManager;
 import net.fexcraft.mod.landdev.LandDev;
 import net.fexcraft.mod.landdev.data.Saveable;
 import net.fexcraft.mod.landdev.data.chunk.ChunkKey;
@@ -40,6 +42,7 @@ public class ResManager implements Saveable {
 	public static ConcurrentHashMap<Integer, ChunkKey> MUN_CENTERS = new ConcurrentHashMap<>();
 	public static ConcurrentHashMap<Integer, ChunkKey> CT_CENTERS = new ConcurrentHashMap<>();
 	public static ConcurrentHashMap<Integer, ChunkKey> ST_CENTERS = new ConcurrentHashMap<>();
+	public static Account SERVER_ACCOUNT;
 
 	public static Chunk_ getChunk(int x, int z){
 		for(Chunk_ ck : CHUNKS.values()){
@@ -118,6 +121,11 @@ public class ResManager implements Saveable {
 	}
 
 	public void load(){
+		SERVER_ACCOUNT = DataManager.getAccount("server:landdev", false, false);
+		if(SERVER_ACCOUNT == null){
+			SERVER_ACCOUNT = DataManager.getAccount("server:landdev", false, true);
+			SERVER_ACCOUNT.setBalance(1000000000000l);
+		}
 		clear();
 		JsonMap map = LandDev.DB.load(saveTable(), saveId());
 		if(map != null) load(map);
@@ -212,6 +220,14 @@ public class ResManager implements Saveable {
 	@Override
 	public String saveTable(){
 		return "general";
+	}
+
+	public static int getNewIdFor(String table){
+		return LandDev.DB.getNewEntryId(table);
+	}
+
+	public static void bulkSave(Saveable... saveables){
+		for(Saveable save : saveables) save.save();
 	}
 
 }
