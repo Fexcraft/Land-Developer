@@ -8,6 +8,7 @@ import static net.fexcraft.mod.landdev.gui.LDGuiElementType.ELM_GENERIC;
 import static net.fexcraft.mod.landdev.gui.LDGuiElementType.ICON_BLANK;
 import static net.fexcraft.mod.landdev.gui.LDGuiElementType.ICON_OPEN;
 import static net.fexcraft.mod.landdev.gui.LDGuiElementType.checkbox;
+import static net.fexcraft.mod.landdev.util.ResManager.SERVER_ACCOUNT;
 import static net.fexcraft.mod.landdev.util.TranslationUtil.translate;
 import static net.fexcraft.mod.landdev.util.TranslationUtil.translateCmd;
 
@@ -17,11 +18,14 @@ import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fsmm.api.Account;
+import net.fexcraft.mod.fsmm.api.Bank;
+import net.fexcraft.mod.fsmm.api.Bank.Action;
 import net.fexcraft.mod.fsmm.util.DataManager;
 import net.fexcraft.mod.landdev.data.*;
 import net.fexcraft.mod.landdev.data.PermAction.PermActions;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.data.county.County;
+import net.fexcraft.mod.landdev.data.district.District;
 import net.fexcraft.mod.landdev.data.norm.StringNorm;
 import net.fexcraft.mod.landdev.data.player.Permit;
 import net.fexcraft.mod.landdev.data.player.Player;
@@ -169,16 +173,28 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 	public void on_interact(LDGuiContainer container, Player player, NBTTagCompound packet, String index){
 		switch(index){
 			case "create.submit":{
+				Chunk_ chunk = ResManager.getChunk(container.player().entity);
+				County county = chunk.district.county();
 				long sum = Settings.MUNICIPALITY_CREATION_FEE;
     			boolean cn = county.norms.get("new-municipalities").bool();
     			boolean pp = player.hasPermit(ACT_CREATE_LAYER, county.getLayer(), county.id);
     			if(!cn && !pp){
 	    			Print.chat(player.entity, translateCmd("mun.no_new_municipalities"));
 	    			Print.chat(player.entity, translateCmd("mun.no_create_permit"));
+	    			player.entity.closeScreen();
     				return;
     			}
     			if(player.isInManagement(Layers.MUNICIPALITY)){
-    				
+					container.sendMsg("create.leave_management");
+					return;
+    			}
+    			if(player.isInManagement(Layers.COUNTY) && player.county.id != county.id){
+					container.sendMsg("create.leave_county_management");
+					return;
+    			}
+    			if(player.isInManagement(Layers.STATE) && player.county.state.id != county.state.id){
+					container.sendMsg("create.leave_state_management");
+					return;
     			}
     			String name = packet.getCompoundTag("fields").getString("create.name_field");
     			if(name.length() < 1){
@@ -189,9 +205,9 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 					container.sendMsg("create.name_too_long");
 					return;
     			}
-				if(!pp) sum += county.norms.get("new-municipality-fee").integer(); 
-				Permit perm = pp ? player.getPermit(ACT_CREATE_LAYER, county.getLayer(), county.id) : null;
 				boolean uca = packet.getCompoundTag("checkboxes").getBoolean("create.county_funded");
+				if(!pp && !uca) sum += county.norms.get("new-municipality-fee").integer(); 
+				Permit perm = pp ? player.getPermit(ACT_CREATE_LAYER, county.getLayer(), county.id) : null;
 				if(!pp && uca){
 					container.sendMsg("create.no_fund_permit");
 					return;
@@ -201,14 +217,62 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 					container.sendMsg("create.not_enough_money");
 					return;
 				}
-				Chunk_ chunk = ResManager.getChunk(container.player().entity);
 				boolean claim = packet.getCompoundTag("checkboxes").getBoolean("create.claim_district");
 				if(claim && !chunk.district.norms.get("municipality-can-form").bool()){
 					container.sendMsg("create.district_no_forming");
 					return;
 				}
-				container.sendMsg("&6//TODO", false);
-				Print.debug(packet);
+				//todo notifications
+				int newid = ResManager.getNewIdFor(saveTable()), ndid = -2;
+				if(newid < 0){
+					Print.chat(player.entity, "DB ERROR, INVALID NEW ID '" + newid + "'!");
+					return;
+				}
+				if(!claim){
+					ndid = ResManager.getNewIdFor(chunk.district.saveTable());
+					if(ndid < 0){
+						Print.chat(player.entity, "DB ERROR, INVALID NEW DISTRICT ID '" + newid + "'!");
+						return;
+					}
+				}
+				Bank bank = DataManager.getBank(acc.getBankId(), false, true);
+				if(!bank.processAction(Action.TRANSFER, player.entity, acc, sum, SERVER_ACCOUNT)){
+					return;
+				}
+				Municipality mold = player.municipality;
+				County cold = player.county;
+				mold.citizens.remove(player);
+				cold.citizens.remove(player);
+				Municipality mnew = new Municipality(newid);
+				ResManager.MUNICIPALITIES.put(mnew.id, mnew);
+				mnew.norms.get("name").set(name);
+				mnew.citizens.add(player);
+				county.citizens.add(player);
+				player.municipality = mnew;
+				player.county = county;
+				mnew.manage.add(player);
+				mnew.manage.setManager(player);
+				mnew.county = county;
+				county.municipalities.add(mnew.id);
+				if(claim){
+					mnew.districts.add(chunk.district.id);
+					chunk.district.owner.set(mnew);
+					chunk.district.manage.clear();
+					chunk.district.save();
+				}
+				else{
+					District dis = new District(ndid);
+					ResManager.DISTRICTS.put(dis.id, dis);
+					mnew.districts.add(dis.id);
+					chunk.district = dis;
+					chunk.save();
+					dis.owner.set(mnew);
+					dis.save();
+				}
+				ResManager.bulkSave(mnew, county, player, mold, cold);
+				player.entity.closeScreen();
+    			Print.chat(player.entity, translate("gui.municipality.create.complete"));
+    			Print.chat(player.entity, translate("gui.municipality.create.newdata", name, newid));
 				return;
 			}
 		}
