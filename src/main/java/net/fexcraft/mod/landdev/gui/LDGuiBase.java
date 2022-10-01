@@ -171,7 +171,7 @@ public class LDGuiBase extends GenericGui<LDGuiContainer> {
 				return !(notificationbutton.visible = notification.visible = notify = false);
 			}
 		});
-		texts.put("notification", notification = new BasicText(guiLeft, guiTop - 24 + 7, 217, null, "").hoverable(true).autoscale());
+		texts.put("notification", notification = new BasicText(guiLeft, guiTop - 24 + 7, 217, 0x0e0e0e, "").hoverable(true).autoscale());
 		buttons.get("notification").visible = texts.get("notification").visible = notify = false;
 	}
 
