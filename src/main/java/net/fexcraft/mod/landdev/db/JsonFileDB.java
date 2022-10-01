@@ -35,4 +35,12 @@ public class JsonFileDB implements Database {
 		return true;
 	}
 
+	@Override
+	public int getNewEntryId(String table){
+		File file = new File(LandDev.SAVE_DIR, table + "/");
+		int i = 1;
+		while(new File(file, i + ".json").exists()) i++;
+		return i;
+	}
+
 }
