@@ -77,6 +77,7 @@ public class LDGuiContainer extends GenericContainer {
 						mun.sync_packet(this, com);
 						break;
 					}
+					break;
 				}
 				default: Missing.INST.sync_packet(this, com); break;
 			}
@@ -103,6 +104,7 @@ public class LDGuiContainer extends GenericContainer {
 						mun.on_interact(this, ply, packet, index);
 						break;
 					}
+					break;
 				}
 				default: Missing.INST.on_interact(this, ply, packet, index); break;
 			}
