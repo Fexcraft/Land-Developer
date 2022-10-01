@@ -28,7 +28,7 @@ public class District implements Saveable, Layer, PermInteractive {
 	public ColorData color = new ColorData();
 	public NeighborData neighbors = new NeighborData();
 	public MailData mail = new MailData();
-	public DistrictType type;
+	public DistrictType type = DistrictType.getDefault();;
 	public Manageable manage = new Manageable(false, actions);
 	public Norms norms = new Norms();
 	public DistrictOwner owner = new DistrictOwner();
@@ -77,7 +77,6 @@ public class District implements Saveable, Layer, PermInteractive {
 	
 	@Override
 	public void gendef(){
-		type = DistrictType.getDefault();
 		if(id == -1){
 			norms.get("name").set(translate("district.wilderness.name"));
 			owner.owid = -1;
