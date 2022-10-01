@@ -7,6 +7,7 @@ import static net.fexcraft.mod.landdev.gui.GuiHandler.MUNICIPALITY;
 import java.util.HashMap;
 
 import net.fexcraft.lib.mc.gui.GenericContainer;
+import net.fexcraft.lib.mc.gui.GenericGui.BasicButton;
 import net.fexcraft.lib.mc.gui.GenericGui.BasicText;
 import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
@@ -110,18 +111,36 @@ public class LDGuiContainer extends GenericContainer {
 
 	private void client_packet(NBTTagCompound packet, EntityPlayer player){
 		if(packet.hasKey("msg")){
-			gui.title.string = Formatter.format(I18n.format(packet.getString("msg")));
+			gui.setMsg(gui.notification.string = Formatter.format(I18n.format(packet.getString("msg"))));
 			return;
 		}
 		else if(!packet.hasKey("elements")) return;
 		NBTTagList list = (NBTTagList)packet.getTag("elements");
 		gui.clear();
-		gui.sizeOf(list.tagCount());
+		gui.addscroll = list.tagCount() > 12;
+		gui.sizeOf(gui.addscroll ? 12 : list.tagCount());
+		if(gui.addscroll){
+			LDGuiElementType type = LDGuiElementType.SCROLL_UP;
+			gui.add(new BasicButton("scroll_up", gui.getGuiLeft() + type.x - 5, gui.getGuiTop() + type.y, type.x, type.y, type.w, type.h, true){
+				@Override
+				public boolean onclick(int x, int y, int m){
+					gui.scroll(-1);
+					return true;
+				}
+			});
+			type = LDGuiElementType.SCROLL_DOWN;
+			gui.add(new BasicButton("scroll_down", gui.getGuiLeft() + type.x - 5, gui.getGuiTop() + type.y, type.x, type.y, type.w, type.h, true){
+				@Override
+				public boolean onclick(int x, int y, int m){
+					gui.scroll(1);
+					return true;
+				}
+			});
+		}
 		gui.title = new BasicText(gui.getGuiLeft() + 8, gui.getGuiTop() + 8, 196, 0x0e0e0e, "landdev.gui." + packet.getString("title_lang")).hoverable(true).autoscale().translate();
 		gui.add("title", gui.title);
 		gui.elements().clear();
 		if(packet.hasKey("title")) gui.title.string = String.format(gui.title.string, packet.getString("title"));
-		int idx = 0;
 		for(NBTBase base : list){
 			NBTTagList lis = (NBTTagList)base;
 			String index = lis.getStringTagAt(0);
@@ -129,12 +148,14 @@ public class LDGuiContainer extends GenericContainer {
 			LDGuiElementType icon = LDGuiElementType.valueOf(lis.getStringTagAt(2));
 			String bools = lis.getStringTagAt(3);
 			String val = lis.tagCount() > 4 ? lis.getStringTagAt(4) : null;
-			gui.addElm(index, elm, icon, idx++, bools.charAt(0) == '1', bools.charAt(1) == '1', bools.charAt(2) == '1', val);
+			gui.addElm(index, elm, icon, bools.charAt(0) == '1', bools.charAt(1) == '1', bools.charAt(2) == '1', val);
 			if(icon.is_checkbox()){
 				checkboxes.put(index, icon.checkbox());
 			}
 		}
 		if(packet.hasKey("form")) form = packet.getBoolean("form");
+		gui.scroll(0);
+		gui.addMsgElms();
 	}
 
 	public Player player(){
