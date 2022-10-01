@@ -11,29 +11,30 @@ public class LDGuiElement {
 	
 	public String index;
 	public LDGuiElementType type;
-	protected int pos;
+	protected int pos, off;
+	protected boolean visible;
+	//
+	private BasicText text;
+	private BasicButton button;
+	private TextField field;
 	
 	public LDGuiElement(String index, LDGuiElementType type){
 		this.index = index;
 		this.type = type;
 	}
 
-	public LDGuiElement pos(int num, int off){
-		pos = num * 14 + 19 + off;
-		return this;
-	}
-
 	public LDGuiElement text(LDGuiBase gui, String text, String val){
 		if(text != null || val != null){
-			BasicText telm = new BasicText(gui.getGuiLeft() + 8, gui.getGuiTop() + pos + 3, 196, 0xcdcdcd, "landdev.gui." + (gui.prefix()) + "." + text);
-			gui.add(index, (val == null ? telm.translate() : telm.translate(I18n.format(val))).hoverable(true).autoscale());
+			this.text = new BasicText(gui.getGuiLeft() + 8, 0, 196, 0xcdcdcd, "landdev.gui." + (gui.prefix()) + "." + text);
+			gui.add(index, (val == null ? this.text.translate() : this.text.translate(I18n.format(val))).hoverable(true).autoscale());
 		}
 		return this;
 	}
 
 	public LDGuiElement button(LDGuiBase gui, boolean button){
+		off = 1;
 		if(!button) return this;
-		gui.add(new BasicButton(index, gui.getGuiLeft() + 208, gui.getGuiTop() + pos, type.x, type.y, type.w, type.h, true){
+		gui.add(this.button = new BasicButton(index, gui.getGuiLeft() + 208, 0, type.x, type.y, type.w, type.h, true){
 			
 			@Override
 			public boolean onclick(int x, int y, int b){
@@ -71,9 +72,26 @@ public class LDGuiElement {
 	}
 
 	public LDGuiElement field(LDGuiBase gui, String val, boolean wide){
-		gui.add(index, new TextField(pos, gui.fontrenderer(), gui.getGuiLeft() + 7, gui.getGuiTop() + pos + 2, wide ? 212 : 198, 10).setMaxLength(256));
+		gui.add(index, field = new TextField(pos, gui.fontrenderer(), gui.getGuiLeft() + 7, 0, wide ? 212 : 198, 10).setMaxLength(256));
 		if(val != null) gui.setField(index, val);
 		return this;
+	}
+
+	public void repos(int top, int nidx, boolean vis){
+		pos = top + (nidx * 14) + 19 + off;
+		if(text != null){
+			text.y = pos + 3;
+			text.visible = vis;
+		}
+		if(button != null){
+			button.y = pos;
+			button.visible = vis;
+		}
+		if(field != null){
+			field.y = pos + 2;
+			field.setVisible(vis);
+		}
+		visible = vis;
 	}
 
 }
