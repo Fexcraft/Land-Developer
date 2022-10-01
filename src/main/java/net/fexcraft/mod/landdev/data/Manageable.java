@@ -7,6 +7,7 @@ import java.util.UUID;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.mod.landdev.data.PermAction.PermActions;
 import net.fexcraft.mod.landdev.data.norm.Norm;
+import net.fexcraft.mod.landdev.data.player.Player;
 import net.minecraft.entity.player.EntityPlayer;
 
 public class Manageable implements Saveable, PermInteractive {
@@ -91,6 +92,20 @@ public class Manageable implements Saveable, PermInteractive {
 		boolean man = manager != null && manager.equals(uuid);
 		Staff sta = staff.get(uuid);
 		return man || (sta != null && sta.norms.get(act.norm).bool());
+	}
+
+	public void clear(){
+		manager = null;
+		if(staff != null) staff.clear();
+	}
+
+	public void add(Player player){
+		if(staff == null) return;
+		staff.put(player.uuid, new Staff(player.uuid, norms));
+	}
+
+	public void setManager(Player player){
+		manager = player.uuid;
 	}
 
 }
