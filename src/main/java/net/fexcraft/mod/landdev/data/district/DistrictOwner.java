@@ -44,4 +44,18 @@ public class DistrictOwner implements Saveable {
 		return is_county ? county.name() : municipality.name();
 	}
 
+	public void set(Municipality mun){
+		is_county = false;
+		county = null;
+		municipality = mun;
+		owid = municipality.id;
+	}
+
+	public void set(County ct){
+		is_county = true;
+		county = ct;
+		municipality = null;
+		owid = county.id;
+	}
+
 }
