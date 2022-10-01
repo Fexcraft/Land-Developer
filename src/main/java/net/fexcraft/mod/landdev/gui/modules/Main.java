@@ -1,13 +1,6 @@
 package net.fexcraft.mod.landdev.gui.modules;
 
-import static net.fexcraft.mod.landdev.gui.GuiHandler.CHUNK;
-import static net.fexcraft.mod.landdev.gui.GuiHandler.COMPANY;
-import static net.fexcraft.mod.landdev.gui.GuiHandler.DISTRICT;
-import static net.fexcraft.mod.landdev.gui.GuiHandler.MAILBOX;
-import static net.fexcraft.mod.landdev.gui.GuiHandler.MUNICIPALITY;
-import static net.fexcraft.mod.landdev.gui.GuiHandler.PLAYER;
-import static net.fexcraft.mod.landdev.gui.GuiHandler.PROPERTY;
-import static net.fexcraft.mod.landdev.gui.GuiHandler.STATE;
+import static net.fexcraft.mod.landdev.gui.GuiHandler.*;
 import static net.fexcraft.mod.landdev.gui.LDGuiElementType.ELM_BLANK;
 import static net.fexcraft.mod.landdev.gui.LDGuiElementType.ELM_GENERIC;
 import static net.fexcraft.mod.landdev.gui.LDGuiElementType.ICON_BLANK;
@@ -63,7 +56,7 @@ public class Main implements LDGuiModule {
 				return;
 			}
 			case "county":{
-				player.openGui(MUNICIPALITY, 0, chunk.district.owner.county_id(), 0);
+				player.openGui(COUNTY, 0, chunk.district.owner.county_id(), 0);
 				return;
 			}
 			case "state": player.openGui(STATE, 0, chunk.district.state().id, 0); return;
