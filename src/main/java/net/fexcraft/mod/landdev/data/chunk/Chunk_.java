@@ -31,7 +31,7 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 	public AccessList access = new AccessList();
 	public ChunkOwner owner = new ChunkOwner();
 	public Taxable tax = new Taxable(this);
-	public District disterict;
+	public District district;
 
 	public Chunk_(World world, int x, int z){
 		key = new ChunkKey(x, z);
