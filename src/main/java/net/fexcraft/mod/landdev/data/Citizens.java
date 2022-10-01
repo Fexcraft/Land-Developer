@@ -7,6 +7,7 @@ import java.util.UUID;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.mod.landdev.data.PermAction.PermActions;
 import net.fexcraft.mod.landdev.data.norm.Norm;
+import net.fexcraft.mod.landdev.data.player.Player;
 import net.minecraft.entity.player.EntityPlayer;
 
 public class Citizens implements Saveable, PermInteractive {
@@ -79,6 +80,14 @@ public class Citizens implements Saveable, PermInteractive {
 		if(!actions.isValid(act)) return false;
 		Citizen cit = citizens.get(uuid);
 		return cit.norms.get(act.norm).bool();
+	}
+
+	public void remove(Player player){
+		citizens.remove(player.uuid);
+	}
+
+	public void add(Player player){
+		citizens.put(player.uuid, new Citizen(player.uuid, norms));
 	}
 
 }
