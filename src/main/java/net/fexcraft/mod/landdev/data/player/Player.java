@@ -12,8 +12,8 @@ import net.fexcraft.mod.landdev.LandDev;
 import net.fexcraft.mod.landdev.data.Layers;
 import net.fexcraft.mod.landdev.data.PermAction;
 import net.fexcraft.mod.landdev.data.Saveable;
+import net.fexcraft.mod.landdev.data.county.County;
 import net.fexcraft.mod.landdev.data.municipality.Municipality;
-import net.fexcraft.mod.landdev.data.state.State;
 import net.fexcraft.mod.landdev.util.ResManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
@@ -28,7 +28,7 @@ public class Player implements Saveable {
 	public Account account;
 	public ArrayList<Permit> permits = new ArrayList<>();
 	public Municipality municipality;
-	public State state;
+	public County county;
 	
 	public Player(UUID uuid){
 		offline = true;
@@ -54,7 +54,7 @@ public class Player implements Saveable {
 			map.add("permits", array);
 		}
 		map.add("municipality", municipality.id);
-		map.add("state", state.id);
+		map.add("county", county.id);
 		DataManager.save(account);
 	}
 
@@ -73,14 +73,14 @@ public class Player implements Saveable {
 			});
 		}
 		municipality = ResManager.getMunicipality(map.getInteger("municipality", -1), true);
-		state = ResManager.getState(map.getInteger("state", -1), true);
+		county = ResManager.getCounty(map.getInteger("county", -1), true);
 	}
 	
 	@Override
 	public void gendef(){
 		joined = Time.getDate();
 		municipality = ResManager.getMunicipality(-1, true);
-		state = municipality.county.state;
+		county = ResManager.getCounty(-1, true);
 	}
 	
 	public String saveId(){
@@ -115,13 +115,13 @@ public class Player implements Saveable {
 
 	public boolean isInManagement(Layers layer){
 		if(layer == Layers.MUNICIPALITY){
-			
+			return municipality.manage.isStaff(uuid) || municipality.manage.isManager(uuid);
 		}
 		else if(layer == Layers.COUNTY){
-			
+			return county.manage.isStaff(uuid) || county.manage.isManager(uuid);
 		}
 		else if(layer == Layers.STATE){
-			
+			return county.state.manage.isStaff(uuid) || county.state.manage.isManager(uuid);
 		}
 		return false;
 	}
