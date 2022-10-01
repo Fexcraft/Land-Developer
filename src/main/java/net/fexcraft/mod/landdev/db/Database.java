@@ -18,5 +18,8 @@ public interface Database {
 	
 	/** If this database (handler) is internal (integrated in land-dev mod). */
 	public boolean internal();
+	
+	/** Getting a new (/free) entry ID from the database in the specified table. */
+	public int getNewEntryId(String table);
 
 }
