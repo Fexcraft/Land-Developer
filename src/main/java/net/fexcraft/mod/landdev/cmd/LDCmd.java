@@ -5,6 +5,7 @@ import static net.fexcraft.mod.fsmm.util.Config.getWorthAsString;
 import java.util.List;
 
 import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.data.player.Player;
 import net.fexcraft.mod.landdev.util.AliasLoader;
@@ -57,11 +58,22 @@ public class LDCmd extends CommandBase {
 	        		Print.chat(sender, TranslationUtil.translateCmd("fees_total", getWorthAsString(sf + cf)));
 	        		return;
 	    		}
+	    		case "admin":{
+	    			if(server.isSinglePlayer() || Static.isOp(player.entity)){
+	    				player.adm = !player.adm;
+		        		Print.chat(sender, TranslationUtil.translateCmd("adminmode." + player.adm));
+	    			}
+	    			else{
+	    				Print.chat(sender, "&cno.permission");
+	    			}
+	        		return;
+	    		}
     			case "help":
     			default:{
 	        		Print.chat(sender, "&0[&bLD&0]&6>>&2===========");
 	        		Print.chat(sender, "/ld (UI)");
 	        		Print.chat(sender, "/ld help");
+	        		Print.chat(sender, "/ld admin");
 	        		Print.chat(sender, "/ld fees");
     				return;
     			}
