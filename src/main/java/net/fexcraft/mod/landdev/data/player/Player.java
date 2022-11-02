@@ -21,7 +21,7 @@ import net.minecraft.world.World;
 public class Player implements Saveable {
 
 	public UUID uuid;
-	public boolean offline;
+	public boolean offline, adm;
 	public EntityPlayer entity;
 	public long joined, login, last_login, last_logout;
 	public String nickname, colorcode;
