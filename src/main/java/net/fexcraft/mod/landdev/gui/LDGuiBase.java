@@ -122,10 +122,10 @@ public class LDGuiBase extends GenericGui<LDGuiContainer> {
 		for(BasicText text : texts.values()){
 			if(text.hovered) info.add(text.string);
 		}
-		if(container.checkboxes.size() > 0){
+		if(container.checkboxes.size() > 0 || container.radioboxes.size() > 0){
 			BasicButton button = null;
 			for(LDGuiElement elm : elements()){
-				if(!elm.type.is_checkbox()) continue;
+				if(!elm.type.is_checkbox() && !elm.type.is_radiobox()) continue;
 				if((button = buttons.get(elm.index)) == null || !button.hovered) continue;
 				info.add(Formatter.format(I18n.format(elm.type.translation())));
 			}

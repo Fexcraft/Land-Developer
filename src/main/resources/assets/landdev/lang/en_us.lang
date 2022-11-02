@@ -40,10 +40,13 @@ landdev.state.spawnzone.name=Spawn State
 
 landdev.gui.no=No
 landdev.gui.yes=Yes
+landdev.gui.select=Select
 landdev.gui.loading.title=loading...
 landdev.gui.missing.title=Interface not found. Might be WIP?
 landdev.gui.icon_checkbox_checked=Checkbox: &6checked
 landdev.gui.icon_checkbox_unchecked=Checkbox: &cunchecked
+landdev.gui.icon_radiobox_checked=Radiobox: &6checked
+landdev.gui.icon_radiobox_unchecked=Radiobox: &cunchecked
 //
 landdev.gui.claim.title=Chunk Claiming Interface
 landdev.gui.claim.chunk_coord=&7Chunk: &a%s, %s
@@ -79,6 +82,13 @@ landdev.gui.chunk.tax=Tax: %s
 landdev.gui.chunk.access_interact=Interaction allowed? %s
 landdev.gui.chunk.access_player=Players with access: %s
 landdev.gui.chunk.access_company=Companies with access: %s
+landdev.gui.chunk.select_type.title=Chunk Protection Type
+landdev.gui.chunk.select_type.submit=Confirm Change
+landdev.gui.chunk.select_type.notforplayerchunks=This Type is not available for Player owned chunks.
+landdev.gui.chunk.type.private=Private
+landdev.gui.chunk.type.normal=Normal
+landdev.gui.chunk.type.restricted=Restricted
+landdev.gui.chunk.type.public=Public
 //
 landdev.gui.municipality.create.title=Municipality Creation UI
 landdev.gui.municipality.create.no_perm=No permission or permit to create.

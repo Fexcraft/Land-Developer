@@ -31,4 +31,14 @@ public enum ChunkType {
 		return "landdev.chunk_type." + name().toLowerCase();
 	}
 
+	public static ChunkType get(String string){
+		switch(string){
+			case "private": return PRIVATE;
+			case "normal": return NORMAL;
+			case "restricted": return RESTRICTED;
+			case "public": return PUBLIC;
+		}
+		return null;
+	}
+
 }

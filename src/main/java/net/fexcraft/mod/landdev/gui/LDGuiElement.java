@@ -46,6 +46,19 @@ public class LDGuiElement {
 					ty = type.y;
 					return true;
 				}
+				if(type.is_radiobox()){
+					for(LDGuiElement elm : gui.elements()){
+						if(!elm.type.is_radiobox()) continue;
+						elm.type = LDGuiElementType.radio(false);
+						elm.button.tx = elm.type.x;
+						elm.button.ty = elm.type.y;
+					}
+					gui.container().radiobox = index;
+					type = LDGuiElementType.radio(true);
+					tx = type.x;
+					ty = type.y;
+					return true;
+				}
 				if(gui.container().form()){
 					if(!index.contains("submit")) return true;
 					NBTTagCompound com = new NBTTagCompound();
@@ -54,6 +67,7 @@ public class LDGuiElement {
 					NBTTagCompound cbs = new NBTTagCompound();
 					gui.container().checkboxes.forEach((key, val) -> cbs.setBoolean(key, val));
 					com.setTag("checkboxes", cbs);
+					if(gui.container().radiobox != null) com.setString("radiobox", gui.container().radiobox);
 					NBTTagCompound fields = new NBTTagCompound();
 					gui.fields().forEach((key, val) -> fields.setString(key, val.getText()));
 					com.setTag("fields", fields);

@@ -23,6 +23,8 @@ public enum LDGuiElementType {
 	ICON_DISABLED(208, 146, 12, 12),
 	ICON_CHECKBOX_CHECKED(208, 160, 12, 12),
 	ICON_CHECKBOX_UNCHECKED(208, 174, 12, 12),
+	ICON_RADIOBOX_CHECKED(208, 188, 12, 12),
+	ICON_RADIOBOX_UNCHECKED(208, 202, 12, 12),
 	SCROLLBAR(226, 17, 17, 32),
 	SCROLL_UP(229, 21, 11, 11),
 	SCROLL_DOWN(229, 34, 11, 11),
@@ -39,19 +41,31 @@ public enum LDGuiElementType {
 	}
 
 	boolean icon(){
-		return ordinal() >= 9 && ordinal() < 21;
+		return ordinal() >= 9 && ordinal() < 23;
 	}
 
 	public static LDGuiElementType checkbox(boolean bool){
 		return bool ? ICON_CHECKBOX_CHECKED : ICON_CHECKBOX_UNCHECKED;
 	}
 
+	public static LDGuiElementType radio(boolean bool){
+		return bool ? ICON_RADIOBOX_CHECKED : ICON_RADIOBOX_UNCHECKED;
+	}
+
 	public boolean is_checkbox(){
 		return this == ICON_CHECKBOX_CHECKED || this == ICON_CHECKBOX_UNCHECKED;
 	}
 
+	public boolean is_radiobox(){
+		return this == ICON_RADIOBOX_CHECKED || this == ICON_RADIOBOX_UNCHECKED;
+	}
+
 	public boolean checkbox(){
 		return this == ICON_CHECKBOX_CHECKED;
+	}
+
+	public boolean radiobox(){
+		return this == ICON_RADIOBOX_CHECKED;
 	}
 
 	String translation(){

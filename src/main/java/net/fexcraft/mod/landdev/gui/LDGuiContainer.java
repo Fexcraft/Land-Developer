@@ -4,6 +4,7 @@ import static net.fexcraft.mod.landdev.gui.GuiHandler.CHUNK;
 import static net.fexcraft.mod.landdev.gui.GuiHandler.MAIN;
 import static net.fexcraft.mod.landdev.gui.GuiHandler.MUNICIPALITY;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import net.fexcraft.lib.mc.gui.GenericContainer;
@@ -33,6 +34,8 @@ public class LDGuiContainer extends GenericContainer {
 	public Player player;
 	private boolean form;
 	protected HashMap<String, Boolean> checkboxes = new HashMap<>();
+	protected ArrayList<String> radioboxes = new ArrayList<>();
+	protected String radiobox;
 
 	public LDGuiContainer(EntityPlayer player, int id, int x, int y, int z){
 		super(player);
@@ -160,6 +163,10 @@ public class LDGuiContainer extends GenericContainer {
 			if(icon.is_checkbox()){
 				checkboxes.put(index, icon.checkbox());
 			}
+			if(icon.is_radiobox()){
+				radioboxes.add(index);
+				if(icon.radiobox()) radiobox = index;
+			}
 		}
 		if(packet.hasKey("form")) form = packet.getBoolean("form");
 		gui.scroll(0);
@@ -182,6 +189,14 @@ public class LDGuiContainer extends GenericContainer {
 
 	public void sendMsg(String string){
 		sendMsg(string, true);
+	}
+
+	public void open(int x){
+		player.openGui(type, x, y, z);
+	}
+
+	public void open(int type, int x, int y, int z){
+		player.openGui(type, x, y, z);
 	}
 	
 }
