@@ -18,6 +18,7 @@ import net.fexcraft.mod.landdev.data.player.Player;
 import net.fexcraft.mod.landdev.gui.LDGuiContainer;
 import net.fexcraft.mod.landdev.gui.modules.LDGuiModule;
 import net.fexcraft.mod.landdev.util.ResManager;
+import net.fexcraft.mod.landdev.util.Settings;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
@@ -152,6 +153,31 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 			addToList(list, "select_type.submit", ELM_GENERIC, ICON_OPEN, true, false, null);
 			com.setBoolean("form", true);
 		}
+		else if(container.x == 5){
+			com.setString("title_lang", "chunk.set_owner.title");
+			addToList(list, "key", ELM_GENERIC, ICON_BLANK, false, false, key.comma());
+			addToList(list, "set_owner.warning0", ELM_RED, ICON_BLANK, false, false, null);
+			addToList(list, "set_owner.warning1", ELM_RED, ICON_BLANK, false, false, null);
+			addToList(list, "set_owner.warning2", ELM_RED, ICON_BLANK, false, false, null);
+			addToList(list, "set_owner.warning3", ELM_RED, ICON_BLANK, false, false, null);
+			addToList(list, "set_owner.district", ELM_BLUE, radio(owner.owner == Layers.DISTRICT), true, false, null);
+			addToList(list, "set_owner.municipality", ELM_BLUE, radio(owner.owner == Layers.MUNICIPALITY), true, false, null);
+			addToList(list, "set_owner.county", ELM_BLUE, radio(owner.owner == Layers.COUNTY), true, false, null);
+			addToList(list, "set_owner.state", ELM_BLUE, radio(owner.owner == Layers.STATE), true, false, null);
+			addToList(list, "set_owner.none", ELM_BLUE, radio(owner.owner == Layers.NONE), true, false, null);
+			addToList(list, "set_owner.submit", ELM_GENERIC, ICON_OPEN, true, false, null);
+			com.setBoolean("form", true);
+		}
+		else if(container.x == 6){
+			//
+		}
+		else if(container.x == 7){
+			com.setString("title_lang", "chunk.set_price.title");
+			addToList(list, "key", ELM_GENERIC, ICON_BLANK, false, false, key.comma());
+			addToList(list, "set_price.field", ELM_BLANK, ICON_BLANK, false, true, null);
+			addToList(list, "set_price.submit", ELM_GENERIC, ICON_OPEN, true, false, null);
+			com.setBoolean("form", true);
+		}
 		com.setTag("elements", list);
 	}
 
@@ -170,10 +196,7 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 			case "linked": container.open(3); return;
 			case "type": if(canman) container.open(4); return;
 			case "district": container.open(DISTRICT, 0, district.id, 0);
-			case "owner":{
-				//TODO 5 / open player profile or layer main ui
-				return;
-			}
+			case "owner": if(canman) container.open(5); return;
 			case "price":{
 				//TODO 6 / open ui with choice what layer to buy chunk for
 				return;
@@ -195,6 +218,43 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 				container.open(0);
 				return;
 			}
+			case "set_price.submit":{
+				if(!canman) return;
+				String[] err = new String[]{ "" };
+				String val = packet.getCompoundTag("fields").getString("set_price.field");
+				long value = Settings.format_price(err, val);
+				if(err[0].length() > 0){
+					container.sendMsg(err[0], false);
+				}
+				else{
+					sell.price = value;
+					container.open(0);
+				}
+				return;
+			}
+			case "set_owner.submit":{
+				if(!canman) return;
+				Layers layer = Layers.get(packet.getString("radiobox").replace("set_owner.", ""));
+				if(!layer.isValidChunkOwner2()) return;
+				if(layer.is(Layers.MUNICIPALITY) && district.owner.is_county){
+					container.sendMsg("landdev.district.not_part_of_municipality", false);
+					return;
+				}
+				owner.set(layer, null, getLayerId(layer));
+				container.open(0);
+				return;
+			}
+		}
+	}
+
+	private int getLayerId(Layers layer){
+		switch(layer){
+			case COMPANY: return -1;
+			case DISTRICT: return district.id;
+			case MUNICIPALITY: return district.owner.is_county ? -1 : district.municipality().id;
+			case COUNTY: return district.county().id;
+			case STATE: return district.county().state.id;
+			default: return -1;
 		}
 	}
 
