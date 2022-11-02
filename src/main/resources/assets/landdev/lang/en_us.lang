@@ -11,6 +11,8 @@ landdev.cmd.mun.no_new_municipalities=County does not allow creation of new Muni
 landdev.cmd.mun.no_create_permit=You do not have a Municipality creation permit.
 landdev.cmd.mun.not_in_a_municipality=You are not currently in a Municipality.
 
+landdev.announce.new_municipality=&9[&aLD&9] &bThe Municipality &6%s &7(%s) &bjust got created!
+
 landdev.chunk_type.private=Private
 landdev.chunk_type.normal=Normal
 landdev.chunk_type.restricted=Restricted
@@ -91,4 +93,3 @@ landdev.gui.municipality.create.name_too_short=&4Name is too short!
 landdev.gui.municipality.create.name_too_long=&bName is too long!
 landdev.gui.municipality.create.district_no_forming=District Norm does not allow full integration.
 landdev.gui.municipality.create.complete=&bNew Municipality created! Try &7/mun&b!
-landdev.gui.municipality.create.newdata=&6Name: &7%s &eID: &7%s
