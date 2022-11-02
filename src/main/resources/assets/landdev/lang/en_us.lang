@@ -1,6 +1,7 @@
 # Land Developer Translation File | English
 
 landdev.cmd.unknown_argument=&7Unknown Command Argument
+landdev.cmd.invalid_price=Invalid Price, Error:
 landdev.cmd.account=&6Account&0: &a
 landdev.cmd.fees=&6Fees Overview&0:
 landdev.cmd.fees_server=- %s server fee (50%% return)
@@ -89,6 +90,19 @@ landdev.gui.chunk.type.private=Private
 landdev.gui.chunk.type.normal=Normal
 landdev.gui.chunk.type.restricted=Restricted
 landdev.gui.chunk.type.public=Public
+landdev.gui.chunk.set_price.title=Chunk Price
+landdev.gui.chunk.set_price.submit=Apply new Price
+landdev.gui.chunk.set_owner.title=Set Chunk Owner
+landdev.gui.chunk.set_owner.warning0=WARNING!
+landdev.gui.chunk.set_owner.warning1=Some changes may not be possible to undo.
+landdev.gui.chunk.set_owner.warning2=Use Sell function to change player owner.
+landdev.gui.chunk.set_owner.warning3=Use Sell function for giving to a company.
+landdev.gui.chunk.set_owner.district=Give to District
+landdev.gui.chunk.set_owner.municipality=Give to Municipality
+landdev.gui.chunk.set_owner.county=Give to County
+landdev.gui.chunk.set_owner.state=Give to State
+landdev.gui.chunk.set_owner.none=Remove Ownership
+landdev.gui.chunk.set_owner.submit=Confirm Ownership Transfer
 //
 landdev.gui.municipality.create.title=Municipality Creation UI
 landdev.gui.municipality.create.no_perm=No permission or permit to create.
