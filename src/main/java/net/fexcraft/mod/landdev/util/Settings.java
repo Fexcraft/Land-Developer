@@ -1,9 +1,15 @@
 package net.fexcraft.mod.landdev.util;
 
 import java.io.File;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
+import net.fexcraft.lib.common.Static;
+import net.fexcraft.mod.fsmm.util.Config;
 import net.fexcraft.mod.landdev.data.IconHolder;
 import net.fexcraft.mod.landdev.data.district.DistrictType;
 import net.minecraftforge.common.config.ConfigElement;
@@ -63,6 +69,23 @@ public class Settings {
 		MUNICIPALITY_CREATION_FEE = config.getInt("municipality_creation_fee", DEFAULT_CAT, 25000000, 0, Integer.MAX_VALUE, "Server fee for creating a municipality, half of it goes to the new Municipality.");
 		//
 		LOCUP_SIDE = config.getBoolean("location_update_on_left", CLIENT_CAT, true, "Set to false if the Location Update GUI should be on the right side.");
+	}
+	
+	private static final DecimalFormat df = new DecimalFormat("#.000", new DecimalFormatSymbols(Locale.US));
+	static { df.setRoundingMode(RoundingMode.DOWN); }
+	
+	public static long format_price(String[] err, String val){
+		try{
+			String str = val.replace(Config.getDot(), "").replace(",", ".");
+			if(str.length() == 0) return 0;
+			String format = df.format(Double.parseDouble(str));
+			return Long.parseLong(format.replace(",", "").replace(".", ""));
+		}
+		catch(Exception e){
+			err[0] = TranslationUtil.translateCmd("invalid_price") + " " + e.getMessage();
+			if(Static.dev()) e.printStackTrace();
+			return 0;
+		}
 	}
 	
 }
