@@ -91,6 +91,7 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 	}
 
 	public boolean can_manage(Player player){
+		if(player.adm) return true;
 		UUID uuid = player.uuid;
 		if(owner.playerchunk && owner.player.equals(uuid)) return true;
 		if(owner.owner.is(Layers.DISTRICT) && (district.manage.isManager(uuid) || district.owner.manageable().isManager(uuid))) return true;
@@ -104,7 +105,7 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 		com.setString("title_lang", "chunk.title");
 		NBTTagList list = new NBTTagList();
 		if(container.x == 0){
-			boolean canman = !can_manage(container.player());
+			boolean canman = can_manage(container.player());
 			addToList(list, "key", ELM_GENERIC, ICON_BLANK, false, false, key.comma());
 			if(link == null){
 				addToList(list, "link", ELM_GENERIC, canman ? ICON_ADD : ICON_EMPTY, true, false, null);
@@ -136,7 +137,15 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 
 	@Override
 	public void on_interact(LDGuiContainer container, Player player, NBTTagCompound packet, String index){
-		//
+		boolean canman = can_manage(container.player());
+		switch(index){
+			case "access_interact":{
+				if(!canman) return;
+				access.interact = !access.interact;
+				container.sendSync();
+				return;
+			}
+		}
 	}
 
 }
