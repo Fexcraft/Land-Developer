@@ -22,4 +22,23 @@ public enum Layers {
 		return this != NONE && this.ordinal() > 1;
 	}
 
+	public static Layers get(String string){
+		switch(string){
+			case "property": return PROPERTY;
+			case "chunk": return CHUNK;
+			case "company": return COMPANY;
+			case "district": return DISTRICT;
+			case "municipality": return MUNICIPALITY;
+			case "county": return COUNTY;
+			case "state": return STATE;
+			case "union": return UNION;
+			case "none": return NONE;
+		}
+		return NONE;
+	}
+
+	public boolean isValidChunkOwner2(){
+		return this != PLAYER && this.ordinal() > 2;
+	}
+
 }
