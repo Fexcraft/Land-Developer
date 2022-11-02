@@ -31,6 +31,7 @@ import net.fexcraft.mod.landdev.data.player.Permit;
 import net.fexcraft.mod.landdev.data.player.Player;
 import net.fexcraft.mod.landdev.gui.LDGuiContainer;
 import net.fexcraft.mod.landdev.gui.modules.LDGuiModule;
+import net.fexcraft.mod.landdev.util.Announcer;
 import net.fexcraft.mod.landdev.util.ResManager;
 import net.fexcraft.mod.landdev.util.Settings;
 import net.minecraft.nbt.NBTTagCompound;
@@ -239,6 +240,8 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 				if(!bank.processAction(Action.TRANSFER, player.entity, acc, sum, SERVER_ACCOUNT)){
 					return;
 				}
+				bank = DataManager.getBank(SERVER_ACCOUNT.getBankId(), false, true);
+				if(!uca) bank.processAction(Action.TRANSFER, null, SERVER_ACCOUNT, county.norms.get("new-municipality-fee").integer(), county.account);
 				Municipality mold = player.municipality;
 				County cold = player.county;
 				mold.citizens.remove(player);
@@ -269,10 +272,11 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 					dis.owner.set(mnew);
 					dis.save();
 				}
+				bank.processAction(Action.TRANSFER, null, SERVER_ACCOUNT, Settings.MUNICIPALITY_CREATION_FEE / 2, mnew.account);
 				ResManager.bulkSave(mnew, county, player, mold, cold);
 				player.entity.closeScreen();
     			Print.chat(player.entity, translate("gui.municipality.create.complete"));
-    			Print.chat(player.entity, translate("gui.municipality.create.newdata", name, newid));
+    			Announcer.announce(Announcer.Target.GLOBAL, 0, "announce.new_municipality", name, newid);
 				return;
 			}
 		}
