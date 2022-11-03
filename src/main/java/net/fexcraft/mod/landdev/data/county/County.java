@@ -1,6 +1,8 @@
 package net.fexcraft.mod.landdev.data.county;
 
 import static net.fexcraft.mod.landdev.data.PermAction.ACT_CLAIM;
+import static net.fexcraft.mod.landdev.data.PermAction.ACT_SET_CHUNK_TAX;
+import static net.fexcraft.mod.landdev.data.PermAction.ACT_SET_PLAYER_TAX;
 import static net.fexcraft.mod.landdev.util.TranslationUtil.translate;
 
 import java.util.ArrayList;
@@ -19,7 +21,7 @@ import net.fexcraft.mod.landdev.util.ResManager;
 
 public class County implements Saveable, Layer {
 
-	public static PermActions mactions = new PermActions(ACT_CLAIM);
+	public static PermActions mactions = new PermActions(ACT_CLAIM, ACT_SET_CHUNK_TAX, ACT_SET_PLAYER_TAX);
 	public static PermActions cactions = new PermActions(ACT_CLAIM);
 	public final int id;
 	public Createable created = new Createable();
@@ -42,6 +44,10 @@ public class County implements Saveable, Layer {
 		norms.add(new StringNorm("name", translate("county.norm.name")));
 		norms.add(new BoolNorm("new-municipalities", false));
 		norms.add(new IntegerNorm("new-municipality-fee", 100000));
+		manage.norms.add(new BoolNorm("claim", false));
+		manage.norms.add(new BoolNorm("manage_district", false));
+		manage.norms.add(new BoolNorm("set_tax_chunk", false));
+		manage.norms.add(new BoolNorm("set_tax_player", false));
 	}
 
 	@Override
