@@ -10,6 +10,7 @@ import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.mod.landdev.data.Createable;
 import net.fexcraft.mod.landdev.data.Layer;
 import net.fexcraft.mod.landdev.data.Layers;
+import net.fexcraft.mod.landdev.data.PermAction;
 import net.fexcraft.mod.landdev.data.Saveable;
 import net.fexcraft.mod.landdev.data.Sellable;
 import net.fexcraft.mod.landdev.data.Taxable;
@@ -92,11 +93,11 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 		return Layers.DISTRICT;
 	}
 
-	public boolean can_manage(Player player, boolean notplayer){
+	public boolean can_manage(Player player){
 		if(player.adm) return true;
 		UUID uuid = player.uuid;
-		if(!notplayer && owner.playerchunk && owner.player.equals(uuid)) return true;
-		if(owner.owner.is(Layers.DISTRICT) && (district.manage.isManager(uuid) || district.owner.manageable().isManager(uuid))) return true;
+		if(owner.playerchunk && owner.player.equals(uuid)) return true;
+		if(owner.owner.is(Layers.DISTRICT) && district.can(PermAction.ACT_MANAGE_DISTRICT, uuid)) return true;
 		if(owner.owner.is(Layers.MUNICIPALITY) && district.owner.manageable().isManager(uuid)) return true;
 		//TODO
 		return false;
@@ -107,7 +108,7 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 		com.setString("title_lang", "chunk.title");
 		NBTTagList list = new NBTTagList();
 		if(container.x == 0){
-			boolean canman = can_manage(container.player(), false);
+			boolean canman = can_manage(container.player());
 			addToList(list, "key", ELM_GENERIC, ICON_BLANK, false, false, key.comma());
 			if(link == null){
 				addToList(list, "link", ELM_GENERIC, canman ? ICON_ADD : ICON_EMPTY, true, false, null);
@@ -178,12 +179,21 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 			addToList(list, "set_price.submit", ELM_GENERIC, ICON_OPEN, true, false, null);
 			com.setBoolean("form", true);
 		}
+		else if(container.x == 8){
+			//
+		}
+		else if(container.x == 9){
+			//
+		}
+		else if(container.x == 10){
+			//
+		}
 		com.setTag("elements", list);
 	}
 
 	@Override
 	public void on_interact(LDGuiContainer container, Player player, NBTTagCompound packet, String index){
-		boolean canman = can_manage(container.player(), false);
+		boolean canman = can_manage(container.player());
 		switch(index){
 			case "access_interact":{
 				if(!canman) return;
@@ -202,7 +212,7 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 				return;
 			}
 			case "set_price": container.open(7); return;
-			case "tax": if(can_manage(player, true)) container.open(8); return;
+			case "tax": if(district.can(PermAction.ACT_SET_CHUNK_TAX, player.uuid)) container.open(8); return;
 			case "access_player": container.open(9); return;
 			case "access_company": container.open(10); return;
 			//
