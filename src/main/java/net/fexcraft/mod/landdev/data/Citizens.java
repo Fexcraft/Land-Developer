@@ -8,7 +8,6 @@ import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.mod.landdev.data.PermAction.PermActions;
 import net.fexcraft.mod.landdev.data.norm.Norm;
 import net.fexcraft.mod.landdev.data.player.Player;
-import net.minecraft.entity.player.EntityPlayer;
 
 public class Citizens implements Saveable, PermInteractive {
 	
@@ -76,7 +75,7 @@ public class Citizens implements Saveable, PermInteractive {
 	}
 
 	@Override
-	public boolean can(PermAction act, EntityPlayer player, UUID uuid){
+	public boolean can(PermAction act, UUID uuid){
 		if(!actions.isValid(act)) return false;
 		Citizen cit = citizens.get(uuid);
 		return cit.norms.get(act.norm).bool();
