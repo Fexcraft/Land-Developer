@@ -2,12 +2,15 @@ package net.fexcraft.mod.landdev.data.district;
 
 import static net.fexcraft.mod.landdev.data.PermAction.ACT_CLAIM;
 import static net.fexcraft.mod.landdev.data.PermAction.ACT_MANAGE_DISTRICT;
+import static net.fexcraft.mod.landdev.data.PermAction.ACT_MANAGE_FINANCES;
 import static net.fexcraft.mod.landdev.data.PermAction.ACT_SET_CHUNK_TAX;
+import static net.fexcraft.mod.landdev.data.PermAction.ACT_USE_FINANCES;
 import static net.fexcraft.mod.landdev.util.TranslationUtil.translate;
 
 import java.util.UUID;
 
 import net.fexcraft.app.json.JsonMap;
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fsmm.api.Account;
 import net.fexcraft.mod.landdev.data.*;
 import net.fexcraft.mod.landdev.data.PermAction.PermActions;
@@ -16,8 +19,11 @@ import net.fexcraft.mod.landdev.data.municipality.Municipality;
 import net.fexcraft.mod.landdev.data.norm.BoolNorm;
 import net.fexcraft.mod.landdev.data.norm.IntegerNorm;
 import net.fexcraft.mod.landdev.data.norm.StringNorm;
+import net.fexcraft.mod.landdev.data.player.Player;
 import net.fexcraft.mod.landdev.data.state.State;
+import net.fexcraft.mod.landdev.gui.LDGuiContainer;
 import net.fexcraft.mod.landdev.util.ResManager;
+import net.fexcraft.mod.landdev.util.TranslationUtil;
 
 public class District implements Saveable, Layer, PermInteractive {
 	
@@ -140,6 +146,12 @@ public class District implements Saveable, Layer, PermInteractive {
 		return false;
 	}
 
+	@Override
+	public boolean can(UUID uuid, PermAction... acts){
+		for(PermAction act : acts) if(can(act, uuid)) return true;
+		return false;
+	}
+
 	public County county(){
 		return owner.is_county ? owner.county : owner.municipality.county;
 	}
@@ -150,5 +162,43 @@ public class District implements Saveable, Layer, PermInteractive {
 
 	public Municipality municipality(){
 		return owner.is_county ? null : owner.municipality;
+	}
+
+	public int getLayerId(Layers layer){
+		if(layer == Layers.DISTRICT) return id;
+		if(layer == Layers.MUNICIPALITY) return owner.is_county ? -1 : owner.municipality.id;
+		if(layer == Layers.COUNTY) return owner.county_id();
+		if(layer == Layers.STATE) return county().state.id;
+		return -1;
+	}
+
+	public Account getLayerAccount(Layers layer, LDGuiContainer container, Player player){
+		if(layer.is(Layers.PLAYER)) return player.account;
+		boolean dis = layer.is(Layers.DISTRICT);
+		if((dis && !owner.is_county) || layer.is(Layers.MUNICIPALITY)){
+			if(!owner.municipality.manage.can(player.uuid, ACT_USE_FINANCES, ACT_MANAGE_FINANCES)){
+				if(container == null) Print.chat(player.entity, TranslationUtil.translateCmd("account.noperm.municipality"));
+				else container.sendMsg("landdev.cmd.account.noperm.municipality", false);
+				return null;
+			}
+			return owner.municipality.account;
+		}
+		if((dis && owner.is_county) || layer.is(Layers.COUNTY)){
+			if(!county().manage.can(player.uuid, ACT_USE_FINANCES, ACT_MANAGE_FINANCES)){
+				if(container == null) Print.chat(player.entity, TranslationUtil.translateCmd("account.noperm.county"));
+				else container.sendMsg("landdev.cmd.account.noperm.county", false);
+				return null;
+			}
+			return county().account;
+		}
+		if(layer.is(Layers.STATE)){
+			if(!state().manage.can(player.uuid, ACT_USE_FINANCES, ACT_MANAGE_FINANCES)){
+				if(container == null) Print.chat(player.entity, TranslationUtil.translateCmd("account.noperm.state"));
+				else container.sendMsg("landdev.cmd.account.noperm.state", false);
+				return null;
+			}
+			return state().account;
+		}
+		return null;
 	}
 }
