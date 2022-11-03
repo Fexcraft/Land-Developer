@@ -2,6 +2,8 @@ package net.fexcraft.mod.landdev.data.municipality;
 
 import static net.fexcraft.mod.landdev.data.PermAction.ACT_CLAIM;
 import static net.fexcraft.mod.landdev.data.PermAction.ACT_CREATE_LAYER;
+import static net.fexcraft.mod.landdev.data.PermAction.ACT_SET_CHUNK_TAX;
+import static net.fexcraft.mod.landdev.data.PermAction.ACT_SET_PLAYER_TAX;
 import static net.fexcraft.mod.landdev.gui.LDGuiElementType.ELM_BLANK;
 import static net.fexcraft.mod.landdev.gui.LDGuiElementType.ELM_BLUE;
 import static net.fexcraft.mod.landdev.gui.LDGuiElementType.ELM_GENERIC;
@@ -26,6 +28,7 @@ import net.fexcraft.mod.landdev.data.PermAction.PermActions;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.data.county.County;
 import net.fexcraft.mod.landdev.data.district.District;
+import net.fexcraft.mod.landdev.data.norm.BoolNorm;
 import net.fexcraft.mod.landdev.data.norm.StringNorm;
 import net.fexcraft.mod.landdev.data.player.Permit;
 import net.fexcraft.mod.landdev.data.player.Player;
@@ -39,7 +42,7 @@ import net.minecraft.nbt.NBTTagList;
 
 public class Municipality implements Saveable, Layer, LDGuiModule {
 
-	public static PermActions mactions = new PermActions(ACT_CLAIM);
+	public static PermActions mactions = new PermActions(ACT_CLAIM, ACT_SET_CHUNK_TAX, ACT_SET_PLAYER_TAX);
 	public static PermActions cactions = new PermActions();
 	public final int id;
 	public Createable created = new Createable();
@@ -59,6 +62,10 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 		this.id = id;
 		account = DataManager.getAccount("municipality:" + id, false, true);
 		norms.add(new StringNorm("name", translate("municipality.norm.name")));
+		manage.norms.add(new BoolNorm("claim", false));
+		manage.norms.add(new BoolNorm("manage_district", false));
+		manage.norms.add(new BoolNorm("set_tax_chunk", false));
+		manage.norms.add(new BoolNorm("set_tax_player", false));
 	}
 
 	@Override
