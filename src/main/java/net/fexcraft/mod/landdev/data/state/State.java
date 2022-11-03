@@ -1,6 +1,7 @@
 package net.fexcraft.mod.landdev.data.state;
 
 import static net.fexcraft.mod.landdev.data.PermAction.ACT_CLAIM;
+import static net.fexcraft.mod.landdev.data.PermAction.ACT_USE_FINANCES;
 import static net.fexcraft.mod.landdev.util.TranslationUtil.translate;
 
 import java.util.ArrayList;
@@ -11,11 +12,12 @@ import net.fexcraft.mod.fsmm.api.Account;
 import net.fexcraft.mod.fsmm.util.DataManager;
 import net.fexcraft.mod.landdev.data.*;
 import net.fexcraft.mod.landdev.data.PermAction.PermActions;
+import net.fexcraft.mod.landdev.data.norm.BoolNorm;
 import net.fexcraft.mod.landdev.data.norm.StringNorm;
 
 public class State implements Saveable, Layer {
 
-	public static PermActions actions = new PermActions(ACT_CLAIM);
+	public static PermActions actions = new PermActions(ACT_CLAIM, ACT_USE_FINANCES, ACT_USE_FINANCES);
 	public final int id;
 	public Createable created = new Createable();
 	public Sellable sell = new Sellable(this);
@@ -32,6 +34,9 @@ public class State implements Saveable, Layer {
 		this.id = id;
 		account = DataManager.getAccount("state:" + id, false, true);
 		norms.add(new StringNorm("name", translate("state.norm.name")));
+		manage.norms.add(new BoolNorm("finances_use", false));
+		manage.norms.add(new BoolNorm("finances_manage", false));
+		manage.norms.add(new BoolNorm("set_tax_player", false));
 	}
 
 	@Override
