@@ -8,7 +8,6 @@ import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.mod.landdev.data.PermAction.PermActions;
 import net.fexcraft.mod.landdev.data.norm.Norm;
 import net.fexcraft.mod.landdev.data.player.Player;
-import net.minecraft.entity.player.EntityPlayer;
 
 public class Manageable implements Saveable, PermInteractive {
 	
@@ -87,11 +86,11 @@ public class Manageable implements Saveable, PermInteractive {
 	}
 
 	@Override
-	public boolean can(PermAction act, EntityPlayer player, UUID uuid){
+	public boolean can(PermAction act, UUID uuid){
 		if(!actions.isValid(act)) return false;
-		boolean man = manager != null && manager.equals(uuid);
+		if(manager != null && manager.equals(uuid)) return true;
 		Staff sta = staff.get(uuid);
-		return man || (sta != null && sta.norms.get(act.norm).bool());
+		return sta != null && sta.norms.get(act.norm).bool();
 	}
 
 	public void clear(){
