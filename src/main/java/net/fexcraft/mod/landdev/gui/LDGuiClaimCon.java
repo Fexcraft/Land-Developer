@@ -82,7 +82,7 @@ public class LDGuiClaimCon extends GenericContainer {
 				int[] key = packet.getIntArray("claim");
 				Chunk_ chunk = ResManager.getChunk(key[0] - 7 + x, key[1] - 7 + z);
 				NBTTagCompound com = new NBTTagCompound();
-				if(!district.can(ACT_CLAIM, player, player.getGameProfile().getId())){
+				if(!district.can(ACT_CLAIM, player.getGameProfile().getId())){
 					com.setString("msg", "landdev.gui.claim.no_perm_district");
 				}
 				else com.setString("msg", "pass");
