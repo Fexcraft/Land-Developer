@@ -3,6 +3,9 @@
 landdev.cmd.unknown_argument=&7Unknown Command Argument
 landdev.cmd.invalid_price=Invalid Price, Error:
 landdev.cmd.account=&6Account&0: &a
+landdev.cmd.account.noperm.municipality=No permission to use Municipality funds.
+landdev.cmd.account.noperm.county=No permission to use County funds.
+landdev.cmd.account.noperm.state=No permission to use State funds.
 landdev.cmd.fees=&6Fees Overview&0:
 landdev.cmd.fees_server=- %s server fee (50%% return)
 landdev.cmd.fees_county=- %s county fee
@@ -103,6 +106,17 @@ landdev.gui.chunk.set_owner.county=Give to County
 landdev.gui.chunk.set_owner.state=Give to State
 landdev.gui.chunk.set_owner.none=Remove Ownership
 landdev.gui.chunk.set_owner.submit=Confirm Ownership Transfer
+landdev.gui.chunk.buy.title=Chunk Acquisition
+landdev.gui.chunk.buy.info=Who do you buy this chunk for?
+landdev.gui.chunk.buy.self=Myself
+landdev.gui.chunk.buy.company=My Company
+landdev.gui.chunk.buy.district=The District
+landdev.gui.chunk.buy.municipality=This Municipality
+landdev.gui.chunk.buy.county=This County
+landdev.gui.chunk.buy.state=This State
+landdev.gui.chunk.buy.payer=Receiver pays for the chunk?
+landdev.gui.chunk.buy.submit=Confirm Acquisition
+landdev.gui.chunk.buy.notenoughmoney=You do not have enough money to buy this chunk.
 //
 landdev.gui.municipality.create.title=Municipality Creation UI
 landdev.gui.municipality.create.no_perm=No permission or permit to create.
