@@ -3,6 +3,7 @@ package net.fexcraft.mod.landdev.data.chunk;
 import java.util.UUID;
 
 import net.fexcraft.app.json.JsonMap;
+import net.fexcraft.mod.fsmm.api.Account;
 import net.fexcraft.mod.landdev.data.Layers;
 import net.fexcraft.mod.landdev.data.Saveable;
 import net.fexcraft.mod.landdev.util.ResManager;
@@ -62,6 +63,20 @@ public class ChunkOwner implements Saveable {
 
 	public String name(){
 		return unowned ? "landdev.gui.chunk.unowned" : playerchunk ? ResManager.getPlayerName(player) : owner.name() + ":" + owid;
+	}
+
+	public Account getAccount(Chunk_ chunk){
+		if(unowned) return ResManager.SERVER_ACCOUNT;
+		if(playerchunk) return ResManager.getPlayer(player, true).account;
+		switch(owner){
+			case DISTRICT: return chunk.district.account();
+			case MUNICIPALITY: return chunk.district.municipality().account;
+			case COUNTY: return chunk.district.county().account;
+			case STATE: return chunk.district.state().account;
+			case COMPANY://TODO
+			default: return ResManager.SERVER_ACCOUNT;
+		
+		}
 	}
 
 }
