@@ -7,6 +7,10 @@ import static net.fexcraft.mod.landdev.gui.LDGuiElementType.*;
 import java.util.UUID;
 
 import net.fexcraft.app.json.JsonMap;
+import net.fexcraft.mod.fsmm.api.Account;
+import net.fexcraft.mod.fsmm.api.Bank;
+import net.fexcraft.mod.fsmm.api.Bank.Action;
+import net.fexcraft.mod.fsmm.util.DataManager;
 import net.fexcraft.mod.landdev.data.Createable;
 import net.fexcraft.mod.landdev.data.Layer;
 import net.fexcraft.mod.landdev.data.Layers;
@@ -126,7 +130,7 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 			if(sell.price > 0){
 				addToList(list, "price", ELM_GENERIC, ICON_OPEN, true, false, sell.price_formatted());
 			}
-			else if(canman){
+			if(canman){
 				addToList(list, "set_price", ELM_GENERIC, ICON_OPEN, true, false, null);
 			}
 			addToList(list, "tax", ELM_GENERIC, ICON_ADD, true, false, getWorthAsString(tax.custom_tax == 0 ? district.tax() : tax.custom_tax));
@@ -162,7 +166,7 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 			addToList(list, "set_owner.warning2", ELM_RED, ICON_BLANK, false, false, null);
 			addToList(list, "set_owner.warning3", ELM_RED, ICON_BLANK, false, false, null);
 			addToList(list, "set_owner.district", ELM_BLUE, radio(owner.owner == Layers.DISTRICT), true, false, null);
-			addToList(list, "set_owner.municipality", ELM_BLUE, radio(owner.owner == Layers.MUNICIPALITY), true, false, null);
+			if(!district.owner.is_county) addToList(list, "set_owner.municipality", ELM_BLUE, radio(owner.owner == Layers.MUNICIPALITY), true, false, null);
 			addToList(list, "set_owner.county", ELM_BLUE, radio(owner.owner == Layers.COUNTY), true, false, null);
 			addToList(list, "set_owner.state", ELM_BLUE, radio(owner.owner == Layers.STATE), true, false, null);
 			addToList(list, "set_owner.none", ELM_BLUE, radio(owner.owner == Layers.NONE), true, false, null);
@@ -170,7 +174,18 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 			com.setBoolean("form", true);
 		}
 		else if(container.x == 6){
-			//
+			com.setString("title_lang", "chunk.buy.title");
+			addToList(list, "key", ELM_GENERIC, ICON_BLANK, false, false, key.comma());
+			addToList(list, "buy.info", ELM_YELLOW, ICON_BLANK, false, false, null);
+			addToList(list, "buy.self", ELM_BLUE, ICON_RADIOBOX_CHECKED, true, false, null);
+			addToList(list, "buy.company", ELM_BLUE, ICON_RADIOBOX_UNCHECKED, true, false, null);
+			addToList(list, "buy.district", ELM_BLUE, ICON_RADIOBOX_UNCHECKED, true, false, null);
+			if(!district.owner.is_county) addToList(list, "buy.municipality", ELM_BLUE, ICON_RADIOBOX_UNCHECKED, true, false, null);
+			addToList(list, "buy.county", ELM_BLUE, ICON_RADIOBOX_UNCHECKED, true, false, null);
+			addToList(list, "buy.state", ELM_BLUE, ICON_RADIOBOX_UNCHECKED, true, false, null);
+			addToList(list, "buy.payer", ELM_GENERIC, ICON_CHECKBOX_UNCHECKED, true, false, null);
+			addToList(list, "buy.submit", ELM_GENERIC, ICON_OPEN, true, false, null);
+			com.setBoolean("form", true);
 		}
 		else if(container.x == 7){
 			com.setString("title_lang", "chunk.set_price.title");
@@ -207,10 +222,7 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 			case "type": if(canman) container.open(4); return;
 			case "district": container.open(DISTRICT, 0, district.id, 0);
 			case "owner": if(canman) container.open(5); return;
-			case "price":{
-				//TODO 6 / open ui with choice what layer to buy chunk for
-				return;
-			}
+			case "price": if(!canman) container.open(6); return;
 			case "set_price": container.open(7); return;
 			case "tax": if(district.can(PermAction.ACT_SET_CHUNK_TAX, player.uuid)) container.open(8); return;
 			case "access_player": container.open(9); return;
@@ -251,6 +263,29 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 					return;
 				}
 				owner.set(layer, null, getLayerId(layer));
+				sell.price = 0;
+				container.open(0);
+				return;
+			}
+			case "buy.submit":{
+				String radio = packet.getString("radiobox");
+				Layers layer = radio.endsWith(".self") ? Layers.PLAYER : Layers.get(radio.replace("buy.", ""));
+				if(!layer.isValidChunkOwner()) return;
+				if(layer.is(Layers.MUNICIPALITY) && district.owner.is_county){
+					container.sendMsg("landdev.district.not_part_of_municipality", false);
+					return;
+				}
+				boolean npp = packet.getCompoundTag("checkboxes").getBoolean("buy.payer");
+				Account account = npp ? district.getLayerAccount(layer, container, player) : player.account;
+				if(account == null) return;
+				if(account.getBalance() < sell.price){
+					container.sendMsg("buy.notenoughmoney");
+					return;
+				}
+				Bank bank = DataManager.getBank(account.getBankId(), false, true);
+				if(!bank.processAction(Action.TRANSFER, player.entity, account, sell.price, owner.getAccount(this))) return;
+				owner.set(layer, layer.is(Layers.PLAYER) ? player.uuid : null, district.getLayerId(layer));
+				sell.price = 0;
 				container.open(0);
 				return;
 			}
