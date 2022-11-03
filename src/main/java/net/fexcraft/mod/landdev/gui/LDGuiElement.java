@@ -25,7 +25,7 @@ public class LDGuiElement {
 
 	public LDGuiElement text(LDGuiBase gui, String text, String val){
 		if(text != null || val != null){
-			this.text = new BasicText(gui.getGuiLeft() + 8, 0, 196, 0xcdcdcd, "landdev.gui." + (gui.prefix()) + "." + text);
+			this.text = new BasicText(gui.getGuiLeft() + 8, 0, 196, type.lighttext() ? 0xcdcdcd : 0x5d5d5d, "landdev.gui." + (gui.prefix()) + "." + text);
 			gui.add(index, (val == null ? this.text.translate() : this.text.translate(I18n.format(val))).hoverable(true).autoscale());
 		}
 		return this;
