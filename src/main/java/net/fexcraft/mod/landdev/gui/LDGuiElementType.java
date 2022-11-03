@@ -10,7 +10,7 @@ public enum LDGuiElementType {
 	ELM_GENERIC(0, 61, 225, 14),
 	ELM_EMPTY(0, 75, 225, 14),
 	ELM_BLANK(0, 89, 225, 14),
-	ELM_YELLOW(0, 104, 225, 14),
+	ELM_YELLOW(0, 103, 225, 14),
 	ICON_ADD(208, 20, 12, 12),
 	ICON_REM(208, 34, 12, 12),
 	ICON_OPEN(208, 48, 12, 12),
@@ -68,8 +68,12 @@ public enum LDGuiElementType {
 		return this == ICON_RADIOBOX_CHECKED;
 	}
 
-	String translation(){
+	public String translation(){
 		return "landdev.gui." + name().toLowerCase();
+	}
+
+	public boolean lighttext(){
+		return this != ELM_YELLOW;
 	}
 
 }
