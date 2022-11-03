@@ -93,6 +93,17 @@ public class Manageable implements Saveable, PermInteractive {
 		return sta != null && sta.norms.get(act.norm).bool();
 	}
 
+	@Override
+	public boolean can(UUID uuid, PermAction... acts){
+		for(PermAction act : acts){
+			if(!actions.isValid(act)) return false;
+			if(manager != null && manager.equals(uuid)) return true;
+			Staff sta = staff.get(uuid);
+			if(sta != null && sta.norms.get(act.norm).bool()) return true;
+		}
+		return false;
+	}
+
 	public void clear(){
 		manager = null;
 		if(staff != null) staff.clear();
