@@ -1,6 +1,8 @@
 package net.fexcraft.mod.landdev.data.district;
 
 import static net.fexcraft.mod.landdev.data.PermAction.ACT_CLAIM;
+import static net.fexcraft.mod.landdev.data.PermAction.ACT_MANAGE_DISTRICT;
+import static net.fexcraft.mod.landdev.data.PermAction.ACT_SET_CHUNK_TAX;
 import static net.fexcraft.mod.landdev.util.TranslationUtil.translate;
 
 import java.util.UUID;
@@ -16,7 +18,6 @@ import net.fexcraft.mod.landdev.data.norm.IntegerNorm;
 import net.fexcraft.mod.landdev.data.norm.StringNorm;
 import net.fexcraft.mod.landdev.data.state.State;
 import net.fexcraft.mod.landdev.util.ResManager;
-import net.minecraft.entity.player.EntityPlayer;
 
 public class District implements Saveable, Layer, PermInteractive {
 	
@@ -41,7 +42,6 @@ public class District implements Saveable, Layer, PermInteractive {
 		norms.add(new IntegerNorm("chunk-tax", 1000));
 		norms.add(new BoolNorm("municipality-can-form", false));
 		norms.add(new BoolNorm("municipality-can-claim", false));
-		manage.norms.add(new BoolNorm("claim", false));
 	}
 
 	@Override
@@ -127,9 +127,15 @@ public class District implements Saveable, Layer, PermInteractive {
 	}
 
 	@Override
-	public boolean can(PermAction act, EntityPlayer player, UUID uuid){
+	public boolean can(PermAction act, UUID uuid){
 		if(act == ACT_CLAIM){
-			return manage.isManager(uuid) || owner.manageable().can(act, player, uuid);
+			return manage.isManager(uuid) || owner.manageable().can(act, uuid);
+		}
+		if(act == ACT_MANAGE_DISTRICT){
+			return manage.isManager(uuid) || owner.manageable().can(act, uuid);
+		}
+		if(act == ACT_SET_CHUNK_TAX){
+			return manage.isManager(uuid) || owner.manageable().can(act, uuid);
 		}
 		return false;
 	}
@@ -145,5 +151,4 @@ public class District implements Saveable, Layer, PermInteractive {
 	public Municipality municipality(){
 		return owner.is_county ? null : owner.municipality;
 	}
-
 }
