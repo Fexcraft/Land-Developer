@@ -217,7 +217,7 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 				return;
 			}
 			case "link": container.open(1); return;
-			case "linka": container.open(2); return;
+			case "links": container.open(2); return;
 			case "linked": container.open(3); return;
 			case "type": if(canman) container.open(4); return;
 			case "district": container.open(DISTRICT, 0, district.id, 0);
