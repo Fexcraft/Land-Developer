@@ -81,6 +81,16 @@ public class Citizens implements Saveable, PermInteractive {
 		return cit.norms.get(act.norm).bool();
 	}
 
+	@Override
+	public boolean can(UUID uuid, PermAction... acts){
+		for(PermAction act : acts){
+			if(!actions.isValid(act)) continue;
+			Citizen cit = citizens.get(uuid);
+			if(cit.norms.get(act.norm).bool()) return true;
+		}
+		return false;
+	}
+
 	public void remove(Player player){
 		citizens.remove(player.uuid);
 	}
