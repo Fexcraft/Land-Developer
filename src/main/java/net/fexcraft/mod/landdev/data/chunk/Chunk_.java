@@ -101,8 +101,8 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 		if(player.adm) return true;
 		UUID uuid = player.uuid;
 		if(owner.playerchunk && owner.player.equals(uuid)) return true;
-		if(owner.owner.is(Layers.DISTRICT) && district.can(PermAction.ACT_MANAGE_DISTRICT, uuid)) return true;
-		if(owner.owner.is(Layers.MUNICIPALITY) && district.owner.manageable().isManager(uuid)) return true;
+		else if(owner.owner.is(Layers.DISTRICT) && district.can(PermAction.ACT_MANAGE_DISTRICT, uuid)) return true;
+		else if(owner.owner.is(Layers.MUNICIPALITY) && district.owner.manageable().isManager(uuid)) return true;
 		//TODO
 		return false;
 	}
