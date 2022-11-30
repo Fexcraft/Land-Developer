@@ -1,6 +1,7 @@
 package net.fexcraft.mod.landdev.gui;
 
 import static net.fexcraft.mod.landdev.gui.GuiHandler.CHUNK;
+import static net.fexcraft.mod.landdev.gui.GuiHandler.DISTRICT;
 import static net.fexcraft.mod.landdev.gui.GuiHandler.MAIN;
 import static net.fexcraft.mod.landdev.gui.GuiHandler.MUNICIPALITY;
 
@@ -12,6 +13,7 @@ import net.fexcraft.lib.mc.gui.GenericGui.BasicButton;
 import net.fexcraft.lib.mc.gui.GenericGui.BasicText;
 import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
+import net.fexcraft.mod.landdev.data.district.District;
 import net.fexcraft.mod.landdev.data.municipality.Municipality;
 import net.fexcraft.mod.landdev.data.player.Player;
 import net.fexcraft.mod.landdev.gui.modules.Main;
@@ -72,6 +74,14 @@ public class LDGuiContainer extends GenericContainer {
 				}
 				case CHUNK:{
 					chunk.on_interact(this, ply, packet, index);
+					break;
+				}
+				case DISTRICT:{
+					District dis = ResManager.getDistrict(y, y > -2);
+					if(dis != null){
+						dis.on_interact(this, ply, packet, index);
+						break;
+					}
 					break;
 				}
 				case MUNICIPALITY:{
