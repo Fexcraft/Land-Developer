@@ -22,10 +22,13 @@ import net.fexcraft.mod.landdev.data.norm.StringNorm;
 import net.fexcraft.mod.landdev.data.player.Player;
 import net.fexcraft.mod.landdev.data.state.State;
 import net.fexcraft.mod.landdev.gui.LDGuiContainer;
+import net.fexcraft.mod.landdev.gui.modules.LDGuiModule;
 import net.fexcraft.mod.landdev.util.ResManager;
 import net.fexcraft.mod.landdev.util.TranslationUtil;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 
-public class District implements Saveable, Layer, PermInteractive {
+public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 	
 	public static PermActions actions = new PermActions(ACT_CLAIM);
 	public final int id;
@@ -200,5 +203,22 @@ public class District implements Saveable, Layer, PermInteractive {
 			return state().account;
 		}
 		return null;
+	}
+
+	@Override
+	public void sync_packet(LDGuiContainer container, NBTTagCompound com){
+		com.setString("title_lang", "district.title");
+		NBTTagList list = new NBTTagList();
+		if(container.x == 0){
+			//
+		}
+		com.setTag("elements", list);
+	}
+
+	@Override
+	public void on_interact(LDGuiContainer container, Player player, NBTTagCompound packet, String index){
+		switch(index){
+			//
+		}
 	}
 }
