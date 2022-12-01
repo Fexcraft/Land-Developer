@@ -14,7 +14,7 @@ public class DistrictType implements Saveable {
 	public static String DEFAULT;
 	public static TreeMap<String, DistrictType> TYPES = new TreeMap<>();
 	private boolean agricultural, residential, commercial, industrial, exploitable;
-	private String id;
+	private String id, name;
 
 	private DistrictType(String id){
 		this.id = id;
@@ -44,12 +44,17 @@ public class DistrictType implements Saveable {
 		return exploitable;
 	}
 	
+	public String name(){
+		return name;
+	}
+	
 	public static class Builder {
 		
 		private DistrictType type;
 		
-		public Builder(String id){
+		public Builder(String id, String string){
 			type = new DistrictType(id);
+			type.name = string;
 		}
 		
 		public Builder agricultural(boolean bool){
@@ -109,7 +114,7 @@ public class DistrictType implements Saveable {
 			if(def == null) def = entry.getKey();
 			found = true;
 			JsonMap sub = entry.getValue().asMap();
-			DistrictType type = new Builder(entry.getKey())
+			DistrictType type = new Builder(sub.getString("name", "Unnamed Type"), entry.getKey())
 				.agricultural(sub.getBoolean("agricultural", false))
 				.residential(sub.getBoolean("residential", false))
 				.commercial(sub.getBoolean("commercial", false))
@@ -120,63 +125,63 @@ public class DistrictType implements Saveable {
 		}
 		if(!found){
 			def = "wilderness";
-			TYPES.put("wilderness", new Builder("wilderness")
+			TYPES.put("wilderness", new Builder("wilderness", "Wilderness")
 				.agricultural(false)
 				.residential(false)
 				.commercial(false)
 				.industrial(false)
 				.exploitable(false)
 				.build());
-			TYPES.put("village", new Builder("village")
+			TYPES.put("village", new Builder("village", "Village")
 				.agricultural(true)
 				.residential(true)
 				.commercial(false)
 				.industrial(false)
 				.exploitable(false)
 				.build());
-			TYPES.put("agricultural", new Builder("agricultural")
+			TYPES.put("agricultural", new Builder("agricultural", "Agricultural")
 				.agricultural(true)
 				.residential(false)
 				.commercial(false)
 				.industrial(false)
 				.exploitable(false)
 				.build());
-			TYPES.put("mineral", new Builder("mineral")
+			TYPES.put("mineral", new Builder("mineral", "Mineral")
 				.agricultural(false)
 				.residential(false)
 				.commercial(false)
 				.industrial(true)
 				.exploitable(true)
 				.build());
-			TYPES.put("residental", new Builder("residental")
+			TYPES.put("residental", new Builder("residental", "Residental")
 				.agricultural(false)
 				.residential(true)
 				.commercial(true)
 				.industrial(false)
 				.exploitable(false)
 				.build());
-			TYPES.put("commercial", new Builder("commercial")
+			TYPES.put("commercial", new Builder("commercial", "Commercial")
 				.agricultural(true)
 				.residential(false)
 				.commercial(true)
 				.industrial(false)
 				.exploitable(false)
 				.build());
-			TYPES.put("industrial", new Builder("industrial")
+			TYPES.put("industrial", new Builder("industrial", "Industrial")
 				.agricultural(false)
 				.residential(false)
 				.commercial(false)
 				.industrial(true)
 				.exploitable(false)
 				.build());
-			TYPES.put("wasteland", new Builder("wasteland")
+			TYPES.put("wasteland", new Builder("wasteland", "Wasteland")
 				.agricultural(false)
 				.residential(false)
 				.commercial(false)
 				.industrial(false)
 				.exploitable(true)
 				.build());
-			TYPES.put("municipial", new Builder("municipial")
+			TYPES.put("municipial", new Builder("municipial", "Municipial")
 				.agricultural(false)
 				.residential(false)
 				.commercial(true)
