@@ -1,10 +1,17 @@
 package net.fexcraft.mod.landdev.data.district;
 
+import static net.fexcraft.mod.fsmm.util.Config.getWorthAsString;
 import static net.fexcraft.mod.landdev.data.PermAction.ACT_CLAIM;
 import static net.fexcraft.mod.landdev.data.PermAction.ACT_MANAGE_DISTRICT;
 import static net.fexcraft.mod.landdev.data.PermAction.ACT_MANAGE_FINANCES;
-import static net.fexcraft.mod.landdev.data.PermAction.ACT_SET_CHUNK_TAX;
+import static net.fexcraft.mod.landdev.data.PermAction.ACT_SET_TAX_CHUNK;
 import static net.fexcraft.mod.landdev.data.PermAction.ACT_USE_FINANCES;
+import static net.fexcraft.mod.landdev.gui.LDGuiElementType.ELM_BLANK;
+import static net.fexcraft.mod.landdev.gui.LDGuiElementType.ELM_GENERIC;
+import static net.fexcraft.mod.landdev.gui.LDGuiElementType.ICON_ADD;
+import static net.fexcraft.mod.landdev.gui.LDGuiElementType.ICON_BLANK;
+import static net.fexcraft.mod.landdev.gui.LDGuiElementType.ICON_EMPTY;
+import static net.fexcraft.mod.landdev.gui.LDGuiElementType.ICON_OPEN;
 import static net.fexcraft.mod.landdev.util.TranslationUtil.translate;
 
 import java.util.UUID;
@@ -137,14 +144,15 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 
 	@Override
 	public boolean can(PermAction act, UUID uuid){
+		boolean man = manage.isManager(uuid);
 		if(act == ACT_CLAIM){
-			return manage.isManager(uuid) || owner.manageable().can(act, uuid);
+			return man || owner.manageable().can(act, uuid);
 		}
 		if(act == ACT_MANAGE_DISTRICT){
-			return manage.isManager(uuid) || owner.manageable().can(act, uuid);
+			return man || owner.manageable().can(act, uuid);
 		}
-		if(act == ACT_SET_CHUNK_TAX){
-			return manage.isManager(uuid) || owner.manageable().can(act, uuid);
+		if(act == ACT_SET_TAX_CHUNK){
+			return man || owner.manageable().can(act, uuid);
 		}
 		return false;
 	}
@@ -210,7 +218,24 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 		com.setString("title_lang", "district.title");
 		NBTTagList list = new NBTTagList();
 		if(container.x == 0){
-			//
+			boolean canman = can(ACT_MANAGE_DISTRICT, container.player.uuid) || container.player.adm;
+			addToList(list, "id", ELM_GENERIC, ICON_BLANK, false, false, id);
+			addToList(list, "name", ELM_GENERIC, canman ? ICON_OPEN : ICON_EMPTY, canman, false, name());
+			addToList(list, "type", ELM_GENERIC, canman ? ICON_OPEN : ICON_EMPTY, canman, false, type.name());
+			addToList(list, "owner", ELM_GENERIC, ICON_OPEN, true, false, owner.name());
+			addToList(list, "spacer", ELM_BLANK, ICON_BLANK, false, false, null);
+			addToList(list, "appearance", ELM_GENERIC, ICON_BLANK, false, false, null);
+			addToList(list, "icon", ELM_BLANK, ICON_OPEN, true, true, icon.getn());
+			addToList(list, "color", ELM_BLANK, canman ? ICON_OPEN : ICON_EMPTY, true, true, color.getString());
+			addToList(list, "spacer", ELM_BLANK, ICON_BLANK, false, false, null);
+			if(sell.price > 0){
+				addToList(list, "price", ELM_GENERIC, ICON_OPEN, true, false, sell.price_formatted());
+			}
+			if(canman){
+				addToList(list, "set_price", ELM_GENERIC, ICON_OPEN, true, false, null);
+			}
+			addToList(list, "chunk_tax", ELM_GENERIC, canman ? ICON_ADD : ICON_EMPTY, true, false, getWorthAsString(tax()));
+			addToList(list, "spacer", ELM_BLANK, ICON_BLANK, false, false, null);
 		}
 		com.setTag("elements", list);
 	}
