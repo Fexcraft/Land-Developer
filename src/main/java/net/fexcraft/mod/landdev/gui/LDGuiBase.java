@@ -3,8 +3,10 @@ package net.fexcraft.mod.landdev.gui;
 import java.util.ArrayList;
 import java.util.TreeMap;
 
+import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.gui.GenericGui;
+import net.fexcraft.lib.mc.registry.UCResourceLocation;
 import net.fexcraft.lib.mc.utils.Formatter;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.resources.I18n;
@@ -21,7 +23,9 @@ public class LDGuiBase extends GenericGui<LDGuiContainer> {
 	private ArrayList<LDGuiElement> elements = new ArrayList<>();
 	protected BasicText title, notification;
 	protected BasicButton notificationbutton;
-	protected boolean addscroll, notify;
+	protected boolean addscroll, notify, showicon;
+	protected UCResourceLocation iconurl;
+	protected RGB color = RGB.WHITE.copy();
 	protected int scroll;
 
 	public LDGuiBase(int id, EntityPlayer player, int x, int y, int z){
@@ -71,6 +75,17 @@ public class LDGuiBase extends GenericGui<LDGuiContainer> {
 			mc.renderEngine.bindTexture(NOTIFICATION);
 			drawTexturedModalRect(guiLeft - 16, guiTop - 24, 0, 0, 256, 22);
 			if(Time.getSecond() % 2 == 1) drawTexturedModalRect(guiLeft - 10, guiTop - 19, 6, 23, 6, 12);
+		}
+		if(showicon){
+			LDGuiElementType elm = LDGuiElementType.ICONBAR;
+			drawTexturedModalRect(guiLeft - 29, guiTop + 19, elm.x, elm.y, elm.w, elm.h);
+			elm = LDGuiElementType.ICONBARCOLOR;
+			color.glColorApply();
+			drawTexturedModalRect(guiLeft - 26, guiTop + 52, elm.x, elm.y, elm.w, elm.h);
+			RGB.glColorReset();
+			mc.renderEngine.bindTexture(iconurl);
+			drawScaledCustomSizeModalRect(guiLeft - 26, guiTop + 22, 0, 0, 1, 1, 28, 28, 1, 1);
+			mc.renderEngine.bindTexture(TEXTURE);
 		}
 	}
 	
