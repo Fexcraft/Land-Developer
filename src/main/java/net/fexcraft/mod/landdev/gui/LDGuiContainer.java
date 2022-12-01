@@ -11,7 +11,10 @@ import java.util.HashMap;
 import net.fexcraft.lib.mc.gui.GenericContainer;
 import net.fexcraft.lib.mc.gui.GenericGui.BasicButton;
 import net.fexcraft.lib.mc.gui.GenericGui.BasicText;
+import net.fexcraft.lib.mc.render.ExternalTextureHelper;
 import net.fexcraft.lib.mc.utils.Formatter;
+import net.fexcraft.mod.landdev.data.ColorData;
+import net.fexcraft.mod.landdev.data.IconHolder;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.data.district.District;
 import net.fexcraft.mod.landdev.data.municipality.Municipality;
@@ -44,6 +47,7 @@ public class LDGuiContainer extends GenericContainer {
 		switch(type = id){
 			case MAIN: prefix = "main"; break;
 			case CHUNK: prefix = "chunk"; break;
+			case DISTRICT: prefix = "district"; break;
 			case MUNICIPALITY: prefix = "municipality"; break;
 		}
 		this.player = ResManager.getPlayer(player);
@@ -104,6 +108,8 @@ public class LDGuiContainer extends GenericContainer {
 	public void sendSync(){
 		Chunk_ chunk = ResManager.getChunk(y, z);
 		NBTTagCompound com = new NBTTagCompound();
+		IconHolder holder = null;
+		ColorData color = null;
 		switch(type){
 			case MAIN:{
 				Main.INST.sync_packet(this, com);
@@ -113,19 +119,37 @@ public class LDGuiContainer extends GenericContainer {
 				chunk.sync_packet(this, com);
 				break;
 			}
+			case DISTRICT:{
+				District dis = ResManager.getDistrict(y, y > -2);
+				if(dis != null){
+					dis.sync_packet(this, com);
+					holder = dis.icon;
+					color = dis.color;
+					break;
+				}
+				break;
+			}
 			case MUNICIPALITY:{
 				if(x < 0){
 					ResManager.getMunicipality(-1, true).sync_packet(this, com);
+					holder = chunk.district.county().icon;
+					color = chunk.district.county().color;
 					break;
 				}
 				Municipality mun = ResManager.getMunicipality(y, y > -2);
 				if(mun != null){
 					mun.sync_packet(this, com);
+					holder = mun.icon;
+					color = mun.color;
 					break;
 				}
 				break;
 			}
 			default: Missing.INST.sync_packet(this, com); break;
+		}
+		if(holder != null){
+			com.setString("gui_icon", holder.getnn());
+			com.setInteger("gui_color", color.getInteger());
 		}
 		send(Side.CLIENT, com);
 	}
@@ -179,6 +203,10 @@ public class LDGuiContainer extends GenericContainer {
 			}
 		}
 		if(packet.hasKey("form")) form = packet.getBoolean("form");
+		if(gui.showicon = packet.hasKey("gui_icon")){
+			gui.iconurl = ExternalTextureHelper.get(packet.getString("gui_icon"));
+			gui.color.packed = packet.getInteger("gui_color");
+		}
 		gui.scroll(0);
 		gui.addMsgElms();
 	}
