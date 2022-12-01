@@ -133,7 +133,7 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 			if(canman){
 				addToList(list, "set_price", ELM_GENERIC, ICON_OPEN, true, false, null);
 			}
-			addToList(list, "tax", ELM_GENERIC, ICON_ADD, true, false, getWorthAsString(tax.custom_tax == 0 ? district.tax() : tax.custom_tax));
+			addToList(list, "tax", ELM_GENERIC, canman ? ICON_ADD : ICON_EMPTY, true, false, getWorthAsString(tax.custom_tax == 0 ? district.tax() : tax.custom_tax));
 			addToList(list, "spacer", ELM_BLANK, ICON_BLANK, false, false, null);
 			addToList(list, "access_interact", ELM_GENERIC, canman ? access.interact ? ICON_ENABLED : ICON_DISABLED : ICON_EMPTY, canman, false, access.interact ? LANG_YES : LANG_NO);
 			addToList(list, "access_player", ELM_GENERIC, ICON_LIST, true, false, access.players.size());
@@ -224,7 +224,7 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 			case "owner": if(canman) container.open(5); return;
 			case "price": if(!canman) container.open(6); return;
 			case "set_price": container.open(7); return;
-			case "tax": if(district.can(PermAction.ACT_SET_CHUNK_TAX, player.uuid)) container.open(8); return;
+			case "tax": if(district.can(PermAction.ACT_SET_TAX_CHUNK, player.uuid)) container.open(8); return;
 			case "access_player": container.open(9); return;
 			case "access_company": container.open(10); return;
 			//
