@@ -1,8 +1,9 @@
 package net.fexcraft.mod.landdev.data.county;
 
 import static net.fexcraft.mod.landdev.data.PermAction.ACT_CLAIM;
-import static net.fexcraft.mod.landdev.data.PermAction.ACT_SET_CHUNK_TAX;
-import static net.fexcraft.mod.landdev.data.PermAction.ACT_SET_PLAYER_TAX;
+import static net.fexcraft.mod.landdev.data.PermAction.ACT_MANAGE_FINANCES;
+import static net.fexcraft.mod.landdev.data.PermAction.ACT_SET_TAX_CHUNK;
+import static net.fexcraft.mod.landdev.data.PermAction.ACT_SET_TAX_PLAYER;
 import static net.fexcraft.mod.landdev.data.PermAction.ACT_USE_FINANCES;
 import static net.fexcraft.mod.landdev.util.TranslationUtil.translate;
 
@@ -22,7 +23,7 @@ import net.fexcraft.mod.landdev.util.ResManager;
 
 public class County implements Saveable, Layer {
 
-	public static PermActions mactions = new PermActions(ACT_CLAIM, ACT_SET_CHUNK_TAX, ACT_SET_PLAYER_TAX, ACT_USE_FINANCES, ACT_USE_FINANCES);
+	public static PermActions mactions = new PermActions(ACT_CLAIM, ACT_SET_TAX_CHUNK, ACT_SET_TAX_PLAYER, ACT_USE_FINANCES, ACT_MANAGE_FINANCES);
 	public static PermActions cactions = new PermActions(ACT_CLAIM);
 	public final int id;
 	public Createable created = new Createable();
