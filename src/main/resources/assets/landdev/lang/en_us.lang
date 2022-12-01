@@ -118,6 +118,16 @@ landdev.gui.chunk.buy.payer=Receiver pays for the chunk?
 landdev.gui.chunk.buy.submit=Confirm Acquisition
 landdev.gui.chunk.buy.notenoughmoney=You do not have enough money to buy this chunk.
 //
+landdev.gui.district.title=District Overview
+landdev.gui.district.id=ID: %s
+landdev.gui.district.name=Name: %s
+landdev.gui.district.type=Type: %s
+landdev.gui.district.owner=Owner: %s
+landdev.gui.district.appearance=Appearance (Icon and Color)
+landdev.gui.district.price=Price: %s
+landdev.gui.district.set_price=Set Price
+landdev.gui.district.chunk_tax=Chunk Tax: %s
+//
 landdev.gui.municipality.create.title=Municipality Creation UI
 landdev.gui.municipality.create.no_perm=No permission or permit to create.
 landdev.gui.municipality.create.name=New Municipality's Name:
