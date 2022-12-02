@@ -6,14 +6,7 @@ import static net.fexcraft.mod.landdev.data.PermAction.ACT_MANAGE_DISTRICT;
 import static net.fexcraft.mod.landdev.data.PermAction.ACT_MANAGE_FINANCES;
 import static net.fexcraft.mod.landdev.data.PermAction.ACT_SET_TAX_CHUNK;
 import static net.fexcraft.mod.landdev.data.PermAction.ACT_USE_FINANCES;
-import static net.fexcraft.mod.landdev.gui.LDGuiElementType.ELM_BLANK;
-import static net.fexcraft.mod.landdev.gui.LDGuiElementType.ELM_GENERIC;
-import static net.fexcraft.mod.landdev.gui.LDGuiElementType.ELM_GREEN;
-import static net.fexcraft.mod.landdev.gui.LDGuiElementType.ELM_YELLOW;
-import static net.fexcraft.mod.landdev.gui.LDGuiElementType.ICON_ADD;
-import static net.fexcraft.mod.landdev.gui.LDGuiElementType.ICON_BLANK;
-import static net.fexcraft.mod.landdev.gui.LDGuiElementType.ICON_EMPTY;
-import static net.fexcraft.mod.landdev.gui.LDGuiElementType.ICON_OPEN;
+import static net.fexcraft.mod.landdev.gui.LDGuiElementType.*;
 import static net.fexcraft.mod.landdev.util.TranslationUtil.translate;
 
 import java.util.UUID;
@@ -30,6 +23,7 @@ import net.fexcraft.mod.landdev.data.norm.IntegerNorm;
 import net.fexcraft.mod.landdev.data.norm.StringNorm;
 import net.fexcraft.mod.landdev.data.player.Player;
 import net.fexcraft.mod.landdev.data.state.State;
+import net.fexcraft.mod.landdev.gui.GuiHandler;
 import net.fexcraft.mod.landdev.gui.LDGuiContainer;
 import net.fexcraft.mod.landdev.gui.modules.LDGuiModule;
 import net.fexcraft.mod.landdev.util.ResManager;
@@ -214,14 +208,28 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 		}
 		return null;
 	}
+	
+	public static final int
+		UI_NAME = 1,
+		UI_TYPE = 2,
+		UI_OWNER = 3,
+		UI_PRICE = 4,
+		UI_MANAGER = 5,
+		UI_SET_PRICE = 6,
+		UI_CHUNK_TAX = 7,
+		UI_MAILBOX = 8,
+		UI_NORMS = 9,
+		UI_APPREARANCE = 10
+		;
 
 	@Override
 	public void sync_packet(LDGuiContainer container, NBTTagCompound com){
 		com.setString("title_lang", "district.title");
 		NBTTagList list = new NBTTagList();
-		if(container.x == 0){
-			boolean canman = can(ACT_MANAGE_DISTRICT, container.player.uuid) || container.player.adm;
-			boolean canoman = owner.manageable().can(ACT_MANAGE_DISTRICT, container.player.uuid) || container.player.adm;
+		boolean canman = can(ACT_MANAGE_DISTRICT, container.player.uuid) || container.player.adm;
+		boolean canoman = owner.manageable().can(ACT_MANAGE_DISTRICT, container.player.uuid) || container.player.adm;
+		switch(container.x){
+		case UI_MAIN:
 			addToList(list, "id", ELM_GENERIC, ICON_BLANK, false, false, id);
 			addToList(list, "name", ELM_GENERIC, canman ? ICON_OPEN : ICON_EMPTY, canman, false, name());
 			addToList(list, "type", ELM_GENERIC, canman ? ICON_OPEN : ICON_EMPTY, canman, false, type.name());
@@ -241,21 +249,86 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 			addToList(list, "chunks", ELM_GENERIC, ICON_BLANK, false, false, chunks);
 			addToList(list, "mailbox", ELM_GENERIC, canman ? ICON_OPEN : ICON_EMPTY, canman, false, mail.asString());
 			addToList(list, "norms", ELM_GREEN, ICON_OPEN, true, false, null);
-			if(canman){
-				addToList(list, "spacer", ELM_BLANK, ICON_BLANK, false, false, null);
-				addToList(list, "appearance", ELM_YELLOW, ICON_BLANK, false, false, null);
-				addToList(list, "icon", ELM_BLANK, ICON_OPEN, true, true, icon.getn());
-				addToList(list, "color", ELM_BLANK, ICON_OPEN, true, true, color.getString());
-			}
+			addToList(list, "appearance", ELM_YELLOW, ICON_OPEN, true, false, null);
+			break;
+		case UI_NAME:
+			com.setString("title_lang", "district.name.title");
+			addToList(list, "id", ELM_GENERIC, ICON_BLANK, false, false, id);
+			addToList(list, "name.current", ELM_GENERIC, ICON_BLANK, false, false, name());
+			addToList(list, "name.field", ELM_BLANK, ICON_BLANK, false, true, name());
+			addToList(list, "name.submit", ELM_GENERIC, ICON_OPEN, true, false, null);
 			com.setBoolean("form", true);
+			break;
+		case UI_TYPE:
+			com.setString("title_lang", "district.type.title");
+			for(DistrictType dtp : DistrictType.TYPES.values()){
+				addToList(list, "type." + dtp.id(), ELM_BLUE, radio(dtp == type), true, false, dtp.name(), true);
+			}
+			addToList(list, "type.submit", ELM_GENERIC, ICON_OPEN, true, false, null);
+			com.setBoolean("form", true);
+			break;
+		case UI_MANAGER:
+			com.setString("title_lang", "district.manager.title");
+			addToList(list, "manager.current", ELM_GENERIC, ICON_BLANK, false, false, manage.getManagerName());
+			addToList(list, "manager.field", ELM_BLANK, ICON_BLANK, false, true, manage.getManagerName());
+			addToList(list, "manager.submit", ELM_GENERIC, manage.hasManager() ? ICON_OPEN : ICON_ADD, true, false, null);
+			addToList(list, "manager.remove", ELM_GENERIC, ICON_REM, true, false, null);
+			com.setBoolean("form", true);
+			break;
+		case UI_APPREARANCE:
+			addToList(list, "icon", ELM_BLANK, ICON_OPEN, true, true, icon.getn());
+			addToList(list, "color", ELM_BLANK, ICON_OPEN, true, true, color.getString());
+			com.setBoolean("form", true);
+			break;
 		}
 		com.setTag("elements", list);
 	}
 
 	@Override
 	public void on_interact(LDGuiContainer container, Player player, NBTTagCompound packet, String index){
+		boolean canman = can(ACT_MANAGE_DISTRICT, container.player.uuid) || container.player.adm;
+		boolean canoman = owner.manageable().can(ACT_MANAGE_DISTRICT, container.player.uuid) || container.player.adm;
 		switch(index){
-			//
+			case "name": container.open(UI_NAME); return;
+			case "type": container.open(UI_TYPE); return;
+			case "owner":{
+				if(canoman) container.open(UI_OWNER);
+				else container.open(owner.is_county ? GuiHandler.COUNTY : GuiHandler.MUNICIPALITY, 0, owner.owid, 0);
+				return;
+			}
+			case "manager": if(canoman) container.open(UI_MANAGER); return;
+			case "price": container.open(UI_PRICE); return;
+			case "set_price": if(canman) container.open(UI_SET_PRICE); return;
+			case "chunk_tax": if(canman) container.open(UI_CHUNK_TAX); return;
+			case "mailbox": if(canman) container.open(UI_MAILBOX); return;
+			case "norms": container.open(UI_NORMS); return;
+			case "appearance": container.open(UI_APPREARANCE); return;
+			case "icon": return;
+			case "color": return;
+			case "name.submit":{
+				if(!canman) return;
+    			String name = packet.getCompoundTag("fields").getString("name.field");
+    			if(!validateName(container, name)) return;
+    			norms.get("name").set(name);
+    			container.open(UI_MAIN);
+				return;
+			}
+			case "type.submit":{
+				if(!canman) return;
+				DistrictType type = DistrictType.TYPES.get(packet.getString("radiobox").replace("type.", ""));
+				if(type == null) return;
+				this.type = type;
+				container.open(UI_MAIN);
+				return;
+			}
+			case "manager.submit":{
+				
+				return;
+			}
+			case "manager.remove":{
+				
+				return;
+			}
 		}
 	}
 }
