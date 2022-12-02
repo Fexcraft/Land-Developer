@@ -112,7 +112,7 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 		com.setString("title_lang", "chunk.title");
 		NBTTagList list = new NBTTagList();
 		if(container.x == 0){
-			boolean canman = can_manage(container.player());
+			boolean canman = can_manage(container.player()) || container.player.adm;
 			addToList(list, "key", ELM_GENERIC, ICON_BLANK, false, false, key.comma());
 			if(link == null){
 				addToList(list, "link", ELM_GENERIC, canman ? ICON_ADD : ICON_EMPTY, true, false, null);
