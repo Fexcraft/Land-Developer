@@ -8,12 +8,14 @@ import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.mod.landdev.data.PermAction.PermActions;
 import net.fexcraft.mod.landdev.data.norm.Norm;
 import net.fexcraft.mod.landdev.data.player.Player;
+import net.fexcraft.mod.landdev.util.ResManager;
 
 public class Manageable implements Saveable, PermInteractive {
 	
 	protected UUID manager;
 	protected TreeMap<UUID, Staff> staff = null;
 	protected PermActions actions;
+	protected String manager_name;
 	public Norms norms = new Norms();
 	
 	public Manageable(boolean hasstaff, PermActions actions){
@@ -116,6 +118,15 @@ public class Manageable implements Saveable, PermInteractive {
 
 	public void setManager(Player player){
 		manager = player.uuid;
+	}
+
+	public String getManagerName(){
+		if(manager == null) return "none";
+		return ResManager.getPlayerName(manager);
+	}
+
+	public boolean hasManager(){
+		return manager != null;
 	}
 
 }
