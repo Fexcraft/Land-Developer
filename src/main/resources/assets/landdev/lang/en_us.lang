@@ -156,7 +156,5 @@ landdev.gui.municipality.create.not_enough_money=Not enough money to pay the cre
 landdev.gui.municipality.create.leave_management=Please leave your current Municipality's Management first.
 landdev.gui.municipality.create.leave_county_management=Please leave your current County's Management first.
 landdev.gui.municipality.create.leave_state_management=Please leave your current State's Management first.
-landdev.gui.municipality.create.name_too_short=&4Name is too short!
-landdev.gui.municipality.create.name_too_long=&bName is too long!
 landdev.gui.municipality.create.district_no_forming=District Norm does not allow full integration.
 landdev.gui.municipality.create.complete=&bNew Municipality created! Try &7/mun&b!
