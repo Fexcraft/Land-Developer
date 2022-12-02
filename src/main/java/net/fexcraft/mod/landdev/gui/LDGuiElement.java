@@ -3,6 +3,7 @@ package net.fexcraft.mod.landdev.gui;
 import net.fexcraft.lib.mc.gui.GenericGui.BasicButton;
 import net.fexcraft.lib.mc.gui.GenericGui.BasicText;
 import net.fexcraft.lib.mc.gui.GenericGui.TextField;
+import net.fexcraft.mod.landdev.gui.modules.LDGuiModule;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.relauncher.Side;
@@ -26,9 +27,14 @@ public class LDGuiElement {
 	public LDGuiElement text(LDGuiBase gui, String text, String val){
 		if(text != null || val != null){
 			this.text = new BasicText(gui.getGuiLeft() + 8, 0, 196, type.lighttext() ? 0xcdcdcd : 0x5d5d5d, "landdev.gui." + (gui.prefix()) + "." + text);
-			gui.add(index, (val == null ? this.text.translate() : this.text.translate(I18n.format(val))).hoverable(true).autoscale());
+			gui.add(index, (val == null ? this.text.translate() : val.startsWith(LDGuiModule.VALONLY) ? vot(val.substring(3)) : this.text.translate(I18n.format(val))).hoverable(true).autoscale());
 		}
 		return this;
+	}
+
+	private BasicText vot(String string){
+		text.string = string;
+		return text;
 	}
 
 	public LDGuiElement button(LDGuiBase gui, boolean button){
