@@ -13,6 +13,7 @@ import net.fexcraft.lib.mc.gui.GenericGui.BasicButton;
 import net.fexcraft.lib.mc.gui.GenericGui.BasicText;
 import net.fexcraft.lib.mc.render.ExternalTextureHelper;
 import net.fexcraft.lib.mc.utils.Formatter;
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.landdev.data.ColorData;
 import net.fexcraft.mod.landdev.data.IconHolder;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
@@ -63,6 +64,7 @@ public class LDGuiContainer extends GenericContainer {
 	}
 
 	private void server_packet(NBTTagCompound packet, EntityPlayer player){
+		Print.debug(packet);
 		Player ply = ResManager.getPlayer(player);
 		if(packet.getBoolean("sync")){
 			sendSync();
