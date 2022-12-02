@@ -59,7 +59,7 @@ public class MunCmd extends CommandBase {
 		    			Print.chat(sender, translateCmd("mun.no_create_permit"));
 	    			}
 	    			else{
-	    				ply.entity.openGui(LandDev.INSTANCE, GuiHandler.MUNICIPALITY, sender.getEntityWorld(), Municipality.UI_CREATE, 0, 0);
+	    				ply.entity.openGui(LandDev.INSTANCE, GuiHandler.MUNICIPALITY, sender.getEntityWorld(), Municipality.UI_CREATE, chunk.key.x, chunk.key.z);
 	    			}
 	    			return;
 	    		}
