@@ -22,7 +22,7 @@ public class LDGuiBase extends GenericGui<LDGuiContainer> {
 	private static ArrayList<String> info = new ArrayList<>();
 	private ArrayList<LDGuiElement> elements = new ArrayList<>();
 	protected BasicText title, notification;
-	protected BasicButton notificationbutton;
+	protected BasicButton notificationbutton, backbutton;
 	protected boolean addscroll, notify, showicon;
 	protected UCResourceLocation iconurl;
 	protected RGB color = RGB.WHITE.copy();
@@ -71,21 +71,25 @@ public class LDGuiBase extends GenericGui<LDGuiContainer> {
 			drawTexturedModalRect(guiLeft + elm.x - 5, guiTop + 17, elm.x, elm.y, elm.w, elm.h);
 		}
 		drawElement(LDGuiElementType.BOTTOM, guiTop + ySize - 6);
+		if(backbutton != null){
+			LDGuiElementType elm = LDGuiElementType.GO_BACK;
+			drawTexturedModalRect(guiLeft - 13, guiTop + 2, elm.x, elm.y, elm.w, elm.h);
+		}
 		if(notify){
 			mc.renderEngine.bindTexture(NOTIFICATION);
 			drawTexturedModalRect(guiLeft - 16, guiTop - 24, 0, 0, 256, 22);
 			if(Time.getSecond() % 2 == 1) drawTexturedModalRect(guiLeft - 10, guiTop - 19, 6, 23, 6, 12);
 			mc.renderEngine.bindTexture(TEXTURE);
 		}
-		if(showicon && elements.size() > 6){
+		if(showicon){
 			LDGuiElementType elm = LDGuiElementType.ICONBAR;
-			drawTexturedModalRect(guiLeft - 29, guiTop + 19, elm.x, elm.y, elm.w, elm.h);
+			drawTexturedModalRect(guiLeft - 29, guiTop + 20, elm.x, elm.y, elm.w, elm.h);
 			elm = LDGuiElementType.ICONBARCOLOR;
 			color.glColorApply();
-			drawTexturedModalRect(guiLeft - 26, guiTop + 52, elm.x, elm.y, elm.w, elm.h);
+			drawTexturedModalRect(guiLeft - 26, guiTop + 53, elm.x, elm.y, elm.w, elm.h);
 			RGB.glColorReset();
 			mc.renderEngine.bindTexture(iconurl);
-			drawScaledCustomSizeModalRect(guiLeft - 26, guiTop + 22, 0, 0, 1, 1, 28, 28, 1, 1);
+			drawScaledCustomSizeModalRect(guiLeft - 26, guiTop + 23, 0, 0, 1, 1, 28, 28, 1, 1);
 			mc.renderEngine.bindTexture(TEXTURE);
 		}
 	}
