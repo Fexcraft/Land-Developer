@@ -106,12 +106,26 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 		//TODO
 		return false;
 	}
+	
+	public static final int
+		UI_LINK = 1,
+		UI_LINKS = 2,
+		UI_LINKED = 3,
+		UI_TYPE = 4,
+		UI_OWNER = 5,
+		UI_PRICE = 6,
+		UI_SET_PRICE = 7,
+		UI_TAX = 8,
+		UI_ACC_PLAYER = 9,
+		UI_ACC_COMPANY = 10
+		;
 
 	@Override
 	public void sync_packet(LDGuiContainer container, NBTTagCompound com){
 		com.setString("title_lang", "chunk.title");
 		NBTTagList list = new NBTTagList();
-		if(container.x == 0){
+		switch(container.x){
+		case UI_MAIN:
 			boolean canman = can_manage(container.player()) || container.player.adm;
 			addToList(list, "key", ELM_GENERIC, ICON_BLANK, false, false, key.comma());
 			if(link == null){
@@ -138,17 +152,14 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 			addToList(list, "access_interact", ELM_GENERIC, canman ? access.interact ? ICON_ENABLED : ICON_DISABLED : ICON_EMPTY, canman, false, access.interact ? LANG_YES : LANG_NO);
 			addToList(list, "access_player", ELM_GENERIC, ICON_LIST, true, false, access.players.size());
 			addToList(list, "access_company", ELM_GENERIC, ICON_LIST, true, false, access.companies.size());
-		}
-		else if(container.x == 1){
-			//
-		}
-		else if(container.x == 2){
-			//
-		}
-		else if(container.x == 3){
-			//
-		}
-		else if(container.x == 4){
+			break;
+		case UI_LINK:
+			break;
+		case UI_LINKS:
+			break;
+		case UI_LINKED:
+			break;
+		case UI_TYPE:
 			com.setString("title_lang", "chunk.select_type.title");
 			addToList(list, "key", ELM_GENERIC, ICON_BLANK, false, false, key.comma());
 			addToList(list, "type.normal", ELM_BLUE, radio(type == ChunkType.NORMAL), true, false, null);
@@ -157,8 +168,8 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 			addToList(list, "type.public", ELM_BLUE, radio(type == ChunkType.PUBLIC), true, false, null);
 			addToList(list, "select_type.submit", ELM_GENERIC, ICON_OPEN, true, false, null);
 			com.setBoolean("form", true);
-		}
-		else if(container.x == 5){
+			break;
+		case UI_OWNER:
 			com.setString("title_lang", "chunk.set_owner.title");
 			addToList(list, "key", ELM_GENERIC, ICON_BLANK, false, false, key.comma());
 			addToList(list, "set_owner.warning0", ELM_RED, ICON_BLANK, false, false, null);
@@ -172,8 +183,8 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 			addToList(list, "set_owner.none", ELM_BLUE, radio(owner.owner == Layers.NONE), true, false, null);
 			addToList(list, "set_owner.submit", ELM_GENERIC, ICON_OPEN, true, false, null);
 			com.setBoolean("form", true);
-		}
-		else if(container.x == 6){
+			break;
+		case UI_PRICE:
 			com.setString("title_lang", "chunk.buy.title");
 			addToList(list, "key", ELM_GENERIC, ICON_BLANK, false, false, key.comma());
 			addToList(list, "buy.info", ELM_YELLOW, ICON_BLANK, false, false, null);
@@ -186,22 +197,20 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 			addToList(list, "buy.payer", ELM_GENERIC, ICON_CHECKBOX_UNCHECKED, true, false, null);
 			addToList(list, "buy.submit", ELM_GENERIC, ICON_OPEN, true, false, null);
 			com.setBoolean("form", true);
-		}
-		else if(container.x == 7){
+			break;
+		case UI_SET_PRICE:
 			com.setString("title_lang", "chunk.set_price.title");
 			addToList(list, "key", ELM_GENERIC, ICON_BLANK, false, false, key.comma());
 			addToList(list, "set_price.field", ELM_BLANK, ICON_BLANK, false, true, null);
 			addToList(list, "set_price.submit", ELM_GENERIC, ICON_OPEN, true, false, null);
 			com.setBoolean("form", true);
-		}
-		else if(container.x == 8){
-			//
-		}
-		else if(container.x == 9){
-			//
-		}
-		else if(container.x == 10){
-			//
+			break;
+		case UI_TAX:
+			break;
+		case UI_ACC_PLAYER:
+			break;
+		case UI_ACC_COMPANY:
+			break;
 		}
 		com.setTag("elements", list);
 	}
@@ -216,17 +225,17 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 				container.sendSync();
 				return;
 			}
-			case "link": container.open(1); return;
-			case "links": container.open(2); return;
-			case "linked": container.open(3); return;
-			case "type": if(canman) container.open(4); return;
+			case "link": container.open(UI_LINK); return;
+			case "links": container.open(UI_LINKS); return;
+			case "linked": container.open(UI_LINKED); return;
+			case "type": if(canman) container.open(UI_TYPE); return;
 			case "district": container.open(DISTRICT, 0, district.id, 0);
-			case "owner": if(canman) container.open(5); return;
-			case "price": if(!canman) container.open(6); return;
-			case "set_price": container.open(7); return;
-			case "tax": if(district.can(PermAction.ACT_SET_TAX_CHUNK, player.uuid)) container.open(8); return;
-			case "access_player": container.open(9); return;
-			case "access_company": container.open(10); return;
+			case "owner": if(canman) container.open(UI_OWNER); return;
+			case "price": if(!canman) container.open(UI_PRICE); return;
+			case "set_price": container.open(UI_SET_PRICE); return;
+			case "tax": if(district.can(PermAction.ACT_SET_TAX_CHUNK, player.uuid)) container.open(UI_TAX); return;
+			case "access_player": container.open(UI_ACC_PLAYER); return;
+			case "access_company": container.open(UI_ACC_COMPANY); return;
 			//
 			case "select_type.submit":{
 				if(!canman) return;
@@ -237,7 +246,7 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 					return;
 				}
 				this.type = type;
-				container.open(0);
+				container.open(UI_MAIN);
 				return;
 			}
 			case "set_price.submit":{
@@ -250,7 +259,7 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 				}
 				else{
 					sell.price = value;
-					container.open(0);
+					container.open(UI_MAIN);
 				}
 				return;
 			}
@@ -264,7 +273,7 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 				}
 				owner.set(layer, null, getLayerId(layer));
 				sell.price = 0;
-				container.open(0);
+				container.open(UI_MAIN);
 				return;
 			}
 			case "buy.submit":{
@@ -286,7 +295,7 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 				if(!bank.processAction(Action.TRANSFER, player.entity, account, sell.price, owner.getAccount(this))) return;
 				owner.set(layer, layer.is(Layers.PLAYER) ? player.uuid : null, district.getLayerId(layer));
 				sell.price = 0;
-				container.open(0);
+				container.open(UI_MAIN);
 				return;
 			}
 		}
