@@ -175,6 +175,7 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 			addToList(list, "create.claim_district", ELM_GENERIC, checkbox(pp), true, false, null);
 			addToList(list, "create.submit", ELM_BLUE, ICON_OPEN, true, false, null);
 			com.setBoolean("form", true);
+			com.setBoolean("noback", true);
 			break;
 		}
 		com.setTag("elements", list);
