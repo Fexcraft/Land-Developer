@@ -159,24 +159,23 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 		com.setString("title_lang", "municipality.title");
 		NBTTagList list = new NBTTagList();
 		switch(container.x){
-			case UI_CREATE:{
-				com.setString("title_lang", "municipality.create.title");
-				Chunk_ chunk = ResManager.getChunk(container.player().entity);
-    			County county = chunk.district.county();
-    			boolean cn = county.norms.get("new-municipalities").bool();
-    			boolean pp = container.player.hasPermit(ACT_CREATE_LAYER, county.getLayer(), county.id);
-    			if(!cn && !pp){
-    				addToList(list, "create.no_perm", ELM_GENERIC, ICON_BLANK, false, false, null);
-    				break;
-    			}
-				addToList(list, "create.name", ELM_GENERIC, ICON_BLANK, false, false, null);
-				addToList(list, "create.name_field", ELM_BLANK, ICON_BLANK, false, true, null);
-				addToList(list, "create.county_funded", ELM_GENERIC, checkbox(pp), true, false, null);
-				addToList(list, "create.claim_district", ELM_GENERIC, checkbox(pp), true, false, null);
-				addToList(list, "create.submit", ELM_BLUE, ICON_OPEN, true, false, null);
-				com.setBoolean("form", true);
-				break;
-			}
+		case UI_CREATE:
+			com.setString("title_lang", "municipality.create.title");
+			Chunk_ chunk = ResManager.getChunk(container.player().entity);
+    		County county = chunk.district.county();
+    		boolean cn = county.norms.get("new-municipalities").bool();
+    		boolean pp = container.player.hasPermit(ACT_CREATE_LAYER, county.getLayer(), county.id);
+    		if(!cn && !pp){
+    			addToList(list, "create.no_perm", ELM_GENERIC, ICON_BLANK, false, false, null);
+    			break;
+    		}
+			addToList(list, "create.name", ELM_GENERIC, ICON_BLANK, false, false, null);
+			addToList(list, "create.name_field", ELM_BLANK, ICON_BLANK, false, true, null);
+			addToList(list, "create.county_funded", ELM_GENERIC, checkbox(pp), true, false, null);
+			addToList(list, "create.claim_district", ELM_GENERIC, checkbox(pp), true, false, null);
+			addToList(list, "create.submit", ELM_BLUE, ICON_OPEN, true, false, null);
+			com.setBoolean("form", true);
+			break;
 		}
 		com.setTag("elements", list);
 	}
@@ -209,14 +208,7 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 					return;
     			}
     			String name = packet.getCompoundTag("fields").getString("create.name_field");
-    			if(name.length() < 1){
-					container.sendMsg("create.name_too_short");
-					return;
-    			}
-    			if(name.length() > 32){
-					container.sendMsg("create.name_too_long");
-					return;
-    			}
+    			if(!validateName(container, name)) return;
 				boolean uca = packet.getCompoundTag("checkboxes").getBoolean("create.county_funded");
 				if(!pp && !uca) sum += county.norms.get("new-municipality-fee").integer(); 
 				Permit perm = pp ? player.getPermit(ACT_CREATE_LAYER, county.getLayer(), county.id) : null;
