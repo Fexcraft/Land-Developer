@@ -16,6 +16,8 @@ landdev.cmd.adminmode.false=&eAdmin &6mode is now &ainactive&6.
 landdev.cmd.mun.no_new_municipalities=County does not allow creation of new Municipalities.
 landdev.cmd.mun.no_create_permit=You do not have a Municipality creation permit.
 landdev.cmd.mun.not_in_a_municipality=You are not currently in a Municipality.
+landdev.cmd.name_too_short=&cName is too short!
+landdev.cmd.name_too_long=&bName is too long!
 
 landdev.announce.new_municipality=&9[&aLD&9] &bThe Municipality &6%s &7(%s) &bjust got created!
 
@@ -133,6 +135,15 @@ landdev.gui.district.chunk_tax=Chunk Tax: %s
 landdev.gui.district.chunks=Chunks: %s
 landdev.gui.district.mailbox=Mailbox: %s
 landdev.gui.district.norms=Norms/Settings
+landdev.gui.district.name.title=New District Name
+landdev.gui.district.name.current=Current Name: %s
+landdev.gui.district.name.submit=Confirm Change
+landdev.gui.district.type.title=Set District Type
+landdev.gui.district.type.submit=Confirm Change
+landdev.gui.district.manager.title=Set District Manager
+landdev.gui.district.manager.current=Current Manager: %s
+landdev.gui.district.manager.submit=Set new Manager
+landdev.gui.district.manager.remove=Remove current Manager
 //
 landdev.gui.municipality.create.title=Municipality Creation UI
 landdev.gui.municipality.create.no_perm=No permission or permit to create.
