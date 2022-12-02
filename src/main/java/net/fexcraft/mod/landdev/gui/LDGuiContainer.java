@@ -13,7 +13,6 @@ import net.fexcraft.lib.mc.gui.GenericGui.BasicButton;
 import net.fexcraft.lib.mc.gui.GenericGui.BasicText;
 import net.fexcraft.lib.mc.render.ExternalTextureHelper;
 import net.fexcraft.lib.mc.utils.Formatter;
-import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.landdev.data.ColorData;
 import net.fexcraft.mod.landdev.data.IconHolder;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
@@ -42,6 +41,7 @@ public class LDGuiContainer extends GenericContainer {
 	protected HashMap<String, Boolean> checkboxes = new HashMap<>();
 	protected ArrayList<String> radioboxes = new ArrayList<>();
 	protected String radiobox;
+	protected int backto;
 
 	public LDGuiContainer(EntityPlayer player, int id, int x, int y, int z){
 		super(player);
@@ -64,14 +64,12 @@ public class LDGuiContainer extends GenericContainer {
 	}
 
 	private void server_packet(NBTTagCompound packet, EntityPlayer player){
-		Print.debug(packet);
 		Player ply = ResManager.getPlayer(player);
 		if(packet.getBoolean("sync")){
 			sendSync();
 			return;
 		}
 		if(packet.hasKey("interact")){
-			Chunk_ chunk = ResManager.getChunk(y, z);
 			String index = packet.getString("interact");
 			switch(type){
 				case MAIN:{
@@ -79,6 +77,7 @@ public class LDGuiContainer extends GenericContainer {
 					break;
 				}
 				case CHUNK:{
+					Chunk_ chunk = ResManager.getChunk(y, z);
 					chunk.on_interact(this, ply, packet, index);
 					break;
 				}
@@ -103,6 +102,13 @@ public class LDGuiContainer extends GenericContainer {
 					break;
 				}
 				default: Missing.INST.on_interact(this, ply, packet, index); break;
+			}
+		}
+		if(packet.hasKey("go_back")){
+			if(x != 0) open(backto);
+			else{
+				Chunk_ chunk = ResManager.getChunk(player);
+				open(MAIN, 0, chunk.key.x, chunk.key.z);
 			}
 		}
 	}
@@ -186,6 +192,20 @@ public class LDGuiContainer extends GenericContainer {
 		}
 		gui.title = new BasicText(gui.getGuiLeft() + 8, gui.getGuiTop() + 8, 196, 0x0e0e0e, "landdev.gui." + packet.getString("title_lang")).hoverable(true).autoscale().translate();
 		gui.add("title", gui.title);
+		if(type != MAIN && !packet.hasKey("noback")){
+			gui.backbutton = new BasicButton("back", gui.getGuiLeft() - 10, gui.getGuiTop() + 5, 243, 3, 11, 11, true){
+				@Override
+				public boolean onclick(int x, int y, int m){
+					NBTTagCompound com = new NBTTagCompound();
+					com.setBoolean("go_back", true);
+					gui.container().send(Side.SERVER, com);
+					return true;
+				}
+			};
+			gui.add(gui.backbutton);
+			backto = packet.hasKey("backto") ? packet.getInteger("backto") : 0;
+		}
+		else gui.backbutton = null;
 		gui.elements().clear();
 		if(packet.hasKey("title")) gui.title.string = String.format(gui.title.string, packet.getString("title"));
 		for(NBTBase base : list){
@@ -205,7 +225,7 @@ public class LDGuiContainer extends GenericContainer {
 			}
 		}
 		if(packet.hasKey("form")) form = packet.getBoolean("form");
-		if(gui.showicon = packet.hasKey("gui_icon")){
+		if(gui.showicon = (packet.hasKey("gui_icon") && gui.elements().size() > 6)){
 			gui.iconurl = ExternalTextureHelper.get(packet.getString("gui_icon"));
 			gui.color.packed = packet.getInteger("gui_color");
 		}
