@@ -30,6 +30,7 @@ public enum LDGuiElementType {
 	ICONBARCOLOR(228, 92, 28, 8),
 	SCROLL_UP(229, 21, 11, 11),
 	SCROLL_DOWN(229, 34, 11, 11),
+	GO_BACK(240, 0, 16, 18),
 	;
 	
 	public int x, y, w, h, px;
