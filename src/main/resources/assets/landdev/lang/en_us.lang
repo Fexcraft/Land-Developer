@@ -41,6 +41,8 @@ landdev.state.norm.name=Unnamed State
 landdev.state.wilderness.name=Wilderness
 landdev.state.spawnzone.name=Spawn State
 
+landdev.general.no_mailbox=none
+
 
 landdev.gui.no=No
 landdev.gui.yes=Yes
@@ -81,7 +83,7 @@ landdev.gui.chunk.district=District: %s
 landdev.gui.chunk.owner=Owner: %s
 landdev.gui.chunk.unowned=none
 landdev.gui.chunk.price=Price: %s
-landdev.gui.chunk.set_price=Set Price
+landdev.gui.chunk.set_price=Set Price for Sale
 landdev.gui.chunk.tax=Tax: %s
 landdev.gui.chunk.access_interact=Interaction allowed? %s
 landdev.gui.chunk.access_player=Players with access: %s
@@ -123,10 +125,14 @@ landdev.gui.district.id=ID: %s
 landdev.gui.district.name=Name: %s
 landdev.gui.district.type=Type: %s
 landdev.gui.district.owner=Owner: %s
+landdev.gui.district.manager=Manager: %s
 landdev.gui.district.appearance=Appearance (Icon and Color)
 landdev.gui.district.price=Price: %s
-landdev.gui.district.set_price=Set Price
+landdev.gui.district.set_price=Set Price for Sale
 landdev.gui.district.chunk_tax=Chunk Tax: %s
+landdev.gui.district.chunks=Chunks: %s
+landdev.gui.district.mailbox=Mailbox: %s
+landdev.gui.district.norms=Norms/Settings
 //
 landdev.gui.municipality.create.title=Municipality Creation UI
 landdev.gui.municipality.create.no_perm=No permission or permit to create.
