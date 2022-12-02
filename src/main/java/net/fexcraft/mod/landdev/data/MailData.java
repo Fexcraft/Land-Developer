@@ -5,7 +5,7 @@ import net.minecraft.util.math.BlockPos;
 
 public class MailData implements Saveable {
 
-	public static final String NOMAILBOX = "no_mailbox";
+	public static final String NOMAILBOX = "landdev.general.no_mailbox";
 	private BlockPos mailbox;
 
 	@Override
