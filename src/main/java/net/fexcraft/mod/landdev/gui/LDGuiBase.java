@@ -75,8 +75,9 @@ public class LDGuiBase extends GenericGui<LDGuiContainer> {
 			mc.renderEngine.bindTexture(NOTIFICATION);
 			drawTexturedModalRect(guiLeft - 16, guiTop - 24, 0, 0, 256, 22);
 			if(Time.getSecond() % 2 == 1) drawTexturedModalRect(guiLeft - 10, guiTop - 19, 6, 23, 6, 12);
+			mc.renderEngine.bindTexture(TEXTURE);
 		}
-		if(showicon){
+		if(showicon && elements.size() > 6){
 			LDGuiElementType elm = LDGuiElementType.ICONBAR;
 			drawTexturedModalRect(guiLeft - 29, guiTop + 19, elm.x, elm.y, elm.w, elm.h);
 			elm = LDGuiElementType.ICONBARCOLOR;
