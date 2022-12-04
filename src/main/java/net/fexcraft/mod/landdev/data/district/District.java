@@ -28,6 +28,7 @@ import net.fexcraft.mod.landdev.gui.GuiHandler;
 import net.fexcraft.mod.landdev.gui.LDGuiContainer;
 import net.fexcraft.mod.landdev.gui.modules.LDGuiModule;
 import net.fexcraft.mod.landdev.util.ResManager;
+import net.fexcraft.mod.landdev.util.Settings;
 import net.fexcraft.mod.landdev.util.TranslationUtil;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -276,6 +277,25 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 			addToList(list, "manager.remove", ELM_GENERIC, ICON_REM, true, false, null);
 			com.setBoolean("form", true);
 			break;
+		case UI_PRICE:
+			com.setString("title_lang", "district.buy.title");
+			addToList(list, "id", ELM_GENERIC, ICON_BLANK, false, false, id);
+			addToList(list, "buy.info", ELM_YELLOW, ICON_BLANK, false, false, null);
+			if(owner.is_county) addToList(list, "buy.this_municipality", ELM_BLUE, ICON_RADIOBOX_CHECKED, true, false, null);
+			else addToList(list, "buy.this_county", ELM_BLUE, ICON_RADIOBOX_CHECKED, true, false, null);
+			addToList(list, "buy.other_municipality", ELM_BLUE, ICON_RADIOBOX_UNCHECKED, true, false, null);
+			addToList(list, "buy.other_county", ELM_BLUE, ICON_RADIOBOX_UNCHECKED, true, false, null);
+			addToList(list, "buy.payer", ELM_GENERIC, ICON_CHECKBOX_UNCHECKED, true, false, null);
+			addToList(list, "buy.submit", ELM_GENERIC, ICON_OPEN, true, false, null);
+			com.setBoolean("form", true);
+			break;
+		case UI_SET_PRICE:
+			com.setString("title_lang", "district.set_price.title");
+			addToList(list, "id", ELM_GENERIC, ICON_BLANK, false, false, id);
+			addToList(list, "set_price.field", ELM_BLANK, ICON_BLANK, false, true, null);
+			addToList(list, "set_price.submit", ELM_GENERIC, ICON_OPEN, true, false, null);
+			com.setBoolean("form", true);
+			break;
 		case UI_APPREARANCE:
 			addToList(list, "icon", ELM_BLANK, ICON_OPEN, true, true, icon.getn());
 			addToList(list, "color", ELM_BLANK, ICON_OPEN, true, true, color.getString());
@@ -349,6 +369,28 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 				if(!canoman) return;
 				manage.setNoManager();
 				container.open(0);
+				return;
+			}
+			case "buy.submit":{
+				
+				return;
+			}
+			case "set_price.submit":{
+				if(!canoman) return;
+				String[] err = new String[]{ "" };
+				String val = packet.getCompoundTag("fields").getString("set_price.field");
+				long value = Settings.format_price(err, val);
+				if(err[0].length() > 0){
+					container.sendMsg(err[0], false);
+				}
+				else{
+					sell.price = value;
+					container.open(UI_MAIN);
+				}
+				return;
+			}
+			default:{
+				container.sendMsg("work-in-progress", false);
 				return;
 			}
 		}
