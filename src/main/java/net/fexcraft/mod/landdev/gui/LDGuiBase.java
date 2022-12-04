@@ -23,7 +23,7 @@ public class LDGuiBase extends GenericGui<LDGuiContainer> {
 	private ArrayList<LDGuiElement> elements = new ArrayList<>();
 	protected BasicText title, notification;
 	protected BasicButton notificationbutton, backbutton;
-	protected boolean addscroll, notify, showicon;
+	protected boolean addscroll, notify, showicon, rebind;
 	protected UCResourceLocation iconurl;
 	protected RGB color = RGB.WHITE.copy();
 	protected int scroll;
@@ -63,6 +63,7 @@ public class LDGuiBase extends GenericGui<LDGuiContainer> {
 	@Override
 	public void drawbackground(float ticks, int mx, int my){
 		drawElement(LDGuiElementType.TOP, guiTop);
+		rebind = false;
 		for(LDGuiElement elm : elements()){
 			if(elm.visible) drawElement(elm.type, elm.pos);
 		}
@@ -75,12 +76,6 @@ public class LDGuiBase extends GenericGui<LDGuiContainer> {
 			LDGuiElementType elm = LDGuiElementType.GO_BACK;
 			drawTexturedModalRect(guiLeft - 13, guiTop + 2, elm.x, elm.y, elm.w, elm.h);
 		}
-		if(notify){
-			mc.renderEngine.bindTexture(NOTIFICATION);
-			drawTexturedModalRect(guiLeft - 16, guiTop - 24, 0, 0, 256, 22);
-			if(Time.getSecond() % 2 == 1) drawTexturedModalRect(guiLeft - 10, guiTop - 19, 6, 23, 6, 12);
-			mc.renderEngine.bindTexture(TEXTURE);
-		}
 		if(showicon){
 			LDGuiElementType elm = LDGuiElementType.ICONBAR;
 			drawTexturedModalRect(guiLeft - 29, guiTop + 20, elm.x, elm.y, elm.w, elm.h);
@@ -90,8 +85,15 @@ public class LDGuiBase extends GenericGui<LDGuiContainer> {
 			RGB.glColorReset();
 			mc.renderEngine.bindTexture(iconurl);
 			drawScaledCustomSizeModalRect(guiLeft - 26, guiTop + 23, 0, 0, 1, 1, 28, 28, 1, 1);
-			mc.renderEngine.bindTexture(TEXTURE);
+			rebind = true;
 		}
+		if(notify){
+			mc.renderEngine.bindTexture(NOTIFICATION);
+			drawTexturedModalRect(guiLeft - 16, guiTop - 24, 0, 0, 256, 22);
+			if(Time.getSecond() % 2 == 1) drawTexturedModalRect(guiLeft - 10, guiTop - 19, 6, 23, 6, 12);
+			rebind = true;
+		}
+		if(rebind) mc.renderEngine.bindTexture(TEXTURE);
 	}
 	
 	private void drawElement(LDGuiElementType elm, int y){
@@ -189,6 +191,12 @@ public class LDGuiBase extends GenericGui<LDGuiContainer> {
 			@Override
 			public boolean onclick(int x, int y, int b){
 				return !(notificationbutton.visible = notification.visible = notify = false);
+			}
+			@Override
+			public void draw(GenericGui<?> gui, float pticks, int mouseX, int mouseY){
+				if(!visible) return;
+				gui.mc.renderEngine.bindTexture(NOTIFICATION);
+				super.draw(gui, pticks, mouseX, mouseY);
 			}
 		});
 		texts.put("notification", notification = new BasicText(guiLeft, guiTop - 24 + 7, 217, 0x0e0e0e, "").hoverable(true).autoscale());
