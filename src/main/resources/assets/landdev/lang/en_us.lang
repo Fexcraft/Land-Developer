@@ -18,6 +18,8 @@ landdev.cmd.mun.no_create_permit=You do not have a Municipality creation permit.
 landdev.cmd.mun.not_in_a_municipality=You are not currently in a Municipality.
 landdev.cmd.name_too_short=&cName is too short!
 landdev.cmd.name_too_long=&bName is too long!
+landdev.cmd.uuid_player_not_found=UUID/Player not found.
+landdev.cmd.player_not_staff=Selected player is not part of the Council.
 
 landdev.announce.new_municipality=&9[&aLD&9] &bThe Municipality &6%s &7(%s) &bjust got created!
 
