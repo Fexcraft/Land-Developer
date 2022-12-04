@@ -146,6 +146,17 @@ landdev.gui.district.manager.title=Set District Manager
 landdev.gui.district.manager.current=Current Manager: %s
 landdev.gui.district.manager.submit=Set new Manager
 landdev.gui.district.manager.remove=Remove current Manager
+landdev.gui.district.buy.title=District Acquisition
+landdev.gui.district.buy.info=Who do you buy this district for?
+landdev.gui.district.buy.this_municipality=This Municipality
+landdev.gui.district.buy.this_county=This County
+landdev.gui.district.buy.other_municipality=My Municipality
+landdev.gui.district.buy.other_county=My County
+landdev.gui.district.buy.payer=Receiver pays for the district?
+landdev.gui.district.buy.submit=Confirm Acquisition
+landdev.gui.district.buy.notenoughmoney=You do not have enough money to buy this district.
+landdev.gui.district.set_price.title=District Price
+landdev.gui.district.set_price.submit=Apply new Price
 //
 landdev.gui.municipality.create.title=Municipality Creation UI
 landdev.gui.municipality.create.no_perm=No permission or permit to create.
