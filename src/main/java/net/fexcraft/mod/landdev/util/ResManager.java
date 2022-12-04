@@ -3,6 +3,8 @@ package net.fexcraft.mod.landdev.util;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.mojang.authlib.GameProfile;
+
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fsmm.api.Account;
@@ -107,6 +109,11 @@ public class ResManager implements Saveable {
 
 	public static Player getPlayer(EntityPlayer player){
 		return PLAYERS.get(player.getGameProfile().getId());
+	}
+
+	public static UUID getUUIDof(String string){
+		GameProfile gp = Static.getServer().getPlayerProfileCache().getGameProfileForUsername(string);
+		return gp == null ? null : gp.getId();
 	}
 
 	private static <S> S load(Saveable save){
