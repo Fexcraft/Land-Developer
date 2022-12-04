@@ -13,6 +13,7 @@ import java.util.UUID;
 
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fsmm.api.Account;
 import net.fexcraft.mod.landdev.data.*;
 import net.fexcraft.mod.landdev.data.PermAction.PermActions;
@@ -322,11 +323,32 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 				return;
 			}
 			case "manager.submit":{
-				
+				if(!canoman) return;
+				UUID uuid = null;
+				try{
+					uuid = UUID.fromString(packet.getCompoundTag("fields").getString("manager.field"));
+				}
+				catch(Exception e){
+					if(Static.dev()) e.printStackTrace();
+					uuid = ResManager.getUUIDof(packet.getCompoundTag("fields").getString("manager.field"));
+				}
+				if(uuid == null){
+					container.sendMsg("landdev.cmd.uuid_player_not_found", false);
+					return;
+				}
+				if(owner.manageable().isStaff(uuid)){
+					manage.setManager(uuid);
+					container.open(0);
+				}
+				else{
+					container.sendMsg("landdev.cmd.player_not_staff", false);
+				}
 				return;
 			}
 			case "manager.remove":{
-				
+				if(!canoman) return;
+				manage.setNoManager();
+				container.open(0);
 				return;
 			}
 		}
