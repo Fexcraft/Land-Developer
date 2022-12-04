@@ -120,6 +120,10 @@ public class Manageable implements Saveable, PermInteractive {
 		manager = player.uuid;
 	}
 
+	public void setManager(UUID uuid){
+		manager = uuid;
+	}
+
 	public String getManagerName(){
 		if(manager == null) return "none";
 		return ResManager.getPlayerName(manager);
@@ -127,6 +131,10 @@ public class Manageable implements Saveable, PermInteractive {
 
 	public boolean hasManager(){
 		return manager != null;
+	}
+
+	public void setNoManager(){
+		manager = null;
 	}
 
 }
