@@ -2,6 +2,7 @@ package net.fexcraft.mod.landdev.data.chunk;
 
 import java.util.HashMap;
 import java.util.Map.Entry;
+import java.util.UUID;
 
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.app.json.JsonObject;
@@ -15,7 +16,7 @@ import net.fexcraft.mod.landdev.data.Saveable;
  */
 public class AccessList implements Saveable {
 	
-	public HashMap<String, Long> players = new HashMap<>();
+	public HashMap<UUID, Long> players = new HashMap<>();
 	public HashMap<Integer, Long> companies = new HashMap<>();
 	public boolean interact;
 
@@ -23,8 +24,8 @@ public class AccessList implements Saveable {
 	public void save(JsonMap map){
 		if(players.size() > 0){
 			JsonMap pm = new JsonMap();
-			for(Entry<String, Long> entry : players.entrySet()){
-				pm.add(entry.getKey(), entry.getValue());
+			for(Entry<UUID, Long> entry : players.entrySet()){
+				pm.add(entry.getKey().toString(), entry.getValue());
 			}
 			map.add("al_players", pm);
 		}
@@ -43,7 +44,7 @@ public class AccessList implements Saveable {
 		if(map.has("al_players")){
 			JsonMap pm = map.getMap("al_players");
 			for(Entry<String, JsonObject<?>> entry : pm.entries()){
-				players.put(entry.getKey(), entry.getValue().long_value());
+				players.put(UUID.fromString(entry.getKey()), entry.getValue().long_value());
 			}
 		}
 		if(map.has("al_companies")){
