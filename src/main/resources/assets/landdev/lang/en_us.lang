@@ -20,9 +20,12 @@ landdev.cmd.name_too_short=&cName is too short!
 landdev.cmd.name_too_long=&bName is too long!
 landdev.cmd.uuid_player_not_found=UUID/Player not found.
 landdev.cmd.player_not_staff=Selected player is not part of the Council.
+landdev.cmd.reload=&eReloaded: &7%s
+landdev.cmd.reload.complete=&eReloaded all reloadable configs.
 
 landdev.interact.break.noperm=No permission to break blocks here.
 landdev.interact.place.noperm=No permission to place blocks here.
+landdev.interact.interact.noperm=No permission to interact with blocks here.
 landdev.interact.control.unknown_district=Unknown District
 landdev.interact.control.unknown_chunk_type=Unknown Chunk Type
 
