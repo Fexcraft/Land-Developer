@@ -21,6 +21,11 @@ landdev.cmd.name_too_long=&bName is too long!
 landdev.cmd.uuid_player_not_found=UUID/Player not found.
 landdev.cmd.player_not_staff=Selected player is not part of the Council.
 
+landdev.interact.break.noperm=No permission to break blocks here.
+landdev.interact.place.noperm=No permission to place blocks here.
+landdev.interact.control.unknown_district=Unknown District
+landdev.interact.control.unknown_chunk_type=Unknown Chunk Type
+
 landdev.announce.new_municipality=&9[&aLD&9] &bThe Municipality &6%s &7(%s) &bjust got created!
 
 landdev.chunk_type.private=Private
