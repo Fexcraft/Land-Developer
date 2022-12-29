@@ -15,12 +15,14 @@ import net.fexcraft.mod.landdev.db.JsonFileDB;
 import net.fexcraft.mod.landdev.gui.GuiHandler;
 import net.fexcraft.mod.landdev.util.AliasLoader;
 import net.fexcraft.mod.landdev.util.ChunkCapabilityUtil;
+import net.fexcraft.mod.landdev.util.Protector;
 import net.fexcraft.mod.landdev.util.Settings;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
@@ -50,6 +52,11 @@ public class LandDev {
     @EventHandler
     public void init(FMLInitializationEvent event){
         NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
+    }
+
+    @EventHandler
+    public void init(FMLPostInitializationEvent event){
+        Protector.load();
     }
     
     @Mod.EventHandler
