@@ -21,6 +21,7 @@ import net.fexcraft.mod.landdev.data.state.State;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.chunk.Chunk;
 
 /**
@@ -66,6 +67,10 @@ public class ResManager implements Saveable {
 
 	public static Chunk_ getChunk(Entity player){
 		return getChunk((int)player.posX >> 4, (int)player.posZ >> 4);
+	}
+
+	public static Chunk_ getChunk(Vec3i pos){
+		return getChunk((int)pos.getX() >> 4, (int)pos.getZ() >> 4);
 	}
 
 	public static void remChunk(Chunk chunk){
