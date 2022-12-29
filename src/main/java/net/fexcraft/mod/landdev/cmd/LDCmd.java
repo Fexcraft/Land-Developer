@@ -9,6 +9,7 @@ import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.data.player.Player;
 import net.fexcraft.mod.landdev.util.AliasLoader;
+import net.fexcraft.mod.landdev.util.Protector;
 import net.fexcraft.mod.landdev.util.ResManager;
 import net.fexcraft.mod.landdev.util.Settings;
 import net.fexcraft.mod.landdev.util.TranslationUtil;
@@ -68,6 +69,12 @@ public class LDCmd extends CommandBase {
 	    			}
 	        		return;
 	    		}
+	    		case "reload":{
+	    			Protector.load();
+	        		Print.chat(sender, TranslationUtil.translateCmd("reload", "landdev-interaction.json"));
+	        		Print.chat(sender, TranslationUtil.translateCmd("reload.complete"));
+	    			return;
+	    		}
     			case "help":
     			default:{
 	        		Print.chat(sender, "&0[&bLD&0]&6>>&2===========");
@@ -75,6 +82,7 @@ public class LDCmd extends CommandBase {
 	        		Print.chat(sender, "/ld help");
 	        		Print.chat(sender, "/ld admin");
 	        		Print.chat(sender, "/ld fees");
+	        		Print.chat(sender, "/ld reload");
     				return;
     			}
     		}
