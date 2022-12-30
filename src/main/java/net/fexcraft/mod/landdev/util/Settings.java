@@ -43,8 +43,7 @@ public class Settings {
 		config.setCategoryRequiresMcRestart(CLIENT_CAT, false);
 		config.setCategoryRequiresWorldRestart(CLIENT_CAT, false);
 		config.setCategoryComment(CLIENT_CAT, "Client Settings.");
-		refresh();
-		config.save();
+		refresh(true);
 		//
 		DistrictType.loadConfig(CONFIG_PATH);
 	}
@@ -60,7 +59,7 @@ public class Settings {
 		return config;
 	}
 	
-	private static void refresh(){
+	public static void refresh(boolean save){
 		SERVER_ICON = config.getString("server_icon", DEFAULT_CAT, SERVER_ICON, "Server Icon to be shown in the Location Update GUI.");
 		SERVER_ICONHOLDER.set(SERVER_ICON);
 		DEFAULT_ICON = config.getString("default_icon", DEFAULT_CAT, DEFAULT_ICON, "Default Dis/Mun/Cou/State Icon to be shown in the Location Update GUI.");
@@ -71,6 +70,8 @@ public class Settings {
 		EDIT_WILDERNESS = !PROTECT_WILDERNESS;
 		//
 		LOCUP_SIDE = config.getBoolean("location_update_on_left", CLIENT_CAT, true, "Set to false if the Location Update GUI should be on the right side.");
+		//
+		if(save || config.hasChanged()) config.save();
 	}
 	
 	private static final DecimalFormat df = new DecimalFormat("#.000", new DecimalFormatSymbols(Locale.US));
