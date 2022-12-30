@@ -4,6 +4,8 @@ import java.io.File;
 
 import org.apache.logging.log4j.Logger;
 
+import net.fexcraft.lib.mc.network.PacketHandler;
+import net.fexcraft.lib.mc.network.PacketHandler.PacketHandlerType;
 import net.fexcraft.mod.landdev.cmd.CkCmd;
 import net.fexcraft.mod.landdev.cmd.DebugCmd;
 import net.fexcraft.mod.landdev.cmd.DisCmd;
@@ -15,6 +17,7 @@ import net.fexcraft.mod.landdev.db.JsonFileDB;
 import net.fexcraft.mod.landdev.gui.GuiHandler;
 import net.fexcraft.mod.landdev.util.AliasLoader;
 import net.fexcraft.mod.landdev.util.ChunkCapabilityUtil;
+import net.fexcraft.mod.landdev.util.PacketReceiver;
 import net.fexcraft.mod.landdev.util.Protector;
 import net.fexcraft.mod.landdev.util.Settings;
 import net.minecraft.world.World;
@@ -26,6 +29,7 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.relauncher.Side;
 
 @Mod(modid = LandDev.MODID, name = LandDev.NAME, version = LandDev.VERSION,
 	dependencies = "required-after:fcl", guiFactory = "net.fexcraft.mod.landdev.util.GuiFactory",
@@ -52,6 +56,9 @@ public class LandDev {
     @EventHandler
     public void init(FMLInitializationEvent event){
         NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
+        if(event.getSide().isClient()){
+        	PacketHandler.registerListener(PacketHandlerType.NBT, Side.CLIENT, new PacketReceiver());
+        }
     }
 
     @EventHandler
