@@ -38,6 +38,7 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 	public AccessList access = new AccessList();
 	public ChunkOwner owner = new ChunkOwner();
 	public Taxable tax = new Taxable(this);
+	public ChunkLabel label = new ChunkLabel();
 	public District district;
 
 	public Chunk_(World world, int x, int z){
@@ -54,6 +55,7 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 		if(link != null) link.save(map);
 		access.save(map);
 		tax.save(map);
+		label.save(map);
 		map.add("district", district.id);
 	}
 
@@ -69,6 +71,7 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 		}
 		access.load(map);
 		tax.load(map);
+		label.load(map);
 		district = ResManager.getDistrict(map.getInteger("district", -1), true);
 	}
 	
