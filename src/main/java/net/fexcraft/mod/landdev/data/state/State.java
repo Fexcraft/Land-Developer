@@ -110,4 +110,8 @@ public class State implements Saveable, Layer {
 		return Layers.UNION;
 	}
 
+	public String name(){
+		return norms.get("name").string();
+	}
+
 }
