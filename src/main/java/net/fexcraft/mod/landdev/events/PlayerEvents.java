@@ -8,6 +8,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerRespawnEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 @Mod.EventBusSubscriber
 public class PlayerEvents {
@@ -19,6 +20,7 @@ public class PlayerEvents {
 		player.entity = event.player;
 		player.offline = false;
 		player.login = Time.getDate();
+		player.chunk_last = ResManager.getChunk(event.player);
     }
     
 	@SubscribeEvent
@@ -39,6 +41,23 @@ public class PlayerEvents {
 	public static void onPlayerRespawn(PlayerRespawnEvent event){
 		Player player = ResManager.getPlayer(event.player.getGameProfile().getId(), false);
 		if(player != null) player.entity = event.player;
+	}
+	
+	private static long time;
+	private static boolean moved, label;
+	
+	@SubscribeEvent
+	public static void onTick(TickEvent.PlayerTickEvent event){
+		if(event.player.world.isRemote || event.player.dimension != 0) return;
+		Player player = ResManager.getPlayer(event.player);
+		if((time = Time.getDate()) > player.last_pos_update){
+			player.last_pos_update = time;
+			player.chunk_current = ResManager.getChunk(event.player);
+			if(player.chunk_last == null) player.chunk_last = player.chunk_current;
+			moved = player.chunk_current.district != player.chunk_last.district;
+			label = player.chunk_current.label.present && player.chunk_current != player.chunk_last;
+			if(moved || label) player.sendLocationUpdate(moved, label, 0);
+		}
 	}
 
 }
