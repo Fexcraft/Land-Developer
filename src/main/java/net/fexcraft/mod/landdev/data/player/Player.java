@@ -6,16 +6,24 @@ import java.util.UUID;
 import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.Time;
+import net.fexcraft.lib.mc.network.PacketHandler;
+import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.mod.fsmm.api.Account;
 import net.fexcraft.mod.fsmm.util.DataManager;
 import net.fexcraft.mod.landdev.LandDev;
 import net.fexcraft.mod.landdev.data.Layers;
 import net.fexcraft.mod.landdev.data.PermAction;
 import net.fexcraft.mod.landdev.data.Saveable;
+import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.data.county.County;
 import net.fexcraft.mod.landdev.data.municipality.Municipality;
+import net.fexcraft.mod.landdev.util.PacketReceiver;
 import net.fexcraft.mod.landdev.util.ResManager;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTTagString;
 import net.minecraft.world.World;
 
 public class Player implements Saveable {
@@ -23,12 +31,13 @@ public class Player implements Saveable {
 	public UUID uuid;
 	public boolean offline, adm;
 	public EntityPlayer entity;
-	public long joined, login, last_login, last_logout;
+	public long joined, login, last_login, last_logout, last_pos_update;
 	public String nickname, colorcode;
 	public Account account;
 	public ArrayList<Permit> permits = new ArrayList<>();
 	public Municipality municipality;
 	public County county;
+	public Chunk_ chunk_current, chunk_last;
 	
 	public Player(UUID uuid){
 		offline = true;
@@ -124,6 +133,30 @@ public class Player implements Saveable {
 			return county.state.manage.isStaff(uuid) || county.state.manage.isManager(uuid);
 		}
 		return false;
+	}
+
+	public void sendLocationUpdate(boolean moved, boolean label, int time){
+		NBTTagCompound com = new NBTTagCompound();
+		com.setString("target_listener", PacketReceiver.RECEIVER_ID);
+		com.setString("task", "location_update");
+		boolean mun = chunk_current.district.municipality() != null;
+		NBTTagList icons = new NBTTagList();
+		icons.appendTag(new NBTTagString(chunk_current.district.icon.getnn()));
+		if(mun) icons.appendTag(new NBTTagString(chunk_current.district.municipality().icon.getnn()));
+		icons.appendTag(new NBTTagString(chunk_current.district.county().icon.getnn()));
+		icons.appendTag(new NBTTagString(chunk_current.district.state().icon.getnn()));
+		com.setTag("icons", icons);
+		NBTTagList lines = new NBTTagList();
+		if(moved){
+			lines.appendTag(new NBTTagString(chunk_current.district.state().name()));
+			lines.appendTag(new NBTTagString(chunk_current.district.county().name()));
+			if(mun) lines.appendTag(new NBTTagString(chunk_current.district.municipality().name()));
+			lines.appendTag(new NBTTagString(chunk_current.district.name()));
+		}
+		if(label) lines.appendTag(new NBTTagString(chunk_current.label.label));
+		com.setTag("lines", lines);
+		if(time > 0){ com.setInteger("time", time); }
+		PacketHandler.getInstance().sendTo(new PacketNBTTagCompound(com), (EntityPlayerMP)entity);
 	}
 
 }
