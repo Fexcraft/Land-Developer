@@ -22,10 +22,8 @@ import net.minecraft.nbt.NBTTagString;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-@Mod.EventBusSubscriber
 public class LocationUpdate extends GuiScreen {
 
 	public static final ResourceLocation texture = new ResourceLocation("landdev:textures/gui/location.png");
@@ -43,7 +41,7 @@ public class LocationUpdate extends GuiScreen {
 	}
 	
 	@SubscribeEvent
-	public static void displayLocationUpdate(RenderGameOverlayEvent event){
+	public void displayLocationUpdate(RenderGameOverlayEvent event){
 		if(event.getType() != ElementType.HOTBAR || !shown()) return;
 		if(client == null) client = Minecraft.getMinecraft();
 		ModelBase.bindTexture(texture);
