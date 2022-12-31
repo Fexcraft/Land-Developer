@@ -14,6 +14,7 @@ import net.fexcraft.mod.landdev.cmd.MunCmd;
 import net.fexcraft.mod.landdev.data.chunk.ChunkCap;
 import net.fexcraft.mod.landdev.db.Database;
 import net.fexcraft.mod.landdev.db.JsonFileDB;
+import net.fexcraft.mod.landdev.events.LocationUpdate;
 import net.fexcraft.mod.landdev.gui.GuiHandler;
 import net.fexcraft.mod.landdev.util.AliasLoader;
 import net.fexcraft.mod.landdev.util.ChunkCapabilityUtil;
@@ -21,6 +22,7 @@ import net.fexcraft.mod.landdev.util.PacketReceiver;
 import net.fexcraft.mod.landdev.util.Protector;
 import net.fexcraft.mod.landdev.util.Settings;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -58,6 +60,7 @@ public class LandDev {
         NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
         if(event.getSide().isClient()){
         	PacketHandler.registerListener(PacketHandlerType.NBT, Side.CLIENT, new PacketReceiver());
+        	MinecraftForge.EVENT_BUS.register(new LocationUpdate());
         }
     }
 
