@@ -32,7 +32,7 @@ public class Player implements Saveable {
 	public boolean offline, adm;
 	public EntityPlayer entity;
 	public long joined, login, last_login, last_logout, last_pos_update;
-	public String nickname, colorcode;
+	public String nickname, colorcode = "2";
 	public Account account;
 	public ArrayList<Permit> permits = new ArrayList<>();
 	public Municipality municipality;
@@ -157,6 +157,10 @@ public class Player implements Saveable {
 		com.setTag("lines", lines);
 		if(time > 0){ com.setInteger("time", time); }
 		PacketHandler.getInstance().sendTo(new PacketNBTTagCompound(com), (EntityPlayerMP)entity);
+	}
+
+	public String name(){
+		return "&" + colorcode + (nickname == null ? entity == null ? "[PEN]" : entity.getDisplayNameString() : nickname);
 	}
 
 }
