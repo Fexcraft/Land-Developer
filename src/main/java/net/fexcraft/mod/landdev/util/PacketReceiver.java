@@ -3,8 +3,12 @@ package net.fexcraft.mod.landdev.util;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.api.packet.IPacketListener;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
+import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.mod.landdev.events.LocationUpdate;
+import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
 
 public class PacketReceiver implements IPacketListener<PacketNBTTagCompound> {
 	
@@ -26,7 +30,26 @@ public class PacketReceiver implements IPacketListener<PacketNBTTagCompound> {
 			LocationUpdate.loadLines((NBTTagList)packet.nbt.getTag("lines"));
 			return;
 		}
+		case "chat_message":{
+			NBTTagList list = (NBTTagList)packet.nbt.getTag("msg");
+			String c = list.tagCount() > 3 ? list.getStringTagAt(3) : "&a";
+			ITextComponent text = null;
+			switch(list.getStringTagAt(0)){
+			case "chat":
+				text = new TextComponentString(format(Settings.CHAT_OVERRIDE_LANG, c, list.getStringTagAt(1), list.getStringTagAt(2)));
+				break;
+			default:
+				text = new TextComponentString(list.toString());
+				break;
+			}
+			Minecraft.getMinecraft().ingameGUI.getChatGUI().printChatMessage(text);
+			return;
 		}
+		}
+	}
+	
+	public static String format(String string, Object... args){
+		return Formatter.format(String.format(string, args));
 	}
 
 }
