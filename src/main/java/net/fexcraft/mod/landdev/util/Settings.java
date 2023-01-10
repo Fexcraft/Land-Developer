@@ -28,7 +28,12 @@ public class Settings {
 	public static boolean SAVE_SPACED_JSON, PROTECT_WILDERNESS, EDIT_WILDERNESS, LOCUP_SIDE;
 	public static long DEFAULT_CHUNK_PRICE, MUNICIPALITY_CREATION_FEE;
 	//
+	public static boolean CHAT_OVERRIDE;
+	public static String CHAT_PLAYER_COLOR = "&6", CHAT_ADMIN_COLOR = "&4", CHAT_DISCORD_COLOR = "&5";
+	public static String CHAT_OVERRIDE_LANG;
+	//
 	public static final String DEFAULT_CAT = "default_settings";
+	public static final String DISCORD_CAT = "discord_settings";
 	public static final String CLIENT_CAT = "client_settings";
 	//
 	private static Configuration config;
@@ -40,6 +45,9 @@ public class Settings {
 		config.setCategoryRequiresMcRestart(DEFAULT_CAT, false);
 		config.setCategoryRequiresWorldRestart(DEFAULT_CAT, true);
 		config.setCategoryComment(DEFAULT_CAT, "General Settings.");
+		config.setCategoryRequiresMcRestart(DISCORD_CAT, false);
+		config.setCategoryRequiresWorldRestart(DISCORD_CAT, true);
+		config.setCategoryComment(DEFAULT_CAT, "Discord Settings.");
 		config.setCategoryRequiresMcRestart(CLIENT_CAT, false);
 		config.setCategoryRequiresWorldRestart(CLIENT_CAT, false);
 		config.setCategoryComment(CLIENT_CAT, "Client Settings.");
@@ -68,6 +76,13 @@ public class Settings {
 		MUNICIPALITY_CREATION_FEE = config.getInt("municipality_creation_fee", DEFAULT_CAT, 25000000, 0, Integer.MAX_VALUE, "Server fee for creating a municipality, half of it goes to the new Municipality.");
 		PROTECT_WILDERNESS = config.getBoolean("protect_wilderness", DEFAULT_CAT, true, "If wilderness protection should be enabled.");
 		EDIT_WILDERNESS = !PROTECT_WILDERNESS;
+		//
+		CHAT_OVERRIDE_LANG = TranslationUtil.translate("chat.player");
+		Broadcaster.SENDERS.removeIf(s -> !s.category().equals("internal"));
+		CHAT_OVERRIDE = config.getBoolean("chat_override", DEFAULT_CAT, true, "If the vanilla chat should be overriden by the LandDev chat.");
+		CHAT_PLAYER_COLOR = config.getString("chat_color_player", DEFAULT_CAT, CHAT_PLAYER_COLOR, "Default color of the player role marker (default `#`) in chat.");
+		CHAT_ADMIN_COLOR = config.getString("chat_color_admin", DEFAULT_CAT, CHAT_ADMIN_COLOR, "Default color of the admin role marker (default `#`) in chat.");
+		CHAT_DISCORD_COLOR = config.getString("chat_color_discord", DEFAULT_CAT, CHAT_DISCORD_COLOR, "Default color of the discord role marker (default `#`) in chat.");
 		//
 		LOCUP_SIDE = config.getBoolean("location_update_on_left", CLIENT_CAT, true, "Set to false if the Location Update GUI should be on the right side.");
 		//
