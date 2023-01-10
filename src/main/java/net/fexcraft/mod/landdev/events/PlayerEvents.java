@@ -2,8 +2,11 @@ package net.fexcraft.mod.landdev.events;
 
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.mod.landdev.data.player.Player;
+import net.fexcraft.mod.landdev.util.Broadcaster;
 import net.fexcraft.mod.landdev.util.ResManager;
+import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
@@ -58,6 +61,13 @@ public class PlayerEvents {
 			label = player.chunk_current.label.present && player.chunk_current != player.chunk_last;
 			if(moved || label) player.sendLocationUpdate(moved, label, 0);
 		}
+	}
+	
+	@SubscribeEvent(priority = EventPriority.LOWEST)
+	public static void onMessage(ServerChatEvent event){
+		Player player = ResManager.getPlayer(event.getPlayer());
+		Broadcaster.send(player, event.getMessage());
+		event.setCanceled(true);
 	}
 
 }
