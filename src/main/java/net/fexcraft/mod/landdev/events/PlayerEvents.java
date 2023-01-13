@@ -2,8 +2,9 @@ package net.fexcraft.mod.landdev.events;
 
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.mod.landdev.data.player.Player;
-import net.fexcraft.mod.landdev.util.Broadcaster;
 import net.fexcraft.mod.landdev.util.ResManager;
+import net.fexcraft.mod.landdev.util.Settings;
+import net.fexcraft.mod.landdev.util.broad.Broadcaster;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -67,7 +68,7 @@ public class PlayerEvents {
 	public static void onMessage(ServerChatEvent event){
 		Player player = ResManager.getPlayer(event.getPlayer());
 		Broadcaster.send(player, event.getMessage());
-		event.setCanceled(true);
+		event.setCanceled(Settings.CHAT_OVERRIDE);
 	}
 
 }
