@@ -7,6 +7,7 @@ import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.mod.fsmm.util.Config;
@@ -29,9 +30,11 @@ public class Settings {
 	public static boolean SAVE_SPACED_JSON, PROTECT_WILDERNESS, EDIT_WILDERNESS, LOCUP_SIDE;
 	public static long DEFAULT_CHUNK_PRICE, MUNICIPALITY_CREATION_FEE;
 	//
-	public static boolean CHAT_OVERRIDE;
+	public static boolean CHAT_OVERRIDE, DISCORD_BOT_ACTIVE;
 	public static String CHAT_PLAYER_COLOR = "&6", CHAT_ADMIN_COLOR = "&4", CHAT_DISCORD_COLOR = "&5";
 	public static String CHAT_OVERRIDE_LANG;
+	public static int DISCORD_BOT_PORT = 10810;
+	public static String DISCORD_BOT_ADRESS = "fexcraft.net", DISCORD_BOT_TOKEN = UUID.randomUUID().toString().replace("-", "").substring(0, 8);
 	//
 	public static final String DEFAULT_CAT = "default_settings";
 	public static final String DISCORD_CAT = "discord_settings";
@@ -48,7 +51,7 @@ public class Settings {
 		config.setCategoryComment(DEFAULT_CAT, "General Settings.");
 		config.setCategoryRequiresMcRestart(DISCORD_CAT, false);
 		config.setCategoryRequiresWorldRestart(DISCORD_CAT, true);
-		config.setCategoryComment(DEFAULT_CAT, "Discord Settings.");
+		config.setCategoryComment(DISCORD_CAT, "Discord Settings.");
 		config.setCategoryRequiresMcRestart(CLIENT_CAT, false);
 		config.setCategoryRequiresWorldRestart(CLIENT_CAT, false);
 		config.setCategoryComment(CLIENT_CAT, "Client Settings.");
@@ -61,6 +64,7 @@ public class Settings {
 		List<IConfigElement> list = new ArrayList<IConfigElement>();
 		list.add(new ConfigElement(Settings.getConfig().getCategory(DEFAULT_CAT)));
 		list.add(new ConfigElement(Settings.getConfig().getCategory(CLIENT_CAT)));
+		list.add(new ConfigElement(Settings.getConfig().getCategory(DISCORD_CAT)));
 		return list;
 	}
 
@@ -84,6 +88,11 @@ public class Settings {
 		CHAT_PLAYER_COLOR = config.getString("chat_color_player", DEFAULT_CAT, CHAT_PLAYER_COLOR, "Default color of the player role marker (default `#`) in chat.");
 		CHAT_ADMIN_COLOR = config.getString("chat_color_admin", DEFAULT_CAT, CHAT_ADMIN_COLOR, "Default color of the admin role marker (default `#`) in chat.");
 		CHAT_DISCORD_COLOR = config.getString("chat_color_discord", DEFAULT_CAT, CHAT_DISCORD_COLOR, "Default color of the discord role marker (default `#`) in chat.");
+		//
+		DISCORD_BOT_ACTIVE = config.getBoolean("discord_bot_active", DISCORD_CAT, false, "If the discord chat integration should be active.");
+		DISCORD_BOT_ADRESS = config.getString("discord_bot_adress", DISCORD_CAT, DISCORD_BOT_ADRESS, "Adress/IP of the Discord Chat Bot you are using. By default this points to the one provided by Fexcraft");
+		DISCORD_BOT_PORT = config.getInt("discord_bot_port", DISCORD_CAT, DISCORD_BOT_PORT, 1000, 65535, "Port on which the Discord Chat Bot is listening.");
+		DISCORD_BOT_TOKEN = config.getString("discord_bot_token", DISCORD_CAT, DISCORD_BOT_TOKEN, "Token to use to communicate with the Discord Chat Bot.");
 		//
 		LOCUP_SIDE = config.getBoolean("location_update_on_left", CLIENT_CAT, true, "Set to false if the Location Update GUI should be on the right side.");
 		//
