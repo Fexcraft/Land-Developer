@@ -11,6 +11,11 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 
+/**
+ * 
+ * @author Ferdinand Calo' (FEX___96)
+ *
+ */
 public class InternalTransmitter implements Transmitter {
 
 	@Override
