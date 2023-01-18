@@ -2,7 +2,7 @@ package net.fexcraft.mod.landdev.util.broad;
 
 import static net.fexcraft.mod.landdev.util.broad.BroadcastChannel.CHAT;
 
-import java.util.ArrayList;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.annotation.Nullable;
 
@@ -11,7 +11,7 @@ import net.fexcraft.mod.landdev.util.Settings;
 
 public class Broadcaster {
 	
-	public static ArrayList<Transmitter> SENDERS = new ArrayList<>();
+	public static ConcurrentLinkedQueue<Transmitter> SENDERS = new ConcurrentLinkedQueue<>();
 	static { SENDERS.add(new InternalTransmitter()); }
 
 	public static void send(Player player, String message){
