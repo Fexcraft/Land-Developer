@@ -13,6 +13,7 @@ import net.fexcraft.mod.landdev.util.Protector;
 import net.fexcraft.mod.landdev.util.ResManager;
 import net.fexcraft.mod.landdev.util.Settings;
 import net.fexcraft.mod.landdev.util.TranslationUtil;
+import net.fexcraft.mod.landdev.util.broad.DiscordTransmitter;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
@@ -72,6 +73,8 @@ public class LDCmd extends CommandBase {
 	    		case "reload":{
 	    			Protector.load();
 	        		Print.chat(sender, TranslationUtil.translateCmd("reload", "landdev-interaction.json"));
+	        		DiscordTransmitter.restart();
+	        		Print.chat(sender, TranslationUtil.translateCmd("reload", "discord-bot-integration"));
 	        		Print.chat(sender, TranslationUtil.translateCmd("reload.complete"));
 	    			return;
 	    		}
