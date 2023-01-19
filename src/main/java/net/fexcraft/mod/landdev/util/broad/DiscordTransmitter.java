@@ -39,7 +39,7 @@ public class DiscordTransmitter implements Transmitter {
 	        try{
 	        	map.entries().clear();
 	        	map.add("c", channel);
-	        	map.add("s", sender.substring(2));
+	        	if(sender != null) map.add("s", sender.startsWith("&") ? sender.substring(2) : sender);
 	        	map.add("m", message);
 	            fut.channel().writeAndFlush("msg=" + JsonHandler.toString(map, PrintOption.FLAT));
 	        }
