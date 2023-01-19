@@ -94,7 +94,7 @@ public class LandDev {
     
     @Mod.EventHandler
 	public void serverStopped(FMLServerStoppedEvent event){
-		Runtime.getRuntime().addShutdownHook(new Thread(() -> { DiscordTransmitter.exit(); }));
+		DiscordTransmitter.exit();
 	}
 	
 	public static final File updateSaveDirectory(World world){
