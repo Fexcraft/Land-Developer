@@ -163,4 +163,8 @@ public class Player implements Saveable {
 		return "&" + colorcode + (nickname == null ? entity == null ? "[PEN]" : entity.getDisplayNameString() : nickname);
 	}
 
+	public String name_raw(){
+		return (nickname == null ? entity == null ? "[PEN]" : entity.getDisplayNameString() : nickname);
+	}
+
 }
