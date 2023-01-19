@@ -2,6 +2,7 @@ package net.fexcraft.mod.landdev;
 
 import java.io.File;
 
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 
 import net.fexcraft.lib.mc.network.PacketHandler;
@@ -98,6 +99,10 @@ public class LandDev {
 	
 	public static final File getSaveDirectory(){
 		return SAVE_DIR;
+	}
+	
+	public static void log(Object obj){
+		logger.log(Level.INFO, obj + "\n");
 	}
 	
 }
