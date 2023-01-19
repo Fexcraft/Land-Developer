@@ -16,8 +16,8 @@ import io.netty.handler.codec.string.StringEncoder;
 import net.fexcraft.app.json.JsonHandler;
 import net.fexcraft.app.json.JsonHandler.PrintOption;
 import net.fexcraft.app.json.JsonMap;
-import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.mod.landdev.LandDev;
 import net.fexcraft.mod.landdev.util.Settings;
 import net.fexcraft.mod.landdev.util.broad.Broadcaster.Transmitter;
 
@@ -29,19 +29,22 @@ import net.fexcraft.mod.landdev.util.broad.Broadcaster.Transmitter;
 public class DiscordTransmitter implements Transmitter {
 	
 	private static DiscordTransmitter INST;
-	private JsonMap map = new JsonMap();
 	private static ChannelFuture fut;
-	private static boolean invalid;
+	private static JsonMap map = new JsonMap();
 
 	@Override
 	public void transmit(String channel, String sender, String message, String color){
 		Static.getServer().addScheduledTask(() -> {
 			if(fut != null && !fut.channel().isActive()) return;
 	        try{
+	        	map.entries().clear();
+	        	map.add("c", channel);
+	        	map.add("s", sender.substring(2));
+	        	map.add("m", message);
 	            fut.channel().writeAndFlush("msg=" + JsonHandler.toString(map, PrintOption.FLAT));
 	        }
 	        catch(Exception e){
-	        	Print.log("Error on sending message to discord bot. " + map);
+	        	LandDev.log("Error on sending message to discord bot. " + map);
 	        	e.printStackTrace();
 	        }
 		});
@@ -57,18 +60,19 @@ public class DiscordTransmitter implements Transmitter {
 		if(!Settings.DISCORD_BOT_ACTIVE) return;
 		INST = new DiscordTransmitter();
 		Broadcaster.SENDERS.add(INST);
-		try{
-			INST.start();
-		}
-		catch(Exception e){
-			e.printStackTrace();
-		}
+		new Thread(() -> {
+			try{
+				INST.start();
+			}
+			catch(Exception e){
+				e.printStackTrace();
+			}
+		}, "DiscordIntegrationStarter").start();
 	}
 
 	public void start() throws Exception {
 		EventLoopGroup group = new NioEventLoopGroup();
 		try {
-			if(invalid) return;
 			Bootstrap boot = new Bootstrap();
 			boot.group(group).channel(NioSocketChannel.class).handler(new ChannelInitializer<SocketChannel>() {
 				@Override
@@ -100,11 +104,7 @@ public class DiscordTransmitter implements Transmitter {
 		@Override
 		protected void channelRead0(ChannelHandlerContext ctx, String msg) throws Exception {
 			if(msg.equals("OK")) return;
-			else if(msg.startsWith("token=invalid")){
-				Print.log("Discord bot response: " + msg.substring(14));
-				invalid = true;
-			}
-			else Print.log("Discord bot response: " + msg);
+			else LandDev.log("Discord bot response: " + msg);
 		}
 
 	}
