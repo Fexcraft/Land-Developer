@@ -1,9 +1,12 @@
 package net.fexcraft.mod.landdev.events;
 
+import static net.fexcraft.mod.landdev.util.TranslationUtil.translate;
+
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.mod.landdev.data.player.Player;
 import net.fexcraft.mod.landdev.util.ResManager;
 import net.fexcraft.mod.landdev.util.Settings;
+import net.fexcraft.mod.landdev.util.broad.BroadcastChannel;
 import net.fexcraft.mod.landdev.util.broad.Broadcaster;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -25,6 +28,7 @@ public class PlayerEvents {
 		player.offline = false;
 		player.login = Time.getDate();
 		player.chunk_last = ResManager.getChunk(event.player);
+		Broadcaster.send(BroadcastChannel.SERVER, null, translate("server.player_join", player.name_raw()), null, true);
     }
     
 	@SubscribeEvent
@@ -39,6 +43,7 @@ public class PlayerEvents {
 			player.offline = true;
 			player.entity = null;
 		}
+		Broadcaster.send(BroadcastChannel.SERVER, null, translate("server.player_left", player.name_raw()), null, true);
 	}
 	
 	@SubscribeEvent
