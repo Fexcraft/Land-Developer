@@ -1,12 +1,8 @@
 package net.fexcraft.mod.landdev.events;
 
 import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.mod.landdev.LandDev;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.util.ResManager;
-import net.fexcraft.mod.landdev.util.TranslationUtil;
-import net.fexcraft.mod.landdev.util.broad.BroadcastChannel;
-import net.fexcraft.mod.landdev.util.broad.Broadcaster;
 import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -19,7 +15,6 @@ public class WorldEvents {
 	@SubscribeEvent(priority = EventPriority.HIGH)
 	public static void onWorldLoad(WorldEvent.Load event){
 		if(event != null && (event.getWorld().provider.getDimension() != 0 || event.getWorld().isRemote)) return;
-		Broadcaster.send(BroadcastChannel.SERVER, null,  TranslationUtil.translate("server.starting", LandDev.VERSION), null, true);
 	}
 	
 	@SubscribeEvent(priority = EventPriority.LOW)
