@@ -31,7 +31,7 @@ landdev.interact.control.unknown_chunk_type=Unknown Chunk Type
 
 landdev.server.player_join=%s joined the server.
 landdev.server.player_left=%s left the server.
-landdev.server.starting=Server is starting. Running LD v%s
+landdev.server.started=Server has started. Running LandDeveloper v%s
 landdev.server.stopping=Server is closing.
 
 landdev.chat.player=%s#&0] %s&0: &f%s
