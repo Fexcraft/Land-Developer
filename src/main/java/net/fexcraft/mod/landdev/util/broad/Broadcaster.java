@@ -19,7 +19,7 @@ public class Broadcaster {
 	}
 
 	public static void send(BroadcastChannel channel, String sender, String message, String arg, boolean no_internal){
-		send(channel.name(), sender, message, arg, no_internal);
+		send(channel.name, sender, message, arg, no_internal);
 	}
 
 	public static void send(String channel, String sender, String message, String arg, boolean no_internal){
