@@ -7,7 +7,6 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
-import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
@@ -28,7 +27,6 @@ public class DiscordTransmitter implements Transmitter {
 	
 	private static DiscordTransmitter INST;
 	private static ChannelFuture fut;
-	private static EventLoopGroup group;
 	private static JsonMap map = new JsonMap();
 
 	@Override
@@ -57,8 +55,8 @@ public class DiscordTransmitter implements Transmitter {
 	public static void restart(){
 		exit();
 		if(!Settings.DISCORD_BOT_ACTIVE) return;
-		INST = new DiscordTransmitter();
-		Broadcaster.SENDERS.add(INST);
+		Broadcaster.SENDERS.removeIf(transmitter -> transmitter instanceof DiscordTransmitter);
+		Broadcaster.SENDERS.add(INST = new DiscordTransmitter());
 		new Thread(() -> {
 			try{
 				INST.start();
@@ -70,7 +68,7 @@ public class DiscordTransmitter implements Transmitter {
 	}
 
 	private void start() throws Exception {
-		group = new NioEventLoopGroup();
+		NioEventLoopGroup group = new NioEventLoopGroup();
 		try {
             Bootstrap boot = new Bootstrap();
             boot.group(group);
@@ -94,10 +92,7 @@ public class DiscordTransmitter implements Transmitter {
 
 	public static void exit(){
 		INST = null;
-		if(group != null){
-			fut.channel().close();
-			group.shutdownGracefully();
-		}
+		if(fut != null) fut.channel().close();
 	}
 
 	private static class ClientHandler extends ChannelInboundHandlerAdapter {
