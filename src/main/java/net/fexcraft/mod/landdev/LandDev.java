@@ -22,6 +22,9 @@ import net.fexcraft.mod.landdev.util.ChunkCapabilityUtil;
 import net.fexcraft.mod.landdev.util.PacketReceiver;
 import net.fexcraft.mod.landdev.util.Protector;
 import net.fexcraft.mod.landdev.util.Settings;
+import net.fexcraft.mod.landdev.util.TranslationUtil;
+import net.fexcraft.mod.landdev.util.broad.BroadcastChannel;
+import net.fexcraft.mod.landdev.util.broad.Broadcaster;
 import net.fexcraft.mod.landdev.util.broad.DiscordTransmitter;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -31,8 +34,8 @@ import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLServerStartedEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+import net.minecraftforge.fml.common.event.FMLServerStoppedEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.Side;
@@ -81,16 +84,17 @@ public class LandDev {
 		event.registerServerCommand(new CkCmd());
 		event.registerServerCommand(new DisCmd());
 		event.registerServerCommand(new MunCmd());
-	}
-    
-    @Mod.EventHandler
-	public void serverStarting(FMLServerStartedEvent event){
 		DiscordTransmitter.restart();
 	}
     
     @Mod.EventHandler
-	public void serverStarting(FMLServerStoppingEvent event){
-		DiscordTransmitter.exit();
+	public void serverStopping(FMLServerStoppingEvent event){
+		Broadcaster.send(BroadcastChannel.SERVER, null, TranslationUtil.translate("server.stopping"), null, true);
+	}
+    
+    @Mod.EventHandler
+	public void serverStopped(FMLServerStoppedEvent event){
+		Runtime.getRuntime().addShutdownHook(new Thread(() -> { DiscordTransmitter.exit(); }));
 	}
 	
 	public static final File updateSaveDirectory(World world){
@@ -102,7 +106,7 @@ public class LandDev {
 	}
 	
 	public static void log(Object obj){
-		logger.log(Level.INFO, obj + "\n");
+		logger.log(Level.INFO, obj);
 	}
 	
 }
