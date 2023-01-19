@@ -4,15 +4,13 @@ import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelPipeline;
+import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
-import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.codec.string.StringDecoder;
-import io.netty.handler.codec.string.StringEncoder;
 import net.fexcraft.app.json.JsonHandler;
 import net.fexcraft.app.json.JsonHandler.PrintOption;
 import net.fexcraft.app.json.JsonMap;
@@ -30,6 +28,7 @@ public class DiscordTransmitter implements Transmitter {
 	
 	private static DiscordTransmitter INST;
 	private static ChannelFuture fut;
+	private static EventLoopGroup group;
 	private static JsonMap map = new JsonMap();
 
 	@Override
@@ -37,11 +36,11 @@ public class DiscordTransmitter implements Transmitter {
 		Static.getServer().addScheduledTask(() -> {
 			if(fut != null && !fut.channel().isActive()) return;
 	        try{
-	        	map.entries().clear();
+	        	JsonMap map = new JsonMap();
 	        	map.add("c", channel);
 	        	if(sender != null) map.add("s", sender.startsWith("&") ? sender.substring(2) : sender);
 	        	map.add("m", message);
-	            fut.channel().writeAndFlush("msg=" + JsonHandler.toString(map, PrintOption.FLAT));
+	            fut.channel().writeAndFlush(new Message("msg=" + JsonHandler.toString(map, PrintOption.FLAT)));
 	        }
 	        catch(Exception e){
 	        	LandDev.log("Error on sending message to discord bot. " + map);
@@ -70,23 +69,22 @@ public class DiscordTransmitter implements Transmitter {
 		}, "DiscordIntegrationStarter").start();
 	}
 
-	public void start() throws Exception {
-		EventLoopGroup group = new NioEventLoopGroup();
+	private void start() throws Exception {
+		group = new NioEventLoopGroup();
 		try {
-			Bootstrap boot = new Bootstrap();
-			boot.group(group).channel(NioSocketChannel.class).handler(new ChannelInitializer<SocketChannel>() {
-				@Override
-				public void initChannel(SocketChannel ch) throws Exception {
-					ChannelPipeline p = ch.pipeline();
-					p.addLast(new StringDecoder());
-					p.addLast(new StringEncoder());
-					p.addLast(new ClientHandler());
-				}
-			});
+            Bootstrap boot = new Bootstrap();
+            boot.group(group);
+            boot.channel(NioSocketChannel.class);
+            boot.option(ChannelOption.SO_KEEPALIVE, true);
+            boot.handler(new ChannelInitializer<SocketChannel>(){
+                @Override
+                public void initChannel(SocketChannel ch) throws Exception {
+                    ch.pipeline().addLast(new MsgDecoder(), new MsgEncoder(), new ClientHandler());
+                }
+            });
 			fut = boot.connect(Settings.DISCORD_BOT_ADRESS, Settings.DISCORD_BOT_PORT).sync();
 			Channel channel = fut.sync().channel();
-			channel.writeAndFlush("token=" + Settings.DISCORD_BOT_TOKEN);
-			channel.flush();
+			channel.writeAndFlush(new Message("token=" + Settings.DISCORD_BOT_TOKEN));
 			fut.channel().closeFuture().sync();
 		}
 		finally{
@@ -95,16 +93,20 @@ public class DiscordTransmitter implements Transmitter {
 	}
 
 	public static void exit(){
-		if(INST == null) return;
-		if(fut != null) fut.channel().close();
+		INST = null;
+		if(group != null){
+			fut.channel().close();
+			group.shutdownGracefully();
+		}
 	}
 
-	private static class ClientHandler extends SimpleChannelInboundHandler<String> {
+	private static class ClientHandler extends ChannelInboundHandlerAdapter {
 
 		@Override
-		protected void channelRead0(ChannelHandlerContext ctx, String msg) throws Exception {
-			if(msg.equals("OK")) return;
-			else LandDev.log("Discord bot response: " + msg);
+		public void channelRead(ChannelHandlerContext ctx, Object obj) throws Exception {
+			Message msg = (Message)obj;
+			if(msg.length <= 0) return;
+			else LandDev.log("Discord bot response: " + msg.value);
 		}
 
 	}
