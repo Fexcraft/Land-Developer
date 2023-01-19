@@ -38,4 +38,9 @@ public class InternalTransmitter implements Transmitter {
 		return "internal";
 	}
 	
+	@Override
+	public boolean internal(){
+		return true;
+	}
+	
 }
