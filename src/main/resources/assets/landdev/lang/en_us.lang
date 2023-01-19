@@ -29,8 +29,12 @@ landdev.interact.interact.noperm=No permission to interact with blocks here.
 landdev.interact.control.unknown_district=Unknown District
 landdev.interact.control.unknown_chunk_type=Unknown Chunk Type
 
-landdev.chat.player=%s#&0] %s&0: &f%s
+landdev.server.player_join=%s joined the server.
+landdev.server.player_left=%s left the server.
+landdev.server.starting=Server is starting. Running LD v%s
+landdev.server.stopping=Server is closing.
 
+landdev.chat.player=%s#&0] %s&0: &f%s
 landdev.announce.new_municipality=&9[&aLD&9] &bThe Municipality &6%s &7(%s) &bjust got created!
 
 landdev.chunk_type.private=Private
