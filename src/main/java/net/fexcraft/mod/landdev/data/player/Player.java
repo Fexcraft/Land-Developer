@@ -160,11 +160,11 @@ public class Player implements Saveable {
 	}
 
 	public String name(){
-		return "&" + colorcode + (nickname == null ? entity == null ? "[PEN]" : entity.getDisplayNameString() : nickname);
+		return "&" + colorcode + (nickname == null ? entity == null ? "<PEN>" : entity.getDisplayNameString() : nickname);
 	}
 
 	public String name_raw(){
-		return (nickname == null ? entity == null ? "[PEN]" : entity.getDisplayNameString() : nickname);
+		return (nickname == null ? entity == null ? "<PEN>" : entity.getDisplayNameString() : nickname);
 	}
 
 }
