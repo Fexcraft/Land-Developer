@@ -1,5 +1,6 @@
 package net.fexcraft.mod.landdev.gui;
 
+import net.fexcraft.lib.mc.gui.GenericContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.IGuiHandler;
@@ -18,12 +19,14 @@ public class GuiHandler implements IGuiHandler {
 	public static final int POLL = 9;
 	public static final int MAILBOX = 10;
 	public static final int CLAIM = 100;
+	public static final int IMG_PREVIEW = 200;
 	
 
 	@Override
 	public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z){
 		if(ID <= 8) return new LDGuiContainer(player, ID, x, y, z);
 		if(ID == CLAIM) return new LDGuiClaimCon(player, x, y, z);
+		if(ID == IMG_PREVIEW) return new GenericContainer.DefImpl(player);
 		return null;
 	}
 
@@ -31,6 +34,7 @@ public class GuiHandler implements IGuiHandler {
 	public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z){
 		if(ID <= 8) return new LDGuiBase(ID, player, x, y, z);
 		if(ID == CLAIM) return new LDGuiClaim(player, x, y, z);
+		if(ID == IMG_PREVIEW) return new LDGuiImgPreview(player, x, y, z);
 		return null;
 	}
 
