@@ -74,6 +74,7 @@ public class LandDev {
     @EventHandler
     public void init(FMLPostInitializationEvent event){
         Protector.load();
+		DiscordTransmitter.restart();
     }
     
     @Mod.EventHandler
