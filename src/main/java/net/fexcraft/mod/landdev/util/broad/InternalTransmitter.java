@@ -7,6 +7,7 @@ import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.mod.landdev.util.PacketReceiver;
 import net.fexcraft.mod.landdev.util.Settings;
 import net.fexcraft.mod.landdev.util.broad.Broadcaster.Transmitter;
+import net.fexcraft.mod.landdev.util.broad.Broadcaster.TransmitterType;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
@@ -19,7 +20,7 @@ import net.minecraft.nbt.NBTTagString;
 public class InternalTransmitter implements Transmitter {
 
 	@Override
-	public void transmit(String channel, String sender, String message, String color){
+	public void transmit(String channel, String sender, String message, String[] args){
 		if(channel.equals(CHAT.name) && !Settings.CHAT_OVERRIDE) return;
 		NBTTagCompound com = new NBTTagCompound();
 		com.setString("target_listener", PacketReceiver.RECEIVER_ID);
@@ -28,19 +29,19 @@ public class InternalTransmitter implements Transmitter {
 		list.appendTag(new NBTTagString(channel));
 		list.appendTag(new NBTTagString(sender));
 		list.appendTag(new NBTTagString(message));
-		if(color != null) list.appendTag(new NBTTagString(color));
+		if(args != null) list.appendTag(new NBTTagString(args[0]));
 		com.setTag("msg", list);
 		PacketHandler.getInstance().sendToAll(new PacketNBTTagCompound(com));
-	}
-
-	@Override
-	public String category(){
-		return "internal";
 	}
 	
 	@Override
 	public boolean internal(){
 		return true;
+	}
+
+	@Override
+	public TransmitterType type(){
+		return TransmitterType.INTERNAL;
 	}
 	
 }
