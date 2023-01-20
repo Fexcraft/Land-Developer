@@ -1,5 +1,7 @@
 package net.fexcraft.mod.landdev;
 
+import static net.fexcraft.mod.landdev.util.broad.Broadcaster.TargetTransmitter.NO_INTERNAL;
+
 import java.io.File;
 
 import org.apache.logging.log4j.Level;
@@ -90,7 +92,7 @@ public class LandDev {
     
     @Mod.EventHandler
 	public void serverStopping(FMLServerStoppingEvent event){
-		Broadcaster.send(BroadcastChannel.SERVER, null, TranslationUtil.translate("server.stopping"), null, true);
+		Broadcaster.send(NO_INTERNAL, BroadcastChannel.SERVER, null, TranslationUtil.translate("server.stopping"));
 	}
     
     @Mod.EventHandler
