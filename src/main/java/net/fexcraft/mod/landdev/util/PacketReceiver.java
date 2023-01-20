@@ -44,8 +44,14 @@ public class PacketReceiver implements IPacketListener<PacketNBTTagCompound> {
 				break;
 			case "chat_img":
 				text = new TextComponentString(format(list.getStringTagAt(1)));
-				text.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/ld img " + list.getStringTagAt(2) + " " + c + " " + list.getStringTagAt(4)));
-				text.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString(format(list.getStringTagAt(1)))));
+				TextComponentString text1 = new TextComponentString(format(" &a[ &6View &a]"));
+				text1.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/ld img " + list.getStringTagAt(2) + " " + c + " " + list.getStringTagAt(4)));
+				text1.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString(format(list.getStringTagAt(1)))));
+				text.appendSibling(text1);
+				TextComponentString text2 = new TextComponentString(format(" &e[ &6Open &e]"));
+				text2.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, list.getStringTagAt(2)));
+				text2.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString(format(list.getStringTagAt(1)))));
+				text.appendSibling(text2);
 				break;
 			default:
 				text = new TextComponentString(list.toString());
