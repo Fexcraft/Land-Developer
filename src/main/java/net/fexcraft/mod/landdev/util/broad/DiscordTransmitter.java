@@ -17,6 +17,7 @@ import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.landdev.LandDev;
 import net.fexcraft.mod.landdev.util.Settings;
 import net.fexcraft.mod.landdev.util.broad.Broadcaster.Transmitter;
+import net.fexcraft.mod.landdev.util.broad.Broadcaster.TransmitterType;
 
 /**
  * 
@@ -30,7 +31,7 @@ public class DiscordTransmitter implements Transmitter {
 	private static JsonMap map = new JsonMap();
 
 	@Override
-	public void transmit(String channel, String sender, String message, String color){
+	public void transmit(String channel, String sender, String message, String[] args){
 		Static.getServer().addScheduledTask(() -> {
 			if(fut != null && !fut.channel().isActive()) return;
 	        try{
@@ -47,16 +48,11 @@ public class DiscordTransmitter implements Transmitter {
 		});
 	}
 
-	@Override
-	public String category(){
-		return "discord";
-	}
-
 	public static void restart(){
 		exit();
 		if(!Settings.DISCORD_BOT_ACTIVE) return;
-		Broadcaster.SENDERS.removeIf(transmitter -> transmitter instanceof DiscordTransmitter);
-		Broadcaster.SENDERS.add(INST = new DiscordTransmitter());
+		Broadcaster.SENDERS.values().removeIf(transmitter -> transmitter instanceof DiscordTransmitter);
+		Broadcaster.SENDERS.put(TransmitterType.DISCORD, INST = new DiscordTransmitter());
 		new Thread(() -> {
 			try{
 				INST.start();
@@ -104,6 +100,11 @@ public class DiscordTransmitter implements Transmitter {
 			else LandDev.log("Discord bot response: " + msg.value);
 		}
 
+	}
+
+	@Override
+	public TransmitterType type(){
+		return TransmitterType.DISCORD;
 	}
 	
 }
