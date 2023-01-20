@@ -18,11 +18,11 @@ public class Broadcaster {
 		send(TargetTransmitter.ALL, CHAT.name, player.name(), message, player.adm ? Settings.CHAT_ADMIN_COLOR : Settings.CHAT_PLAYER_COLOR);
 	}
 
-	public static void send(TargetTransmitter target, BroadcastChannel channel, String sender, String message, String... args){
+	public static void send(TargetTransmitter target, BroadcastChannel channel, String sender, String message, Object... args){
 		send(target, channel.name, sender, message, args);
 	}
 
-	public static void send(TargetTransmitter target, String channel, String sender, String message, String... args){
+	public static void send(TargetTransmitter target, String channel, String sender, String message, Object... args){
 		Transmitter trs = null;
 		for(TransmitterType type : target.types){
 			if((trs = SENDERS.get(type)) == null) continue;
@@ -32,7 +32,7 @@ public class Broadcaster {
 
 	public static interface Transmitter {
 		
-		public void transmit(String channel, String sender, String msg, @Nullable String[] args);
+		public void transmit(String channel, String sender, String msg, @Nullable Object[] args);
 
 		public default boolean internal(){ return false; }
 		
@@ -54,7 +54,8 @@ public class Broadcaster {
 
 		ALL(TransmitterType.values()),
 		NO_INTERNAL(TransmitterType.DISCORD),
-		NO_DISCORD(TransmitterType.INTERNAL);
+		NO_DISCORD(TransmitterType.INTERNAL),
+		INTERNAL_ONLY(TransmitterType.INTERNAL);
 
 		private TransmitterType[] types;
 
