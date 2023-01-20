@@ -1,5 +1,7 @@
 package net.fexcraft.mod.landdev.events;
 
+import static net.fexcraft.mod.landdev.util.broad.Broadcaster.TargetTransmitter.NO_INTERNAL;
+
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.mod.fsmm.FSMM;
 import net.fexcraft.mod.landdev.LandDev;
@@ -27,7 +29,7 @@ public class ChunkEvents {
     		if(!FSMM.isDataManagerLoaded()) FSMM.loadDataManager();
     		LandDev.updateSaveDirectory(event.getWorld());
     		ResManager.INSTANCE.load();
-    		Broadcaster.send(BroadcastChannel.SERVER, null,  TranslationUtil.translate("server.started", LandDev.VERSION), null, true);
+    		Broadcaster.send(NO_INTERNAL, BroadcastChannel.SERVER, null, TranslationUtil.translate("server.started", LandDev.VERSION));
     	}
     	Chunk_ chunk = new Chunk_(event.getWorld(), event.getChunk().x, event.getChunk().z);
         if(ResManager.CHUNKS.containsKey(chunk.key)) return;
