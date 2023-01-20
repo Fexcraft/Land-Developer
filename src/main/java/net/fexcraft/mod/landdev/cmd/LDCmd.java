@@ -4,11 +4,15 @@ import static net.fexcraft.mod.fsmm.util.Config.getWorthAsString;
 
 import java.util.List;
 
+import net.fexcraft.lib.mc.network.PacketHandler;
+import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.data.player.Player;
+import net.fexcraft.mod.landdev.gui.GuiHandler;
 import net.fexcraft.mod.landdev.util.AliasLoader;
+import net.fexcraft.mod.landdev.util.PacketReceiver;
 import net.fexcraft.mod.landdev.util.Protector;
 import net.fexcraft.mod.landdev.util.ResManager;
 import net.fexcraft.mod.landdev.util.Settings;
@@ -17,6 +21,8 @@ import net.fexcraft.mod.landdev.util.broad.DiscordTransmitter;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 
 public class LDCmd extends CommandBase {
@@ -76,6 +82,17 @@ public class LDCmd extends CommandBase {
 	        		DiscordTransmitter.restart();
 	        		Print.chat(sender, TranslationUtil.translateCmd("reload", "discord-bot-integration"));
 	        		Print.chat(sender, TranslationUtil.translateCmd("reload.complete"));
+	    			return;
+	    		}
+	    		case "img":{
+	    			int w = args.length > 2 ? Integer.parseInt(args[2]) : 256;
+	    			int h = args.length > 3 ? Integer.parseInt(args[3]) : 256;
+	    			player.openGui(GuiHandler.IMG_PREVIEW, w, h, 0);
+	    			NBTTagCompound com = new NBTTagCompound();
+	    			com.setString("target_listener", PacketReceiver.RECEIVER_ID);
+	    			com.setString("task", "img_preview_url");
+	    			com.setString("url", args[1]);
+	    			PacketHandler.getInstance().sendTo(new PacketNBTTagCompound(com), (EntityPlayerMP)player.entity);
 	    			return;
 	    		}
     			case "help":
