@@ -1,6 +1,7 @@
 package net.fexcraft.mod.landdev.events;
 
 import static net.fexcraft.mod.landdev.util.TranslationUtil.translate;
+import static net.fexcraft.mod.landdev.util.broad.Broadcaster.TargetTransmitter.NO_INTERNAL;
 
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.mod.landdev.data.player.Player;
@@ -28,7 +29,7 @@ public class PlayerEvents {
 		player.offline = false;
 		player.login = Time.getDate();
 		player.chunk_last = ResManager.getChunk(event.player);
-		Broadcaster.send(BroadcastChannel.SERVER, null, translate("server.player_join", player.name_raw()), null, true);
+		Broadcaster.send(NO_INTERNAL, BroadcastChannel.SERVER, null, translate("server.player_join", player.name_raw()));
     }
     
 	@SubscribeEvent
@@ -36,7 +37,7 @@ public class PlayerEvents {
     	if(event.player.world.isRemote) return;
 		Player player = ResManager.getPlayer(event.player.getGameProfile().getId(), false);
 		if(player != null){
-			Broadcaster.send(BroadcastChannel.SERVER, null, translate("server.player_left", player.name_raw()), null, true);
+			Broadcaster.send(NO_INTERNAL, BroadcastChannel.SERVER, null, translate("server.player_left", player.name_raw()));
 			player.save();
 			player.last_login = player.login;
 			player.last_logout = Time.getDate();
