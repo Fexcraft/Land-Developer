@@ -3,12 +3,16 @@ package net.fexcraft.mod.landdev.util;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.api.packet.IPacketListener;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
+import net.fexcraft.lib.mc.render.ExternalTextureHelper;
 import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.mod.landdev.events.LocationUpdate;
+import net.fexcraft.mod.landdev.gui.LDGuiImgPreview;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.event.ClickEvent;
+import net.minecraft.util.text.event.HoverEvent;
 
 public class PacketReceiver implements IPacketListener<PacketNBTTagCompound> {
 	
@@ -38,6 +42,11 @@ public class PacketReceiver implements IPacketListener<PacketNBTTagCompound> {
 			case "chat":
 				text = new TextComponentString(format(Settings.CHAT_OVERRIDE_LANG, c, list.getStringTagAt(1), list.getStringTagAt(2)));
 				break;
+			case "chat_img":
+				text = new TextComponentString(format(list.getStringTagAt(1)));
+				text.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/ld img " + list.getStringTagAt(2) + " " + c + " " + list.getStringTagAt(4)));
+				text.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString(format(list.getStringTagAt(1)))));
+				break;
 			default:
 				text = new TextComponentString(list.toString());
 				break;
@@ -45,6 +54,9 @@ public class PacketReceiver implements IPacketListener<PacketNBTTagCompound> {
 			Minecraft.getMinecraft().ingameGUI.getChatGUI().printChatMessage(text);
 			return;
 		}
+		case "img_preview_url":
+			LDGuiImgPreview.IMG_URL = ExternalTextureHelper.get(packet.nbt.getString("url"));
+			return;
 		}
 	}
 	
