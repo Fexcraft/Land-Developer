@@ -10,12 +10,14 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonHandler;
 import net.fexcraft.app.json.JsonHandler.PrintOption;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.landdev.LandDev;
 import net.fexcraft.mod.landdev.util.Settings;
+import net.fexcraft.mod.landdev.util.broad.Broadcaster.TargetTransmitter;
 import net.fexcraft.mod.landdev.util.broad.Broadcaster.Transmitter;
 import net.fexcraft.mod.landdev.util.broad.Broadcaster.TransmitterType;
 
@@ -31,7 +33,7 @@ public class DiscordTransmitter implements Transmitter {
 	private static JsonMap map = new JsonMap();
 
 	@Override
-	public void transmit(String channel, String sender, String message, String[] args){
+	public void transmit(String channel, String sender, String message, Object[] args){
 		Static.getServer().addScheduledTask(() -> {
 			if(fut != null && !fut.channel().isActive()) return;
 	        try{
@@ -97,7 +99,19 @@ public class DiscordTransmitter implements Transmitter {
 		public void channelRead(ChannelHandlerContext ctx, Object obj) throws Exception {
 			Message msg = (Message)obj;
 			if(msg.length <= 0) return;
-			else LandDev.log("Discord bot response: " + msg.value);
+			if(!msg.value.startsWith("msg=")) LandDev.log("Discord bot response: " + msg.value);
+			JsonMap map = (JsonMap)JsonHandler.parse(msg.value.substring(4), true);
+			if(map.get("m").string_value().length() > 0){
+				Broadcaster.send(TargetTransmitter.NO_DISCORD, BroadcastChannel.CHAT, "&2" + map.getString("s", "DiscordUser"), map.getString("m", "<MESSAGE_TEXT>"), Settings.CHAT_DISCORD_COLOR);
+			}
+			else Broadcaster.send(TargetTransmitter.INTERNAL_ONLY, BroadcastChannel.CHAT, "&2" + map.getString("s", "DiscordUser"), "&b[!] &6Embeds: " + (map.has("a") ? map.get("a").asArray().size() : "ERR"), Settings.CHAT_DISCORD_COLOR);
+			if(map.has("a")){
+				int[] idx = { 1 };
+				map.get("a").asArray().elements().forEach(elm -> {
+					JsonArray array = elm.asArray();
+					Broadcaster.send(TargetTransmitter.INTERNAL_ONLY, BroadcastChannel.CHAT, "&2" + map.getString("s", "DiscordUser"), "&l&b[ &6Embed " + idx[0]++ + " &b]", "img", array.get(0).string_value(), array.get(1).string_value(), array.get(2).string_value());
+				});
+			}
 		}
 
 	}
