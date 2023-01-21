@@ -32,7 +32,7 @@ public class Settings {
 	public static long DEFAULT_CHUNK_PRICE, MUNICIPALITY_CREATION_FEE;
 	//
 	public static boolean CHAT_OVERRIDE, DISCORD_BOT_ACTIVE;
-	public static String CHAT_PLAYER_COLOR = "&6", CHAT_ADMIN_COLOR = "&4", CHAT_DISCORD_COLOR = "&5";
+	public static String CHAT_PLAYER_COLOR = "&6", CHAT_ADMIN_COLOR = "&4", CHAT_DISCORD_COLOR = "&9";
 	public static String CHAT_OVERRIDE_LANG;
 	public static int DISCORD_BOT_PORT = 10810;
 	public static String DISCORD_BOT_ADRESS = "fexcraft.net", DISCORD_BOT_TOKEN = UUID.randomUUID().toString().replace("-", "").substring(0, 8);
