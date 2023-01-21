@@ -17,7 +17,6 @@ public class LDGuiImgPreview extends GenericGui<GenericContainer> {
 
 	public LDGuiImgPreview(EntityPlayer player, int x, int y, int z){
 		super(TEXTURE, new GenericContainer.DefImpl(player), player);
-		this.defbackground = false;
 		this.deftexrect = false;
 		xSize = 256;
 		ySize = 256;
