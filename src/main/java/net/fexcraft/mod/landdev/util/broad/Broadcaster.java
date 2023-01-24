@@ -12,7 +12,10 @@ import net.fexcraft.mod.landdev.util.Settings;
 public class Broadcaster {
 	
 	public static ConcurrentHashMap<TransmitterType, Transmitter> SENDERS = new ConcurrentHashMap<>();
-	static { SENDERS.put(TransmitterType.INTERNAL, new InternalTransmitter()); }
+	static {
+		SENDERS.put(TransmitterType.INTERNAL, new InternalTransmitter());
+		SENDERS.put(TransmitterType.LOG, new LogTransmitter());
+	}
 
 	public static void send(Player player, String message){
 		send(TargetTransmitter.ALL, CHAT.name, player.name(), message, player.adm ? Settings.CHAT_ADMIN_COLOR : Settings.CHAT_PLAYER_COLOR);
@@ -42,10 +45,14 @@ public class Broadcaster {
 	
 	public static enum TransmitterType {
 		
-		INTERNAL, DISCORD;
+		INTERNAL, DISCORD, LOG;
 		
 		public boolean is(TransmitterType other){
 			return this == other;
+		}
+
+		public boolean internal(){
+			return this == INTERNAL || this == LOG;
 		}
 		
 	}
@@ -55,7 +62,8 @@ public class Broadcaster {
 		ALL(TransmitterType.values()),
 		NO_INTERNAL(TransmitterType.DISCORD),
 		NO_DISCORD(TransmitterType.INTERNAL),
-		INTERNAL_ONLY(TransmitterType.INTERNAL);
+		INTERNAL_ONLY(TransmitterType.INTERNAL),
+		LOG_ONLY(TransmitterType.LOG);
 
 		private TransmitterType[] types;
 
