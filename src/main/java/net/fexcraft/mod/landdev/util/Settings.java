@@ -14,7 +14,6 @@ import net.fexcraft.mod.fsmm.util.Config;
 import net.fexcraft.mod.landdev.data.IconHolder;
 import net.fexcraft.mod.landdev.data.district.DistrictType;
 import net.fexcraft.mod.landdev.util.broad.Broadcaster;
-import net.fexcraft.mod.landdev.util.broad.Broadcaster.TransmitterType;
 import net.minecraftforge.common.config.ConfigElement;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.client.config.IConfigElement;
@@ -84,7 +83,7 @@ public class Settings {
 		EDIT_WILDERNESS = !PROTECT_WILDERNESS;
 		//
 		CHAT_OVERRIDE_LANG = TranslationUtil.translate("chat.player");
-		Broadcaster.SENDERS.values().removeIf(s -> !s.type().is(TransmitterType.INTERNAL));
+		Broadcaster.SENDERS.values().removeIf(s -> !s.type().internal());
 		CHAT_OVERRIDE = config.getBoolean("chat_override", DEFAULT_CAT, true, "If the vanilla chat should be overriden by the LandDev chat.");
 		CHAT_PLAYER_COLOR = config.getString("chat_color_player", DEFAULT_CAT, CHAT_PLAYER_COLOR, "Default color of the player role marker (default `#`) in chat.");
 		CHAT_ADMIN_COLOR = config.getString("chat_color_admin", DEFAULT_CAT, CHAT_ADMIN_COLOR, "Default color of the admin role marker (default `#`) in chat.");
