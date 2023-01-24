@@ -112,7 +112,7 @@ public class DiscordTransmitter implements Transmitter {
 				map.get("a").asArray().elements().forEach(elm -> {
 					JsonArray array = elm.asArray();
 					Broadcaster.send(TargetTransmitter.INTERNAL_ONLY, BroadcastChannel.CHAT, "", "&l&6Embed " + idx[0]++ + ": ", "img", array.get(0).string_value(), array.get(1).string_value(), array.get(2).string_value());
-					Broadcaster.send(TargetTransmitter.LOG_ONLY, BroadcastChannel.CHAT, "D| " + user, array.get(0).string_value());
+					Broadcaster.send(TargetTransmitter.LOG_ONLY, BroadcastChannel.CHAT, "D|" + user, array.get(0).string_value());
 				});
 			}
 		}
