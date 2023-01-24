@@ -101,15 +101,18 @@ public class DiscordTransmitter implements Transmitter {
 			if(msg.length <= 0) return;
 			if(!msg.value.startsWith("msg=")) LandDev.log("Discord bot response: " + msg.value);
 			JsonMap map = (JsonMap)JsonHandler.parse(msg.value.substring(4), true);
+			String user = map.getString("s", "DiscordUser");
 			if(map.get("m").string_value().length() > 0){
-				Broadcaster.send(TargetTransmitter.NO_DISCORD, BroadcastChannel.CHAT, "&2" + map.getString("s", "DiscordUser"), map.getString("m", "<MESSAGE_TEXT>"), Settings.CHAT_DISCORD_COLOR);
+				Broadcaster.send(TargetTransmitter.NO_DISCORD, BroadcastChannel.CHAT, "&2" + user, map.getString("m", "<MESSAGE_TEXT>"), Settings.CHAT_DISCORD_COLOR);
+				Broadcaster.send(TargetTransmitter.LOG_ONLY, BroadcastChannel.CHAT, "D|" + user, map.getString("m", "<MESSAGE_TEXT>"));
 			}
-			else Broadcaster.send(TargetTransmitter.INTERNAL_ONLY, BroadcastChannel.CHAT, "&2" + map.getString("s", "DiscordUser"), "&b[!] &6Embeds: " + (map.has("a") ? map.get("a").asArray().size() : "ERR"), Settings.CHAT_DISCORD_COLOR);
+			else Broadcaster.send(TargetTransmitter.INTERNAL_ONLY, BroadcastChannel.CHAT, "&2" + user, "&b[!] &6Embeds: " + (map.has("a") ? map.get("a").asArray().size() : "ERR"), Settings.CHAT_DISCORD_COLOR);
 			if(map.has("a")){
 				int[] idx = { 1 };
 				map.get("a").asArray().elements().forEach(elm -> {
 					JsonArray array = elm.asArray();
 					Broadcaster.send(TargetTransmitter.INTERNAL_ONLY, BroadcastChannel.CHAT, "", "&l&6Embed " + idx[0]++ + ": ", "img", array.get(0).string_value(), array.get(1).string_value(), array.get(2).string_value());
+					Broadcaster.send(TargetTransmitter.LOG_ONLY, BroadcastChannel.CHAT, "D| " + user, array.get(0).string_value());
 				});
 			}
 		}
