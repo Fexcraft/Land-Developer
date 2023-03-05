@@ -2,13 +2,10 @@ package net.fexcraft.mod.landdev.events;
 
 import java.util.ArrayList;
 
-import org.lwjgl.opengl.GL11;
-
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.render.ExternalTextureHelper;
 import net.fexcraft.lib.mc.utils.Formatter;
-import net.fexcraft.lib.tmt.ModelBase;
 import net.fexcraft.mod.landdev.util.Settings;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.client.Minecraft;
@@ -23,6 +20,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import org.lwjgl.opengl.GL11;
 
 public class LocationUpdate extends GuiScreen {
 
@@ -44,7 +42,7 @@ public class LocationUpdate extends GuiScreen {
 	public void displayLocationUpdate(RenderGameOverlayEvent event){
 		if(event.getType() != ElementType.HOTBAR || !shown()) return;
 		if(client == null) client = Minecraft.getMinecraft();
-		ModelBase.bindTexture(texture);
+		mc.renderEngine.bindTexture(texture);
 		GL11.glEnable(GL11.GL_BLEND);
 		reswid = event.getResolution().getScaledWidth();
 		if(Settings.LOCUP_SIDE){
@@ -79,7 +77,7 @@ public class LocationUpdate extends GuiScreen {
 		}
 		//
 		RGB.glColorReset();
-		ModelBase.bindTexture(texture);
+		mc.renderEngine.bindTexture(texture);
 		for(int i = 0; i < lines.size(); i++){
 			linelength[i] = client.fontRenderer.getStringWidth(lines.get(i));
 			if(lines.get(i).length() > 0) INST.drawTexturedModalRect(Settings.LOCUP_SIDE ? 0 : reswid - linelength[i] - 4, 40 + (12 * i), 0, 39, linelength[i] + 4, 10);
@@ -111,8 +109,8 @@ public class LocationUpdate extends GuiScreen {
 		}
 	}
 
-    public static void draw(ResourceLocation loc, int x, int y, int width, int height){
-    	ModelBase.bindTexture(loc);
+    public void draw(ResourceLocation loc, int x, int y, int width, int height){
+    	mc.renderEngine.bindTexture(loc);
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuffer();
         bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
