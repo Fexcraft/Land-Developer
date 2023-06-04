@@ -145,7 +145,7 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 			addToList(list, "spacer", ELM_BLANK, ICON_BLANK, false, false, null);
 			addToList(list, "owner", ELM_GENERIC, ICON_OPEN, true, false, owner.name());
 			if(sell.price > 0){
-				addToList(list, "price", ELM_GENERIC, ICON_OPEN, true, false, sell.price_formatted());
+				addToList(list, "price", ELM_GENERIC, canman ? ICON_EMPTY : ICON_OPEN, true, false, sell.price_formatted());
 			}
 			if(canman){
 				addToList(list, "set_price", ELM_GENERIC, ICON_OPEN, true, false, null);
