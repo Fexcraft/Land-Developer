@@ -2,7 +2,7 @@ package net.fexcraft.mod.landdev.data.norm;
 
 import org.apache.commons.lang3.math.NumberUtils;
 
-import net.fexcraft.app.json.JsonObject;
+import net.fexcraft.app.json.JsonValue;
 
 public class IntegerNorm extends Norm {
 	
@@ -34,12 +34,12 @@ public class IntegerNorm extends Norm {
 	}
 
 	@Override
-	public JsonObject save(){
-		return new JsonObject<Integer>(value);
+	public JsonValue save(){
+		return new JsonValue<Integer>(value);
 	}
 
 	@Override
-	public void load(JsonObject obj){
+	public void load(JsonValue obj){
 		value = obj.integer_value();
 	}
 
