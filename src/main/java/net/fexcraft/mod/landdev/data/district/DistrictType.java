@@ -6,7 +6,7 @@ import java.util.TreeMap;
 
 import net.fexcraft.app.json.JsonHandler;
 import net.fexcraft.app.json.JsonMap;
-import net.fexcraft.app.json.JsonObject;
+import net.fexcraft.app.json.JsonValue;
 import net.fexcraft.mod.landdev.data.Saveable;
 
 public class DistrictType implements Saveable {
@@ -109,7 +109,7 @@ public class DistrictType implements Saveable {
 		TYPES.clear();
 		boolean found = false;
 		String def = map.getString("default", null);
-		for(Entry<String, JsonObject<?>> entry : map.entries()){
+		for(Entry<String, JsonValue<?>> entry : map.entries()){
 			if(entry.getKey().equals("default")) continue;
 			if(def == null) def = entry.getKey();
 			found = true;
