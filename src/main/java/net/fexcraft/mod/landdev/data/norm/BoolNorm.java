@@ -1,6 +1,6 @@
 package net.fexcraft.mod.landdev.data.norm;
 
-import net.fexcraft.app.json.JsonObject;
+import net.fexcraft.app.json.JsonValue;
 
 public class BoolNorm extends Norm {
 	
@@ -32,12 +32,12 @@ public class BoolNorm extends Norm {
 	}
 
 	@Override
-	public JsonObject save(){
-		return new JsonObject<Boolean>(value);
+	public JsonValue save(){
+		return new JsonValue<Boolean>(value);
 	}
 
 	@Override
-	public void load(JsonObject obj){
+	public void load(JsonValue obj){
 		value = obj.bool();
 	}
 
