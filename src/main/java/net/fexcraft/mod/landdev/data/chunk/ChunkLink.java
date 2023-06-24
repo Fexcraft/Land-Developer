@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonMap;
-import net.fexcraft.app.json.JsonObject;
+import net.fexcraft.app.json.JsonValue;
 import net.fexcraft.mod.landdev.data.Saveable;
 
 public class ChunkLink implements Saveable {
@@ -34,10 +34,10 @@ public class ChunkLink implements Saveable {
 
 	@Override
 	public void load(JsonMap map){
-		JsonObject<?> elm = map.get("linked");
+		JsonValue<?> elm = map.get("linked");
 		if(elm.isArray()){
 			linked = new ArrayList<>();
-			for(JsonObject<?> obj : elm.asArray().value){
+			for(JsonValue<?> obj : elm.asArray().value){
 				linked.add(new ChunkKey(obj.value.toString()));
 			}
 		}
