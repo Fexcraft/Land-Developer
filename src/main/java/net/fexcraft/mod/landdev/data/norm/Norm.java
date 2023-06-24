@@ -1,6 +1,6 @@
 package net.fexcraft.mod.landdev.data.norm;
 
-import net.fexcraft.app.json.JsonObject;
+import net.fexcraft.app.json.JsonValue;
 
 public abstract class Norm {
 	
@@ -20,9 +20,9 @@ public abstract class Norm {
 	
 	public abstract boolean bool();
 	
-	public abstract JsonObject save();
+	public abstract JsonValue save();
 	
-	public abstract void load(JsonObject obj);
+	public abstract void load(JsonValue obj);
 
 	public abstract void set(Object val);
 	
