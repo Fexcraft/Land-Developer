@@ -5,7 +5,7 @@ import java.util.Map.Entry;
 import java.util.UUID;
 
 import net.fexcraft.app.json.JsonMap;
-import net.fexcraft.app.json.JsonObject;
+import net.fexcraft.app.json.JsonValue;
 import net.fexcraft.mod.landdev.data.Saveable;
 
 /**
@@ -43,13 +43,13 @@ public class AccessList implements Saveable {
 	public void load(JsonMap map){
 		if(map.has("al_players")){
 			JsonMap pm = map.getMap("al_players");
-			for(Entry<String, JsonObject<?>> entry : pm.entries()){
+			for(Entry<String, JsonValue<?>> entry : pm.entries()){
 				players.put(UUID.fromString(entry.getKey()), entry.getValue().long_value());
 			}
 		}
 		if(map.has("al_companies")){
 			JsonMap cm = map.getMap("al_companies");
-			for(Entry<String, JsonObject<?>> entry : cm.entries()){
+			for(Entry<String, JsonValue<?>> entry : cm.entries()){
 				companies.put(Integer.parseInt(entry.getKey()), entry.getValue().long_value());
 			}
 		}
