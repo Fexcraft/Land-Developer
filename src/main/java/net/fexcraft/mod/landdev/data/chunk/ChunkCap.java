@@ -7,7 +7,7 @@ import net.minecraftforge.common.capabilities.CapabilityInject;
 
 public interface ChunkCap {
 
-    public static final ResourceLocation REGNAME = new ResourceLocation("states:chunk");
+    public static final ResourceLocation REGNAME = new ResourceLocation("landdev:chunk");
 	@CapabilityInject(ChunkCap.class)
 	public static final Capability<ChunkCap> CHUNK = null;
     
