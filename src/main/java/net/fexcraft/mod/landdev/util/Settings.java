@@ -27,14 +27,22 @@ public class Settings {
 	public static String DEFAULT_ICON = "http://fexcraft.net/files/mod_data/landdev/default_icon.png";
 	public static final String BROADCASTER = "http://fexcraft.net/files/mod_data/landdev/broadcaster_icon.png";
 	public static IconHolder SERVER_ICONHOLDER = new IconHolder(SERVER_ICON);
-	public static boolean SAVE_SPACED_JSON, PROTECT_WILDERNESS, EDIT_WILDERNESS, LOCUP_SIDE;
-	public static long DEFAULT_CHUNK_PRICE, MUNICIPALITY_CREATION_FEE;
+	public static boolean SAVE_SPACED_JSON;
+	public static boolean PROTECT_WILDERNESS;
+	public static boolean EDIT_WILDERNESS;
+	public static boolean LOCUP_SIDE;
+	public static long DEFAULT_CHUNK_PRICE;
+	public static long MUNICIPALITY_CREATION_FEE;
 	//
-	public static boolean CHAT_OVERRIDE, DISCORD_BOT_ACTIVE;
-	public static String CHAT_PLAYER_COLOR = "&6", CHAT_ADMIN_COLOR = "&4", CHAT_DISCORD_COLOR = "&9";
+	public static boolean CHAT_OVERRIDE;
+	public static boolean DISCORD_BOT_ACTIVE;
+	public static String CHAT_PLAYER_COLOR = "&6";
+	public static String CHAT_ADMIN_COLOR = "&4";
+	public static String CHAT_DISCORD_COLOR = "&9";
 	public static String CHAT_OVERRIDE_LANG;
 	public static int DISCORD_BOT_PORT = 10810;
-	public static String DISCORD_BOT_ADRESS = "fexcraft.net", DISCORD_BOT_TOKEN = UUID.randomUUID().toString().replace("-", "").substring(0, 8);
+	public static String DISCORD_BOT_ADRESS = "fexcraft.net";
+	public static String DISCORD_BOT_TOKEN = UUID.randomUUID().toString().replace("-", "").substring(0, 8);
 	//
 	public static final String DEFAULT_CAT = "default_settings";
 	public static final String DISCORD_CAT = "discord_settings";
