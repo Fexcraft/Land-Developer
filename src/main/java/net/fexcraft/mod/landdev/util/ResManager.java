@@ -54,6 +54,13 @@ public class ResManager implements Saveable {
 		return null;
 	}
 
+	public static Chunk_ getChunk(ChunkKey key){
+		for(Chunk_ ck : CHUNKS.values()){
+			if(ck.key.equals(key)) return ck;
+		}
+		return null;
+	}
+
 	public static Chunk_ getChunk(Chunk chunk){
 		for(Chunk_ ck : CHUNKS.values()){
 			if(ck.key.x == chunk.x && ck.key.z == chunk.z) return ck;
