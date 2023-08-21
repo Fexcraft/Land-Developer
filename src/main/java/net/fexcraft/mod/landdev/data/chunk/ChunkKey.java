@@ -10,9 +10,9 @@ public class ChunkKey implements Comparable<ChunkKey> {
 	}
 	
 	public ChunkKey(String string){
-		String[] split = string.split("_");
-		x = Integer.parseInt(split[0]);
-		z = Integer.parseInt(split[0]);
+		String[] split = string.contains("_") ? string.split("_") : string.split(",");
+		x = Integer.parseInt(split[0].trim());
+		z = Integer.parseInt(split[1].trim());
 	}
 
 	@Override
@@ -23,7 +23,7 @@ public class ChunkKey implements Comparable<ChunkKey> {
 	@Override
 	public boolean equals(Object o){
 		if(o instanceof int[]){
-			int[] a = (int[]) o;
+			int[] a = (int[])o;
 			return a.length > 1 && x == a[0] && z == a[1];
 		}
 		else if(o instanceof ChunkKey){
