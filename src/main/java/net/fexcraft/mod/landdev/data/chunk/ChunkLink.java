@@ -19,8 +19,7 @@ public class ChunkLink implements Saveable {
 
 	@Override
 	public void save(JsonMap map){
-		if(linked.isEmpty()) return;
-		if(root_key.equals(chunk.key)){
+		if(linked != null){
 			JsonArray array = new JsonArray();
 			for(ChunkKey key : linked){
 				array.add(key.toString());
@@ -44,6 +43,20 @@ public class ChunkLink implements Saveable {
 		else{
 			root_key = new ChunkKey(map.getString("linked", null));
 		}
+	}
+
+	public boolean validate(ChunkKey key){
+		if(valid(key, chunk.key)) return true;
+		for(ChunkKey link : linked) if(valid(key, link)) return true;
+		return false;
+	}
+
+	private boolean valid(ChunkKey key, ChunkKey other){
+		if(key.equals(new int[]{other.x + 1, other.z})) return true;
+		if(key.equals(new int[]{other.x - 1, other.z})) return true;
+		if(key.equals(new int[]{other.x, other.z + 1})) return true;
+		if(key.equals(new int[]{other.x, other.z - 1})) return true;
+		return false;
 	}
 
 }
