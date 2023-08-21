@@ -33,6 +33,7 @@ public class Settings {
 	public static boolean LOCUP_SIDE;
 	public static long DEFAULT_CHUNK_PRICE;
 	public static long MUNICIPALITY_CREATION_FEE;
+	public static int CHUNK_LINK_LIMIT;
 	//
 	public static boolean CHAT_OVERRIDE;
 	public static boolean DISCORD_BOT_ACTIVE;
@@ -89,6 +90,7 @@ public class Settings {
 		MUNICIPALITY_CREATION_FEE = config.getInt("municipality_creation_fee", DEFAULT_CAT, 25000000, 0, Integer.MAX_VALUE, "Server fee for creating a municipality, half of it goes to the new Municipality.");
 		PROTECT_WILDERNESS = config.getBoolean("protect_wilderness", DEFAULT_CAT, true, "If wilderness protection should be enabled.");
 		EDIT_WILDERNESS = !PROTECT_WILDERNESS;
+		CHUNK_LINK_LIMIT = config.getInt("chunk_link_limit", DEFAULT_CAT, 3, 0, 64, "How many chunks can be linked to another. Set to '0' to disable.");
 		//
 		CHAT_OVERRIDE_LANG = TranslationUtil.translate("chat.player");
 		Broadcaster.SENDERS.values().removeIf(s -> !s.type().internal());
