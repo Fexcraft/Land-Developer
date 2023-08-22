@@ -21,6 +21,7 @@ import net.fexcraft.mod.landdev.data.Sellable;
 import net.fexcraft.mod.landdev.data.Taxable;
 import net.fexcraft.mod.landdev.data.district.District;
 import net.fexcraft.mod.landdev.data.player.Player;
+import net.fexcraft.mod.landdev.gui.GuiHandler;
 import net.fexcraft.mod.landdev.gui.LDGuiContainer;
 import net.fexcraft.mod.landdev.gui.modules.LDGuiModule;
 import net.fexcraft.mod.landdev.util.ResManager;
@@ -140,7 +141,7 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 					addToList(list, "links", ELM_GENERIC, ICON_LIST, true, false, link.linked.size());
 				}
 				else if(link.root_key != null){
-					addToList(list, "linked", ELM_GENERIC, ICON_REM, true, false, link.root_key.comma());
+					addToList(list, "linked", ELM_GENERIC, canman ? ICON_OPEN : ICON_EMPTY, true, false, link.root_key.comma());
 				}
 			}
 			addToList(list, "type", ELM_GENERIC, canman ? ICON_OPEN : ICON_EMPTY, canman, false, type.lang());
@@ -161,23 +162,28 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 			break;
 		case UI_LINK:
 			com.setString("title_lang", "chunk.link.title");
-			addToList(list, "link.info0", ELM_GREEN, ICON_BLANK, false, false, null);
-			addToList(list, "link.info1", ELM_GREEN, ICON_BLANK, false, false, null);
+			addToList(list, "link.info0", ELM_YELLOW, ICON_BLANK, false, false, null);
+			addToList(list, "link.info1", ELM_YELLOW, ICON_BLANK, false, false, null);
 			addToList(list, "link.key", ELM_GENERIC, ICON_BLANK, false, false, null);
 			addToList(list, "link.field", ELM_BLANK, ICON_BLANK, false, true, null);
-			addToList(list, "link.submit", ELM_GENERIC, ICON_OPEN, true, false, null);
+			addToList(list, "link.submit", ELM_BLUE, ICON_OPEN, true, false, null);
 			com.setBoolean("form", true);
 			break;
 		case UI_LINKS:
 			com.setString("title_lang", "chunk.links.title");
 			if(link.linked == null) break;
-			for(ChunkKey key : link.linked){
-				addToList(list, "links.key", ELM_BLUE, ICON_REM, true, false, key.comma());
+			addToList(list, "links.submit", ELM_BLUE, ICON_OPEN, true, false, key.comma());
+			boolean first = true;
+			for(int i = 0; i < link.linked.size(); i++){
+				addToList(list, "links.key" + i, ELM_BLUE, radio(first), true, false, "!!!" + link.linked.get(i).comma());
+				first = false;
 			}
+			com.setBoolean("form", true);
 			break;
 		case UI_LINKED:
 			com.setString("title_lang", "chunk.linked.title");
-			addToList(list, "linked.disconnect", ELM_RED, ICON_OPEN, true, false, key.comma());
+			addToList(list, "linked.key", ELM_GENERIC, ICON_OPEN, true, false, "!!!" + link.root_key.comma());
+			addToList(list, "linked.disconnect", ELM_RED, ICON_REM, true, false, key.comma());
 			break;
 		case UI_TYPE:
 			com.setString("title_lang", "chunk.select_type.title");
@@ -259,7 +265,7 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 					return;
 				}
 				ChunkLink ckl = ck.link == null ? new ChunkLink(ck) : ck.link;
-				ckl.linked = new ArrayList<>();
+				if(ckl.linked == null) ckl.linked = new ArrayList<>();
 				if(key.equals(ckk) || ckl.linked.contains(ckk)){
 					container.sendMsg("link.islinked");
 					return;
@@ -272,17 +278,41 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 					container.sendMsg("link.noborder");
 					return;
 				}
-				if(!ck.can_manage(player) || !ck.owner.issame(owner)){
+				if(!ck.owner.issame(owner)){
 					container.sendMsg("link.nosameowner");
 					return;
 				}
 				(ck.link = ckl).linked.add(key);
 				link = new ChunkLink(this);
 				link.root_key = ck.key;
+				ck.save();
+				save();
+				container.open(UI_MAIN);
 				return;
 			}
 			case "links": container.open(UI_LINKS); return;
+			case "links.submit":{
+				if(!canman) return;
+				ChunkKey key = link.linked.get(Integer.parseInt(packet.getString("radiobox").replace("links.key", "")));
+				player.openGui(GuiHandler.CHUNK, 0, key.x, key.z);
+				return;
+			}
 			case "linked": container.open(UI_LINKED); return;
+			case "linked.key":{
+				container.open(GuiHandler.CHUNK, 0, link.root_key.x, link.root_key.z);
+				return;
+			}
+			case "linked.disconnect":{
+				if(!canman) return;
+				Chunk_ lt = ResManager.getChunk(link.root_key);
+				lt.link.linked.remove(key);
+				if(lt.link.linked.isEmpty()) lt.link = null;
+				link = null;
+				lt.save();
+				save();
+				container.open(UI_MAIN);
+				return;
+			}
 			case "type": if(canman) container.open(UI_TYPE); return;
 			case "district": container.open(DISTRICT, 0, district.id, 0);
 			case "owner": if(canman) container.open(UI_OWNER); return;
