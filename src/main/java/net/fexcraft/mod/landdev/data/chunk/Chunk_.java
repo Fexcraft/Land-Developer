@@ -1,5 +1,6 @@
 package net.fexcraft.mod.landdev.data.chunk;
 
+import static net.fexcraft.lib.common.math.Time.getAsString;
 import static net.fexcraft.mod.fsmm.util.Config.getWorthAsString;
 import static net.fexcraft.mod.landdev.gui.GuiHandler.DISTRICT;
 import static net.fexcraft.mod.landdev.gui.LDGuiElementType.*;
@@ -154,7 +155,7 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 			if(canman){
 				addToList(list, "set_price", ELM_GENERIC, ICON_OPEN, true, false, null);
 			}
-			addToList(list, "tax", ELM_GENERIC, canman ? ICON_ADD : ICON_EMPTY, true, false, getWorthAsString(tax.custom_tax == 0 ? district.tax() : tax.custom_tax));
+			addToList(list, "tax", ELM_GENERIC, ICON_OPEN, true, false, getWorthAsString(tax.custom_tax == 0 ? district.tax() : tax.custom_tax));
 			addToList(list, "spacer", ELM_BLANK, ICON_BLANK, false, false, null);
 			addToList(list, "access_interact", ELM_GENERIC, canman ? access.interact ? ICON_ENABLED : ICON_DISABLED : ICON_EMPTY, canman, false, access.interact ? LANG_YES : LANG_NO);
 			addToList(list, "access_player", ELM_GENERIC, ICON_LIST, true, false, access.players.size());
@@ -232,6 +233,24 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 			com.setBoolean("form", true);
 			break;
 		case UI_TAX:
+			boolean bool = district.can(PermAction.ACT_SET_TAX_CHUNK_CUSTOM, container.player.uuid) || container.player.adm;
+			com.setString("title_lang", "chunk.tax.title");
+			addToList(list, "tax.info0", ELM_YELLOW, ICON_BLANK, false, false, null);
+			addToList(list, "tax.info1", ELM_YELLOW, ICON_BLANK, false, false, null);
+			addToList(list, "tax.info2", ELM_YELLOW, ICON_BLANK, false, false, null);
+			addToList(list, "tax.default", ELM_GENERIC, ICON_BLANK, false, false, getWorthAsString(district.tax()));
+			if(bool || tax.custom_tax > 0){
+				addToList(list, "tax.custom", ELM_GENERIC, ICON_BLANK, false, false, getWorthAsString(tax.custom_tax));
+			}
+			addToList(list, "tax.last_amount", ELM_GENERIC, ICON_BLANK, false, false, getWorthAsString(tax.last_tax));
+			addToList(list, "tax.last_time", ELM_GENERIC, ICON_BLANK, false, false, getAsString(tax.last_interval));
+			if(bool){
+				addToList(list, "set_tax.spacer", ELM_BLANK, ICON_BLANK, false, false, null);
+				addToList(list, "set_tax.title", ELM_GENERIC, ICON_BLANK, false, false, null);
+				addToList(list, "set_tax.field", ELM_BLANK, ICON_BLANK, false, true, getWorthAsString(tax.custom_tax, false));
+				addToList(list, "set_tax.submit", ELM_GENERIC, ICON_OPEN, true, false, null);
+				com.setBoolean("form", true);
+			}
 			break;
 		case UI_ACC_PLAYER:
 			break;
@@ -318,7 +337,7 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 			case "owner": if(canman) container.open(UI_OWNER); return;
 			case "price": if(!canman) container.open(UI_PRICE); return;
 			case "set_price": container.open(UI_SET_PRICE); return;
-			case "tax": if(district.can(PermAction.ACT_SET_TAX_CHUNK, player.uuid)) container.open(UI_TAX); return;
+			case "tax": container.open(UI_TAX); return;
 			case "access_player": container.open(UI_ACC_PLAYER); return;
 			case "access_company": container.open(UI_ACC_COMPANY); return;
 			//
@@ -381,6 +400,10 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 				owner.set(layer, layer.is(Layers.PLAYER) ? player.uuid : null, district.getLayerId(layer));
 				sell.price = 0;
 				container.open(UI_MAIN);
+				return;
+			}
+			case "set_tax.submit":{
+				//
 				return;
 			}
 		}
