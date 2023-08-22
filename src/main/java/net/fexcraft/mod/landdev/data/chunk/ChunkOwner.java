@@ -54,7 +54,6 @@ public class ChunkOwner implements Saveable {
 			owid = -1;
 		}
 		else{
-			owner = layer;
 			playerchunk = (owner = layer).is(Layers.PLAYER);
 			player = playerchunk ? uuid : null;
 			owid = playerchunk ? -1 : id;
@@ -80,8 +79,7 @@ public class ChunkOwner implements Saveable {
 	}
 
 	public boolean issame(ChunkOwner other){
-		if(other.unowned) return unowned;
-		if(playerchunk) return playerchunk && player.equals(other.player);
+		if(playerchunk) return other.playerchunk && player.equals(other.player);
 		return owner == other.owner && owid == other.owid;
 	}
 
