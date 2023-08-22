@@ -1,11 +1,6 @@
 package net.fexcraft.mod.landdev.data.municipality;
 
-import static net.fexcraft.mod.landdev.data.PermAction.ACT_CLAIM;
-import static net.fexcraft.mod.landdev.data.PermAction.ACT_CREATE_LAYER;
-import static net.fexcraft.mod.landdev.data.PermAction.ACT_MANAGE_FINANCES;
-import static net.fexcraft.mod.landdev.data.PermAction.ACT_SET_TAX_CHUNK;
-import static net.fexcraft.mod.landdev.data.PermAction.ACT_SET_TAX_PLAYER;
-import static net.fexcraft.mod.landdev.data.PermAction.ACT_USE_FINANCES;
+import static net.fexcraft.mod.landdev.data.PermAction.*;
 import static net.fexcraft.mod.landdev.gui.LDGuiElementType.ELM_BLANK;
 import static net.fexcraft.mod.landdev.gui.LDGuiElementType.ELM_BLUE;
 import static net.fexcraft.mod.landdev.gui.LDGuiElementType.ELM_GENERIC;
@@ -44,7 +39,7 @@ import net.minecraft.nbt.NBTTagList;
 
 public class Municipality implements Saveable, Layer, LDGuiModule {
 
-	public static PermActions mactions = new PermActions(ACT_CLAIM, ACT_SET_TAX_CHUNK, ACT_SET_TAX_PLAYER, ACT_USE_FINANCES, ACT_MANAGE_FINANCES);
+	public static PermActions mactions = new PermActions(ACT_CLAIM, ACT_SET_TAX_CHUNK, ACT_SET_TAX_CHUNK_CUSTOM, ACT_SET_TAX_PLAYER, ACT_USE_FINANCES, ACT_MANAGE_FINANCES);
 	public static PermActions cactions = new PermActions();
 	public final int id;
 	public Createable created = new Createable();
