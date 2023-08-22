@@ -152,6 +152,17 @@ landdev.gui.chunk.buy.state=This State
 landdev.gui.chunk.buy.payer=Receiver pays for the chunk?
 landdev.gui.chunk.buy.submit=Confirm Acquisition
 landdev.gui.chunk.buy.notenoughmoney=You do not have enough money to buy this chunk.
+landdev.gui.chunk.tax.title=Chunk Tax Overview
+landdev.gui.chunk.tax.info0=Tax is collected every Tax interval.
+landdev.gui.chunk.tax.info1=On grouped chunks only the main one is taxed.
+landdev.gui.chunk.tax.info2=Custom Tax is useful for grouped chunks.
+landdev.gui.chunk.tax.custom=Custom Tax: %s
+landdev.gui.chunk.tax.default=District Tax Rate: %s
+landdev.gui.chunk.tax.custom=Custom Tax: %s
+landdev.gui.chunk.tax.last_amount=Last Tax: %s
+landdev.gui.chunk.tax.last_time=Collected at: %s
+landdev.gui.chunk.set_tax.title=Set a new custom Tax?
+landdev.gui.chunk.set_tax.submit=Confirm new custom Tax
 //
 landdev.gui.district.title=District Overview
 landdev.gui.district.id=ID: %s
