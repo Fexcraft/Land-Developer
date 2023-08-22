@@ -1,11 +1,7 @@
 package net.fexcraft.mod.landdev.data.district;
 
 import static net.fexcraft.mod.fsmm.util.Config.getWorthAsString;
-import static net.fexcraft.mod.landdev.data.PermAction.ACT_CLAIM;
-import static net.fexcraft.mod.landdev.data.PermAction.ACT_MANAGE_DISTRICT;
-import static net.fexcraft.mod.landdev.data.PermAction.ACT_MANAGE_FINANCES;
-import static net.fexcraft.mod.landdev.data.PermAction.ACT_SET_TAX_CHUNK;
-import static net.fexcraft.mod.landdev.data.PermAction.ACT_USE_FINANCES;
+import static net.fexcraft.mod.landdev.data.PermAction.*;
 import static net.fexcraft.mod.landdev.gui.LDGuiElementType.*;
 import static net.fexcraft.mod.landdev.util.TranslationUtil.translate;
 
@@ -35,7 +31,7 @@ import net.minecraft.nbt.NBTTagList;
 
 public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 	
-	public static PermActions actions = new PermActions(ACT_CLAIM);
+	public static PermActions actions = new PermActions(ACT_CLAIM, ACT_SET_TAX_CHUNK_CUSTOM);
 	public final int id;
 	public Createable created = new Createable();
 	public Sellable sell = new Sellable(this);
@@ -149,7 +145,7 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 		if(act == ACT_MANAGE_DISTRICT){
 			return man || owner.manageable().can(act, uuid);
 		}
-		if(act == ACT_SET_TAX_CHUNK){
+		if(act == ACT_SET_TAX_CHUNK_CUSTOM){
 			return man || owner.manageable().can(act, uuid);
 		}
 		return false;
