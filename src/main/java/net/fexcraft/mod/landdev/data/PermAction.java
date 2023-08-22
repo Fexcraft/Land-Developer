@@ -6,6 +6,7 @@ public enum PermAction {
 	ACT_CREATE_LAYER("create_layer"),
 	ACT_MANAGE_DISTRICT("manage_district"),
 	ACT_SET_TAX_CHUNK("set_tax_chunk"),
+	ACT_SET_TAX_CHUNK_CUSTOM("set_tax_chunk_custom"),
 	ACT_SET_TAX_PLAYER("set_tax_player"),
 	ACT_USE_FINANCES("finances_use"),
 	ACT_MANAGE_FINANCES("finances_manage"),
