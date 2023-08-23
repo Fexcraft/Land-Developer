@@ -253,6 +253,28 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 			}
 			break;
 		case UI_ACC_PLAYER:
+			com.setString("title_lang", "chunk.access_player.title");
+			boolean bcm = can_manage(container.player);
+			if(bcm){
+				addToList(list, "access_player.info", ELM_GREEN, ICON_BLANK, false, false, null);
+				addToList(list, "access_player.field", ELM_BLANK, ICON_BLANK, false, true, null);
+				addToList(list, "access_player.add.submit", ELM_GENERIC, ICON_OPEN, true, false, null);
+				addToList(list, "access_player.spacer", ELM_BLANK, ICON_BLANK, false, false, null);
+				com.setBoolean("form", true);
+			}
+			if(access.players.isEmpty()){
+				addToList(list, "access_player.empty", ELM_YELLOW, ICON_BLANK, false, false, null);
+			}
+			else{
+				if(bcm) addToList(list, "access_player.rem.submit", ELM_GENERIC, ICON_REM, true, false, null);
+				boolean primo = true;
+				UUID[] keys = access.players.keySet().toArray(new UUID[0]);
+				for(int i = 0; i < access.players.size(); i++){
+					addToList(list, "access_player.id_" + keys[i], ELM_BLUE, bcm ? radio(primo) : ICON_EMPTY, true, false, "!!!" + ResManager.getPlayerName(keys[i]));
+					primo = false;
+				}
+				if(bcm) com.setBoolean("form", true);
+			}
 			break;
 		case UI_ACC_COMPANY:
 			break;
@@ -403,7 +425,39 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 				return;
 			}
 			case "set_tax.submit":{
-				//
+				if(!district.can(PermAction.ACT_SET_TAX_CHUNK_CUSTOM, container.player.uuid) && !container.player.adm) return;
+				String val = packet.getCompoundTag("fields").getString("set_tax.field");
+				String[] err = new String[]{ "" };
+				long value = Settings.format_price(err, val);
+				if(err[0].length() > 0){
+					container.sendMsg(err[0], false);
+				}
+				else{
+					tax.custom_tax = value;
+					container.open(UI_TAX);
+				}
+				return;
+			}
+			case "access_player.add.submit":{
+				if(!can_manage(container.player)) return;
+				Player other = ResManager.getPlayer(packet.getCompoundTag("fields").getString("access_player.field"), true);
+				if(other == null){
+					container.sendMsg("access_player.notfound");
+					return;
+				}
+				access.players.put(other.uuid, 0l);
+				container.open(UI_ACC_PLAYER);
+				return;
+			}
+			case "access_player.rem.submit":{
+				if(!can_manage(container.player)) return;
+				UUID uuid = UUID.fromString(packet.getString("radiobox").replace("access_player.id_", ""));
+				if(!access.players.containsKey(uuid)){
+					container.sendMsg("access_player.notfound");
+					return;
+				}
+				access.players.remove(uuid);
+				container.open(UI_ACC_PLAYER);
 				return;
 			}
 		}
