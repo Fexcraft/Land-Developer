@@ -163,6 +163,12 @@ landdev.gui.chunk.tax.last_amount=Last Tax: %s
 landdev.gui.chunk.tax.last_time=Collected at: %s
 landdev.gui.chunk.set_tax.title=Set a new custom Tax?
 landdev.gui.chunk.set_tax.submit=Confirm new custom Tax
+landdev.gui.chunk.access_player.title=Player Access List
+landdev.gui.chunk.access_player.info=Player Name/UUID for new entry:
+landdev.gui.chunk.access_player.add.submit=Confirm adding new Player to List
+landdev.gui.chunk.access_player.rem.submit=Confirm removing Selected Player
+landdev.gui.chunk.access_player.empty=This list is currently empty.
+landdev.gui.chunk.access_player.notfound=Player not found.
 //
 landdev.gui.district.title=District Overview
 landdev.gui.district.id=ID: %s
