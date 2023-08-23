@@ -128,6 +128,19 @@ public class ResManager implements Saveable {
 		return gp == null ? null : gp.getId();
 	}
 
+	public static Player getPlayer(String string, boolean load){
+		UUID uuid = null;
+		try{
+			uuid = UUID.fromString(string);
+		}
+		catch(Exception e){
+			if(Static.dev()) e.printStackTrace();
+			GameProfile gp = Static.getServer().getPlayerProfileCache().getGameProfileForUsername(string);
+			if(gp != null) uuid = gp.getId();
+		}
+		return uuid == null ? null : getPlayer(uuid, load);
+	}
+
 	private static <S> S load(Saveable save){
 		if(!LandDev.DB.exists(save.saveTable(), save.saveId())){
 			save.gendef();
