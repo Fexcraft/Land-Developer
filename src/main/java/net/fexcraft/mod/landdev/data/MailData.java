@@ -7,6 +7,7 @@ public class MailData implements Saveable {
 
 	public static final String NOMAILBOX = "landdev.general.no_mailbox";
 	private BlockPos mailbox;
+	private int unread;
 
 	@Override
 	public void load(JsonMap map){
@@ -40,6 +41,10 @@ public class MailData implements Saveable {
 
 	public String asString(){
 		return mailbox == null ? NOMAILBOX : mailbox.getX() + ", " + mailbox.getY() + ", " + mailbox.getZ();
+	}
+
+	public int unread(){
+		return unread;
 	}
 
 }
