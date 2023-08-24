@@ -21,6 +21,7 @@ import net.fexcraft.mod.landdev.data.municipality.Municipality;
 import net.fexcraft.mod.landdev.data.player.Player;
 import net.fexcraft.mod.landdev.gui.modules.Main;
 import net.fexcraft.mod.landdev.gui.modules.Missing;
+import net.fexcraft.mod.landdev.gui.modules.ModuleResponse;
 import net.fexcraft.mod.landdev.util.ResManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
@@ -115,22 +116,22 @@ public class LDGuiContainer extends GenericContainer {
 
 	public void sendSync(){
 		Chunk_ chunk = ResManager.getChunk(y, z);
-		NBTTagCompound com = new NBTTagCompound();
+		ModuleResponse resp = new ModuleResponse();
 		IconHolder holder = null;
 		ColorData color = null;
 		switch(type){
 			case MAIN:{
-				Main.INST.sync_packet(this, com);
+				Main.INST.sync_packet(this, resp);
 				break;
 			}
 			case CHUNK:{
-				chunk.sync_packet(this, com);
+				chunk.sync_packet(this, resp);
 				break;
 			}
 			case DISTRICT:{
 				District dis = ResManager.getDistrict(y, y > -2);
 				if(dis != null){
-					dis.sync_packet(this, com);
+					dis.sync_packet(this, resp);
 					holder = dis.icon;
 					color = dis.color;
 					break;
@@ -139,27 +140,27 @@ public class LDGuiContainer extends GenericContainer {
 			}
 			case MUNICIPALITY:{
 				if(x < 0){
-					ResManager.getMunicipality(-1, true).sync_packet(this, com);
+					ResManager.getMunicipality(-1, true).sync_packet(this, resp);
 					holder = chunk.district.county().icon;
 					color = chunk.district.county().color;
 					break;
 				}
 				Municipality mun = ResManager.getMunicipality(y, y > -2);
 				if(mun != null){
-					mun.sync_packet(this, com);
+					mun.sync_packet(this, resp);
 					holder = mun.icon;
 					color = mun.color;
 					break;
 				}
 				break;
 			}
-			default: Missing.INST.sync_packet(this, com); break;
+			default: Missing.INST.sync_packet(this, resp); break;
 		}
 		if(holder != null){
-			com.setString("gui_icon", holder.getnn());
-			com.setInteger("gui_color", color.getInteger());
+			resp.getCompound().setString("gui_icon", holder.getnn());
+			resp.getCompound().setInteger("gui_color", color.getInteger());
 		}
-		send(Side.CLIENT, com);
+		send(Side.CLIENT, resp.build());
 	}
 
 	private void client_packet(NBTTagCompound packet, EntityPlayer player){
