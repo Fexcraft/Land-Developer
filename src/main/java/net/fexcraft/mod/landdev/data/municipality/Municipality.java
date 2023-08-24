@@ -1,12 +1,10 @@
 package net.fexcraft.mod.landdev.data.municipality;
 
 import static net.fexcraft.mod.landdev.data.PermAction.*;
-import static net.fexcraft.mod.landdev.gui.LDGuiElementType.ELM_BLANK;
 import static net.fexcraft.mod.landdev.gui.LDGuiElementType.ELM_BLUE;
 import static net.fexcraft.mod.landdev.gui.LDGuiElementType.ELM_GENERIC;
 import static net.fexcraft.mod.landdev.gui.LDGuiElementType.ICON_BLANK;
 import static net.fexcraft.mod.landdev.gui.LDGuiElementType.ICON_OPEN;
-import static net.fexcraft.mod.landdev.gui.LDGuiElementType.checkbox;
 import static net.fexcraft.mod.landdev.util.ResManager.SERVER_ACCOUNT;
 import static net.fexcraft.mod.landdev.util.TranslationUtil.translate;
 import static net.fexcraft.mod.landdev.util.TranslationUtil.translateCmd;
@@ -21,7 +19,6 @@ import net.fexcraft.mod.fsmm.api.Bank;
 import net.fexcraft.mod.fsmm.api.Bank.Action;
 import net.fexcraft.mod.fsmm.util.DataManager;
 import net.fexcraft.mod.landdev.data.*;
-import net.fexcraft.mod.landdev.data.PermAction.PermActions;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.data.county.County;
 import net.fexcraft.mod.landdev.data.district.District;
@@ -31,6 +28,7 @@ import net.fexcraft.mod.landdev.data.player.Permit;
 import net.fexcraft.mod.landdev.data.player.Player;
 import net.fexcraft.mod.landdev.gui.LDGuiContainer;
 import net.fexcraft.mod.landdev.gui.modules.LDGuiModule;
+import net.fexcraft.mod.landdev.gui.modules.ModuleResponse;
 import net.fexcraft.mod.landdev.util.Announcer;
 import net.fexcraft.mod.landdev.util.ResManager;
 import net.fexcraft.mod.landdev.util.Settings;
@@ -150,30 +148,29 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 	public static final int UI_CREATE = -1;
 
 	@Override
-	public void sync_packet(LDGuiContainer container, NBTTagCompound com){
-		com.setString("title_lang", "municipality.title");
+	public void sync_packet(LDGuiContainer container, ModuleResponse resp){
+		resp.setTitle("municipality.title");
 		NBTTagList list = new NBTTagList();
 		switch(container.x){
 		case UI_CREATE:
-			com.setString("title_lang", "municipality.create.title");
+			resp.setTitle("municipality.create.title");
 			Chunk_ chunk = ResManager.getChunk(container.player().entity);
     		County county = chunk.district.county();
     		boolean cn = county.norms.get("new-municipalities").bool();
     		boolean pp = container.player.hasPermit(ACT_CREATE_LAYER, county.getLayer(), county.id);
     		if(!cn && !pp){
-    			addToList(list, "create.no_perm", ELM_GENERIC, ICON_BLANK, false, false, null);
+    			resp.addRow("create.no_perm", ELM_GENERIC, ICON_BLANK);
     			break;
     		}
-			addToList(list, "create.name", ELM_GENERIC, ICON_BLANK, false, false, null);
-			addToList(list, "create.name_field", ELM_BLANK, ICON_BLANK, false, true, null);
-			addToList(list, "create.county_funded", ELM_GENERIC, checkbox(pp), true, false, null);
-			addToList(list, "create.claim_district", ELM_GENERIC, checkbox(pp), true, false, null);
-			addToList(list, "create.submit", ELM_BLUE, ICON_OPEN, true, false, null);
-			com.setBoolean("form", true);
-			com.setBoolean("noback", true);
+			resp.addRow("create.name", ELM_GENERIC);
+			resp.addField("create.name_field");
+			resp.addCheck("create.county_funded", ELM_GENERIC, pp);
+			resp.addCheck("create.claim_district", ELM_GENERIC, pp);
+			resp.addButton("create.submit", ELM_BLUE, ICON_OPEN);
+			resp.setFormular();
+			resp.setNoBack();
 			break;
 		}
-		com.setTag("elements", list);
 	}
 
 	@Override
