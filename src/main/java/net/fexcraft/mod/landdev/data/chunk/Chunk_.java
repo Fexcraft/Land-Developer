@@ -25,10 +25,10 @@ import net.fexcraft.mod.landdev.data.player.Player;
 import net.fexcraft.mod.landdev.gui.GuiHandler;
 import net.fexcraft.mod.landdev.gui.LDGuiContainer;
 import net.fexcraft.mod.landdev.gui.modules.LDGuiModule;
+import net.fexcraft.mod.landdev.gui.modules.ModuleResponse;
 import net.fexcraft.mod.landdev.util.ResManager;
 import net.fexcraft.mod.landdev.util.Settings;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
 
 public class Chunk_ implements Saveable, Layer, LDGuiModule {
@@ -127,159 +127,158 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 		;
 
 	@Override
-	public void sync_packet(LDGuiContainer container, NBTTagCompound com){
-		com.setString("title_lang", "chunk.title");
-		NBTTagList list = new NBTTagList();
+	public void sync_packet(LDGuiContainer container, ModuleResponse resp){
+		resp.setTitle("chunk.title");
 		switch(container.x){
 		case UI_MAIN:
 			boolean canman = can_manage(container.player());// || container.player.adm;
-			addToList(list, "key", ELM_GENERIC, ICON_BLANK, false, false, key.comma());
+			resp.addRow("key", ELM_GENERIC, key.comma());
 			if(Settings.CHUNK_LINK_LIMIT > 0){
 				if(link == null){
-					addToList(list, "link", ELM_GENERIC, canman ? ICON_ADD : ICON_EMPTY, true, false, null);
+					if(canman) resp.addButton("link", ELM_GENERIC, ICON_ADD);
+					else resp.addRow("link", ELM_GENERIC, ICON_EMPTY);
 				}
 				else if(link.linked != null){
-					addToList(list, "links", ELM_GENERIC, ICON_LIST, true, false, link.linked.size());
+					resp.addButton("links", ELM_GENERIC, ICON_LIST, link.linked.size());
 				}
 				else if(link.root_key != null){
-					addToList(list, "linked", ELM_GENERIC, canman ? ICON_OPEN : ICON_EMPTY, true, false, link.root_key.comma());
+					resp.addButton("linked", ELM_GENERIC, canman ? ICON_OPEN : ICON_EMPTY, link.root_key.comma());
 				}
 			}
-			addToList(list, "type", ELM_GENERIC, canman ? ICON_OPEN : ICON_EMPTY, canman, false, type.lang());
-			addToList(list, "district", ELM_GENERIC, ICON_OPEN, true, false, district.name());
-			addToList(list, "spacer", ELM_BLANK, ICON_BLANK, false, false, null);
-			addToList(list, "owner", ELM_GENERIC, ICON_OPEN, true, false, owner.name());
+			resp.addRow("type", ELM_GENERIC, canman ? ICON_OPEN : ICON_EMPTY, canman, type.lang());
+			resp.addButton("district", ELM_GENERIC, ICON_OPEN, district.name());
+			resp.addBlank();
+			resp.addButton("owner", ELM_GENERIC, ICON_OPEN, owner.name());
 			if(sell.price > 0){
-				addToList(list, "price", ELM_GENERIC, canman ? ICON_EMPTY : ICON_OPEN, true, false, sell.price_formatted());
+				resp.addRow("price", ELM_GENERIC, canman ? ICON_EMPTY : ICON_OPEN, !canman, sell.price_formatted());
 			}
 			if(canman){
-				addToList(list, "set_price", ELM_GENERIC, ICON_OPEN, true, false, null);
+				resp.addButton("set_price", ELM_GENERIC, ICON_OPEN);
 			}
-			addToList(list, "tax", ELM_GENERIC, ICON_OPEN, true, false, getWorthAsString(tax.custom_tax == 0 ? district.tax() : tax.custom_tax));
-			addToList(list, "spacer", ELM_BLANK, ICON_BLANK, false, false, null);
-			addToList(list, "access_interact", ELM_GENERIC, canman ? access.interact ? ICON_ENABLED : ICON_DISABLED : ICON_EMPTY, canman, false, access.interact ? LANG_YES : LANG_NO);
-			addToList(list, "access_player", ELM_GENERIC, ICON_LIST, true, false, access.players.size());
-			addToList(list, "access_company", ELM_GENERIC, ICON_LIST, true, false, access.companies.size());
+			resp.addButton("tax", ELM_GENERIC, ICON_OPEN, getWorthAsString(tax.custom_tax == 0 ? district.tax() : tax.custom_tax));
+			resp.addBlank();
+			resp.addRow("access_interact", ELM_GENERIC, canman ? access.interact ? ICON_ENABLED : ICON_DISABLED : ICON_EMPTY, canman, access.interact ? LANG_YES : LANG_NO);
+			resp.addButton("access_player", ELM_GENERIC, ICON_LIST, access.players.size());
+			resp.addButton("access_company", ELM_GENERIC, ICON_LIST, access.companies.size());
 			break;
 		case UI_LINK:
-			com.setString("title_lang", "chunk.link.title");
-			addToList(list, "link.info0", ELM_YELLOW, ICON_BLANK, false, false, null);
-			addToList(list, "link.info1", ELM_YELLOW, ICON_BLANK, false, false, null);
-			addToList(list, "link.key", ELM_GENERIC, ICON_BLANK, false, false, null);
-			addToList(list, "link.field", ELM_BLANK, ICON_BLANK, false, true, null);
-			addToList(list, "link.submit", ELM_BLUE, ICON_OPEN, true, false, null);
-			com.setBoolean("form", true);
+			resp.setTitle("chunk.link.title");
+			resp.addRow("link.info0", ELM_YELLOW, ICON_BLANK);
+			resp.addRow("link.info1", ELM_YELLOW, ICON_BLANK);
+			resp.addRow("link.key", ELM_GENERIC, ICON_BLANK);
+			resp.addField("link.field");
+			resp.addButton("link.submit", ELM_BLUE, ICON_OPEN);
+			resp.setFormular();
 			break;
 		case UI_LINKS:
-			com.setString("title_lang", "chunk.links.title");
+			resp.setTitle("chunk.links.title");
 			if(link.linked == null) break;
-			addToList(list, "links.submit", ELM_BLUE, ICON_OPEN, true, false, key.comma());
+			resp.addButton("links.submit", ELM_BLUE, ICON_OPEN, key.comma());
 			boolean first = true;
 			for(int i = 0; i < link.linked.size(); i++){
-				addToList(list, "links.key" + i, ELM_BLUE, radio(first), true, false, "!!!" + link.linked.get(i).comma());
+				resp.addButton("links.key" + i, ELM_BLUE, radio(first), "!!!" + link.linked.get(i).comma());
 				first = false;
 			}
-			com.setBoolean("form", true);
+			resp.setFormular();
 			break;
 		case UI_LINKED:
-			com.setString("title_lang", "chunk.linked.title");
-			addToList(list, "linked.key", ELM_GENERIC, ICON_OPEN, true, false, "!!!" + link.root_key.comma());
-			addToList(list, "linked.disconnect", ELM_RED, ICON_REM, true, false, key.comma());
+			resp.setTitle("chunk.linked.title");
+			resp.addButton("linked.key", ELM_GENERIC, ICON_OPEN, "!!!" + link.root_key.comma());
+			resp.addButton("linked.disconnect", ELM_RED, ICON_REM, key.comma());
 			break;
 		case UI_TYPE:
-			com.setString("title_lang", "chunk.select_type.title");
-			addToList(list, "key", ELM_GENERIC, ICON_BLANK, false, false, key.comma());
-			addToList(list, "type.normal", ELM_BLUE, radio(type == ChunkType.NORMAL), true, false, null);
-			addToList(list, "type.private", ELM_BLUE, radio(type == ChunkType.PRIVATE), true, false, null);
-			addToList(list, "type.restricted", ELM_BLUE, radio(type == ChunkType.RESTRICTED), true, false, null);
-			addToList(list, "type.public", ELM_BLUE, radio(type == ChunkType.PUBLIC), true, false, null);
-			addToList(list, "select_type.submit", ELM_GENERIC, ICON_OPEN, true, false, null);
-			com.setBoolean("form", true);
+			resp.setTitle("chunk.select_type.title");
+			resp.addRow("key", ELM_GENERIC, ICON_BLANK, key.comma());
+			resp.addRadio("type.normal", ELM_BLUE, type == ChunkType.NORMAL);
+			resp.addRadio("type.private", ELM_BLUE, type == ChunkType.PRIVATE);
+			resp.addRadio("type.restricted", ELM_BLUE, type == ChunkType.RESTRICTED);
+			resp.addRadio("type.public", ELM_BLUE, type == ChunkType.PUBLIC);
+			resp.addButton("select_type.submit", ELM_GENERIC, ICON_OPEN);
+			resp.setFormular();
 			break;
 		case UI_OWNER:
-			com.setString("title_lang", "chunk.set_owner.title");
-			addToList(list, "key", ELM_GENERIC, ICON_BLANK, false, false, key.comma());
-			addToList(list, "set_owner.warning0", ELM_RED, ICON_BLANK, false, false, null);
-			addToList(list, "set_owner.warning1", ELM_RED, ICON_BLANK, false, false, null);
-			addToList(list, "set_owner.warning2", ELM_RED, ICON_BLANK, false, false, null);
-			addToList(list, "set_owner.warning3", ELM_RED, ICON_BLANK, false, false, null);
-			addToList(list, "set_owner.district", ELM_BLUE, radio(owner.owner == Layers.DISTRICT), true, false, null);
-			if(!district.owner.is_county) addToList(list, "set_owner.municipality", ELM_BLUE, radio(owner.owner == Layers.MUNICIPALITY), true, false, null);
-			addToList(list, "set_owner.county", ELM_BLUE, radio(owner.owner == Layers.COUNTY), true, false, null);
-			addToList(list, "set_owner.state", ELM_BLUE, radio(owner.owner == Layers.STATE), true, false, null);
-			addToList(list, "set_owner.none", ELM_BLUE, radio(owner.owner == Layers.NONE), true, false, null);
-			addToList(list, "set_owner.submit", ELM_GENERIC, ICON_OPEN, true, false, null);
-			com.setBoolean("form", true);
+			resp.setTitle("chunk.set_owner.title");
+			resp.addRow("key", ELM_GENERIC, ICON_BLANK, key.comma());
+			resp.addRow("set_owner.warning0", ELM_RED);
+			resp.addRow("set_owner.warning1", ELM_RED);
+			resp.addRow("set_owner.warning2", ELM_RED);
+			resp.addRow("set_owner.warning3", ELM_RED);
+			resp.addRadio("set_owner.district", ELM_BLUE, owner.owner == Layers.DISTRICT);
+			if(!district.owner.is_county) resp.addRow("set_owner.municipality", ELM_BLUE, owner.owner == Layers.MUNICIPALITY);
+			resp.addRadio("set_owner.county", ELM_BLUE, owner.owner == Layers.COUNTY);
+			resp.addRadio("set_owner.state", ELM_BLUE, owner.owner == Layers.STATE);
+			resp.addRadio("set_owner.none", ELM_BLUE, owner.owner == Layers.NONE);
+			resp.addButton("set_owner.submit", ELM_GENERIC, ICON_OPEN);
+			resp.setFormular();
 			break;
 		case UI_PRICE:
-			com.setString("title_lang", "chunk.buy.title");
-			addToList(list, "key", ELM_GENERIC, ICON_BLANK, false, false, key.comma());
-			addToList(list, "buy.info", ELM_YELLOW, ICON_BLANK, false, false, null);
-			addToList(list, "buy.self", ELM_BLUE, ICON_RADIOBOX_CHECKED, true, false, null);
-			addToList(list, "buy.company", ELM_BLUE, ICON_RADIOBOX_UNCHECKED, true, false, null);
-			addToList(list, "buy.district", ELM_BLUE, ICON_RADIOBOX_UNCHECKED, true, false, null);
-			if(!district.owner.is_county) addToList(list, "buy.municipality", ELM_BLUE, ICON_RADIOBOX_UNCHECKED, true, false, null);
-			addToList(list, "buy.county", ELM_BLUE, ICON_RADIOBOX_UNCHECKED, true, false, null);
-			addToList(list, "buy.state", ELM_BLUE, ICON_RADIOBOX_UNCHECKED, true, false, null);
-			addToList(list, "buy.payer", ELM_GENERIC, ICON_CHECKBOX_UNCHECKED, true, false, null);
-			addToList(list, "buy.submit", ELM_GENERIC, ICON_OPEN, true, false, null);
-			com.setBoolean("form", true);
+			resp.setTitle("chunk.buy.title");
+			resp.addRow("key", ELM_GENERIC, ICON_BLANK, key.comma());
+			resp.addRow("buy.info", ELM_YELLOW, ICON_BLANK);
+			resp.addButton("buy.self", ELM_BLUE, ICON_RADIOBOX_CHECKED);
+			resp.addButton("buy.company", ELM_BLUE, ICON_RADIOBOX_UNCHECKED);
+			resp.addButton("buy.district", ELM_BLUE, ICON_RADIOBOX_UNCHECKED);
+			if(!district.owner.is_county) resp.addButton("buy.municipality", ELM_BLUE, ICON_RADIOBOX_UNCHECKED);
+			resp.addButton("buy.county", ELM_BLUE, ICON_RADIOBOX_UNCHECKED);
+			resp.addButton("buy.state", ELM_BLUE, ICON_RADIOBOX_UNCHECKED);
+			resp.addButton("buy.payer", ELM_GENERIC, ICON_CHECKBOX_UNCHECKED);
+			resp.addButton("buy.submit", ELM_GENERIC, ICON_OPEN);
+			resp.setFormular();
 			break;
 		case UI_SET_PRICE:
-			com.setString("title_lang", "chunk.set_price.title");
-			addToList(list, "key", ELM_GENERIC, ICON_BLANK, false, false, key.comma());
-			addToList(list, "set_price.field", ELM_BLANK, ICON_BLANK, false, true, null);
-			addToList(list, "set_price.submit", ELM_GENERIC, ICON_OPEN, true, false, null);
-			com.setBoolean("form", true);
+			resp.setTitle("chunk.set_price.title");
+			resp.addRow("key", ELM_GENERIC, ICON_BLANK, key.comma());
+			resp.addField("set_price.field");
+			resp.addButton("set_price.submit", ELM_GENERIC, ICON_OPEN);
+			resp.setFormular();
 			break;
 		case UI_TAX:
 			boolean bool = district.can(PermAction.ACT_SET_TAX_CHUNK_CUSTOM, container.player.uuid) || container.player.adm;
-			com.setString("title_lang", "chunk.tax.title");
-			addToList(list, "tax.info0", ELM_YELLOW, ICON_BLANK, false, false, null);
-			addToList(list, "tax.info1", ELM_YELLOW, ICON_BLANK, false, false, null);
-			addToList(list, "tax.info2", ELM_YELLOW, ICON_BLANK, false, false, null);
-			addToList(list, "tax.default", ELM_GENERIC, ICON_BLANK, false, false, getWorthAsString(district.tax()));
+			resp.setTitle("chunk.tax.title");
+			resp.addRow("tax.info0", ELM_YELLOW, ICON_BLANK);
+			resp.addRow("tax.info1", ELM_YELLOW, ICON_BLANK);
+			resp.addRow("tax.info2", ELM_YELLOW, ICON_BLANK);
+			resp.addRow("tax.default", ELM_GENERIC, ICON_BLANK, getWorthAsString(district.tax()));
 			if(bool || tax.custom_tax > 0){
-				addToList(list, "tax.custom", ELM_GENERIC, ICON_BLANK, false, false, getWorthAsString(tax.custom_tax));
+				resp.addRow("tax.custom", ELM_GENERIC, ICON_BLANK, getWorthAsString(tax.custom_tax));
 			}
-			addToList(list, "tax.last_amount", ELM_GENERIC, ICON_BLANK, false, false, getWorthAsString(tax.last_tax));
-			addToList(list, "tax.last_time", ELM_GENERIC, ICON_BLANK, false, false, getAsString(tax.last_interval));
+			resp.addRow("tax.last_amount", ELM_GENERIC, ICON_BLANK, getWorthAsString(tax.last_tax));
+			resp.addRow("tax.last_time", ELM_GENERIC, ICON_BLANK, getAsString(tax.last_interval));
 			if(bool){
-				addToList(list, "set_tax.spacer", ELM_BLANK, ICON_BLANK, false, false, null);
-				addToList(list, "set_tax.title", ELM_GENERIC, ICON_BLANK, false, false, null);
-				addToList(list, "set_tax.field", ELM_BLANK, ICON_BLANK, false, true, getWorthAsString(tax.custom_tax, false));
-				addToList(list, "set_tax.submit", ELM_GENERIC, ICON_OPEN, true, false, null);
-				com.setBoolean("form", true);
+				resp.addBlank();
+				resp.addRow("set_tax.title", ELM_GENERIC, ICON_BLANK);
+				resp.addField("set_tax.field", getWorthAsString(tax.custom_tax, false));
+				resp.addButton("set_tax.submit", ELM_GENERIC, ICON_OPEN);
+				resp.setFormular();
 			}
 			break;
 		case UI_ACC_PLAYER:
-			com.setString("title_lang", "chunk.access_player.title");
+			resp.setTitle("chunk.access_player.title");
 			boolean bcm = can_manage(container.player);
 			if(bcm){
-				addToList(list, "access_player.info", ELM_GREEN, ICON_BLANK, false, false, null);
-				addToList(list, "access_player.field", ELM_BLANK, ICON_BLANK, false, true, null);
-				addToList(list, "access_player.add.submit", ELM_GENERIC, ICON_OPEN, true, false, null);
-				addToList(list, "access_player.spacer", ELM_BLANK, ICON_BLANK, false, false, null);
-				com.setBoolean("form", true);
+				resp.addRow("access_player.info", ELM_GREEN, ICON_BLANK);
+				resp.addField("access_player.field");
+				resp.addButton("access_player.add.submit", ELM_GENERIC, ICON_OPEN);
+				resp.addBlank();
+				resp.setFormular();
 			}
 			if(access.players.isEmpty()){
-				addToList(list, "access_player.empty", ELM_YELLOW, ICON_BLANK, false, false, null);
+				resp.addRow("access_player.empty", ELM_YELLOW, ICON_BLANK);
 			}
 			else{
-				if(bcm) addToList(list, "access_player.rem.submit", ELM_GENERIC, ICON_REM, true, false, null);
+				if(bcm) resp.addButton("access_player.rem.submit", ELM_GENERIC, ICON_REM);
 				boolean primo = true;
 				UUID[] keys = access.players.keySet().toArray(new UUID[0]);
 				for(int i = 0; i < access.players.size(); i++){
-					addToList(list, "access_player.id_" + keys[i], ELM_BLUE, bcm ? radio(primo) : ICON_EMPTY, true, false, "!!!" + ResManager.getPlayerName(keys[i]));
+					resp.addButton("access_player.id_" + keys[i], ELM_BLUE, bcm ? radio(primo) : ICON_EMPTY, "!!!" + ResManager.getPlayerName(keys[i]));
 					primo = false;
 				}
-				if(bcm) com.setBoolean("form", true);
+				if(bcm) resp.setFormular();
 			}
 			break;
 		case UI_ACC_COMPANY:
 			break;
 		}
-		com.setTag("elements", list);
 	}
 
 	@Override
