@@ -2,6 +2,7 @@ package net.fexcraft.mod.landdev.gui.modules;
 
 import static net.fexcraft.mod.landdev.gui.LDGuiElementType.ELM_BLANK;
 import static net.fexcraft.mod.landdev.gui.LDGuiElementType.ICON_BLANK;
+import static net.fexcraft.mod.landdev.gui.LDGuiElementType.checkbox;
 import static net.fexcraft.mod.landdev.gui.LDGuiElementType.radio;
 
 import net.fexcraft.mod.landdev.gui.LDGuiElementType;
@@ -29,6 +30,10 @@ public class ModuleResponse {
 
 	public void setFormular(){
 		form = true;
+	}
+
+	public void setNoBack(){
+		compound.setBoolean("noback", true);
 	}
 
 	public NBTTagCompound build(){
@@ -85,6 +90,14 @@ public class ModuleResponse {
 		addEntry(list, id, style, radio(checked), true, false, value);
 	}
 
+	public void addCheck(String id, LDGuiElementType style, boolean checked){
+		addEntry(list, id, style, checkbox(checked), true, false, null);
+	}
+
+	public void addCheck(String id, LDGuiElementType style, boolean checked, Object value){
+		addEntry(list, id, style, checkbox(checked), true, false, value);
+	}
+
 	public void addBlank(){
 		addEntry(list, "spacer", ELM_BLANK, ICON_BLANK, false, false, null);
 	}
@@ -108,4 +121,5 @@ public class ModuleResponse {
 	public String val(String string){
 		return LDGuiModule.VALONLY + string;
 	}
+
 }
