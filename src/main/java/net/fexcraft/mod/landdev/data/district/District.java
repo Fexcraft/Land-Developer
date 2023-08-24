@@ -12,7 +12,6 @@ import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fsmm.api.Account;
 import net.fexcraft.mod.landdev.data.*;
-import net.fexcraft.mod.landdev.data.PermAction.PermActions;
 import net.fexcraft.mod.landdev.data.county.County;
 import net.fexcraft.mod.landdev.data.municipality.Municipality;
 import net.fexcraft.mod.landdev.data.norm.BoolNorm;
@@ -23,11 +22,11 @@ import net.fexcraft.mod.landdev.data.state.State;
 import net.fexcraft.mod.landdev.gui.GuiHandler;
 import net.fexcraft.mod.landdev.gui.LDGuiContainer;
 import net.fexcraft.mod.landdev.gui.modules.LDGuiModule;
+import net.fexcraft.mod.landdev.gui.modules.ModuleResponse;
 import net.fexcraft.mod.landdev.util.ResManager;
 import net.fexcraft.mod.landdev.util.Settings;
 import net.fexcraft.mod.landdev.util.TranslationUtil;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 
 public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 	
@@ -221,84 +220,93 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 		;
 
 	@Override
-	public void sync_packet(LDGuiContainer container, NBTTagCompound com){
-		com.setString("title_lang", "district.title");
-		NBTTagList list = new NBTTagList();
+	public void sync_packet(LDGuiContainer container, ModuleResponse resp){
+		resp.setTitle("district.title");
 		boolean canman = can(ACT_MANAGE_DISTRICT, container.player.uuid) || container.player.adm;
 		boolean canoman = owner.manageable().can(ACT_MANAGE_DISTRICT, container.player.uuid) || container.player.adm;
 		switch(container.x){
 		case UI_MAIN:
-			addToList(list, "id", ELM_GENERIC, ICON_BLANK, false, false, id);
-			addToList(list, "name", ELM_GENERIC, canman ? ICON_OPEN : ICON_EMPTY, canman, false, name());
-			addToList(list, "type", ELM_GENERIC, canman ? ICON_OPEN : ICON_EMPTY, canman, false, type.name());
-			addToList(list, "owner", ELM_GENERIC, ICON_OPEN, true, false, owner.name());
-			if(canoman || manage.hasManager()) addToList(list, "manager", ELM_GENERIC, canoman ? ICON_OPEN : ICON_EMPTY, canoman, false, manage.getManagerName());
-			addToList(list, "spacer", ELM_BLANK, ICON_BLANK, false, false, null);
+			resp.addRow("id", ELM_GENERIC, id);
+			if(canman){
+				resp.addButton("name", ELM_GENERIC, ICON_OPEN, name());
+				resp.addButton("type", ELM_GENERIC, ICON_OPEN, type.name());
+			}
+			else{
+				resp.addRow("name", ELM_GENERIC, ICON_EMPTY, name());
+				resp.addRow("type", ELM_GENERIC, ICON_EMPTY, type.name());
+			}
+			resp.addButton("owner", ELM_GENERIC, ICON_OPEN, owner.name());
+			if(canoman || manage.hasManager()){
+				resp.addRow("manager", ELM_GENERIC, canoman ? ICON_OPEN : ICON_EMPTY, canoman, manage.getManagerName());
+			}
+			resp.addBlank();
 			if(sell.price > 0){
-				addToList(list, "price", ELM_GENERIC, ICON_OPEN, true, false, sell.price_formatted());
+				resp.addButton("price", ELM_GENERIC, ICON_OPEN, sell.price_formatted());
 			}
 			if(canman){
-				addToList(list, "set_price", ELM_GENERIC, ICON_OPEN, true, false, null);
+				resp.addButton("set_price", ELM_GENERIC, ICON_OPEN);
 			}
-			if(sell.price > 0){
-				addToList(list, "spacer", ELM_BLANK, ICON_BLANK, false, false, null);
+			if(sell.price > 0) resp.addBlank();
+			resp.addRow("chunk_tax", ELM_GENERIC, canman ? ICON_ADD : ICON_EMPTY, canman, getWorthAsString(tax()));
+			resp.addRow("chunks", ELM_GENERIC, chunks);
+			if(canman){
+				resp.addButton("mailbox", ELM_GENERIC, ICON_OPEN, mail.unread());
 			}
-			addToList(list, "chunk_tax", ELM_GENERIC, canman ? ICON_ADD : ICON_EMPTY, canman, false, getWorthAsString(tax()));
-			addToList(list, "chunks", ELM_GENERIC, ICON_BLANK, false, false, chunks);
-			addToList(list, "mailbox", ELM_GENERIC, canman ? ICON_OPEN : ICON_EMPTY, canman, false, mail.asString());
-			addToList(list, "norms", ELM_GREEN, ICON_OPEN, true, false, null);
-			addToList(list, "appearance", ELM_YELLOW, ICON_OPEN, true, false, null);
+			resp.addButton("norms", ELM_GREEN, ICON_OPEN);
+			resp.addButton("appearance", ELM_YELLOW, ICON_OPEN);
 			break;
 		case UI_NAME:
-			com.setString("title_lang", "district.name.title");
-			addToList(list, "id", ELM_GENERIC, ICON_BLANK, false, false, id);
-			addToList(list, "name.current", ELM_GENERIC, ICON_BLANK, false, false, name());
-			addToList(list, "name.field", ELM_BLANK, ICON_BLANK, false, true, name());
-			addToList(list, "name.submit", ELM_GENERIC, ICON_OPEN, true, false, null);
-			com.setBoolean("form", true);
+			resp.setTitle("district.name.title");
+			resp.addRow("id", ELM_GENERIC, id);
+			resp.addRow("name.current", ELM_GENERIC, name());
+			resp.addField("name.field", name());
+			resp.addButton("name.submit", ELM_GENERIC, ICON_OPEN);
+			resp.setFormular();
 			break;
 		case UI_TYPE:
-			com.setString("title_lang", "district.type.title");
+			resp.setTitle("district.type.title");
 			for(DistrictType dtp : DistrictType.TYPES.values()){
-				addToList(list, "type." + dtp.id(), ELM_BLUE, radio(dtp == type), true, false, dtp.name(), true);
+				resp.addRadio("type." + dtp.id(), ELM_BLUE, dtp == type, resp.val(dtp.name()));
 			}
-			addToList(list, "type.submit", ELM_GENERIC, ICON_OPEN, true, false, null);
-			com.setBoolean("form", true);
+			resp.addButton("type.submit", ELM_GENERIC, ICON_OPEN);
+			resp.setFormular();
 			break;
 		case UI_MANAGER:
-			com.setString("title_lang", "district.manager.title");
-			addToList(list, "manager.current", ELM_GENERIC, ICON_BLANK, false, false, manage.getManagerName());
-			addToList(list, "manager.field", ELM_BLANK, ICON_BLANK, false, true, manage.getManagerName());
-			addToList(list, "manager.submit", ELM_GENERIC, manage.hasManager() ? ICON_OPEN : ICON_ADD, true, false, null);
-			addToList(list, "manager.remove", ELM_GENERIC, ICON_REM, true, false, null);
-			com.setBoolean("form", true);
+			resp.setTitle("district.manager.title");
+			resp.addRow("manager.current", ELM_GENERIC, ICON_BLANK, manage.getManagerName());
+			resp.addField("manager.field", manage.getManagerName());
+			resp.addButton("manager.submit", ELM_GENERIC, manage.hasManager() ? ICON_OPEN : ICON_ADD);
+			if(manage.hasManager()) resp.addButton("manager.remove", ELM_GENERIC, ICON_REM);
+			resp.setFormular();
 			break;
 		case UI_PRICE:
-			com.setString("title_lang", "district.buy.title");
-			addToList(list, "id", ELM_GENERIC, ICON_BLANK, false, false, id);
-			addToList(list, "buy.info", ELM_YELLOW, ICON_BLANK, false, false, null);
-			if(owner.is_county) addToList(list, "buy.this_municipality", ELM_BLUE, ICON_RADIOBOX_CHECKED, true, false, null);
-			else addToList(list, "buy.this_county", ELM_BLUE, ICON_RADIOBOX_CHECKED, true, false, null);
-			addToList(list, "buy.other_municipality", ELM_BLUE, ICON_RADIOBOX_UNCHECKED, true, false, null);
-			addToList(list, "buy.other_county", ELM_BLUE, ICON_RADIOBOX_UNCHECKED, true, false, null);
-			addToList(list, "buy.payer", ELM_GENERIC, ICON_CHECKBOX_UNCHECKED, true, false, null);
-			addToList(list, "buy.submit", ELM_GENERIC, ICON_OPEN, true, false, null);
-			com.setBoolean("form", true);
+			resp.setTitle("district.buy.title");
+			resp.addRow("id", ELM_GENERIC, ICON_BLANK, id);
+			resp.addRow("buy.info", ELM_YELLOW, ICON_BLANK, null);
+			if(owner.is_county) resp.addButton("buy.this_municipality", ELM_BLUE, ICON_RADIOBOX_CHECKED);
+			else resp.addButton("buy.this_county", ELM_BLUE, ICON_RADIOBOX_CHECKED);
+			resp.addButton("buy.other_municipality", ELM_BLUE, ICON_RADIOBOX_UNCHECKED);
+			resp.addButton("buy.other_county", ELM_BLUE, ICON_RADIOBOX_UNCHECKED);
+			resp.addButton("buy.payer", ELM_GENERIC, ICON_CHECKBOX_UNCHECKED);
+			resp.addButton("buy.submit", ELM_GENERIC, ICON_OPEN);
+			resp.setFormular();
 			break;
 		case UI_SET_PRICE:
-			com.setString("title_lang", "district.set_price.title");
-			addToList(list, "id", ELM_GENERIC, ICON_BLANK, false, false, id);
-			addToList(list, "set_price.field", ELM_BLANK, ICON_BLANK, false, true, null);
-			addToList(list, "set_price.submit", ELM_GENERIC, ICON_OPEN, true, false, null);
-			com.setBoolean("form", true);
+			resp.setTitle("district.set_price.title");
+			resp.addRow("id", ELM_GENERIC, ICON_BLANK, id);
+			resp.addField("set_price.field");
+			resp.addButton("set_price.submit", ELM_GENERIC, ICON_OPEN);
+			resp.setFormular();
 			break;
 		case UI_APPREARANCE:
-			addToList(list, "icon", ELM_BLANK, ICON_OPEN, true, true, icon.getn());
-			addToList(list, "color", ELM_BLANK, ICON_OPEN, true, true, color.getString());
-			com.setBoolean("form", true);
+			resp.addRow("appearance.icon", ELM_GENERIC);
+			resp.addRow("appearance.icon_field", ELM_GENERIC, icon.getn());
+			resp.addRow("appearance.color", ELM_GENERIC);
+			resp.addRow("appearance.color_field", ELM_GENERIC, color.getString());
+			resp.addRow("appearance.submit", ELM_GENERIC, ICON_OPEN);
+			resp.setFormular();
 			break;
 		}
-		com.setTag("elements", list);
 	}
 
 	@Override
