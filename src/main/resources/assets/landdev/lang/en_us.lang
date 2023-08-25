@@ -80,6 +80,8 @@ landdev.gui.claim.municipality=&7Municipality of &6%s
 landdev.gui.claim.county=&6%s &7County
 landdev.gui.claim.no_perm_district=&4No permission to claim for this District.
 //
+landdev.gui.mailbox.title=Mailbox Interface
+//
 landdev.gui.main.title=Land Developer
 landdev.gui.main.player=My Profile
 landdev.gui.main.mail=My Mail
