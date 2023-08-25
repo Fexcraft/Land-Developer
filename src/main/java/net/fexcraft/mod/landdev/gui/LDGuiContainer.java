@@ -1,9 +1,6 @@
 package net.fexcraft.mod.landdev.gui;
 
-import static net.fexcraft.mod.landdev.gui.GuiHandler.CHUNK;
-import static net.fexcraft.mod.landdev.gui.GuiHandler.DISTRICT;
-import static net.fexcraft.mod.landdev.gui.GuiHandler.MAIN;
-import static net.fexcraft.mod.landdev.gui.GuiHandler.MUNICIPALITY;
+import static net.fexcraft.mod.landdev.gui.GuiHandler.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,7 +16,8 @@ import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.data.district.District;
 import net.fexcraft.mod.landdev.data.municipality.Municipality;
 import net.fexcraft.mod.landdev.data.player.Player;
-import net.fexcraft.mod.landdev.gui.modules.Main;
+import net.fexcraft.mod.landdev.gui.modules.MailModule;
+import net.fexcraft.mod.landdev.gui.modules.MainModule;
 import net.fexcraft.mod.landdev.gui.modules.Missing;
 import net.fexcraft.mod.landdev.gui.modules.ModuleRequest;
 import net.fexcraft.mod.landdev.gui.modules.ModuleResponse;
@@ -75,7 +73,11 @@ public class LDGuiContainer extends GenericContainer {
 			ModuleRequest req = new ModuleRequest(packet);
 			switch(type){
 				case MAIN:{
-					Main.INST.on_interact(this, req);
+					MainModule.INST.on_interact(this, req);
+					break;
+				}
+				case MAIL:{
+					MailModule.INST.on_interact(this, req);
 					break;
 				}
 				case CHUNK:{
@@ -122,7 +124,11 @@ public class LDGuiContainer extends GenericContainer {
 		ColorData color = null;
 		switch(type){
 			case MAIN:{
-				Main.INST.sync_packet(this, resp);
+				MainModule.INST.sync_packet(this, resp);
+				break;
+			}
+			case MAIL:{
+				MailModule.INST.sync_packet(this, resp);
 				break;
 			}
 			case CHUNK:{
