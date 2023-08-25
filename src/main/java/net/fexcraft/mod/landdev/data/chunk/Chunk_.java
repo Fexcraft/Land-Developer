@@ -25,10 +25,10 @@ import net.fexcraft.mod.landdev.data.player.Player;
 import net.fexcraft.mod.landdev.gui.GuiHandler;
 import net.fexcraft.mod.landdev.gui.LDGuiContainer;
 import net.fexcraft.mod.landdev.gui.modules.LDGuiModule;
+import net.fexcraft.mod.landdev.gui.modules.ModuleRequest;
 import net.fexcraft.mod.landdev.gui.modules.ModuleResponse;
 import net.fexcraft.mod.landdev.util.ResManager;
 import net.fexcraft.mod.landdev.util.Settings;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
 public class Chunk_ implements Saveable, Layer, LDGuiModule {
@@ -131,7 +131,7 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 		resp.setTitle("chunk.title");
 		switch(container.x){
 		case UI_MAIN:
-			boolean canman = can_manage(container.player());// || container.player.adm;
+			boolean canman = can_manage(container.player);// || container.player.adm;
 			resp.addRow("key", ELM_GENERIC, key.comma());
 			if(Settings.CHUNK_LINK_LIMIT > 0){
 				if(link == null){
@@ -282,9 +282,9 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 	}
 
 	@Override
-	public void on_interact(LDGuiContainer container, Player player, NBTTagCompound packet, String index){
-		boolean canman = can_manage(container.player());
-		switch(index){
+	public void on_interact(LDGuiContainer container, ModuleRequest req){
+		boolean canman = can_manage(container.player);
+		switch(req.event()){
 			case "access_interact":{
 				if(!canman) return;
 				access.interact = !access.interact;
@@ -294,7 +294,7 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 			case "link": container.open(UI_LINK); return;
 			case "link.submit":{
 				if(!canman || Settings.CHUNK_LINK_LIMIT == 0 || link != null) return;
-				ChunkKey ckk = new ChunkKey(packet.getCompoundTag("fields").getString("link.field"));
+				ChunkKey ckk = new ChunkKey(req.getField("link.field"));
 				Chunk_ ck = ResManager.getChunk(ckk);
 				if(ck == null){
 					container.sendMsg("link.notfound");
@@ -333,8 +333,8 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 			case "links": container.open(UI_LINKS); return;
 			case "links.submit":{
 				if(!canman) return;
-				ChunkKey key = link.linked.get(Integer.parseInt(packet.getString("radiobox").replace("links.key", "")));
-				player.openGui(GuiHandler.CHUNK, 0, key.x, key.z);
+				ChunkKey key = link.linked.get(req.getRadioInt("links.key"));
+				container.open(GuiHandler.CHUNK, 0, key.x, key.z);
 				return;
 			}
 			case "linked": container.open(UI_LINKED); return;
@@ -364,7 +364,7 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 			//
 			case "select_type.submit":{
 				if(!canman) return;
-				ChunkType type = ChunkType.get(packet.getString("radiobox").replace("type.", ""));
+				ChunkType type = ChunkType.get(req.getRadio("type."));
 				if(type == null) return;
 				if(owner.playerchunk && type == ChunkType.RESTRICTED){
 					container.sendMsg("select_type.notforplayerchunks");
@@ -377,7 +377,7 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 			case "set_price.submit":{
 				if(!canman) return;
 				String[] err = new String[]{ "" };
-				String val = packet.getCompoundTag("fields").getString("set_price.field");
+				String val = req.getField("set_price.field");
 				long value = Settings.format_price(err, val);
 				if(err[0].length() > 0){
 					container.sendMsg(err[0], false);
@@ -390,7 +390,7 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 			}
 			case "set_owner.submit":{
 				if(!canman) return;
-				Layers layer = Layers.get(packet.getString("radiobox").replace("set_owner.", ""));
+				Layers layer = Layers.get(req.getRadio("set_owner."));
 				if(!layer.isValidChunkOwner2()) return;
 				if(layer.is(Layers.MUNICIPALITY) && district.owner.is_county){
 					container.sendMsg("landdev.district.not_part_of_municipality", false);
@@ -402,30 +402,30 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 				return;
 			}
 			case "buy.submit":{
-				String radio = packet.getString("radiobox");
+				String radio = req.getRadio();
 				Layers layer = radio.endsWith(".self") ? Layers.PLAYER : Layers.get(radio.replace("buy.", ""));
 				if(!layer.isValidChunkOwner()) return;
 				if(layer.is(Layers.MUNICIPALITY) && district.owner.is_county){
 					container.sendMsg("landdev.district.not_part_of_municipality", false);
 					return;
 				}
-				boolean npp = packet.getCompoundTag("checkboxes").getBoolean("buy.payer");
-				Account account = npp ? district.getLayerAccount(layer, container, player) : player.account;
+				boolean npp = req.getCheck("buy.payer");
+				Account account = npp ? district.getLayerAccount(layer, container, container.player) : container.player.account;
 				if(account == null) return;
 				if(account.getBalance() < sell.price){
 					container.sendMsg("buy.notenoughmoney");
 					return;
 				}
 				Bank bank = DataManager.getBank(account.getBankId(), false, true);
-				if(!bank.processAction(Action.TRANSFER, player.entity, account, sell.price, owner.getAccount(this))) return;
-				owner.set(layer, layer.is(Layers.PLAYER) ? player.uuid : null, district.getLayerId(layer));
+				if(!bank.processAction(Action.TRANSFER, container.player.entity, account, sell.price, owner.getAccount(this))) return;
+				owner.set(layer, layer.is(Layers.PLAYER) ? container.player.uuid : null, district.getLayerId(layer));
 				sell.price = 0;
 				container.open(UI_MAIN);
 				return;
 			}
 			case "set_tax.submit":{
 				if(!district.can(PermAction.ACT_SET_TAX_CHUNK_CUSTOM, container.player.uuid) && !container.player.adm) return;
-				String val = packet.getCompoundTag("fields").getString("set_tax.field");
+				String val = req.getField("set_tax.field");
 				String[] err = new String[]{ "" };
 				long value = Settings.format_price(err, val);
 				if(err[0].length() > 0){
@@ -439,7 +439,7 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 			}
 			case "access_player.add.submit":{
 				if(!can_manage(container.player)) return;
-				Player other = ResManager.getPlayer(packet.getCompoundTag("fields").getString("access_player.field"), true);
+				Player other = req.getPlayerField("access_player.field", true);
 				if(other == null){
 					container.sendMsg("access_player.notfound");
 					return;
@@ -450,7 +450,7 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 			}
 			case "access_player.rem.submit":{
 				if(!can_manage(container.player)) return;
-				UUID uuid = UUID.fromString(packet.getString("radiobox").replace("access_player.id_", ""));
+				UUID uuid = UUID.fromString(req.getRadio("access_player.id_"));
 				if(!access.players.containsKey(uuid)){
 					container.sendMsg("access_player.notfound");
 					return;
