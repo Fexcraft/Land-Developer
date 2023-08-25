@@ -300,11 +300,13 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 			break;
 		case UI_APPREARANCE:
 			resp.addRow("appearance.icon", ELM_GENERIC);
-			resp.addRow("appearance.icon_field", ELM_GENERIC, icon.getn());
+			resp.addField("appearance.icon_field", icon.getn());
 			resp.addRow("appearance.color", ELM_GENERIC);
-			resp.addRow("appearance.color_field", ELM_GENERIC, color.getString());
-			resp.addRow("appearance.submit", ELM_GENERIC, ICON_OPEN);
-			resp.setFormular();
+			resp.addField("appearance.color_field", color.getString());
+			if(canman){
+				resp.addRow("appearance.submit", ELM_GENERIC, ICON_OPEN);
+				resp.setFormular();
+			}
 			break;
 		}
 	}
