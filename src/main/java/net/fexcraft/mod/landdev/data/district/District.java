@@ -22,11 +22,11 @@ import net.fexcraft.mod.landdev.data.state.State;
 import net.fexcraft.mod.landdev.gui.GuiHandler;
 import net.fexcraft.mod.landdev.gui.LDGuiContainer;
 import net.fexcraft.mod.landdev.gui.modules.LDGuiModule;
+import net.fexcraft.mod.landdev.gui.modules.ModuleRequest;
 import net.fexcraft.mod.landdev.gui.modules.ModuleResponse;
 import net.fexcraft.mod.landdev.util.ResManager;
 import net.fexcraft.mod.landdev.util.Settings;
 import net.fexcraft.mod.landdev.util.TranslationUtil;
-import net.minecraft.nbt.NBTTagCompound;
 
 public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 	
@@ -310,10 +310,10 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 	}
 
 	@Override
-	public void on_interact(LDGuiContainer container, Player player, NBTTagCompound packet, String index){
+	public void on_interact(LDGuiContainer container, ModuleRequest req){
 		boolean canman = can(ACT_MANAGE_DISTRICT, container.player.uuid) || container.player.adm;
 		boolean canoman = owner.manageable().can(ACT_MANAGE_DISTRICT, container.player.uuid) || container.player.adm;
-		switch(index){
+		switch(req.event()){
 			case "name": container.open(UI_NAME); return;
 			case "type": container.open(UI_TYPE); return;
 			case "owner":{
@@ -332,7 +332,7 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 			case "color": return;
 			case "name.submit":{
 				if(!canman) return;
-    			String name = packet.getCompoundTag("fields").getString("name.field");
+    			String name = req.getField("name.field");
     			if(!validateName(container, name)) return;
     			norms.get("name").set(name);
     			container.open(UI_MAIN);
@@ -340,7 +340,7 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 			}
 			case "type.submit":{
 				if(!canman) return;
-				DistrictType type = DistrictType.TYPES.get(packet.getString("radiobox").replace("type.", ""));
+				DistrictType type = DistrictType.TYPES.get(req.getRadio("type."));
 				if(type == null) return;
 				this.type = type;
 				container.open(UI_MAIN);
@@ -350,11 +350,11 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 				if(!canoman) return;
 				UUID uuid = null;
 				try{
-					uuid = UUID.fromString(packet.getCompoundTag("fields").getString("manager.field"));
+					uuid = UUID.fromString(req.getField("manager.field"));
 				}
 				catch(Exception e){
 					if(Static.dev()) e.printStackTrace();
-					uuid = ResManager.getUUIDof(packet.getCompoundTag("fields").getString("manager.field"));
+					uuid = ResManager.getUUIDof(req.getField("manager.field"));
 				}
 				if(uuid == null){
 					container.sendMsg("landdev.cmd.uuid_player_not_found", false);
@@ -382,7 +382,7 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 			case "set_price.submit":{
 				if(!canoman) return;
 				String[] err = new String[]{ "" };
-				String val = packet.getCompoundTag("fields").getString("set_price.field");
+				String val = req.getField("set_price.field");
 				long value = Settings.format_price(err, val);
 				if(err[0].length() > 0){
 					container.sendMsg(err[0], false);
