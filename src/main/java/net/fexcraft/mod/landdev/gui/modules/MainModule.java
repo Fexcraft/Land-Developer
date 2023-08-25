@@ -5,6 +5,7 @@ import static net.fexcraft.mod.landdev.gui.LDGuiElementType.ELM_GENERIC;
 import static net.fexcraft.mod.landdev.gui.LDGuiElementType.ICON_OPEN;
 
 import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.mod.landdev.data.Layers;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.gui.LDGuiContainer;
 import net.fexcraft.mod.landdev.util.ResManager;
@@ -33,7 +34,7 @@ public class MainModule implements LDGuiModule {
 		Chunk_ chunk = ResManager.getChunk(container.y, container.z);
 		switch(req.event()){
 			case "player": container.open(PLAYER, 0, 0, 0); return;
-			case "mail": container.open(MAILBOX, 0, 0, 0); return;
+			case "mail": container.open(MAILBOX, Layers.PLAYER.ordinal(), 0, 0); return;
 			case "property": container.open(PROPERTY, 0, 0, 0); return;
 			case "company": container.open(COMPANY, 0, 0, 0); return;
 			case "chunk": container.open(CHUNK, 0, chunk.key.x, chunk.key.z); return;
