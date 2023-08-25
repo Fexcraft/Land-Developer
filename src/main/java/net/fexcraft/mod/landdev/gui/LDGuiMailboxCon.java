@@ -7,6 +7,8 @@ import net.fexcraft.lib.mc.gui.GenericContainer;
 import net.fexcraft.mod.landdev.LandDev;
 import net.fexcraft.mod.landdev.data.Layers;
 import net.fexcraft.mod.landdev.data.MailData;
+import net.fexcraft.mod.landdev.data.player.Player;
+import net.fexcraft.mod.landdev.gui.modules.MailModule;
 import net.fexcraft.mod.landdev.util.ResManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -20,20 +22,13 @@ public class LDGuiMailboxCon extends GenericContainer {
 	@SideOnly(Side.CLIENT)
 	public LDGuiMailbox gui;
 
-	public LDGuiMailboxCon(EntityPlayer player, int x, int y, int z){
-		super(player);
+	public LDGuiMailboxCon(EntityPlayer entity, int x, int y, int z){
+		super(entity);
 		this.x = x;
 		this.y = y;
 		this.z = z;
-		Layers lay = Layers.values()[x];
-		if(player.world.isRemote) return;
-		switch(lay){
-			case PLAYER: mailbox = ResManager.getPlayer(player).mail; break;
-			case DISTRICT: mailbox = ResManager.getDistrict(y, false).mail; break;
-			case MUNICIPALITY: mailbox = ResManager.getMunicipality(y, false).mail; break;
-			case COUNTY: mailbox = ResManager.getCounty(y, false).mail; break;
-			case STATE: mailbox = ResManager.getState(y, false).mail; break;
-		}
+		Player player = ResManager.getPlayer(entity);
+		mailbox = MailModule.getMailbox(player, x, y);
 	}
 
 	@Override
