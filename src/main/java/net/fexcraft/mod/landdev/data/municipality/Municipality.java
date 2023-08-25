@@ -45,7 +45,7 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 	public IconHolder icon = new IconHolder();
 	public ColorData color = new ColorData();
 	public NeighborData neighbors = new NeighborData();
-	public MailData mail = new MailData();
+	public MailData mail;
 	public Manageable manage = new Manageable(true, mactions);
 	public Norms norms = new Norms();
 	public ArrayList<Integer> districts = new ArrayList<>();
@@ -55,6 +55,7 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 	
 	public Municipality(int id){
 		this.id = id;
+		mail = new MailData(getLayer(), id);
 		account = DataManager.getAccount("municipality:" + id, false, true);
 		norms.add(new StringNorm("name", translate("municipality.norm.name")));
 		manage.norms.add(new BoolNorm("claim", false));
