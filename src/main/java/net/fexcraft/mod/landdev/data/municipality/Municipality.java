@@ -37,7 +37,7 @@ import net.minecraft.nbt.NBTTagList;
 
 public class Municipality implements Saveable, Layer, LDGuiModule {
 
-	public static PermActions mactions = new PermActions(ACT_CLAIM, ACT_SET_TAX_CHUNK, ACT_SET_TAX_CHUNK_CUSTOM, ACT_SET_TAX_PLAYER, ACT_USE_FINANCES, ACT_MANAGE_FINANCES);
+	public static PermActions mactions = new PermActions(ACT_CLAIM, ACT_SET_TAX_CHUNK, ACT_SET_TAX_CHUNK_CUSTOM, ACT_SET_TAX_PLAYER, ACT_USE_FINANCES, ACT_MANAGE_FINANCES, ACT_MANAGE_MAIL);
 	public static PermActions cactions = new PermActions();
 	public final int id;
 	public Createable created = new Createable();
