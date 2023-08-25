@@ -25,7 +25,7 @@ public class GuiHandler implements IGuiHandler {
 
 	@Override
 	public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z){
-		if(ID <= 8) return new LDGuiContainer(player, ID, x, y, z);
+		if(ID <= 8 || ID == 11) return new LDGuiContainer(player, ID, x, y, z);
 		if(ID == CLAIM) return new LDGuiClaimCon(player, x, y, z);
 		if(ID == IMG_PREVIEW) return new GenericContainer.DefImpl(player);
 		if(ID == MAILBOX) return  new LDGuiMailboxCon(player, x, y, z);
@@ -34,7 +34,7 @@ public class GuiHandler implements IGuiHandler {
 
 	@Override
 	public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z){
-		if(ID <= 8) return new LDGuiBase(ID, player, x, y, z);
+		if(ID <= 8 || ID == 11) return new LDGuiBase(ID, player, x, y, z);
 		if(ID == CLAIM) return new LDGuiClaim(player, x, y, z);
 		if(ID == IMG_PREVIEW) return new LDGuiImgPreview(player, x, y, z);
 		if(ID == MAILBOX) return  new LDGuiMailbox(player, x, y, z);
