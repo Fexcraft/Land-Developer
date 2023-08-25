@@ -12,6 +12,7 @@ import net.fexcraft.mod.fsmm.api.Account;
 import net.fexcraft.mod.fsmm.util.DataManager;
 import net.fexcraft.mod.landdev.LandDev;
 import net.fexcraft.mod.landdev.data.Layers;
+import net.fexcraft.mod.landdev.data.MailData;
 import net.fexcraft.mod.landdev.data.PermAction;
 import net.fexcraft.mod.landdev.data.Saveable;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
@@ -32,6 +33,7 @@ public class Player implements Saveable {
 	public boolean offline, adm;
 	public EntityPlayer entity;
 	public long joined, login, last_login, last_logout, last_pos_update;
+	public MailData mail;
 	public String nickname, colorcode = "2";
 	public Account account;
 	public ArrayList<Permit> permits = new ArrayList<>();
@@ -42,6 +44,7 @@ public class Player implements Saveable {
 	public Player(UUID uuid){
 		offline = true;
 		this.uuid = uuid;
+		mail = new MailData(Layers.PLAYER, uuid);
 		account = DataManager.getAccount("player:" + uuid.toString(), false, true);
 	}
 
@@ -51,6 +54,7 @@ public class Player implements Saveable {
 		map.add("joined", joined);
 		map.add("last_login", login);
 		map.add("last_logout", Time.getDate());
+		mail.save(map);
 		if(nickname != null) map.add("nick-name", nickname);
 		if(colorcode != null) map.add("color-code", colorcode);
 		if(permits.size() > 0){
@@ -72,6 +76,7 @@ public class Player implements Saveable {
 		joined = map.getLong("joined", Time.getDate());
 		last_login = map.getLong("last_login", 0);
 		last_logout = map.getLong("last_logout", 0);
+		mail.load(map);
 		nickname = map.getString("nick-name", nickname);
 		colorcode = map.getString("color-code", colorcode);
 		if(map.has("permits")){
