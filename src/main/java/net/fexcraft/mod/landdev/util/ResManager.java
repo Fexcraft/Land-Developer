@@ -141,7 +141,7 @@ public class ResManager implements Saveable {
 		return uuid == null ? null : getPlayer(uuid, load);
 	}
 
-	private static <S> S load(Saveable save){
+	public static <S> S load(Saveable save){
 		if(!LandDev.DB.exists(save.saveTable(), save.saveId())){
 			save.gendef();
 			return (S)save;
