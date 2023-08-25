@@ -212,10 +212,9 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 		UI_PRICE = 4,
 		UI_MANAGER = 5,
 		UI_SET_PRICE = 6,
-		UI_CHUNK_TAX = 7,
-		UI_MAILBOX = 8,
-		UI_NORMS = 9,
-		UI_APPREARANCE = 10
+		UI_MAILBOX = 7,
+		UI_NORMS = 8,
+		UI_APPREARANCE = 9
 		;
 
 	@Override
@@ -246,8 +245,8 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 				resp.addButton("set_price", ELM_GENERIC, ICON_OPEN);
 			}
 			if(sell.price > 0) resp.addBlank();
-			resp.addRow("chunk_tax", ELM_GENERIC, canman ? ICON_ADD : ICON_EMPTY, canman, getWorthAsString(tax()));
-			resp.addRow("chunks", ELM_GENERIC, chunks);
+			resp.addRow("chunk_tax", ELM_GENERIC, getWorthAsString(tax()));
+			if(id >= 0) resp.addRow("chunks", ELM_GENERIC, chunks);
 			if(canman){
 				resp.addButton("mailbox", ELM_GENERIC, ICON_OPEN, mail.unread());
 			}
@@ -325,7 +324,6 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 			case "manager": if(canoman) container.open(UI_MANAGER); return;
 			case "price": container.open(UI_PRICE); return;
 			case "set_price": if(canman) container.open(UI_SET_PRICE); return;
-			case "chunk_tax": if(canman) container.open(UI_CHUNK_TAX); return;
 			case "mailbox": if(canman) container.open(UI_MAILBOX); return;
 			case "norms": container.open(UI_NORMS); return;
 			case "appearance": container.open(UI_APPREARANCE); return;
@@ -393,4 +391,5 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 			}
 		}
 	}
+
 }
