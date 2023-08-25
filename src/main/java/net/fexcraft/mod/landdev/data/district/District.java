@@ -2,6 +2,7 @@ package net.fexcraft.mod.landdev.data.district;
 
 import static net.fexcraft.mod.fsmm.util.Config.getWorthAsString;
 import static net.fexcraft.mod.landdev.data.PermAction.*;
+import static net.fexcraft.mod.landdev.gui.GuiHandler.MAILBOX;
 import static net.fexcraft.mod.landdev.gui.LDGuiElementType.*;
 import static net.fexcraft.mod.landdev.util.TranslationUtil.translate;
 
@@ -36,7 +37,7 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 	public IconHolder icon = new IconHolder();
 	public ColorData color = new ColorData();
 	public NeighborData neighbors = new NeighborData();
-	public MailData mail = new MailData();
+	public MailData mail;
 	public DistrictType type = DistrictType.getDefault();;
 	public Manageable manage = new Manageable(false, actions);
 	public Norms norms = new Norms();
@@ -45,6 +46,7 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 	
 	public District(int id){
 		this.id = id;
+		mail = new MailData(getLayer(), id);
 		norms.add(new StringNorm("name", translate("district.norm.name")));
 		norms.add(new BoolNorm("explosions", false));
 		norms.add(new IntegerNorm("chunk-tax", 1000));
@@ -324,7 +326,7 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 			case "manager": if(canoman) container.open(UI_MANAGER); return;
 			case "price": container.open(UI_PRICE); return;
 			case "set_price": if(canman) container.open(UI_SET_PRICE); return;
-			case "mailbox": if(canman) container.open(UI_MAILBOX); return;
+			case "mailbox": if(canman) container.open(MAILBOX, getLayer().ordinal(), id, 0); return;
 			case "norms": container.open(UI_NORMS); return;
 			case "appearance": container.open(UI_APPREARANCE); return;
 			case "icon": return;
