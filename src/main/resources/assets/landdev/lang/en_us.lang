@@ -85,6 +85,20 @@ landdev.gui.mailbox.prev=Previous Page
 landdev.gui.mailbox.next=Next Page
 landdev.gui.mailbox.read=Read Mail
 landdev.gui.mailbox.delete=Delete Mail
+
+landdev.gui.mail.title=Reading Mail
+landdev.gui.mail.boxnotfound=Mailbox not found.
+landdev.gui.mail.notfound=Mail not found.
+landdev.gui.mail.from=From: %s
+landdev.gui.mail.to=To: %s
+landdev.gui.mail.at=Time: %s
+landdev.gui.mail.type=Mail Type: %s
+landdev.gui.mail.expired=This invite expired.
+landdev.gui.mail.invite.accept=Accept Invite
+landdev.gui.mail.invite.reject=Reject Invite
+landdev.gui.mail.request.accept=Accept Request
+landdev.gui.mail.request.reject=Reject Request
+landdev.gui.mail.request.reject=Reject and Timeout (%s days)
 //
 landdev.gui.main.title=Land Developer
 landdev.gui.main.player=My Profile
