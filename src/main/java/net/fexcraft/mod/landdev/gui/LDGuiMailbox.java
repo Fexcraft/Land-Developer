@@ -70,7 +70,11 @@ public class LDGuiMailbox extends GenericGui<LDGuiMailboxCon> {
 					return true;
 				}
 			});
-			texts.put("title" + i, titles[i] = new BasicText(guiLeft + 26, guiTop + 22 + i * 14, 184, 0x0e0e0e, "...").hoverable(true).autoscale());
+			read[i].rgb_hover.alpha = 1;
+			read[i].rgb_none.alpha = 1;
+			del[i].rgb_hover.alpha = 1;
+			del[i].rgb_none.alpha = 1;
+			texts.put("title" + i, titles[i] = new BasicText(guiLeft + 26, guiTop + 22 + i * 14, 184, 0xcdcdcd, "...").hoverable(true).autoscale());
 		}
 		container.gui = this;
 		NBTTagCompound com = new NBTTagCompound();
