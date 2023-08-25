@@ -8,7 +8,7 @@ public enum MailType {
 	EXPIRED(0, 246, 0, 236),
 	INVITE(16, 246, 16, 236),
 	SYSTEM(32, 246, 32, 236),
-	LAYER(48, 246, 48, 236),
+	REQUEST(48, 246, 48, 236),
 	BUSINESS(64, 246, 64, 236),
 	PRIVATE(80, 246, 80, 236);
 
@@ -22,6 +22,13 @@ public enum MailType {
 		v_unread = v_u;
 		u_read = u_r;
 		v_read = v_r;
+	}
+
+	public static MailType get(String string){
+		for(MailType type : values()){
+			if(type.name().equals(string)) return type;
+		}
+		return EXPIRED;
 	}
 
 }
