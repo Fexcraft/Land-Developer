@@ -18,6 +18,7 @@ public class GuiHandler implements IGuiHandler {
 	public static final int PLAYER = 8;
 	public static final int POLL = 9;
 	public static final int MAILBOX = 10;
+	public static final int MAIL = 11;
 	public static final int CLAIM = 100;
 	public static final int IMG_PREVIEW = 200;
 	
@@ -27,6 +28,7 @@ public class GuiHandler implements IGuiHandler {
 		if(ID <= 8) return new LDGuiContainer(player, ID, x, y, z);
 		if(ID == CLAIM) return new LDGuiClaimCon(player, x, y, z);
 		if(ID == IMG_PREVIEW) return new GenericContainer.DefImpl(player);
+		if(ID == MAILBOX) return  new LDGuiMailboxCon(player, x, y, z);
 		return null;
 	}
 
@@ -35,6 +37,7 @@ public class GuiHandler implements IGuiHandler {
 		if(ID <= 8) return new LDGuiBase(ID, player, x, y, z);
 		if(ID == CLAIM) return new LDGuiClaim(player, x, y, z);
 		if(ID == IMG_PREVIEW) return new LDGuiImgPreview(player, x, y, z);
+		if(ID == MAILBOX) return  new LDGuiMailbox(player, x, y, z);
 		return null;
 	}
 
