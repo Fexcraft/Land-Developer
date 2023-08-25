@@ -9,7 +9,6 @@ import java.util.UUID;
 
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fsmm.api.Account;
 import net.fexcraft.mod.landdev.data.*;
 import net.fexcraft.mod.landdev.data.county.County;
@@ -350,20 +349,13 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 			}
 			case "manager.submit":{
 				if(!canoman) return;
-				UUID uuid = null;
-				try{
-					uuid = UUID.fromString(req.getField("manager.field"));
-				}
-				catch(Exception e){
-					if(Static.dev()) e.printStackTrace();
-					uuid = ResManager.getUUIDof(req.getField("manager.field"));
-				}
-				if(uuid == null){
+				Player man = req.getPlayerField("manager.field");
+				if(man == null){
 					container.sendMsg("landdev.cmd.uuid_player_not_found", false);
 					return;
 				}
-				if(owner.manageable().isStaff(uuid)){
-					manage.setManager(uuid);
+				if(owner.manageable().isStaff(man.uuid)){
+					manage.setManager(man.uuid);
 					container.open(0);
 				}
 				else{
