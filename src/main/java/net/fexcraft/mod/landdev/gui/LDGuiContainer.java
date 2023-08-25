@@ -21,6 +21,7 @@ import net.fexcraft.mod.landdev.data.municipality.Municipality;
 import net.fexcraft.mod.landdev.data.player.Player;
 import net.fexcraft.mod.landdev.gui.modules.Main;
 import net.fexcraft.mod.landdev.gui.modules.Missing;
+import net.fexcraft.mod.landdev.gui.modules.ModuleRequest;
 import net.fexcraft.mod.landdev.gui.modules.ModuleResponse;
 import net.fexcraft.mod.landdev.util.ResManager;
 import net.minecraft.client.resources.I18n;
@@ -37,7 +38,7 @@ public class LDGuiContainer extends GenericContainer {
 	public final int type, x, y, z;
 	@SideOnly(Side.CLIENT)
 	public LDGuiBase gui;
-	public Player player;
+	public final Player player;
 	private boolean form;
 	protected HashMap<String, Boolean> checkboxes = new HashMap<>();
 	protected ArrayList<String> radioboxes = new ArrayList<>();
@@ -65,44 +66,44 @@ public class LDGuiContainer extends GenericContainer {
 	}
 
 	private void server_packet(NBTTagCompound packet, EntityPlayer player){
-		Player ply = ResManager.getPlayer(player);
+		//Player ply = ResManager.getPlayer(player);
 		if(packet.getBoolean("sync")){
 			sendSync();
 			return;
 		}
 		if(packet.hasKey("interact")){
-			String index = packet.getString("interact");
+			ModuleRequest req = new ModuleRequest(packet);
 			switch(type){
 				case MAIN:{
-					Main.INST.on_interact(this, ply, packet, index);
+					Main.INST.on_interact(this, req);
 					break;
 				}
 				case CHUNK:{
 					Chunk_ chunk = ResManager.getChunk(y, z);
-					chunk.on_interact(this, ply, packet, index);
+					chunk.on_interact(this, req);
 					break;
 				}
 				case DISTRICT:{
 					District dis = ResManager.getDistrict(y, y > -2);
 					if(dis != null){
-						dis.on_interact(this, ply, packet, index);
+						dis.on_interact(this, req);
 						break;
 					}
 					break;
 				}
 				case MUNICIPALITY:{
 					if(x < 0){
-						ResManager.getMunicipality(-1, true).on_interact(this, ply, packet, index);
+						ResManager.getMunicipality(-1, true).on_interact(this, req);
 						break;
 					}
 					Municipality mun = ResManager.getMunicipality(y, y > -2);
 					if(mun != null){
-						mun.on_interact(this, ply, packet, index);
+						mun.on_interact(this, req);
 						break;
 					}
 					break;
 				}
-				default: Missing.INST.on_interact(this, ply, packet, index); break;
+				default: Missing.INST.on_interact(this, req); break;
 			}
 		}
 		if(packet.hasKey("go_back")){
@@ -232,10 +233,6 @@ public class LDGuiContainer extends GenericContainer {
 		}
 		gui.scroll(0);
 		gui.addMsgElms();
-	}
-
-	public Player player(){
-		return player;
 	}
 
 	public boolean form(){
