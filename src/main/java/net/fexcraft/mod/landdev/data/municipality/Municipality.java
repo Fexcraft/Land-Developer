@@ -28,11 +28,11 @@ import net.fexcraft.mod.landdev.data.player.Permit;
 import net.fexcraft.mod.landdev.data.player.Player;
 import net.fexcraft.mod.landdev.gui.LDGuiContainer;
 import net.fexcraft.mod.landdev.gui.modules.LDGuiModule;
+import net.fexcraft.mod.landdev.gui.modules.ModuleRequest;
 import net.fexcraft.mod.landdev.gui.modules.ModuleResponse;
 import net.fexcraft.mod.landdev.util.Announcer;
 import net.fexcraft.mod.landdev.util.ResManager;
 import net.fexcraft.mod.landdev.util.Settings;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 
 public class Municipality implements Saveable, Layer, LDGuiModule {
@@ -154,7 +154,7 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 		switch(container.x){
 		case UI_CREATE:
 			resp.setTitle("municipality.create.title");
-			Chunk_ chunk = ResManager.getChunk(container.player().entity);
+			Chunk_ chunk = ResManager.getChunk(container.player.entity);
     		County county = chunk.district.county();
     		boolean cn = county.norms.get("new-municipalities").bool();
     		boolean pp = container.player.hasPermit(ACT_CREATE_LAYER, county.getLayer(), county.id);
@@ -174,10 +174,11 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 	}
 
 	@Override
-	public void on_interact(LDGuiContainer container, Player player, NBTTagCompound packet, String index){
-		switch(index){
+	public void on_interact(LDGuiContainer container, ModuleRequest req){
+		Player player = container.player;
+		switch(req.event()){
 			case "create.submit":{
-				Chunk_ chunk = ResManager.getChunk(container.player().entity);
+				Chunk_ chunk = ResManager.getChunk(container.player.entity);
 				County county = chunk.district.county();
 				long sum = Settings.MUNICIPALITY_CREATION_FEE;
     			boolean cn = county.norms.get("new-municipalities").bool();
@@ -200,9 +201,9 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 					container.sendMsg("create.leave_state_management");
 					return;
     			}
-    			String name = packet.getCompoundTag("fields").getString("create.name_field");
+    			String name = req.getField("create.name_field");
     			if(!validateName(container, name)) return;
-				boolean uca = packet.getCompoundTag("checkboxes").getBoolean("create.county_funded");
+				boolean uca = req.getCheck("create.county_funded");
 				if(!pp && !uca) sum += county.norms.get("new-municipality-fee").integer(); 
 				Permit perm = pp ? player.getPermit(ACT_CREATE_LAYER, county.getLayer(), county.id) : null;
 				if(!pp && uca){
@@ -214,7 +215,7 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 					container.sendMsg("create.not_enough_money");
 					return;
 				}
-				boolean claim = packet.getCompoundTag("checkboxes").getBoolean("create.claim_district");
+				boolean claim = req.getCheck("create.claim_district");
 				if(claim && !chunk.district.norms.get("municipality-can-form").bool()){
 					container.sendMsg("create.district_no_forming");
 					return;
