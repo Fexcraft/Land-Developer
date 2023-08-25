@@ -47,6 +47,7 @@ public class LDGuiContainer extends GenericContainer {
 		super(player);
 		switch(type = id){
 			case MAIN: prefix = "main"; break;
+			case MAIL: prefix = "mail"; break;
 			case CHUNK: prefix = "chunk"; break;
 			case DISTRICT: prefix = "district"; break;
 			case MUNICIPALITY: prefix = "municipality"; break;
