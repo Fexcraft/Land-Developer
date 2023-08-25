@@ -20,7 +20,12 @@ public class Mail implements Saveable {
 	public ArrayList<String> message = new ArrayList<>();
 	public MailType type;
 	public long expiry;
+	public long sent;
 	public boolean staff;
+
+	public Mail(){
+		sent = Time.getDate();
+	}
 
 	@Override
 	public void save(JsonMap map){
@@ -31,6 +36,7 @@ public class Mail implements Saveable {
 		map.add("title", title);
 		map.add("message", new JsonArray(message.toArray()));
 		map.add("type", type.name());
+		map.add("sent", sent);
 		if(expiry > 0) map.add("expiry", expiry);
 		if(staff) map.add("staffinv", staff);
 	}
@@ -43,9 +49,10 @@ public class Mail implements Saveable {
 		receiver = map.get("receiver", "error/unknown");
 		title = map.getString("title", "No Title");
 		message = map.getArray("message").toStringList();
-		type = MailType.valueOf(map.getString("type", "EXPIRED"));
+		type = MailType.get(map.getString("type", "EXPIRED"));
 		expiry = map.getLong("expiry", 0);
 		staff = map.getBoolean("staffinv", false);
+		sent = map.getLong("sent", 0);
 	}
 
 	public int fromInt(){
@@ -58,6 +65,14 @@ public class Mail implements Saveable {
 
 	public boolean expired(){
 		return expiry > 0 && Time.getDate() > expiry;
+	}
+
+	public boolean invite(){
+		return type == MailType.INVITE;
+	}
+
+	public boolean request(){
+		return type == MailType.REQUEST;
 	}
 
 }
