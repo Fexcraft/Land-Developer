@@ -30,7 +30,7 @@ import net.fexcraft.mod.landdev.util.TranslationUtil;
 
 public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 	
-	public static PermActions actions = new PermActions(ACT_CLAIM, ACT_SET_TAX_CHUNK_CUSTOM);
+	public static PermActions actions = new PermActions(ACT_CLAIM, ACT_SET_TAX_CHUNK_CUSTOM, ACT_MANAGE_MAIL);
 	public final int id;
 	public Createable created = new Createable();
 	public Sellable sell = new Sellable(this);
@@ -143,6 +143,9 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 			return man || owner.manageable().can(act, uuid);
 		}
 		if(act == ACT_MANAGE_DISTRICT){
+			return man || owner.manageable().can(act, uuid);
+		}
+		if(act == ACT_MANAGE_MAIL){
 			return man || owner.manageable().can(act, uuid);
 		}
 		if(act == ACT_SET_TAX_CHUNK_CUSTOM){
