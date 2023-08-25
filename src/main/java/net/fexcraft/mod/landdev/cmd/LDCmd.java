@@ -4,10 +4,14 @@ import static net.fexcraft.mod.fsmm.util.Config.getWorthAsString;
 
 import java.util.List;
 
+import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
+import net.fexcraft.mod.landdev.data.Layers;
+import net.fexcraft.mod.landdev.data.Mail;
+import net.fexcraft.mod.landdev.data.MailType;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.data.player.Player;
 import net.fexcraft.mod.landdev.gui.GuiHandler;
@@ -95,6 +99,43 @@ public class LDCmd extends CommandBase {
 	    			PacketHandler.getInstance().sendTo(new PacketNBTTagCompound(com), (EntityPlayerMP)player.entity);
 	    			return;
 	    		}
+				case "bulkmail":{
+					if(!player.adm) return;
+					/*Chunk_ ck = ResManager.getChunk(player.entity);
+					District dis = ck.district;
+					for(MailType type : MailType.values()){
+						Mail mail = new Mail();
+						mail.expiry = Time.getDate() + Time.DAY_MS;
+						mail.from = Layers.NONE;
+						mail.fromid = "SYSTEM";
+						mail.receiver = dis.getLayer() + "_" + dis.id;
+						mail.unread = true;
+						mail.title = "Bulk mail from /ld bulkmail";
+						mail.message.add("Example Mail Text 1");
+						mail.message.add("Example Mail Text 2");
+						mail.message.add("Example Mail Text 3");
+						mail.message.add("Example Mail Text 4");
+						mail.type = type;
+						dis.mail.mails.add(mail);
+					}*/
+					for(MailType type : MailType.values()){
+						Mail mail = new Mail();
+						mail.expiry = Time.getDate() + Time.DAY_MS;
+						mail.from = Layers.NONE;
+						mail.fromid = "SYSTEM";
+						mail.receiver = Layers.PLAYER + "_" + player.uuid;
+						mail.unread = true;
+						mail.title = "Bulk mail from /ld bulkmail";
+						mail.message.add("Example Mail Text 1");
+						mail.message.add("Example Mail Text 2");
+						mail.message.add("Example Mail Text 3");
+						mail.message.add("Example Mail Text 4");
+						mail.type = type;
+						mail.staff = type == MailType.INVITE;
+						player.mail.mails.add(mail);
+					}
+					return;
+				}
     			case "help":
     			default:{
 	        		Print.chat(sender, "&0[&bLD&0]&6>>&2===========");
