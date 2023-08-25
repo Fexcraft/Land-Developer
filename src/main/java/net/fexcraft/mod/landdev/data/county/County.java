@@ -31,7 +31,7 @@ public class County implements Saveable, Layer {
 	public IconHolder icon = new IconHolder();
 	public ColorData color = new ColorData();
 	public NeighborData neighbors = new NeighborData();
-	public MailData mail = new MailData();
+	public MailData mail;
 	public Manageable manage = new Manageable(true, mactions);
 	public Norms norms = new Norms();
 	public ArrayList<Integer> districts = new ArrayList<>();
@@ -42,6 +42,7 @@ public class County implements Saveable, Layer {
 	
 	public County(int id){
 		this.id = id;
+		mail = new MailData(getLayer(), id);
 		account = DataManager.getAccount("county:" + id, false, true);
 		norms.add(new StringNorm("name", translate("county.norm.name")));
 		norms.add(new BoolNorm("new-municipalities", false));
