@@ -24,7 +24,7 @@ public class State implements Saveable, Layer {
 	public IconHolder icon = new IconHolder();
 	public ColorData color = new ColorData();
 	public NeighborData neighbors = new NeighborData();
-	public MailData mail = new MailData();
+	public MailData mail;
 	public Manageable manage = new Manageable(true, actions);
 	public Norms norms = new Norms();
 	public ArrayList<Integer> counties = new ArrayList<>();
@@ -32,6 +32,7 @@ public class State implements Saveable, Layer {
 	
 	public State(int id){
 		this.id = id;
+		mail = new MailData(getLayer(), id);
 		account = DataManager.getAccount("state:" + id, false, true);
 		norms.add(new StringNorm("name", translate("state.norm.name")));
 		manage.norms.add(new BoolNorm("finances_use", false));
