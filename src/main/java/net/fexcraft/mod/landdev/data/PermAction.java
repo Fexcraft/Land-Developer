@@ -1,22 +1,73 @@
 package net.fexcraft.mod.landdev.data;
 
 public enum PermAction {
-	
-	ACT_CLAIM("claim"),
-	ACT_CREATE_LAYER("create_layer"),
-	ACT_MANAGE_DISTRICT("manage_district"),
-	ACT_MANAGE_MAIL("manage_mail"),
-	ACT_SET_TAX_CHUNK("set_tax_chunk"),
-	ACT_SET_TAX_CHUNK_CUSTOM("set_tax_chunk_custom"),
-	ACT_SET_TAX_PLAYER("set_tax_player"),
-	ACT_USE_FINANCES("finances_use"),
-	ACT_MANAGE_FINANCES("finances_manage"),
+
+	CHUNK_CLAIM,
+	CHUNK_TAX,
+	CHUNK_CUSTOMTAX,
+	CREATE_MUNICIPALITY,
+	CREATE_DISTRICT,
+	CREATE_COUNTY,
+	CREATE_STATE,
+	DISTRICT_MANAGE,
+	MAIL_READ,
+	MAIL_DELETE,
+	PLAYER_TAX,
+	FINANCES_USE,
+	FINANCES_MANAGE,
 	;
-	
-	public final String norm;
-	
-	PermAction(String normid){
-		norm = normid;
+
+	public static PermActions DISTRICT_ACTIONS = new PermActions(
+		CHUNK_CLAIM,
+		CHUNK_TAX,
+		CHUNK_CUSTOMTAX,
+		MAIL_READ,
+		MAIL_DELETE
+	);
+	public static PermActions MUNICIPALITY_STAFF = new PermActions(
+		CHUNK_CLAIM,
+		CHUNK_TAX,
+		CHUNK_CUSTOMTAX,
+		PLAYER_TAX,
+		FINANCES_USE,
+		FINANCES_MANAGE,
+		MAIL_READ,
+		MAIL_DELETE,
+		CREATE_DISTRICT
+	);
+	public static PermActions MUNICIPALITY_CITIZEN = new PermActions(CHUNK_CLAIM);
+	public static PermActions COUNTY_STAFF = new PermActions(
+		CHUNK_CLAIM,
+		CHUNK_TAX,
+		CHUNK_CUSTOMTAX,
+		PLAYER_TAX,
+		FINANCES_USE,
+		FINANCES_MANAGE,
+		MAIL_READ,
+		MAIL_DELETE
+	);
+	public static PermActions COUNTY_CITIZEN = new PermActions(
+		CHUNK_CLAIM,
+		CREATE_MUNICIPALITY
+	);
+	public static PermActions STATE_STAFF = new PermActions(
+		CHUNK_CLAIM,
+		FINANCES_USE,
+		FINANCES_MANAGE,
+		MAIL_READ,
+		MAIL_DELETE
+	);
+	public static PermActions STATE_CITIZEN = new PermActions(
+		CHUNK_CLAIM,
+		CREATE_COUNTY,
+		CREATE_STATE
+	);
+
+	public static PermAction get(String key){
+		for(PermAction act : values()){
+			if(act.name().equals(key)) return act;
+		}
+		return null;
 	}
 
 	public static class PermActions {
