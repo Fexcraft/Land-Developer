@@ -2,6 +2,8 @@ package net.fexcraft.mod.landdev.data.chunk;
 
 import static net.fexcraft.lib.common.math.Time.getAsString;
 import static net.fexcraft.mod.fsmm.util.Config.getWorthAsString;
+import static net.fexcraft.mod.landdev.data.PermAction.CHUNK_CUSTOMTAX;
+import static net.fexcraft.mod.landdev.data.PermAction.DISTRICT_MANAGE;
 import static net.fexcraft.mod.landdev.gui.GuiHandler.DISTRICT;
 import static net.fexcraft.mod.landdev.gui.LDGuiElementType.*;
 
@@ -16,7 +18,6 @@ import net.fexcraft.mod.fsmm.util.DataManager;
 import net.fexcraft.mod.landdev.data.Createable;
 import net.fexcraft.mod.landdev.data.Layer;
 import net.fexcraft.mod.landdev.data.Layers;
-import net.fexcraft.mod.landdev.data.PermAction;
 import net.fexcraft.mod.landdev.data.Saveable;
 import net.fexcraft.mod.landdev.data.Sellable;
 import net.fexcraft.mod.landdev.data.Taxable;
@@ -107,7 +108,7 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 		if(player.adm) return true;
 		UUID uuid = player.uuid;
 		if(owner.playerchunk && owner.player.equals(uuid)) return true;
-		else if(owner.owner.is(Layers.DISTRICT) && district.can(PermAction.ACT_MANAGE_DISTRICT, uuid)) return true;
+		else if(owner.owner.is(Layers.DISTRICT) && district.can(DISTRICT_MANAGE, uuid)) return true;
 		else if(owner.owner.is(Layers.MUNICIPALITY) && district.owner.manageable().isManager(uuid)) return true;
 		//TODO
 		return false;
@@ -233,7 +234,7 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 			resp.setFormular();
 			break;
 		case UI_TAX:
-			boolean bool = district.can(PermAction.ACT_SET_TAX_CHUNK_CUSTOM, container.player.uuid) || container.player.adm;
+			boolean bool = district.can(CHUNK_CUSTOMTAX, container.player.uuid) || container.player.adm;
 			resp.setTitle("chunk.tax.title");
 			resp.addRow("tax.info0", ELM_YELLOW, ICON_BLANK);
 			resp.addRow("tax.info1", ELM_YELLOW, ICON_BLANK);
@@ -424,7 +425,7 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 				return;
 			}
 			case "set_tax.submit":{
-				if(!district.can(PermAction.ACT_SET_TAX_CHUNK_CUSTOM, container.player.uuid) && !container.player.adm) return;
+				if(!district.can(CHUNK_CUSTOMTAX, container.player.uuid) && !container.player.adm) return;
 				String val = req.getField("set_tax.field");
 				String[] err = new String[]{ "" };
 				long value = Settings.format_price(err, val);
