@@ -1,5 +1,7 @@
 package net.fexcraft.mod.landdev.gui.modules;
 
+import static net.fexcraft.mod.landdev.data.PermAction.MAIL_DELETE;
+import static net.fexcraft.mod.landdev.data.PermAction.MAIL_READ;
 import static net.fexcraft.mod.landdev.gui.LDGuiElementType.*;
 
 import net.fexcraft.lib.common.math.Time;
@@ -7,7 +9,6 @@ import net.fexcraft.mod.landdev.data.Layers;
 import net.fexcraft.mod.landdev.data.Mail;
 import net.fexcraft.mod.landdev.data.MailData;
 import net.fexcraft.mod.landdev.data.MailType;
-import net.fexcraft.mod.landdev.data.PermAction;
 import net.fexcraft.mod.landdev.data.county.County;
 import net.fexcraft.mod.landdev.data.district.District;
 import net.fexcraft.mod.landdev.data.municipality.Municipality;
@@ -77,34 +78,62 @@ public class MailModule implements LDGuiModule {
 			case PLAYER: return player.mail;
 			case DISTRICT: {
 				District dis = ResManager.getDistrict(y, false);
-				if(player.adm || dis.can(PermAction.ACT_MANAGE_MAIL, player.uuid)){
+				if(player.adm || dis.can(MAIL_READ, player.uuid)){
 					return dis.mail;
 				}
 				break;
 			}
 			case MUNICIPALITY:{
 				Municipality mun = ResManager.getMunicipality(y, false);
-				if(player.adm || mun.manage.can(PermAction.ACT_MANAGE_MAIL, player.uuid)){
+				if(player.adm || mun.manage.can(MAIL_READ, player.uuid)){
 					return mun.mail;
 				}
 				break;
 			}
 			case COUNTY:{
 				County con = ResManager.getCounty(y, false);
-				if(player.adm || con.manage.can(PermAction.ACT_MANAGE_MAIL, player.uuid)){
+				if(player.adm || con.manage.can(MAIL_READ, player.uuid)){
 					return con.mail;
 				}
 				break;
 			}
 			case STATE:{
 				State st = ResManager.getState(y, false);
-				if(player.adm || st.manage.can(PermAction.ACT_MANAGE_MAIL, player.uuid)){
+				if(player.adm || st.manage.can(MAIL_READ, player.uuid)){
 					return st.mail;
 				}
 				break;
 			}
 		}
 		return null;
+	}
+
+	public static boolean canDelete(Player player, int x, int y){
+		Layers lay = Layers.values()[x];
+		switch(lay){
+			case PLAYER: return true;
+			case DISTRICT: {
+				District dis = ResManager.getDistrict(y, false);
+				if(player.adm || dis.can(MAIL_DELETE, player.uuid)) return true;
+				break;
+			}
+			case MUNICIPALITY:{
+				Municipality mun = ResManager.getMunicipality(y, false);
+				if(player.adm || mun.manage.can(MAIL_DELETE, player.uuid)) return true;
+				break;
+			}
+			case COUNTY:{
+				County con = ResManager.getCounty(y, false);
+				if(player.adm || con.manage.can(MAIL_DELETE, player.uuid)) return true;
+				break;
+			}
+			case STATE:{
+				State st = ResManager.getState(y, false);
+				if(player.adm || st.manage.can(MAIL_DELETE, player.uuid)) return true;
+				break;
+			}
+		}
+		return false;
 	}
 
 }
