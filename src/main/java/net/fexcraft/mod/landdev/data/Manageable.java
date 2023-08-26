@@ -6,7 +6,6 @@ import java.util.UUID;
 
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.mod.landdev.data.PermAction.PermActions;
-import net.fexcraft.mod.landdev.data.norm.Norm;
 import net.fexcraft.mod.landdev.data.player.Player;
 import net.fexcraft.mod.landdev.util.ResManager;
 
@@ -42,7 +41,7 @@ public class Manageable implements Saveable, PermInteractive {
 		if(staff != null && map.has("staff")){
 			staff.clear();
 			map.getMap("staff").value.forEach((key, val) -> {
-				Staff stf = new Staff(UUID.fromString(key), norms);
+				Staff stf = new Staff(UUID.fromString(key), actions);
 				stf.load(val.asMap());
 				staff.put(stf.uuid, stf);
 			});
@@ -59,30 +58,29 @@ public class Manageable implements Saveable, PermInteractive {
 	
 	public static class Staff implements Saveable {
 		
-		protected HashMap<String, Norm> norms = new HashMap<>();
+		protected HashMap<PermAction, Boolean> actions = new HashMap<>();
 		protected UUID uuid;
 		
-		public Staff(UUID uiid, Norms nerms){
+		public Staff(UUID uiid, PermActions pacts){
 			uuid = uiid;
-			nerms.norms.forEach((key, norm) -> norms.put(key, norm.copy()));
+			for(PermAction action : pacts.actions){
+				actions.put(action, true);
+			}
 		}
 
 		@Override
 		public void save(JsonMap map){
-			norms.forEach((key, val) -> map.add(key, val.save()));
+			actions.forEach((key, val) -> map.add(key.name(), val));
 		}
 		
 		@Override
 		public void load(JsonMap map){
 			map.entries().forEach(entry -> {
-				Norm norm = norms.get(entry.getKey());
-				if(norm != null) norm.load(entry.getValue());
+				PermAction act = PermAction.get(entry.getKey());
+				if(actions.containsKey(act)){
+					actions.put(act, entry.getValue().bool());
+				}
 			});
-		}
-
-		public boolean isNormTrue(String key){
-			Norm norm = norms.get(key);
-			return norm != null && norm.bool();
 		}
 		
 	}
@@ -92,7 +90,7 @@ public class Manageable implements Saveable, PermInteractive {
 		if(!actions.isValid(act)) return false;
 		if(manager != null && manager.equals(uuid)) return true;
 		Staff sta = staff.get(uuid);
-		return sta != null && sta.norms.get(act.norm).bool();
+		return sta != null && sta.actions.get(act);
 	}
 
 	@Override
@@ -101,7 +99,7 @@ public class Manageable implements Saveable, PermInteractive {
 			if(!actions.isValid(act)) continue;
 			if(manager != null && manager.equals(uuid)) return true;
 			Staff sta = staff.get(uuid);
-			if(sta != null && sta.norms.get(act.norm).bool()) return true;
+			if(sta != null && sta.actions.get(act)) return true;
 		}
 		return false;
 	}
@@ -113,7 +111,7 @@ public class Manageable implements Saveable, PermInteractive {
 
 	public void add(Player player){
 		if(staff == null) return;
-		staff.put(player.uuid, new Staff(player.uuid, norms));
+		staff.put(player.uuid, new Staff(player.uuid, actions));
 	}
 
 	public void setManager(Player player){
@@ -135,6 +133,10 @@ public class Manageable implements Saveable, PermInteractive {
 
 	public void setNoManager(){
 		manager = null;
+	}
+
+	public PermAction[] actions(){
+		return actions.actions;
 	}
 
 }
