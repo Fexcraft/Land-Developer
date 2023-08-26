@@ -37,8 +37,6 @@ import net.minecraft.nbt.NBTTagList;
 
 public class Municipality implements Saveable, Layer, LDGuiModule {
 
-	public static PermActions mactions = new PermActions(ACT_CLAIM, ACT_SET_TAX_CHUNK, ACT_SET_TAX_CHUNK_CUSTOM, ACT_SET_TAX_PLAYER, ACT_USE_FINANCES, ACT_MANAGE_FINANCES, ACT_MANAGE_MAIL);
-	public static PermActions cactions = new PermActions();
 	public final int id;
 	public Createable created = new Createable();
 	public Sellable sell = new Sellable(this);
@@ -46,10 +44,10 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 	public ColorData color = new ColorData();
 	public NeighborData neighbors = new NeighborData();
 	public MailData mail;
-	public Manageable manage = new Manageable(true, mactions);
+	public Manageable manage = new Manageable(true, MUNICIPALITY_STAFF);
 	public Norms norms = new Norms();
 	public ArrayList<Integer> districts = new ArrayList<>();
-	public Citizens citizens = new Citizens(cactions);
+	public Citizens citizens = new Citizens(MUNICIPALITY_CITIZEN);
 	public Account account;
 	public County county;
 	
@@ -158,7 +156,7 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 			Chunk_ chunk = ResManager.getChunk(container.player.entity);
     		County county = chunk.district.county();
     		boolean cn = county.norms.get("new-municipalities").bool();
-    		boolean pp = container.player.hasPermit(ACT_CREATE_LAYER, county.getLayer(), county.id);
+    		boolean pp = container.player.hasPermit(CREATE_MUNICIPALITY, county.getLayer(), county.id);
     		if(!cn && !pp){
     			resp.addRow("create.no_perm", ELM_GENERIC, ICON_BLANK);
     			break;
@@ -183,7 +181,7 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 				County county = chunk.district.county();
 				long sum = Settings.MUNICIPALITY_CREATION_FEE;
     			boolean cn = county.norms.get("new-municipalities").bool();
-    			boolean pp = player.hasPermit(ACT_CREATE_LAYER, county.getLayer(), county.id);
+    			boolean pp = player.hasPermit(CREATE_MUNICIPALITY, county.getLayer(), county.id);
     			if(!cn && !pp){
 	    			Print.chat(player.entity, translateCmd("mun.no_new_municipalities"));
 	    			Print.chat(player.entity, translateCmd("mun.no_create_permit"));
@@ -206,7 +204,7 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
     			if(!validateName(container, name)) return;
 				boolean uca = req.getCheck("create.county_funded");
 				if(!pp && !uca) sum += county.norms.get("new-municipality-fee").integer(); 
-				Permit perm = pp ? player.getPermit(ACT_CREATE_LAYER, county.getLayer(), county.id) : null;
+				Permit perm = pp ? player.getPermit(CREATE_MUNICIPALITY, county.getLayer(), county.id) : null;
 				if(!pp && uca){
 					container.sendMsg("create.no_fund_permit");
 					return;
