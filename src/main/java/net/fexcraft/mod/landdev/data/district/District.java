@@ -29,8 +29,7 @@ import net.fexcraft.mod.landdev.util.Settings;
 import net.fexcraft.mod.landdev.util.TranslationUtil;
 
 public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
-	
-	public static PermActions actions = new PermActions(ACT_CLAIM, ACT_SET_TAX_CHUNK_CUSTOM, ACT_MANAGE_MAIL);
+
 	public final int id;
 	public Createable created = new Createable();
 	public Sellable sell = new Sellable(this);
@@ -39,7 +38,7 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 	public NeighborData neighbors = new NeighborData();
 	public MailData mail;
 	public DistrictType type = DistrictType.getDefault();;
-	public Manageable manage = new Manageable(false, actions);
+	public Manageable manage = new Manageable(false, DISTRICT_ACTIONS);
 	public Norms norms = new Norms();
 	public DistrictOwner owner = new DistrictOwner();
 	public long chunks;
@@ -139,17 +138,9 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 	@Override
 	public boolean can(PermAction act, UUID uuid){
 		boolean man = manage.isManager(uuid);
-		if(act == ACT_CLAIM){
-			return man || owner.manageable().can(act, uuid);
-		}
-		if(act == ACT_MANAGE_DISTRICT){
-			return man || owner.manageable().can(act, uuid);
-		}
-		if(act == ACT_MANAGE_MAIL){
-			return man || owner.manageable().can(act, uuid);
-		}
-		if(act == ACT_SET_TAX_CHUNK_CUSTOM){
-			return man || owner.manageable().can(act, uuid);
+		for(PermAction action : manage.actions()){
+			if(action != act) continue;
+			if(man || owner.manageable().can(act, uuid)) return true;
 		}
 		return false;
 	}
@@ -184,7 +175,7 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 		if(layer.is(Layers.PLAYER)) return player.account;
 		boolean dis = layer.is(Layers.DISTRICT);
 		if((dis && !owner.is_county) || layer.is(Layers.MUNICIPALITY)){
-			if(!owner.municipality.manage.can(player.uuid, ACT_USE_FINANCES, ACT_MANAGE_FINANCES)){
+			if(!owner.municipality.manage.can(player.uuid, FINANCES_USE, FINANCES_MANAGE)){
 				if(container == null) Print.chat(player.entity, TranslationUtil.translateCmd("account.noperm.municipality"));
 				else container.sendMsg("landdev.cmd.account.noperm.municipality", false);
 				return null;
@@ -192,7 +183,7 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 			return owner.municipality.account;
 		}
 		if((dis && owner.is_county) || layer.is(Layers.COUNTY)){
-			if(!county().manage.can(player.uuid, ACT_USE_FINANCES, ACT_MANAGE_FINANCES)){
+			if(!county().manage.can(player.uuid, FINANCES_USE, FINANCES_MANAGE)){
 				if(container == null) Print.chat(player.entity, TranslationUtil.translateCmd("account.noperm.county"));
 				else container.sendMsg("landdev.cmd.account.noperm.county", false);
 				return null;
@@ -200,7 +191,7 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 			return county().account;
 		}
 		if(layer.is(Layers.STATE)){
-			if(!state().manage.can(player.uuid, ACT_USE_FINANCES, ACT_MANAGE_FINANCES)){
+			if(!state().manage.can(player.uuid, FINANCES_USE, FINANCES_MANAGE)){
 				if(container == null) Print.chat(player.entity, TranslationUtil.translateCmd("account.noperm.state"));
 				else container.sendMsg("landdev.cmd.account.noperm.state", false);
 				return null;
@@ -225,8 +216,8 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 	@Override
 	public void sync_packet(LDGuiContainer container, ModuleResponse resp){
 		resp.setTitle("district.title");
-		boolean canman = can(ACT_MANAGE_DISTRICT, container.player.uuid) || container.player.adm;
-		boolean canoman = owner.manageable().can(ACT_MANAGE_DISTRICT, container.player.uuid) || container.player.adm;
+		boolean canman = can(DISTRICT_MANAGE, container.player.uuid) || container.player.adm;
+		boolean canoman = owner.manageable().can(DISTRICT_MANAGE, container.player.uuid) || container.player.adm;
 		switch(container.x){
 		case UI_MAIN:
 			resp.addRow("id", ELM_GENERIC, id);
@@ -316,8 +307,8 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 
 	@Override
 	public void on_interact(LDGuiContainer container, ModuleRequest req){
-		boolean canman = can(ACT_MANAGE_DISTRICT, container.player.uuid) || container.player.adm;
-		boolean canoman = owner.manageable().can(ACT_MANAGE_DISTRICT, container.player.uuid) || container.player.adm;
+		boolean canman = can(DISTRICT_MANAGE, container.player.uuid) || container.player.adm;
+		boolean canoman = owner.manageable().can(DISTRICT_MANAGE, container.player.uuid) || container.player.adm;
 		switch(req.event()){
 			case "name": container.open(UI_NAME); return;
 			case "type": container.open(UI_TYPE); return;
