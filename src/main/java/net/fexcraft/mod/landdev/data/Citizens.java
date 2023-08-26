@@ -6,14 +6,12 @@ import java.util.UUID;
 
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.mod.landdev.data.PermAction.PermActions;
-import net.fexcraft.mod.landdev.data.norm.Norm;
 import net.fexcraft.mod.landdev.data.player.Player;
 
 public class Citizens implements Saveable, PermInteractive {
 	
 	protected TreeMap<UUID, Citizen> citizens = new TreeMap<>();
 	protected PermActions actions;
-	public Norms norms = new Norms();
 	
 	public Citizens(PermActions actions){
 		this.actions = actions;
@@ -34,7 +32,7 @@ public class Citizens implements Saveable, PermInteractive {
 		if(!map.has("citizen")) return;
 		citizens.clear();
 		map.getMap("citizen").value.forEach((key, val) -> {
-			Citizen cit = new Citizen(UUID.fromString(key), norms);
+			Citizen cit = new Citizen(UUID.fromString(key), actions);
 			cit.load(val.asMap());
 			citizens.put(cit.uuid, cit);
 		});
@@ -46,30 +44,29 @@ public class Citizens implements Saveable, PermInteractive {
 	
 	public static class Citizen implements Saveable {
 		
-		protected HashMap<String, Norm> norms = new HashMap<>();
+		protected HashMap<PermAction, Boolean> actions = new HashMap<>();
 		protected UUID uuid;
 		
-		public Citizen(UUID uiid, Norms nerms){
+		public Citizen(UUID uiid, PermActions pacts){
 			uuid = uiid;
-			nerms.norms.forEach((key, norm) -> norms.put(key, norm.copy()));
+			for(PermAction action : pacts.actions){
+				actions.put(action, false);
+			}
 		}
 
 		@Override
 		public void save(JsonMap map){
-			norms.forEach((key, val) -> map.add(key, val.save()));
+			actions.forEach((key, val) -> map.add(key.name(), val));
 		}
 		
 		@Override
 		public void load(JsonMap map){
 			map.entries().forEach(entry -> {
-				Norm norm = norms.get(entry.getKey());
-				if(norm != null) norm.load(entry.getValue());
+				PermAction act = PermAction.get(entry.getKey());
+				if(actions.containsKey(act)){
+					actions.put(act, entry.getValue().bool());
+				}
 			});
-		}
-
-		public boolean isNormTrue(String key){
-			Norm norm = norms.get(key);
-			return norm != null && norm.bool();
 		}
 		
 	}
@@ -78,7 +75,7 @@ public class Citizens implements Saveable, PermInteractive {
 	public boolean can(PermAction act, UUID uuid){
 		if(!actions.isValid(act)) return false;
 		Citizen cit = citizens.get(uuid);
-		return cit.norms.get(act.norm).bool();
+		return cit.actions.get(act);
 	}
 
 	@Override
@@ -86,7 +83,7 @@ public class Citizens implements Saveable, PermInteractive {
 		for(PermAction act : acts){
 			if(!actions.isValid(act)) continue;
 			Citizen cit = citizens.get(uuid);
-			if(cit.norms.get(act.norm).bool()) return true;
+			if(cit.actions.get(act)) return true;
 		}
 		return false;
 	}
@@ -96,7 +93,7 @@ public class Citizens implements Saveable, PermInteractive {
 	}
 
 	public void add(Player player){
-		citizens.put(player.uuid, new Citizen(player.uuid, norms));
+		citizens.put(player.uuid, new Citizen(player.uuid, actions));
 	}
 
 }
