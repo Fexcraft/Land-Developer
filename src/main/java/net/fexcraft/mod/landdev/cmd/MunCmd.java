@@ -1,6 +1,6 @@
 package net.fexcraft.mod.landdev.cmd;
 
-import static net.fexcraft.mod.landdev.data.PermAction.ACT_CREATE_LAYER;
+import static net.fexcraft.mod.landdev.data.PermAction.CREATE_MUNICIPALITY;
 import static net.fexcraft.mod.landdev.util.TranslationUtil.translateCmd;
 
 import java.util.List;
@@ -53,7 +53,7 @@ public class MunCmd extends CommandBase {
 	    		case "create":{
 	    			County county = chunk.district.county();
 	    			boolean cn = county.norms.get("new-municipalities").bool();
-	    			boolean pp = ply.hasPermit(ACT_CREATE_LAYER, county.getLayer(), county.id);
+	    			boolean pp = ply.hasPermit(CREATE_MUNICIPALITY, county.getLayer(), county.id);
 	    			if(!cn && !pp){
 		    			Print.chat(sender, translateCmd("mun.no_new_municipalities"));
 		    			Print.chat(sender, translateCmd("mun.no_create_permit"));
