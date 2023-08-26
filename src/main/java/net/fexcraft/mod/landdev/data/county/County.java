@@ -1,6 +1,7 @@
 package net.fexcraft.mod.landdev.data.county;
 
-import static net.fexcraft.mod.landdev.data.PermAction.*;
+import static net.fexcraft.mod.landdev.data.PermAction.COUNTY_CITIZEN;
+import static net.fexcraft.mod.landdev.data.PermAction.COUNTY_STAFF;
 import static net.fexcraft.mod.landdev.util.TranslationUtil.translate;
 
 import java.util.ArrayList;
@@ -10,7 +11,6 @@ import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.mod.fsmm.api.Account;
 import net.fexcraft.mod.fsmm.util.DataManager;
 import net.fexcraft.mod.landdev.data.*;
-import net.fexcraft.mod.landdev.data.PermAction.PermActions;
 import net.fexcraft.mod.landdev.data.norm.BoolNorm;
 import net.fexcraft.mod.landdev.data.norm.IntegerNorm;
 import net.fexcraft.mod.landdev.data.norm.StringNorm;
@@ -19,8 +19,6 @@ import net.fexcraft.mod.landdev.util.ResManager;
 
 public class County implements Saveable, Layer {
 
-	public static PermActions mactions = new PermActions(ACT_CLAIM, ACT_SET_TAX_CHUNK, ACT_SET_TAX_PLAYER, ACT_USE_FINANCES, ACT_MANAGE_FINANCES, ACT_MANAGE_MAIL);
-	public static PermActions cactions = new PermActions(ACT_CLAIM);
 	public final int id;
 	public Createable created = new Createable();
 	public Sellable sell = new Sellable(this);
@@ -28,11 +26,11 @@ public class County implements Saveable, Layer {
 	public ColorData color = new ColorData();
 	public NeighborData neighbors = new NeighborData();
 	public MailData mail;
-	public Manageable manage = new Manageable(true, mactions);
+	public Manageable manage = new Manageable(true, COUNTY_STAFF);
 	public Norms norms = new Norms();
 	public ArrayList<Integer> districts = new ArrayList<>();
 	public ArrayList<Integer> municipalities = new ArrayList<>();
-	public Citizens citizens = new Citizens(cactions);
+	public Citizens citizens = new Citizens(COUNTY_CITIZEN);
 	public Account account;
 	public State state;
 	
