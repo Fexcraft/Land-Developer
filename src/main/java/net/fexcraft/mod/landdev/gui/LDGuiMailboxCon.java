@@ -21,14 +21,16 @@ public class LDGuiMailboxCon extends GenericContainer {
 	public final int x, y, z;
 	@SideOnly(Side.CLIENT)
 	public LDGuiMailbox gui;
+	private Player ldplayer;
 
 	public LDGuiMailboxCon(EntityPlayer entity, int x, int y, int z){
 		super(entity);
 		this.x = x;
 		this.y = y;
 		this.z = z;
-		Player player = ResManager.getPlayer(entity);
-		mailbox = MailModule.getMailbox(player, x, y);
+		if(entity.world.isRemote) return;
+		ldplayer = ResManager.getPlayer(entity);
+		mailbox = MailModule.getMailbox(ldplayer, x, y);
 	}
 
 	@Override
@@ -44,6 +46,7 @@ public class LDGuiMailboxCon extends GenericContainer {
 				return;
 			}
 			else if(packet.hasKey("delete")){
+				if(!MailModule.canDelete(ldplayer, x, y)) return;
 				mailbox.mails.remove(packet.getInteger("delete"));
 				sendSync();
 				return;
