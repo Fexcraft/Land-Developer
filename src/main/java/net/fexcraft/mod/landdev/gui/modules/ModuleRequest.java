@@ -13,8 +13,8 @@ public class ModuleRequest {
 	private String event;
 
 	public ModuleRequest(NBTTagCompound packet){
-		compound = new NBTTagCompound();
 		event = packet.getString("interact");
+		compound = packet;
 	}
 
 	public NBTTagCompound getCompound(){
