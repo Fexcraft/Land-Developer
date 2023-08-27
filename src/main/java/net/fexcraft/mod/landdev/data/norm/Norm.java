@@ -28,4 +28,6 @@ public abstract class Norm {
 	
 	public abstract Norm copy();
 
+	public void toggle(){}
+
 }
