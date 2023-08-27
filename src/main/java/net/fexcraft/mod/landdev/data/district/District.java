@@ -1,11 +1,15 @@
 package net.fexcraft.mod.landdev.data.district;
 
 import static net.fexcraft.mod.fsmm.util.Config.getWorthAsString;
-import static net.fexcraft.mod.landdev.data.PermAction.*;
+import static net.fexcraft.mod.landdev.data.PermAction.DISTRICT_ACTIONS;
+import static net.fexcraft.mod.landdev.data.PermAction.DISTRICT_MANAGE;
+import static net.fexcraft.mod.landdev.data.PermAction.FINANCES_MANAGE;
+import static net.fexcraft.mod.landdev.data.PermAction.FINANCES_USE;
 import static net.fexcraft.mod.landdev.gui.GuiHandler.MAILBOX;
 import static net.fexcraft.mod.landdev.gui.LDGuiElementType.*;
 import static net.fexcraft.mod.landdev.util.TranslationUtil.translate;
 
+import java.util.Map.Entry;
 import java.util.UUID;
 
 import net.fexcraft.app.json.JsonMap;
@@ -16,11 +20,13 @@ import net.fexcraft.mod.landdev.data.county.County;
 import net.fexcraft.mod.landdev.data.municipality.Municipality;
 import net.fexcraft.mod.landdev.data.norm.BoolNorm;
 import net.fexcraft.mod.landdev.data.norm.IntegerNorm;
+import net.fexcraft.mod.landdev.data.norm.Norm;
 import net.fexcraft.mod.landdev.data.norm.StringNorm;
 import net.fexcraft.mod.landdev.data.player.Player;
 import net.fexcraft.mod.landdev.data.state.State;
 import net.fexcraft.mod.landdev.gui.GuiHandler;
 import net.fexcraft.mod.landdev.gui.LDGuiContainer;
+import net.fexcraft.mod.landdev.gui.LDGuiElementType;
 import net.fexcraft.mod.landdev.gui.modules.LDGuiModule;
 import net.fexcraft.mod.landdev.gui.modules.ModuleRequest;
 import net.fexcraft.mod.landdev.gui.modules.ModuleResponse;
@@ -208,8 +214,8 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 		UI_PRICE = 4,
 		UI_MANAGER = 5,
 		UI_SET_PRICE = 6,
-		UI_MAILBOX = 7,
-		UI_NORMS = 8,
+		UI_NORMS = 7,
+		UI_NORM_EDIT = 8,
 		UI_APPREARANCE = 9
 		;
 
@@ -219,89 +225,119 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 		boolean canman = can(DISTRICT_MANAGE, container.player.uuid) || container.player.adm;
 		boolean canoman = owner.manageable().can(DISTRICT_MANAGE, container.player.uuid) || container.player.adm;
 		switch(container.x){
-		case UI_MAIN:
-			resp.addRow("id", ELM_GENERIC, id);
-			if(canman){
-				resp.addButton("name", ELM_GENERIC, ICON_OPEN, name());
-				resp.addButton("type", ELM_GENERIC, ICON_OPEN, type.name());
-			}
-			else{
-				resp.addRow("name", ELM_GENERIC, ICON_EMPTY, name());
-				resp.addRow("type", ELM_GENERIC, ICON_EMPTY, type.name());
-			}
-			resp.addButton("owner", ELM_GENERIC, ICON_OPEN, owner.name());
-			if(canoman || manage.hasManager()){
-				resp.addRow("manager", ELM_GENERIC, canoman ? ICON_OPEN : ICON_EMPTY, canoman, manage.getManagerName());
-			}
-			resp.addBlank();
-			if(sell.price > 0){
-				resp.addButton("price", ELM_GENERIC, ICON_OPEN, sell.price_formatted());
-			}
-			if(canman){
-				resp.addButton("set_price", ELM_GENERIC, ICON_OPEN);
-			}
-			if(sell.price > 0) resp.addBlank();
-			resp.addRow("chunk_tax", ELM_GENERIC, getWorthAsString(tax()));
-			if(id >= 0) resp.addRow("chunks", ELM_GENERIC, chunks);
-			if(canman){
-				resp.addButton("mailbox", ELM_GENERIC, ICON_OPEN, mail.unread());
-			}
-			resp.addButton("norms", ELM_GREEN, ICON_OPEN);
-			resp.addButton("appearance", ELM_YELLOW, ICON_OPEN);
-			break;
-		case UI_NAME:
-			resp.setTitle("district.name.title");
-			resp.addRow("id", ELM_GENERIC, id);
-			resp.addRow("name.current", ELM_GENERIC, name());
-			resp.addField("name.field", name());
-			resp.addButton("name.submit", ELM_GENERIC, ICON_OPEN);
-			resp.setFormular();
-			break;
-		case UI_TYPE:
-			resp.setTitle("district.type.title");
-			for(DistrictType dtp : DistrictType.TYPES.values()){
-				resp.addRadio("type." + dtp.id(), ELM_BLUE, dtp == type, resp.val(dtp.name()));
-			}
-			resp.addButton("type.submit", ELM_GENERIC, ICON_OPEN);
-			resp.setFormular();
-			break;
-		case UI_MANAGER:
-			resp.setTitle("district.manager.title");
-			resp.addRow("manager.current", ELM_GENERIC, ICON_BLANK, manage.getManagerName());
-			resp.addField("manager.field", manage.getManagerName());
-			resp.addButton("manager.submit", ELM_GENERIC, manage.hasManager() ? ICON_OPEN : ICON_ADD);
-			if(manage.hasManager()) resp.addButton("manager.remove", ELM_GENERIC, ICON_REM);
-			resp.setFormular();
-			break;
-		case UI_PRICE:
-			resp.setTitle("district.buy.title");
-			resp.addRow("id", ELM_GENERIC, ICON_BLANK, id);
-			resp.addRow("buy.info", ELM_YELLOW, ICON_BLANK, null);
-			if(owner.is_county) resp.addButton("buy.this_municipality", ELM_BLUE, ICON_RADIOBOX_CHECKED);
-			else resp.addButton("buy.this_county", ELM_BLUE, ICON_RADIOBOX_CHECKED);
-			resp.addButton("buy.other_municipality", ELM_BLUE, ICON_RADIOBOX_UNCHECKED);
-			resp.addButton("buy.other_county", ELM_BLUE, ICON_RADIOBOX_UNCHECKED);
-			resp.addButton("buy.payer", ELM_GENERIC, ICON_CHECKBOX_UNCHECKED);
-			resp.addButton("buy.submit", ELM_GENERIC, ICON_OPEN);
-			resp.setFormular();
-			break;
-		case UI_SET_PRICE:
-			resp.setTitle("district.set_price.title");
-			resp.addRow("id", ELM_GENERIC, ICON_BLANK, id);
-			resp.addField("set_price.field");
-			resp.addButton("set_price.submit", ELM_GENERIC, ICON_OPEN);
-			resp.setFormular();
-			break;
-		case UI_APPREARANCE:
-			resp.addRow("appearance.icon", ELM_GENERIC);
-			resp.addField("appearance.icon_field", icon.getn());
-			resp.addRow("appearance.color", ELM_GENERIC);
-			resp.addField("appearance.color_field", color.getString());
-			if(canman){
-				resp.addRow("appearance.submit", ELM_GENERIC, ICON_OPEN);
+			case UI_MAIN:
+				resp.addRow("id", ELM_GENERIC, id);
+				if(canman){
+					resp.addButton("name", ELM_GENERIC, ICON_OPEN, name());
+					resp.addButton("type", ELM_GENERIC, ICON_OPEN, type.name());
+				}
+				else{
+					resp.addRow("name", ELM_GENERIC, ICON_EMPTY, name());
+					resp.addRow("type", ELM_GENERIC, ICON_EMPTY, type.name());
+				}
+				resp.addButton("owner", ELM_GENERIC, ICON_OPEN, owner.name());
+				if(canoman || manage.hasManager()){
+					resp.addRow("manager", ELM_GENERIC, canoman ? ICON_OPEN : ICON_EMPTY, canoman, manage.getManagerName());
+				}
+				resp.addBlank();
+				if(sell.price > 0){
+					resp.addButton("price", ELM_GENERIC, ICON_OPEN, sell.price_formatted());
+				}
+				if(canman){
+					resp.addButton("set_price", ELM_GENERIC, ICON_OPEN);
+				}
+				if(sell.price > 0) resp.addBlank();
+				resp.addRow("chunk_tax", ELM_GENERIC, getWorthAsString(tax()));
+				if(id >= 0) resp.addRow("chunks", ELM_GENERIC, chunks);
+				if(canman){
+					resp.addButton("mailbox", ELM_GENERIC, ICON_OPEN, mail.unread());
+				}
+				resp.addButton("norms", ELM_GREEN, ICON_OPEN);
+				resp.addButton("appearance", ELM_YELLOW, ICON_OPEN);
+				break;
+			case UI_NAME:
+				resp.setTitle("district.name.title");
+				resp.addRow("id", ELM_GENERIC, id);
+				resp.addRow("name.current", ELM_GENERIC, name());
+				resp.addField("name.field", name());
+				resp.addButton("name.submit", ELM_GENERIC, ICON_OPEN);
 				resp.setFormular();
+				break;
+			case UI_TYPE:
+				resp.setTitle("district.type.title");
+				for(DistrictType dtp : DistrictType.TYPES.values()){
+					resp.addRadio("type." + dtp.id(), ELM_BLUE, dtp == type, resp.val(dtp.name()));
+				}
+				resp.addButton("type.submit", ELM_GENERIC, ICON_OPEN);
+				resp.setFormular();
+				break;
+			case UI_MANAGER:
+				resp.setTitle("district.manager.title");
+				resp.addRow("manager.current", ELM_GENERIC, ICON_BLANK, manage.getManagerName());
+				resp.addField("manager.field", manage.getManagerName());
+				resp.addButton("manager.submit", ELM_GENERIC, manage.hasManager() ? ICON_OPEN : ICON_ADD);
+				if(manage.hasManager()) resp.addButton("manager.remove", ELM_GENERIC, ICON_REM);
+				resp.setFormular();
+				break;
+			case UI_PRICE:
+				resp.setTitle("district.buy.title");
+				resp.addRow("id", ELM_GENERIC, ICON_BLANK, id);
+				resp.addRow("buy.info", ELM_YELLOW, ICON_BLANK, null);
+				if(owner.is_county) resp.addButton("buy.this_municipality", ELM_BLUE, ICON_RADIOBOX_CHECKED);
+				else resp.addButton("buy.this_county", ELM_BLUE, ICON_RADIOBOX_CHECKED);
+				resp.addButton("buy.other_municipality", ELM_BLUE, ICON_RADIOBOX_UNCHECKED);
+				resp.addButton("buy.other_county", ELM_BLUE, ICON_RADIOBOX_UNCHECKED);
+				resp.addButton("buy.payer", ELM_GENERIC, ICON_CHECKBOX_UNCHECKED);
+				resp.addButton("buy.submit", ELM_GENERIC, ICON_OPEN);
+				resp.setFormular();
+				break;
+			case UI_SET_PRICE:
+				resp.setTitle("district.set_price.title");
+				resp.addRow("id", ELM_GENERIC, ICON_BLANK, id);
+				resp.addField("set_price.field");
+				resp.addButton("set_price.submit", ELM_GENERIC, ICON_OPEN);
+				resp.setFormular();
+				break;
+			case UI_APPREARANCE:
+				resp.setTitle("district.appearance.title");
+				resp.addRow("appearance.icon", ELM_GENERIC);
+				resp.addField("appearance.icon_field", icon.getn());
+				resp.addRow("appearance.color", ELM_GENERIC);
+				resp.addField("appearance.color_field", color.getString());
+				if(canman){
+					resp.addRow("appearance.submit", ELM_GENERIC, ICON_OPEN);
+					resp.setFormular();
+				}
+				break;
+			case UI_NORMS:
+				resp.setTitle("district.norms");
+				LDGuiElementType icon = canman ? ICON_OPEN : ICON_EMPTY;
+				for(Entry<String, Norm> entry : norms.norms.entrySet()){
+					if(entry.getValue().type.isBool()){
+						resp.addRow("norm." + entry.getKey(), ELM_GENERIC, icon, canman, entry.getValue().bool() ? LANG_YES : LANG_NO);
+					}
+					else{
+						resp.addRow("norm." + entry.getKey(), ELM_GENERIC, icon, canman, entry.getValue().string());
+					}
+				}
+				break;
+			case UI_NORM_EDIT:{
+				resp.setTitle("district.norm_editor");
+				Norm norm = norms.get(container.z);
+				if(norm == null) return;
+				resp.addRow("norm_id", ELM_GREEN, norm.id);
+				resp.addRow("norm_value", ELM_GENERIC, norm.string());
+				if(!canman) break;
+				if(norm.type.isBool()){
+					resp.addButton("norm_bool", ELM_BLUE, norm.bool() ? ICON_ENABLED : ICON_DISABLED);
+				}
+				else{
+					resp.addField("norm_field", norm.string());
+					resp.addButton("norm_submit", ELM_BLUE, ICON_OPEN);
+					resp.setFormular();
+				}
+				break;
 			}
-			break;
 		}
 	}
 
@@ -381,10 +417,47 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 				}
 				return;
 			}
-			default:{
-				container.sendMsg("work-in-progress", false);
+			case "norm_submit":{
+				if(!canman) return;
+				Norm norm = norms.get(container.z);
+				if(norm == null) return;
+				if(norm.type.isInteger()){
+					try{
+						norm.set(Integer.parseInt(req.getField("norm_field")));
+					}
+					catch(Exception e){
+						container.sendMsg("Error: " + e.getMessage());
+					}
+				}
+				else if(norm.type.isDecimal()){
+					try{
+						norm.set(Float.parseFloat(req.getField("norm_field")));
+					}
+					catch(Exception e){
+						container.sendMsg("Error: " + e.getMessage());
+					}
+				}
+				else{
+					norm.set(req.getField("norm_field"));
+				}
+				container.open(UI_NORM_EDIT);
 				return;
 			}
+			case "norm_bool":{
+				if(!canman) return;
+				Norm norm = norms.get(container.z);
+				if(norm == null) return;
+				if(!norm.type.isBool()) return;
+				norm.toggle();
+				container.open(UI_NORM_EDIT);
+				return;
+			}
+		}
+		if(req.event().startsWith("norm.")){
+			Norm norm = norms.get(req.event().substring(5));
+			if(norm == null) return;
+			container.open(UI_NORM_EDIT, id, norms.index(norm));
+			return;
 		}
 	}
 
