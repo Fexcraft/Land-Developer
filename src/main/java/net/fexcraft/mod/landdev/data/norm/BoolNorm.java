@@ -53,4 +53,9 @@ public class BoolNorm extends Norm {
 		return new BoolNorm(id, value);
 	}
 
+	@Override
+	public void toggle(){
+		value = !value;
+	}
+
 }
