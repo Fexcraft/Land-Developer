@@ -38,11 +38,11 @@ public class ModuleRequest {
 	}
 
 	public String getRadio(){
-		return compound.getString("key");
+		return compound.getString("radiobox");
 	}
 
 	public String getRadio(String rep){
-		return compound.getString("key").replace("rep", "");
+		return compound.getString("radiobox").replace(rep, "");
 	}
 
 	public int getRadioInt(String rep){
