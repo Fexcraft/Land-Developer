@@ -287,8 +287,10 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 				resp.addRow("id", ELM_GENERIC, ICON_BLANK, id);
 				resp.addRow("buy.info", ELM_YELLOW, ICON_BLANK, null);
 				if(!owner.is_county)  resp.addButton("buy.this_county", ELM_BLUE, ICON_RADIOBOX_UNCHECKED);
-				if(container.player.municipality.id >= 0) resp.addButton("buy.my_municipality", ELM_BLUE, ICON_RADIOBOX_UNCHECKED);
-				resp.addButton("buy.my_county", ELM_BLUE, ICON_RADIOBOX_UNCHECKED);
+				if(container.player.municipality.id >= 0 && !owner.is_county && owner.municipality.id != container.player.municipality.id){
+					resp.addButton("buy.my_municipality", ELM_BLUE, ICON_RADIOBOX_UNCHECKED);
+				}
+				resp.addButton("buy.my_county", county().id == container.player.county.id ? ELM_RED : ELM_BLUE, ICON_RADIOBOX_UNCHECKED);
 				resp.addButton("buy.payer", ELM_GENERIC, ICON_CHECKBOX_UNCHECKED);
 				resp.addButton("buy.submit", ELM_GENERIC, ICON_OPEN);
 				resp.setFormular();
@@ -412,6 +414,14 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 					return;
 				}
 				if(tct || mct){
+					if(mct && county().id == container.player.county.id){
+						container.sendMsg("buy.alreadypartofcounty");
+						return;
+					}
+					else if(tct && owner.is_county){
+						container.sendMsg("buy.alreadypartofcounty");
+						return;
+					}
 					County ct = mct ? container.player.county : county();
 					if(rep && !ct.manage.can(FINANCES_USE, container.player.uuid)){
 						container.sendMsg("buy.no_county_perm");
@@ -429,6 +439,10 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 					container.open(UI_MAIN);
 				}
 				else{
+					if(!owner.is_county && municipality().id == container.player.municipality.id){
+						container.sendMsg("buy.alreadypartofmunicipality");
+						return;
+					}
 					Municipality mun = container.player.municipality;
 					if(rep && !mun.manage.can(FINANCES_USE, container.player.uuid)){
 						container.sendMsg("buy.no_municipality_perm");
