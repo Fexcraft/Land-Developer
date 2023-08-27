@@ -260,6 +260,10 @@ public class LDGuiContainer extends GenericContainer {
 		player.openGui(type, x, y, z);
 	}
 
+	public void open(int x, int y, int z){
+		player.openGui(type, x, y, z);
+	}
+
 	public void open(int type, int x, int y, int z){
 		player.openGui(type, x, y, z);
 	}
