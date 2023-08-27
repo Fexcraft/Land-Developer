@@ -411,7 +411,7 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 					return;
 				}
 				boolean npp = req.getCheck("buy.payer");
-				Account account = npp ? district.getLayerAccount(layer, container, container.player) : container.player.account;
+				Account account = npp ? district.getLayerAccount(layer, container) : container.player.account;
 				if(account == null) return;
 				if(account.getBalance() < sell.price){
 					container.sendMsg("buy.notenoughmoney");
