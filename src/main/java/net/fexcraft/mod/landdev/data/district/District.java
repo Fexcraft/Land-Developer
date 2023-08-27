@@ -15,6 +15,9 @@ import java.util.UUID;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fsmm.api.Account;
+import net.fexcraft.mod.fsmm.api.Bank;
+import net.fexcraft.mod.fsmm.api.Bank.Action;
+import net.fexcraft.mod.fsmm.util.DataManager;
 import net.fexcraft.mod.landdev.data.*;
 import net.fexcraft.mod.landdev.data.county.County;
 import net.fexcraft.mod.landdev.data.municipality.Municipality;
@@ -177,28 +180,28 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 		return -1;
 	}
 
-	public Account getLayerAccount(Layers layer, LDGuiContainer container, Player player){
-		if(layer.is(Layers.PLAYER)) return player.account;
+	public Account getLayerAccount(Layers layer, LDGuiContainer container){
+		if(layer.is(Layers.PLAYER)) return container.player.account;
 		boolean dis = layer.is(Layers.DISTRICT);
 		if((dis && !owner.is_county) || layer.is(Layers.MUNICIPALITY)){
-			if(!owner.municipality.manage.can(player.uuid, FINANCES_USE, FINANCES_MANAGE)){
-				if(container == null) Print.chat(player.entity, TranslationUtil.translateCmd("account.noperm.municipality"));
+			if(!owner.municipality.manage.can(container.player.uuid, FINANCES_USE, FINANCES_MANAGE)){
+				if(container == null) Print.chat(container.player.entity, TranslationUtil.translateCmd("account.noperm.municipality"));
 				else container.sendMsg("landdev.cmd.account.noperm.municipality", false);
 				return null;
 			}
 			return owner.municipality.account;
 		}
 		if((dis && owner.is_county) || layer.is(Layers.COUNTY)){
-			if(!county().manage.can(player.uuid, FINANCES_USE, FINANCES_MANAGE)){
-				if(container == null) Print.chat(player.entity, TranslationUtil.translateCmd("account.noperm.county"));
+			if(!county().manage.can(container.player.uuid, FINANCES_USE, FINANCES_MANAGE)){
+				if(container == null) Print.chat(container.player.entity, TranslationUtil.translateCmd("account.noperm.county"));
 				else container.sendMsg("landdev.cmd.account.noperm.county", false);
 				return null;
 			}
 			return county().account;
 		}
 		if(layer.is(Layers.STATE)){
-			if(!state().manage.can(player.uuid, FINANCES_USE, FINANCES_MANAGE)){
-				if(container == null) Print.chat(player.entity, TranslationUtil.translateCmd("account.noperm.state"));
+			if(!state().manage.can(container.player.uuid, FINANCES_USE, FINANCES_MANAGE)){
+				if(container == null) Print.chat(container.player.entity, TranslationUtil.translateCmd("account.noperm.state"));
 				else container.sendMsg("landdev.cmd.account.noperm.state", false);
 				return null;
 			}
@@ -283,10 +286,9 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 				resp.setTitle("district.buy.title");
 				resp.addRow("id", ELM_GENERIC, ICON_BLANK, id);
 				resp.addRow("buy.info", ELM_YELLOW, ICON_BLANK, null);
-				if(owner.is_county) resp.addButton("buy.this_municipality", ELM_BLUE, ICON_RADIOBOX_CHECKED);
-				else resp.addButton("buy.this_county", ELM_BLUE, ICON_RADIOBOX_CHECKED);
-				resp.addButton("buy.other_municipality", ELM_BLUE, ICON_RADIOBOX_UNCHECKED);
-				resp.addButton("buy.other_county", ELM_BLUE, ICON_RADIOBOX_UNCHECKED);
+				if(!owner.is_county)  resp.addButton("buy.this_county", ELM_BLUE, ICON_RADIOBOX_UNCHECKED);
+				if(container.player.municipality.id >= 0) resp.addButton("buy.my_municipality", ELM_BLUE, ICON_RADIOBOX_UNCHECKED);
+				resp.addButton("buy.my_county", ELM_BLUE, ICON_RADIOBOX_UNCHECKED);
 				resp.addButton("buy.payer", ELM_GENERIC, ICON_CHECKBOX_UNCHECKED);
 				resp.addButton("buy.submit", ELM_GENERIC, ICON_OPEN);
 				resp.setFormular();
@@ -400,7 +402,49 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 				return;
 			}
 			case "buy.submit":{
-				
+				String radio = req.getRadio();
+				boolean tct = radio.equals("buy.this_county");
+				boolean mct = radio.equals("buy.my_county");
+				boolean mmu = radio.equals("buy.my_municipality");
+				boolean rep = req.getCheck("buy.payer");
+				if(!tct && !mct && !mmu){
+					container.sendMsg("district.buy.nobuyer");
+					return;
+				}
+				if(tct || mct){
+					County ct = mct ? container.player.county : county();
+					if(rep && !ct.manage.can(FINANCES_USE, container.player.uuid)){
+						container.sendMsg("district.buy.no_county_perm");
+						return;
+					}
+					Account account = rep ? ct.account : container.player.account;
+					if(account.getBalance() < sell.price){
+						container.sendMsg("district.buy.notenoughmoney");
+						return;
+					}
+					Bank bank = DataManager.getBank(account.getBankId(), false, true);
+					if(!bank.processAction(Action.TRANSFER, container.player.entity, account, sell.price, ct.account)) return;
+					owner.set(ct);
+					sell.price = 0;
+					container.open(UI_MAIN);
+				}
+				else{
+					Municipality mun = container.player.municipality;
+					if(rep && !mun.manage.can(FINANCES_USE, container.player.uuid)){
+						container.sendMsg("district.buy.no_municipality_perm");
+						return;
+					}
+					Account account = rep ? mun.account : container.player.account;
+					if(account.getBalance() < sell.price){
+						container.sendMsg("district.buy.notenoughmoney");
+						return;
+					}
+					Bank bank = DataManager.getBank(account.getBankId(), false, true);
+					if(!bank.processAction(Action.TRANSFER, container.player.entity, account, sell.price, mun.account)) return;
+					owner.set(mun);
+					sell.price = 0;
+					container.open(UI_MAIN);
+				}
 				return;
 			}
 			case "set_price.submit":{
