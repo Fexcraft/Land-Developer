@@ -98,7 +98,7 @@ landdev.gui.mail.invite.accept=Accept Invite
 landdev.gui.mail.invite.reject=Reject Invite
 landdev.gui.mail.request.accept=Accept Request
 landdev.gui.mail.request.reject=Reject Request
-landdev.gui.mail.request.reject=Reject and long Timeout (%s days)
+landdev.gui.mail.request.timeout=Reject and long Timeout (%s days)
 //
 landdev.gui.main.title=Land Developer
 landdev.gui.main.player=My Profile
