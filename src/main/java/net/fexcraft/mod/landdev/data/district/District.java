@@ -408,18 +408,18 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 				boolean mmu = radio.equals("buy.my_municipality");
 				boolean rep = req.getCheck("buy.payer");
 				if(!tct && !mct && !mmu){
-					container.sendMsg("district.buy.nobuyer");
+					container.sendMsg("buy.nobuyer");
 					return;
 				}
 				if(tct || mct){
 					County ct = mct ? container.player.county : county();
 					if(rep && !ct.manage.can(FINANCES_USE, container.player.uuid)){
-						container.sendMsg("district.buy.no_county_perm");
+						container.sendMsg("buy.no_county_perm");
 						return;
 					}
 					Account account = rep ? ct.account : container.player.account;
 					if(account.getBalance() < sell.price){
-						container.sendMsg("district.buy.notenoughmoney");
+						container.sendMsg("buy.notenoughmoney");
 						return;
 					}
 					Bank bank = DataManager.getBank(account.getBankId(), false, true);
@@ -431,12 +431,12 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 				else{
 					Municipality mun = container.player.municipality;
 					if(rep && !mun.manage.can(FINANCES_USE, container.player.uuid)){
-						container.sendMsg("district.buy.no_municipality_perm");
+						container.sendMsg("buy.no_municipality_perm");
 						return;
 					}
 					Account account = rep ? mun.account : container.player.account;
 					if(account.getBalance() < sell.price){
-						container.sendMsg("district.buy.notenoughmoney");
+						container.sendMsg("buy.notenoughmoney");
 						return;
 					}
 					Bank bank = DataManager.getBank(account.getBankId(), false, true);
