@@ -1,6 +1,7 @@
 package net.fexcraft.mod.landdev.data.district;
 
 import net.fexcraft.app.json.JsonMap;
+import net.fexcraft.mod.fsmm.api.Account;
 import net.fexcraft.mod.landdev.data.Manageable;
 import net.fexcraft.mod.landdev.data.Saveable;
 import net.fexcraft.mod.landdev.data.county.County;
@@ -62,6 +63,10 @@ public class DistrictOwner implements Saveable {
 	public boolean isPartOf(Player player){
 		if(is_county) return player.county.id == owid;
 		else return player.municipality.id == owid;
+	}
+
+	public Account account(){
+		return is_county ? county.account : municipality.account;
 	}
 
 }
