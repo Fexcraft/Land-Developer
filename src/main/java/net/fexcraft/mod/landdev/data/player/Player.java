@@ -66,6 +66,7 @@ public class Player implements Saveable {
 			});
 			map.add("permits", array);
 		}
+		if(municipality.id >= 0 && county != municipality.county) county = municipality.county;
 		map.add("municipality", municipality.id);
 		map.add("county", county.id);
 		DataManager.save(account);
@@ -88,6 +89,7 @@ public class Player implements Saveable {
 		}
 		municipality = ResManager.getMunicipality(map.getInteger("municipality", -1), true);
 		county = ResManager.getCounty(map.getInteger("county", -1), true);
+		if(municipality.id >= 0 && county != municipality.county) county = municipality.county;
 	}
 	
 	@Override
