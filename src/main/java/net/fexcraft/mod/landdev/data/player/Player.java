@@ -20,6 +20,10 @@ import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.data.county.County;
 import net.fexcraft.mod.landdev.data.hooks.ExternalData;
 import net.fexcraft.mod.landdev.data.municipality.Municipality;
+import net.fexcraft.mod.landdev.gui.LDGuiContainer;
+import net.fexcraft.mod.landdev.gui.modules.LDGuiModule;
+import net.fexcraft.mod.landdev.gui.modules.ModuleRequest;
+import net.fexcraft.mod.landdev.gui.modules.ModuleResponse;
 import net.fexcraft.mod.landdev.util.PacketReceiver;
 import net.fexcraft.mod.landdev.util.ResManager;
 import net.minecraft.entity.player.EntityPlayer;
@@ -29,7 +33,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.world.World;
 
-public class Player implements Saveable, Layer {
+public class Player implements Saveable, Layer, LDGuiModule {
 
 	public UUID uuid;
 	public boolean offline, adm;
@@ -189,4 +193,15 @@ public class Player implements Saveable, Layer {
 	public Layers getParentLayer(){
 		return null;
 	}
+
+	@Override
+	public void sync_packet(LDGuiContainer container, ModuleResponse resp){
+		//
+	}
+
+	@Override
+	public void on_interact(LDGuiContainer container, ModuleRequest req){
+		//
+	}
+
 }
