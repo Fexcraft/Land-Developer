@@ -10,7 +10,6 @@ import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.mod.fsmm.api.Account;
 import net.fexcraft.mod.fsmm.util.DataManager;
 import net.fexcraft.mod.landdev.data.*;
-import net.fexcraft.mod.landdev.data.district.District;
 import net.fexcraft.mod.landdev.data.hooks.ExternalData;
 import net.fexcraft.mod.landdev.data.norm.StringNorm;
 
@@ -26,7 +25,7 @@ public class State implements Saveable, Layer {
 	public Manageable manage = new Manageable(true, STATE_STAFF);
 	public Norms norms = new Norms();
 	public ArrayList<Integer> counties = new ArrayList<>();
-	public ExternalData<District> external = new ExternalData(this);
+	public ExternalData external = new ExternalData(this);
 	public Account account;
 	
 	public State(int id){
