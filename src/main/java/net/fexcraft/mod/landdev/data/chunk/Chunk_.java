@@ -22,6 +22,7 @@ import net.fexcraft.mod.landdev.data.Saveable;
 import net.fexcraft.mod.landdev.data.Sellable;
 import net.fexcraft.mod.landdev.data.Taxable;
 import net.fexcraft.mod.landdev.data.district.District;
+import net.fexcraft.mod.landdev.data.hooks.ExternalData;
 import net.fexcraft.mod.landdev.data.player.Player;
 import net.fexcraft.mod.landdev.gui.GuiHandler;
 import net.fexcraft.mod.landdev.gui.LDGuiContainer;
@@ -43,6 +44,7 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 	public ChunkOwner owner = new ChunkOwner();
 	public Taxable tax = new Taxable(this);
 	public ChunkLabel label = new ChunkLabel();
+	public ExternalData<District> external = new ExternalData(this);
 	public District district;
 
 	public Chunk_(World world, int x, int z){
@@ -61,6 +63,7 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 		tax.save(map);
 		label.save(map);
 		map.add("district", district.id);
+		external.save(map);
 	}
 
 	@Override
@@ -77,11 +80,13 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 		tax.load(map);
 		label.load(map);
 		district = ResManager.getDistrict(map.getInteger("district", -1), true);
+		external.load(map);
 	}
 	
 	@Override
 	public void gendef(){
 		district = ResManager.getDistrict(-1, true);
+		external.gendef();
 	}
 	
 	@Override
@@ -161,7 +166,7 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 			resp.addRow("access_interact", ELM_GENERIC, canman ? access.interact ? ICON_ENABLED : ICON_DISABLED : ICON_EMPTY, canman, access.interact ? LANG_YES : LANG_NO);
 			resp.addButton("access_player", ELM_GENERIC, ICON_LIST, access.players.size());
 			resp.addButton("access_company", ELM_GENERIC, ICON_LIST, access.companies.size());
-			break;
+			return;
 		case UI_LINK:
 			resp.setTitle("chunk.link.title");
 			resp.addRow("link.info0", ELM_YELLOW, ICON_BLANK);
@@ -170,10 +175,10 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 			resp.addField("link.field");
 			resp.addButton("link.submit", ELM_BLUE, ICON_OPEN);
 			resp.setFormular();
-			break;
+			return;
 		case UI_LINKS:
 			resp.setTitle("chunk.links.title");
-			if(link.linked == null) break;
+			if(link.linked == null) return;
 			resp.addButton("links.submit", ELM_BLUE, ICON_OPEN, key.comma());
 			boolean first = true;
 			for(int i = 0; i < link.linked.size(); i++){
@@ -181,12 +186,12 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 				first = false;
 			}
 			resp.setFormular();
-			break;
+			return;
 		case UI_LINKED:
 			resp.setTitle("chunk.linked.title");
 			resp.addButton("linked.key", ELM_GENERIC, ICON_OPEN, "!!!" + link.root_key.comma());
 			resp.addButton("linked.disconnect", ELM_RED, ICON_REM, key.comma());
-			break;
+			return;
 		case UI_TYPE:
 			resp.setTitle("chunk.select_type.title");
 			resp.addRow("key", ELM_GENERIC, ICON_BLANK, key.comma());
@@ -196,7 +201,7 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 			resp.addRadio("type.public", ELM_BLUE, type == ChunkType.PUBLIC);
 			resp.addButton("select_type.submit", ELM_GENERIC, ICON_OPEN);
 			resp.setFormular();
-			break;
+			return;
 		case UI_OWNER:
 			resp.setTitle("chunk.set_owner.title");
 			resp.addRow("key", ELM_GENERIC, ICON_BLANK, key.comma());
@@ -211,7 +216,7 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 			resp.addRadio("set_owner.none", ELM_BLUE, owner.owner == Layers.NONE);
 			resp.addButton("set_owner.submit", ELM_GENERIC, ICON_OPEN);
 			resp.setFormular();
-			break;
+			return;
 		case UI_PRICE:
 			resp.setTitle("chunk.buy.title");
 			resp.addRow("key", ELM_GENERIC, ICON_BLANK, key.comma());
@@ -225,14 +230,14 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 			resp.addButton("buy.payer", ELM_GENERIC, ICON_CHECKBOX_UNCHECKED);
 			resp.addButton("buy.submit", ELM_GENERIC, ICON_OPEN);
 			resp.setFormular();
-			break;
+			return;
 		case UI_SET_PRICE:
 			resp.setTitle("chunk.set_price.title");
 			resp.addRow("key", ELM_GENERIC, ICON_BLANK, key.comma());
 			resp.addField("set_price.field");
 			resp.addButton("set_price.submit", ELM_GENERIC, ICON_OPEN);
 			resp.setFormular();
-			break;
+			return;
 		case UI_TAX:
 			boolean bool = district.can(CHUNK_CUSTOMTAX, container.player.uuid) || container.player.adm;
 			resp.setTitle("chunk.tax.title");
@@ -252,7 +257,7 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 				resp.addButton("set_tax.submit", ELM_GENERIC, ICON_OPEN);
 				resp.setFormular();
 			}
-			break;
+			return;
 		case UI_ACC_PLAYER:
 			resp.setTitle("chunk.access_player.title");
 			boolean bcm = can_manage(container.player);
@@ -276,10 +281,11 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 				}
 				if(bcm) resp.setFormular();
 			}
-			break;
+			return;
 		case UI_ACC_COMPANY:
-			break;
+			return;
 		}
+		external.sync_packet(container, resp);
 	}
 
 	@Override
@@ -461,6 +467,7 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 				return;
 			}
 		}
+		external.on_interact(container, req);
 	}
 
 	private int getLayerId(Layers layer){
