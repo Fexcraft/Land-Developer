@@ -9,7 +9,8 @@ public enum PermAction {
 	CREATE_DISTRICT,
 	CREATE_COUNTY,
 	CREATE_STATE,
-	DISTRICT_MANAGE,
+	MANAGE_DISTRICT,
+	MANAGE_MUNICIPALITY,
 	MAIL_READ,
 	MAIL_DELETE,
 	PLAYER_TAX,
@@ -33,7 +34,9 @@ public enum PermAction {
 		FINANCES_MANAGE,
 		MAIL_READ,
 		MAIL_DELETE,
-		CREATE_DISTRICT
+		CREATE_DISTRICT,
+		MANAGE_DISTRICT,
+		MANAGE_MUNICIPALITY
 	);
 	public static PermActions MUNICIPALITY_CITIZEN = new PermActions(CHUNK_CLAIM);
 	public static PermActions COUNTY_STAFF = new PermActions(
@@ -57,11 +60,11 @@ public enum PermAction {
 		MAIL_READ,
 		MAIL_DELETE
 	);
-	public static PermActions STATE_CITIZEN = new PermActions(
+	/*public static PermActions STATE_CITIZEN = new PermActions(
 		CHUNK_CLAIM,
 		CREATE_COUNTY,
 		CREATE_STATE
-	);
+	);*/
 
 	public static PermAction get(String key){
 		for(PermAction act : values()){
