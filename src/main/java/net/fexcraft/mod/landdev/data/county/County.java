@@ -16,9 +16,13 @@ import net.fexcraft.mod.landdev.data.norm.BoolNorm;
 import net.fexcraft.mod.landdev.data.norm.IntegerNorm;
 import net.fexcraft.mod.landdev.data.norm.StringNorm;
 import net.fexcraft.mod.landdev.data.state.State;
+import net.fexcraft.mod.landdev.gui.LDGuiContainer;
+import net.fexcraft.mod.landdev.gui.modules.LDGuiModule;
+import net.fexcraft.mod.landdev.gui.modules.ModuleRequest;
+import net.fexcraft.mod.landdev.gui.modules.ModuleResponse;
 import net.fexcraft.mod.landdev.util.ResManager;
 
-public class County implements Saveable, Layer {
+public class County implements Saveable, Layer, LDGuiModule {
 
 	public final int id;
 	public Createable created = new Createable();
@@ -134,6 +138,16 @@ public class County implements Saveable, Layer {
 
 	public String name(){
 		return norms.get("name").string();
+	}
+
+	@Override
+	public void sync_packet(LDGuiContainer container, ModuleResponse resp){
+		//
+	}
+
+	@Override
+	public void on_interact(LDGuiContainer container, ModuleRequest req){
+		//
 	}
 
 }
