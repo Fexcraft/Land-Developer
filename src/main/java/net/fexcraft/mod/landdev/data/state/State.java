@@ -10,6 +10,8 @@ import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.mod.fsmm.api.Account;
 import net.fexcraft.mod.fsmm.util.DataManager;
 import net.fexcraft.mod.landdev.data.*;
+import net.fexcraft.mod.landdev.data.district.District;
+import net.fexcraft.mod.landdev.data.hooks.ExternalData;
 import net.fexcraft.mod.landdev.data.norm.StringNorm;
 
 public class State implements Saveable, Layer {
@@ -24,6 +26,7 @@ public class State implements Saveable, Layer {
 	public Manageable manage = new Manageable(true, STATE_STAFF);
 	public Norms norms = new Norms();
 	public ArrayList<Integer> counties = new ArrayList<>();
+	public ExternalData<District> external = new ExternalData(this);
 	public Account account;
 	
 	public State(int id){
@@ -47,6 +50,7 @@ public class State implements Saveable, Layer {
 		JsonArray array = new JsonArray();
 		counties.forEach(mun -> array.add(mun));
 		map.add("counties", array);
+		external.save(map);
 		DataManager.save(account);
 	}
 
@@ -65,6 +69,7 @@ public class State implements Saveable, Layer {
 			counties.clear();
 			array.value.forEach(elm -> counties.add(elm.integer_value()));
 		}
+		external.load(map);
 	}
 	
 	@Override
@@ -81,7 +86,7 @@ public class State implements Saveable, Layer {
 			counties.add(0);
 			color.set(0xff9900);
 		}
-		else return;
+		external.gendef();
 	}
 	
 	@Override
