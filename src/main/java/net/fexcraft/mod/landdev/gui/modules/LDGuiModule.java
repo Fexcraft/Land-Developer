@@ -22,5 +22,13 @@ public interface LDGuiModule {
 		}
 		return true;
 	}
+
+	public static interface LDGuiSubModule {
+
+		public boolean sync_packet(LDGuiContainer container, ModuleResponse resp);
+
+		public boolean on_interact(LDGuiContainer container, ModuleRequest req);
+
+	}
 	
 }
