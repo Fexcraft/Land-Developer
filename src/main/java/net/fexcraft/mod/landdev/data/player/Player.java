@@ -11,12 +11,15 @@ import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.mod.fsmm.api.Account;
 import net.fexcraft.mod.fsmm.util.DataManager;
 import net.fexcraft.mod.landdev.LandDev;
+import net.fexcraft.mod.landdev.data.Layer;
 import net.fexcraft.mod.landdev.data.Layers;
 import net.fexcraft.mod.landdev.data.MailData;
 import net.fexcraft.mod.landdev.data.PermAction;
 import net.fexcraft.mod.landdev.data.Saveable;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.data.county.County;
+import net.fexcraft.mod.landdev.data.district.District;
+import net.fexcraft.mod.landdev.data.hooks.ExternalData;
 import net.fexcraft.mod.landdev.data.municipality.Municipality;
 import net.fexcraft.mod.landdev.util.PacketReceiver;
 import net.fexcraft.mod.landdev.util.ResManager;
@@ -27,7 +30,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.world.World;
 
-public class Player implements Saveable {
+public class Player implements Saveable, Layer {
 
 	public UUID uuid;
 	public boolean offline, adm;
@@ -40,6 +43,7 @@ public class Player implements Saveable {
 	public Municipality municipality;
 	public County county;
 	public Chunk_ chunk_current, chunk_last;
+	public ExternalData<District> external = new ExternalData(this);
 	
 	public Player(UUID uuid){
 		offline = true;
@@ -69,6 +73,7 @@ public class Player implements Saveable {
 		if(municipality.id >= 0 && county != municipality.county) county = municipality.county;
 		map.add("municipality", municipality.id);
 		map.add("county", county.id);
+		external.save(map);
 		DataManager.save(account);
 	}
 
@@ -90,6 +95,7 @@ public class Player implements Saveable {
 		municipality = ResManager.getMunicipality(map.getInteger("municipality", -1), true);
 		county = ResManager.getCounty(map.getInteger("county", -1), true);
 		if(municipality.id >= 0 && county != municipality.county) county = municipality.county;
+		external.load(map);
 	}
 	
 	@Override
@@ -97,6 +103,7 @@ public class Player implements Saveable {
 		joined = Time.getDate();
 		municipality = ResManager.getMunicipality(-1, true);
 		county = ResManager.getCounty(-1, true);
+		external.gendef();
 	}
 	
 	public String saveId(){
@@ -174,4 +181,13 @@ public class Player implements Saveable {
 		return (nickname == null ? entity == null ? "<PEN>" : entity.getDisplayNameString() : nickname);
 	}
 
+	@Override
+	public Layers getLayer(){
+		return Layers.PLAYER;
+	}
+
+	@Override
+	public Layers getParentLayer(){
+		return null;
+	}
 }
