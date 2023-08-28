@@ -25,9 +25,9 @@ public interface LDGuiModule {
 
 	public static interface LDGuiSubModule {
 
-		public boolean sync_packet(LDGuiContainer container, ModuleResponse resp);
+		public boolean sync_packet(LDGuiModule root, LDGuiContainer container, ModuleResponse resp);
 
-		public boolean on_interact(LDGuiContainer container, ModuleRequest req);
+		public boolean on_interact(LDGuiModule root, LDGuiContainer container, ModuleRequest req);
 
 	}
 	
