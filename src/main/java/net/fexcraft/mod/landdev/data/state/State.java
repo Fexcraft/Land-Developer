@@ -1,6 +1,5 @@
 package net.fexcraft.mod.landdev.data.state;
 
-import static net.fexcraft.mod.landdev.data.PermAction.STATE_CITIZEN;
 import static net.fexcraft.mod.landdev.data.PermAction.STATE_STAFF;
 import static net.fexcraft.mod.landdev.util.TranslationUtil.translate;
 
@@ -11,7 +10,6 @@ import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.mod.fsmm.api.Account;
 import net.fexcraft.mod.fsmm.util.DataManager;
 import net.fexcraft.mod.landdev.data.*;
-import net.fexcraft.mod.landdev.data.norm.BoolNorm;
 import net.fexcraft.mod.landdev.data.norm.StringNorm;
 
 public class State implements Saveable, Layer {
@@ -26,7 +24,6 @@ public class State implements Saveable, Layer {
 	public Manageable manage = new Manageable(true, STATE_STAFF);
 	public Norms norms = new Norms();
 	public ArrayList<Integer> counties = new ArrayList<>();
-	public Citizens citizens = new Citizens(STATE_CITIZEN);
 	public Account account;
 	
 	public State(int id){
@@ -34,9 +31,6 @@ public class State implements Saveable, Layer {
 		mail = new MailData(getLayer(), id);
 		account = DataManager.getAccount("state:" + id, false, true);
 		norms.add(new StringNorm("name", translate("state.norm.name")));
-		manage.norms.add(new BoolNorm("finances_use", false));
-		manage.norms.add(new BoolNorm("finances_manage", false));
-		manage.norms.add(new BoolNorm("set_tax_player", false));
 	}
 
 	@Override
