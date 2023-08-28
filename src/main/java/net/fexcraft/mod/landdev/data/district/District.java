@@ -50,7 +50,7 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 	public Manageable manage = new Manageable(false, DISTRICT_ACTIONS);
 	public Norms norms = new Norms();
 	public DistrictOwner owner = new DistrictOwner();
-	public ExternalData<District> external = new ExternalData(this);
+	public ExternalData external = new ExternalData(this);
 	public long chunks;
 	
 	public District(int id){
