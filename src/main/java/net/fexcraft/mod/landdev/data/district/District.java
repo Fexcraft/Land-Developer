@@ -19,6 +19,7 @@ import net.fexcraft.mod.fsmm.api.Bank.Action;
 import net.fexcraft.mod.fsmm.util.DataManager;
 import net.fexcraft.mod.landdev.data.*;
 import net.fexcraft.mod.landdev.data.county.County;
+import net.fexcraft.mod.landdev.data.hooks.ExternalData;
 import net.fexcraft.mod.landdev.data.municipality.Municipality;
 import net.fexcraft.mod.landdev.data.norm.BoolNorm;
 import net.fexcraft.mod.landdev.data.norm.IntegerNorm;
@@ -49,6 +50,7 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 	public Manageable manage = new Manageable(false, DISTRICT_ACTIONS);
 	public Norms norms = new Norms();
 	public DistrictOwner owner = new DistrictOwner();
+	public ExternalData<District> external = new ExternalData(this);
 	public long chunks;
 	
 	public District(int id){
@@ -74,6 +76,7 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 		manage.save(map);
 		norms.save(map);
 		owner.save(map);
+		external.save(map);
 		map.add("chunks", chunks);
 	}
 
@@ -89,6 +92,7 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 		manage.load(map);
 		norms.load(map);
 		owner.load(map);
+		external.load(map);
 		chunks = map.getLong("chunks", 0);
 	}
 	
@@ -108,7 +112,7 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 			owner.municipality = ResManager.getMunicipality(0, true);
 			color.set(0xff9900);
 		}
-		else return;
+		external.gendef();
 	}
 	
 	@Override
@@ -252,7 +256,7 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 				}
 				resp.addButton("norms", ELM_GREEN, ICON_OPEN);
 				resp.addButton("appearance", ELM_YELLOW, ICON_OPEN);
-				break;
+				return;
 			case UI_TYPE:
 				resp.setTitle("district.type.title");
 				for(DistrictType dtp : DistrictType.TYPES.values()){
@@ -260,7 +264,7 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 				}
 				resp.addButton("type.submit", ELM_GENERIC, ICON_OPEN);
 				resp.setFormular();
-				break;
+				return;
 			case UI_MANAGER:
 				resp.setTitle("district.manager.title");
 				resp.addRow("manager.current", ELM_GENERIC, ICON_BLANK, manage.getManagerName());
@@ -268,7 +272,7 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 				resp.addButton("manager.submit", ELM_GENERIC, manage.hasManager() ? ICON_OPEN : ICON_ADD);
 				if(manage.hasManager()) resp.addButton("manager.remove", ELM_GENERIC, ICON_REM);
 				resp.setFormular();
-				break;
+				return;
 			case UI_PRICE:
 				resp.setTitle("district.buy.title");
 				resp.addRow("id", ELM_GENERIC, ICON_BLANK, id);
@@ -281,25 +285,26 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 				resp.addButton("buy.payer", ELM_GENERIC, ICON_CHECKBOX_UNCHECKED);
 				resp.addButton("buy.submit", ELM_GENERIC, ICON_OPEN);
 				resp.setFormular();
-				break;
+				return;
 			case UI_SET_PRICE:
 				resp.setTitle("district.set_price.title");
 				resp.addRow("id", ELM_GENERIC, ICON_BLANK, id);
 				resp.addField("set_price.field");
 				resp.addButton("set_price.submit", ELM_GENERIC, ICON_OPEN);
 				resp.setFormular();
-				break;
+				return;
 			case UI_APPREARANCE:
 				AppearModule.resp(container, resp, "district", icon, color, canman);
-				break;
+				return;
 			case UI_NORMS:
 				NormModule.respNormList(norms, container, resp, "district", canman);
-				break;
+				return;
 			case UI_NORM_EDIT:{
 				NormModule.respNormEdit(norms, container, resp, "district", canman);
-				break;
+				return;
 			}
 		}
+		external.sync_packet(container, resp);
 	}
 
 	@Override
@@ -436,6 +441,7 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 			}
 		}
 		if(NormModule.isNormReq(norms, container, req, UI_NORM_EDIT, id)) return;
+		external.on_interact(container, req);
 	}
 
 }
