@@ -51,7 +51,7 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 	public Norms norms = new Norms();
 	public ArrayList<Integer> districts = new ArrayList<>();
 	public Citizens citizens = new Citizens(MUNICIPALITY_CITIZEN);
-	public ExternalData<District> external = new ExternalData(this);
+	public ExternalData external = new ExternalData(this);
 	public Account account;
 	public County county;
 	
