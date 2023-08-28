@@ -12,10 +12,9 @@ import net.fexcraft.mod.landdev.util.ResManager;
 public class Manageable implements Saveable, PermInteractive {
 	
 	protected UUID manager;
-	protected TreeMap<UUID, Staff> staff = null;
+	public TreeMap<UUID, Staff> staff = null;
 	protected PermActions actions;
 	protected String manager_name;
-	public Norms norms = new Norms();
 	
 	public Manageable(boolean hasstaff, PermActions actions){
 		if(hasstaff) staff = new TreeMap<>();
