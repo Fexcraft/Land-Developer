@@ -24,9 +24,11 @@ public class ExternalData implements Saveable, LDGuiModule {
 	}
 	public List<Saveable> saveables = new ArrayList<>();
 	public List<LDGuiSubModule> modules = new ArrayList<>();
+	public final LDGuiModule module;
 
-	public ExternalData(Layer lay){
-		for(Class<? extends Saveable> clazz : REGISTRY.get(lay.getLayer())){
+	public ExternalData(LDGuiModule module){
+		this.module = module;
+		for(Class<? extends Saveable> clazz : REGISTRY.get(((Layer)module).getLayer())){
 			try{
 				Saveable save = clazz.newInstance();
 				saveables.add(save);
@@ -68,7 +70,7 @@ public class ExternalData implements Saveable, LDGuiModule {
 	 */
 	@Override
 	public void sync_packet(LDGuiContainer container, ModuleResponse resp){
-		for(LDGuiSubModule module : modules) if(module.sync_packet(container, resp)) return ;
+		for(LDGuiSubModule submod : modules) if(submod.sync_packet(module, container, resp)) return ;
 	}
 
 	/**
@@ -76,7 +78,7 @@ public class ExternalData implements Saveable, LDGuiModule {
 	 */
 	@Override
 	public void on_interact(LDGuiContainer container, ModuleRequest req){
-		for(LDGuiSubModule module : modules) if(module.on_interact(container, req)) return;
+		for(LDGuiSubModule submod : modules) if(submod.on_interact(module, container, req)) return;
 	}
 
 }
