@@ -16,7 +16,7 @@ import net.fexcraft.mod.landdev.gui.modules.ModuleResponse;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class ExternalData<L extends Layer> implements Saveable, LDGuiModule {
+public class ExternalData implements Saveable, LDGuiModule {
 
 	public static final HashMap<Layers, ArrayList<Class<? extends Saveable>>> REGISTRY = new HashMap<>();
 	static{
@@ -24,10 +24,8 @@ public class ExternalData<L extends Layer> implements Saveable, LDGuiModule {
 	}
 	public List<Saveable> saveables = new ArrayList<>();
 	public List<LDGuiSubModule> modules = new ArrayList<>();
-	private L layer;
 
 	public ExternalData(Layer lay){
-		layer = (L)lay;
 		for(Class<? extends Saveable> clazz : REGISTRY.get(lay.getLayer())){
 			try{
 				Saveable save = clazz.newInstance();
