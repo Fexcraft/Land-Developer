@@ -1,10 +1,7 @@
 package net.fexcraft.mod.landdev.data.district;
 
 import static net.fexcraft.mod.fsmm.util.Config.getWorthAsString;
-import static net.fexcraft.mod.landdev.data.PermAction.DISTRICT_ACTIONS;
-import static net.fexcraft.mod.landdev.data.PermAction.DISTRICT_MANAGE;
-import static net.fexcraft.mod.landdev.data.PermAction.FINANCES_MANAGE;
-import static net.fexcraft.mod.landdev.data.PermAction.FINANCES_USE;
+import static net.fexcraft.mod.landdev.data.PermAction.*;
 import static net.fexcraft.mod.landdev.gui.GuiHandler.MAILBOX;
 import static net.fexcraft.mod.landdev.gui.LDGuiElementType.*;
 import static net.fexcraft.mod.landdev.util.TranslationUtil.translate;
@@ -209,24 +206,20 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 		}
 		return null;
 	}
-	
-	public static final int
-		UI_NAME = 1,
-		UI_TYPE = 2,
-		UI_OWNER = 3,
-		UI_PRICE = 4,
-		UI_MANAGER = 5,
-		UI_SET_PRICE = 6,
-		UI_NORMS = 7,
-		UI_NORM_EDIT = 8,
-		UI_APPREARANCE = 9
-		;
+
+	public static final int UI_TYPE = 1;
+	public static final int UI_PRICE = 2;
+	public static final int UI_MANAGER = 3;
+	public static final int UI_SET_PRICE = 4;
+	public static final int UI_NORMS = 5;
+	public static final int UI_NORM_EDIT = 6;
+	public static final int UI_APPREARANCE = 7;
 
 	@Override
 	public void sync_packet(LDGuiContainer container, ModuleResponse resp){
 		resp.setTitle("district.title");
-		boolean canman = can(DISTRICT_MANAGE, container.player.uuid) || container.player.adm;
-		boolean canoman = owner.manageable().can(DISTRICT_MANAGE, container.player.uuid) || container.player.adm;
+		boolean canman = can(MANAGE_DISTRICT, container.player.uuid) || container.player.adm;
+		boolean canoman = owner.manageable().can(MANAGE_DISTRICT, container.player.uuid) || container.player.adm;
 		switch(container.x){
 			case UI_MAIN:
 				resp.addRow("id", ELM_GENERIC, id);
@@ -257,14 +250,6 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 				}
 				resp.addButton("norms", ELM_GREEN, ICON_OPEN);
 				resp.addButton("appearance", ELM_YELLOW, ICON_OPEN);
-				break;
-			case UI_NAME:
-				resp.setTitle("district.name.title");
-				resp.addRow("id", ELM_GENERIC, id);
-				resp.addRow("name.current", ELM_GENERIC, name());
-				resp.addField("name.field", name());
-				resp.addButton("name.submit", ELM_GENERIC, ICON_OPEN);
-				resp.setFormular();
 				break;
 			case UI_TYPE:
 				resp.setTitle("district.type.title");
@@ -347,14 +332,16 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 
 	@Override
 	public void on_interact(LDGuiContainer container, ModuleRequest req){
-		boolean canman = can(DISTRICT_MANAGE, container.player.uuid) || container.player.adm;
-		boolean canoman = owner.manageable().can(DISTRICT_MANAGE, container.player.uuid) || container.player.adm;
+		boolean canman = can(MANAGE_DISTRICT, container.player.uuid) || container.player.adm;
+		boolean canoman = owner.manageable().can(MANAGE_DISTRICT, container.player.uuid) || container.player.adm;
 		switch(req.event()){
-			case "name": container.open(UI_NAME); return;
+			case "name":{
+				container.open(UI_NORM_EDIT, id, norms.index(norms.get("name")));
+				return;
+			}
 			case "type": container.open(UI_TYPE); return;
 			case "owner":{
-				if(canoman) container.open(UI_OWNER);
-				else container.open(owner.is_county ? GuiHandler.COUNTY : GuiHandler.MUNICIPALITY, 0, owner.owid, 0);
+				container.open(owner.is_county ? GuiHandler.COUNTY : GuiHandler.MUNICIPALITY, 0, owner.owid, 0);
 				return;
 			}
 			case "manager": if(canoman) container.open(UI_MANAGER); return;
@@ -363,16 +350,6 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 			case "mailbox": if(canman) container.open(MAILBOX, getLayer().ordinal(), id, 0); return;
 			case "norms": container.open(UI_NORMS); return;
 			case "appearance": container.open(UI_APPREARANCE); return;
-			case "icon": return;
-			case "color": return;
-			case "name.submit":{
-				if(!canman) return;
-    			String name = req.getField("name.field");
-    			if(!validateName(container, name)) return;
-    			norms.get("name").set(name);
-    			container.open(UI_MAIN);
-				return;
-			}
 			case "type.submit":{
 				if(!canman) return;
 				DistrictType type = DistrictType.TYPES.get(req.getRadio("type."));
