@@ -18,21 +18,20 @@ import net.fexcraft.mod.landdev.gui.modules.ModuleResponse;
  */
 public class ExternalData implements Saveable, LDGuiModule {
 
-	public static final HashMap<Layers, ArrayList<Class<? extends Saveable>>> REGISTRY = new HashMap<>();
-	static{
-		for(Layers layer : Layers.values()) REGISTRY.put(layer, new ArrayList<>());
-	}
-	public List<Saveable> saveables = new ArrayList<>();
+	public static final HashMap<Layers, ArrayList<Class<? extends ExternalSaveable>>> REGISTRY = new HashMap<>();
+	static{ for(Layers layer : Layers.values()) REGISTRY.put(layer, new ArrayList<>()); }
+	public List<ExternalSaveable> saveables = new ArrayList<>();
 	public List<LDGuiSubModule> modules = new ArrayList<>();
 	public final LDGuiModule module;
 
 	public ExternalData(LDGuiModule module){
 		this.module = module;
-		for(Class<? extends Saveable> clazz : REGISTRY.get(((Layer)module).getLayer())){
+		for(Class<? extends ExternalSaveable> clazz : REGISTRY.get(((Layer)module).getLayer())){
 			try{
-				Saveable save = clazz.newInstance();
+				ExternalSaveable save = clazz.newInstance();
 				saveables.add(save);
 				if(save instanceof LDGuiSubModule) modules.add((LDGuiSubModule)save);
+				save.setup((Layer)module);
 			}
 			catch(Exception e){
 				e.printStackTrace();
@@ -79,6 +78,16 @@ public class ExternalData implements Saveable, LDGuiModule {
 	@Override
 	public void on_interact(LDGuiContainer container, ModuleRequest req){
 		for(LDGuiSubModule submod : modules) if(submod.on_interact(module, container, req)) return;
+	}
+
+	public ExternalSaveable get(String id){
+		for(ExternalSaveable save : saveables) if(save.id().equals(id)) return save;
+		return null;
+	}
+
+	public <ES> ES getCasted(String id){
+		for(ExternalSaveable save : saveables) if(save.id().equals(id)) return (ES)save;
+		return null;
 	}
 
 }
