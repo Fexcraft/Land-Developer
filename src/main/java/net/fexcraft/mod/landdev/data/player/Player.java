@@ -18,7 +18,6 @@ import net.fexcraft.mod.landdev.data.PermAction;
 import net.fexcraft.mod.landdev.data.Saveable;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.data.county.County;
-import net.fexcraft.mod.landdev.data.district.District;
 import net.fexcraft.mod.landdev.data.hooks.ExternalData;
 import net.fexcraft.mod.landdev.data.municipality.Municipality;
 import net.fexcraft.mod.landdev.util.PacketReceiver;
@@ -43,7 +42,7 @@ public class Player implements Saveable, Layer {
 	public Municipality municipality;
 	public County county;
 	public Chunk_ chunk_current, chunk_last;
-	public ExternalData<District> external = new ExternalData(this);
+	public ExternalData external = new ExternalData(this);
 	
 	public Player(UUID uuid){
 		offline = true;
