@@ -11,6 +11,8 @@ import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.mod.fsmm.api.Account;
 import net.fexcraft.mod.fsmm.util.DataManager;
 import net.fexcraft.mod.landdev.data.*;
+import net.fexcraft.mod.landdev.data.district.District;
+import net.fexcraft.mod.landdev.data.hooks.ExternalData;
 import net.fexcraft.mod.landdev.data.norm.BoolNorm;
 import net.fexcraft.mod.landdev.data.norm.IntegerNorm;
 import net.fexcraft.mod.landdev.data.norm.StringNorm;
@@ -31,6 +33,7 @@ public class County implements Saveable, Layer {
 	public ArrayList<Integer> districts = new ArrayList<>();
 	public ArrayList<Integer> municipalities = new ArrayList<>();
 	public Citizens citizens = new Citizens(COUNTY_CITIZEN);
+	public ExternalData<District> external = new ExternalData(this);
 	public Account account;
 	public State state;
 	
@@ -62,6 +65,7 @@ public class County implements Saveable, Layer {
 		municipalities.forEach(mun -> marray.add(mun));
 		map.add("municipalities", marray);
 		map.add("state", state.id);
+		external.save(map);
 		DataManager.save(account);
 	}
 
@@ -87,6 +91,7 @@ public class County implements Saveable, Layer {
 			array.value.forEach(elm -> municipalities.add(elm.integer_value()));
 		}
 		state = ResManager.getState(map.getInteger("state", -1), true);
+		external.load(map);
 	}
 	
 	@Override
@@ -105,7 +110,7 @@ public class County implements Saveable, Layer {
 			state = ResManager.getState(0, true);
 			color.set(0xff9900);
 		}
-		else return;
+		external.gendef();
 	}
 	
 	@Override
