@@ -12,8 +12,12 @@ import net.fexcraft.mod.fsmm.util.DataManager;
 import net.fexcraft.mod.landdev.data.*;
 import net.fexcraft.mod.landdev.data.hooks.ExternalData;
 import net.fexcraft.mod.landdev.data.norm.StringNorm;
+import net.fexcraft.mod.landdev.gui.LDGuiContainer;
+import net.fexcraft.mod.landdev.gui.modules.LDGuiModule;
+import net.fexcraft.mod.landdev.gui.modules.ModuleRequest;
+import net.fexcraft.mod.landdev.gui.modules.ModuleResponse;
 
-public class State implements Saveable, Layer {
+public class State implements Saveable, Layer, LDGuiModule {
 
 	public final int id;
 	public Createable created = new Createable();
@@ -110,6 +114,16 @@ public class State implements Saveable, Layer {
 
 	public String name(){
 		return norms.get("name").string();
+	}
+
+	@Override
+	public void sync_packet(LDGuiContainer container, ModuleResponse resp){
+		//
+	}
+
+	@Override
+	public void on_interact(LDGuiContainer container, ModuleRequest req){
+		//
 	}
 
 }
