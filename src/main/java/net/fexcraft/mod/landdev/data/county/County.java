@@ -11,7 +11,6 @@ import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.mod.fsmm.api.Account;
 import net.fexcraft.mod.fsmm.util.DataManager;
 import net.fexcraft.mod.landdev.data.*;
-import net.fexcraft.mod.landdev.data.district.District;
 import net.fexcraft.mod.landdev.data.hooks.ExternalData;
 import net.fexcraft.mod.landdev.data.norm.BoolNorm;
 import net.fexcraft.mod.landdev.data.norm.IntegerNorm;
@@ -33,7 +32,7 @@ public class County implements Saveable, Layer {
 	public ArrayList<Integer> districts = new ArrayList<>();
 	public ArrayList<Integer> municipalities = new ArrayList<>();
 	public Citizens citizens = new Citizens(COUNTY_CITIZEN);
-	public ExternalData<District> external = new ExternalData(this);
+	public ExternalData external = new ExternalData(this);
 	public Account account;
 	public State state;
 	
