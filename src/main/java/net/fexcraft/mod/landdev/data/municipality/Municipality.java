@@ -11,7 +11,6 @@ import static net.fexcraft.mod.landdev.util.TranslationUtil.translate;
 import static net.fexcraft.mod.landdev.util.TranslationUtil.translateCmd;
 
 import java.util.ArrayList;
-import java.util.Map.Entry;
 
 import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonMap;
@@ -24,15 +23,15 @@ import net.fexcraft.mod.landdev.data.*;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.data.county.County;
 import net.fexcraft.mod.landdev.data.district.District;
-import net.fexcraft.mod.landdev.data.norm.Norm;
 import net.fexcraft.mod.landdev.data.norm.StringNorm;
 import net.fexcraft.mod.landdev.data.player.Permit;
 import net.fexcraft.mod.landdev.data.player.Player;
 import net.fexcraft.mod.landdev.gui.LDGuiContainer;
-import net.fexcraft.mod.landdev.gui.LDGuiElementType;
+import net.fexcraft.mod.landdev.gui.modules.AppearModule;
 import net.fexcraft.mod.landdev.gui.modules.LDGuiModule;
 import net.fexcraft.mod.landdev.gui.modules.ModuleRequest;
 import net.fexcraft.mod.landdev.gui.modules.ModuleResponse;
+import net.fexcraft.mod.landdev.gui.modules.NormModule;
 import net.fexcraft.mod.landdev.util.Announcer;
 import net.fexcraft.mod.landdev.util.ResManager;
 import net.fexcraft.mod.landdev.util.Settings;
@@ -205,43 +204,13 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 				resp.setFormular();
 				break;
 			case UI_APPREARANCE:
-				resp.setTitle("municipality.appearance.title");
-				resp.addRow("appearance.icon", ELM_GENERIC);
-				resp.addField("appearance.icon_field", icon.getn());
-				resp.addRow("appearance.color", ELM_GENERIC);
-				resp.addField("appearance.color_field", color.getString());
-				if(canman){
-					resp.addRow("appearance.submit", ELM_GENERIC, ICON_OPEN);
-					resp.setFormular();
-				}
+				AppearModule.resp(container, resp, "municipality", icon, color, canman);
 				break;
 			case UI_NORMS:
-				resp.setTitle("municipality.norms");
-				LDGuiElementType icon = canman ? ICON_OPEN : ICON_EMPTY;
-				for(Entry<String, Norm> entry : norms.norms.entrySet()){
-					if(entry.getValue().type.isBool()){
-						resp.addRow("norm." + entry.getKey(), ELM_GENERIC, icon, canman, entry.getValue().bool() ? LANG_YES : LANG_NO);
-					}
-					else{
-						resp.addRow("norm." + entry.getKey(), ELM_GENERIC, icon, canman, entry.getValue().string());
-					}
-				}
+				NormModule.respNormList(norms, container, resp, "municipality", canman);
 				break;
 			case UI_NORM_EDIT:{
-				resp.setTitle("municipality.norm_editor");
-				Norm norm = norms.get(container.z);
-				if(norm == null) return;
-				resp.addRow("norm_id", ELM_GREEN, norm.id);
-				resp.addRow("norm_value", ELM_GENERIC, norm.string());
-				if(!canman) break;
-				if(norm.type.isBool()){
-					resp.addButton("norm_bool", ELM_BLUE, norm.bool() ? ICON_ENABLED : ICON_DISABLED);
-				}
-				else{
-					resp.addField("norm_field", norm.string());
-					resp.addButton("norm_submit", ELM_BLUE, ICON_OPEN);
-					resp.setFormular();
-				}
+				NormModule.respNormEdit(norms, container, resp, "municipality", canman);
 				break;
 			}
 			case UI_CREATE:
@@ -305,37 +274,12 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 			}
 			case "norm_submit":{
 				if(!canman) return;
-				Norm norm = norms.get(container.z);
-				if(norm == null) return;
-				if(norm.type.isInteger()){
-					try{
-						norm.set(Integer.parseInt(req.getField("norm_field")));
-					}
-					catch(Exception e){
-						container.sendMsg("Error: " + e.getMessage());
-					}
-				}
-				else if(norm.type.isDecimal()){
-					try{
-						norm.set(Float.parseFloat(req.getField("norm_field")));
-					}
-					catch(Exception e){
-						container.sendMsg("Error: " + e.getMessage());
-					}
-				}
-				else{
-					norm.set(req.getField("norm_field"));
-				}
-				container.open(UI_NORM_EDIT);
+				NormModule.processNorm(norms, container, req, UI_NORM_EDIT);
 				return;
 			}
 			case "norm_bool":{
 				if(!canman) return;
-				Norm norm = norms.get(container.z);
-				if(norm == null) return;
-				if(!norm.type.isBool()) return;
-				norm.toggle();
-				container.open(UI_NORM_EDIT);
+				NormModule.processBool(norms, container, req, UI_NORM_EDIT);
 				return;
 			}
 			case "create.submit":{
@@ -438,12 +382,7 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 				return;
 			}
 		}
-		if(req.event().startsWith("norm.")){
-			Norm norm = norms.get(req.event().substring(5));
-			if(norm == null) return;
-			container.open(UI_NORM_EDIT, id, norms.index(norm));
-			return;
-		}
+		if(NormModule.isNormReq(norms, container, req, UI_NORM_EDIT, id)) return;
 	}
 
 }
