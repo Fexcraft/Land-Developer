@@ -41,12 +41,6 @@ public class County implements Saveable, Layer {
 		norms.add(new StringNorm("name", translate("county.norm.name")));
 		norms.add(new BoolNorm("new-municipalities", false));
 		norms.add(new IntegerNorm("new-municipality-fee", 100000));
-		manage.norms.add(new BoolNorm("claim", false));
-		manage.norms.add(new BoolNorm("manage_district", false));
-		manage.norms.add(new BoolNorm("set_tax_chunk", false));
-		manage.norms.add(new BoolNorm("set_tax_player", false));
-		manage.norms.add(new BoolNorm("finances_use", false));
-		manage.norms.add(new BoolNorm("finances_manage", false));
 	}
 
 	@Override
