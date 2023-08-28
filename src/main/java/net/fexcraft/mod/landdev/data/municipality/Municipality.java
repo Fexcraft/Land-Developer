@@ -23,6 +23,7 @@ import net.fexcraft.mod.landdev.data.*;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.data.county.County;
 import net.fexcraft.mod.landdev.data.district.District;
+import net.fexcraft.mod.landdev.data.hooks.ExternalData;
 import net.fexcraft.mod.landdev.data.norm.StringNorm;
 import net.fexcraft.mod.landdev.data.player.Permit;
 import net.fexcraft.mod.landdev.data.player.Player;
@@ -50,6 +51,7 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 	public Norms norms = new Norms();
 	public ArrayList<Integer> districts = new ArrayList<>();
 	public Citizens citizens = new Citizens(MUNICIPALITY_CITIZEN);
+	public ExternalData<District> external = new ExternalData(this);
 	public Account account;
 	public County county;
 	
@@ -77,6 +79,7 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 		districts.forEach(dis -> array.add(dis));
 		map.add("districts", array);
 		map.add("county", county.id);
+		external.save(map);
 		DataManager.save(account);
 	}
 
@@ -97,6 +100,7 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 			array.value.forEach(elm -> districts.add(elm.integer_value()));
 		}
 		county = ResManager.getCounty(map.getInteger("county", -1), true);
+		external.load(map);
 	}
 	
 	@Override
@@ -120,6 +124,7 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 			norms.get("name").set(translate("municipality.unnamed.name"));
 			norms.get("title").set(translate("municipality.unnamed.title"));
 		};
+		external.gendef();
 	}
 	
 	@Override
@@ -185,7 +190,7 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 				}
 				resp.addButton("norms", ELM_GREEN, ICON_OPEN);
 				resp.addButton("appearance", ELM_YELLOW, ICON_OPEN);
-				break;
+				return;
 			}
 			case UI_PRICE:
 				resp.setTitle("municipality.buy.title");
@@ -195,23 +200,23 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 				resp.addButton("buy.county_pays", ELM_GENERIC, ICON_CHECKBOX_UNCHECKED);
 				resp.addButton("buy.submit", ELM_GENERIC, ICON_OPEN);
 				resp.setFormular();
-				break;
+				return;
 			case UI_SET_PRICE:
 				resp.setTitle("municipality.set_price.title");
 				resp.addRow("id", ELM_GENERIC, ICON_BLANK, id);
 				resp.addField("set_price.field");
 				resp.addButton("set_price.submit", ELM_GENERIC, ICON_OPEN);
 				resp.setFormular();
-				break;
+				return;
 			case UI_APPREARANCE:
 				AppearModule.resp(container, resp, "municipality", icon, color, canman);
-				break;
+				return;
 			case UI_NORMS:
 				NormModule.respNormList(norms, container, resp, "municipality", canman);
-				break;
+				return;
 			case UI_NORM_EDIT:{
 				NormModule.respNormEdit(norms, container, resp, "municipality", canman);
-				break;
+				return;
 			}
 			case UI_CREATE:
 				resp.setTitle("municipality.create.title");
@@ -221,7 +226,7 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 				boolean pp = container.player.hasPermit(CREATE_MUNICIPALITY, county.getLayer(), county.id);
 				if(!cn && !pp){
 					resp.addRow("create.no_perm", ELM_GENERIC, ICON_BLANK);
-					break;
+					return;
 				}
 				resp.addRow("create.name", ELM_GENERIC);
 				resp.addField("create.name_field");
@@ -230,8 +235,9 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 				resp.addButton("create.submit", ELM_BLUE, ICON_OPEN);
 				resp.setFormular();
 				resp.setNoBack();
-				break;
+				return;
 		}
+		external.sync_packet(container, resp);
 	}
 
 	@Override
@@ -383,6 +389,7 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 			}
 		}
 		if(NormModule.isNormReq(norms, container, req, UI_NORM_EDIT, id)) return;
+		external.on_interact(container, req);
 	}
 
 }
