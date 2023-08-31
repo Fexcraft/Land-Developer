@@ -11,6 +11,7 @@ import static net.fexcraft.mod.landdev.util.TranslationUtil.translate;
 import static net.fexcraft.mod.landdev.util.TranslationUtil.translateCmd;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonMap;
@@ -156,12 +157,15 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 	}
 	
 	public static final int UI_CREATE = -1;
-	public static final int UI_STAFF = 1;
-	public static final int UI_PRICE = 2;
-	public static final int UI_SET_PRICE = 3;
-	public static final int UI_NORMS = 4;
-	public static final int UI_NORM_EDIT = 5;
-	public static final int UI_APPREARANCE = 6;
+	public static final int UI_MANAGER = 1;
+	public static final int UI_STAFF = 2;
+	public static final int UI_STAFF_EDIT = 3;
+	public static final int UI_STAFF_ADD = 4;
+	public static final int UI_PRICE = 5;
+	public static final int UI_SET_PRICE = 6;
+	public static final int UI_NORMS = 7;
+	public static final int UI_NORM_EDIT = 8;
+	public static final int UI_APPREARANCE = 9;
 
 
 	@Override
@@ -176,7 +180,7 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 				resp.addRow("muntitle", ELM_GENERIC, canman ? ICON_OPEN : ICON_EMPTY, canman, title());
 				resp.addButton("county", ELM_GENERIC, ICON_OPEN, county.name());
 				resp.addRow("manager", ELM_GENERIC, manage.getManagerName());
-				resp.addButton("staff", ELM_GENERIC, ICON_OPEN, manage.staff.size());
+				resp.addButton("staff", ELM_GREEN, ICON_OPEN, manage.staff.size());
 				resp.addBlank();
 				if(sell.price > 0){
 					resp.addButton("price", ELM_GENERIC, ICON_OPEN, sell.price_formatted());
@@ -190,6 +194,30 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 				}
 				resp.addButton("norms", ELM_GREEN, ICON_OPEN);
 				resp.addButton("appearance", ELM_YELLOW, ICON_OPEN);
+				return;
+			}
+			case UI_STAFF:{
+				resp.setTitle("municipality.staff.title");
+				resp.addRow("id", ELM_GENERIC, id);
+				resp.addButton("manager", ELM_GENERIC, ICON_OPEN, manage.getManagerName());
+				resp.addButton("staff.add", ELM_BLUE, ICON_ADD);
+				resp.addBlank();
+				resp.addRow("staff.list", ELM_YELLOW);
+				for(UUID staff : manage.staff.keySet()){
+					resp.addRow("staff." + staff, ELM_GENERIC, ICON_OPEN, VALONLY + "- " + ResManager.getPlayerName(staff));
+				}
+				return;
+			}
+			case UI_STAFF_EDIT:{
+				resp.setTitle("municipality.staff.edit.title");
+				resp.addRow("id", ELM_GENERIC, id);
+				//
+				return;
+			}
+			case UI_STAFF_ADD:{
+				resp.setTitle("municipality.staff.add.title");
+				resp.addRow("id", ELM_GENERIC, id);
+				//
 				return;
 			}
 			case UI_PRICE:
@@ -255,6 +283,7 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 				container.open(UI_NORM_EDIT, id, norms.index(norms.get("title")));
 				return;
 			}
+			case "staff": container.open(UI_STAFF); return;
 			case "price": container.open(UI_PRICE); return;
 			case "set_price": if(canman) container.open(UI_SET_PRICE); return;
 			case "mailbox": if(canman) container.open(MAILBOX, getLayer().ordinal(), id, 0); return;
@@ -389,6 +418,9 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 			}
 		}
 		if(NormModule.isNormReq(norms, container, req, UI_NORM_EDIT, id)) return;
+		if(req.event().startsWith("staff.")){
+			//
+		}
 		external.on_interact(container, req);
 	}
 
