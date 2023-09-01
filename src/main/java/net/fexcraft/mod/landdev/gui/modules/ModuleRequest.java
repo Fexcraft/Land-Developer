@@ -1,5 +1,7 @@
 package net.fexcraft.mod.landdev.gui.modules;
 
+import java.util.UUID;
+
 import net.fexcraft.mod.landdev.data.player.Player;
 import net.fexcraft.mod.landdev.util.ResManager;
 import net.minecraft.nbt.NBTTagCompound;
@@ -27,6 +29,10 @@ public class ModuleRequest {
 
 	public String getField(String key){
 		return compound.getCompoundTag("fields").getString(key);
+	}
+
+	public UUID getUUIDField(){
+		return UUID.fromString(compound.getCompoundTag("fields").getString("uuid"));
 	}
 
 	public Player getPlayerField(String key){
