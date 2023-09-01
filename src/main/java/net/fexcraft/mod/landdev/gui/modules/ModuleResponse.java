@@ -18,6 +18,7 @@ public class ModuleResponse {
 	private NBTTagCompound compound;
 	private NBTTagList list;
 	private boolean form;
+	private boolean nosubmit;
 
 	public ModuleResponse(){
 		compound = new NBTTagCompound();
@@ -32,6 +33,10 @@ public class ModuleResponse {
 		form = true;
 	}
 
+	public void setNoSubmit(){
+		nosubmit = true;
+	}
+
 	public void setNoBack(){
 		compound.setBoolean("noback", true);
 	}
@@ -39,6 +44,7 @@ public class ModuleResponse {
 	public NBTTagCompound build(){
 		compound.setTag("elements", list);
 		if(form) compound.setBoolean("form", true);
+		if(nosubmit) compound.setBoolean("nosubmit", true);
 		return compound;
 	}
 
@@ -82,6 +88,11 @@ public class ModuleResponse {
 		addEntry(list, id, ELM_BLANK, ELM_BLANK, false, true, value);
 	}
 
+	/** Also sets the response into a Formular */
+	public void addHiddenField(String id, Object value){
+		addEntry(list, id, ELM_BLANK, ELM_BLANK, false, true, value, false, true);
+	}
+
 	public void addRadio(String id, LDGuiElementType style, boolean checked){
 		addEntry(list, id, style, radio(checked), true, false, null);
 	}
@@ -109,11 +120,15 @@ public class ModuleResponse {
 	}
 
 	public void addEntry(NBTTagList root, String index, LDGuiElementType elm, LDGuiElementType icon, boolean button, boolean field, Object value, boolean valonly){
+		addEntry(root, index, elm, icon, button, field, value, valonly, false);
+	}
+
+	public void addEntry(NBTTagList root, String index, LDGuiElementType elm, LDGuiElementType icon, boolean button, boolean field, Object value, boolean valonly, boolean hidefield){
 		NBTTagList list = new NBTTagList();
 		list.appendTag(new NBTTagString(index));
 		list.appendTag(new NBTTagString(elm.name()));
 		list.appendTag(new NBTTagString(icon.name()));
-		list.appendTag(new NBTTagString((elm == ELM_BLANK ? "0" : "1") + (button ? "1" : "0") + (field ? "1" : "0")));
+		list.appendTag(new NBTTagString((elm == ELM_BLANK ? "0" : "1") + (button ? "1" : "0") + (field ? hidefield ? "2" : "1" : "0")));
 		if(value != null) list.appendTag(new NBTTagString(valonly ? val(value.toString()) : value.toString()));
 		root.appendTag(list);
 	}
