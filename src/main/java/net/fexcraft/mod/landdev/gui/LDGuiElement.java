@@ -66,7 +66,7 @@ public class LDGuiElement {
 					return true;
 				}
 				if(gui.container().form()){
-					if(!index.contains("submit")) return true;
+					if(!index.contains("submit") && !gui.container().nosubmit()) return true;
 					NBTTagCompound com = new NBTTagCompound();
 					com.setBoolean("submit", true);
 					com.setString("interact", index);
@@ -91,9 +91,9 @@ public class LDGuiElement {
 		return this;
 	}
 
-	public LDGuiElement field(LDGuiBase gui, String val, boolean wide){
+	public LDGuiElement field(LDGuiBase gui, String val, boolean wide, boolean hide){
 		gui.add(index, field = new TextField(pos, gui.fontrenderer(), gui.getGuiLeft() + 7, 0, wide ? 212 : 198, 10).setMaxLength(256));
-		if(val != null) gui.setField(index, val);
+		if(val != null) gui.setField(index, val, hide);
 		return this;
 	}
 
