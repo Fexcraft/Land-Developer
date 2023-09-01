@@ -47,9 +47,9 @@ public class LDGuiBase extends GenericGui<LDGuiContainer> {
 		container.send(Side.SERVER, com);
 	}
 
-	protected void addElm(String id, LDGuiElementType elm, LDGuiElementType icon, boolean text, boolean button, boolean field, String val){
-		if(!field) elements().add(new LDGuiElement(id + "_elm", elm).text(this, text ? id : null, val));
-		else elements().add(new LDGuiElement(id, elm).field(this, val, icon == LDGuiElementType.ICON_BLANK));
+	protected void addElm(String id, LDGuiElementType elm, LDGuiElementType icon, boolean text, boolean button, char field, String val){
+		if(field == '0') elements().add(new LDGuiElement(id + "_elm", elm).text(this, text ? id : null, val));
+		else elements().add(new LDGuiElement(id, elm).field(this, val, icon == LDGuiElementType.ICON_BLANK, field == '2'));
 		elements().add(new LDGuiElement(id, icon).button(this, button));
 	}
 
@@ -128,7 +128,7 @@ public class LDGuiBase extends GenericGui<LDGuiContainer> {
 		return fields.get(id).getText();
 	}
 
-	public void setField(String id, String val){
+	public void setField(String id, String val, boolean hide){
 		fields.get(id).setText(val);
 	}
 
