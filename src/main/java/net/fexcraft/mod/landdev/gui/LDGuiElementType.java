@@ -55,6 +55,10 @@ public enum LDGuiElementType {
 		return bool ? ICON_RADIOBOX_CHECKED : ICON_RADIOBOX_UNCHECKED;
 	}
 
+	public static LDGuiElementType enabled(boolean bool){
+		return bool ? ICON_ENABLED : ICON_DISABLED;
+	}
+
 	public boolean is_checkbox(){
 		return this == ICON_CHECKBOX_CHECKED || this == ICON_CHECKBOX_UNCHECKED;
 	}
