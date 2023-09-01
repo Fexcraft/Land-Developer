@@ -11,6 +11,7 @@ import static net.fexcraft.mod.landdev.util.TranslationUtil.translate;
 import static net.fexcraft.mod.landdev.util.TranslationUtil.translateCmd;
 
 import java.util.ArrayList;
+import java.util.Map.Entry;
 import java.util.UUID;
 
 import net.fexcraft.app.json.JsonArray;
@@ -21,6 +22,7 @@ import net.fexcraft.mod.fsmm.api.Bank;
 import net.fexcraft.mod.fsmm.api.Bank.Action;
 import net.fexcraft.mod.fsmm.util.DataManager;
 import net.fexcraft.mod.landdev.data.*;
+import net.fexcraft.mod.landdev.data.Manageable.Staff;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.data.county.County;
 import net.fexcraft.mod.landdev.data.district.District;
@@ -157,15 +159,14 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 	}
 	
 	public static final int UI_CREATE = -1;
-	public static final int UI_MANAGER = 1;
-	public static final int UI_STAFF = 2;
-	public static final int UI_STAFF_EDIT = 3;
-	public static final int UI_STAFF_ADD = 4;
-	public static final int UI_PRICE = 5;
-	public static final int UI_SET_PRICE = 6;
-	public static final int UI_NORMS = 7;
-	public static final int UI_NORM_EDIT = 8;
-	public static final int UI_APPREARANCE = 9;
+	public static final int UI_STAFF = 1;
+	public static final int UI_STAFF_EDIT = 2;
+	public static final int UI_STAFF_ADD = 3;
+	public static final int UI_PRICE = 4;
+	public static final int UI_SET_PRICE = 5;
+	public static final int UI_NORMS = 6;
+	public static final int UI_NORM_EDIT = 7;
+	public static final int UI_APPREARANCE = 8;
 
 
 	@Override
@@ -179,6 +180,7 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 				resp.addRow("name", ELM_GENERIC, canman ? ICON_OPEN : ICON_EMPTY, canman, name());
 				resp.addRow("muntitle", ELM_GENERIC, canman ? ICON_OPEN : ICON_EMPTY, canman, title());
 				resp.addButton("county", ELM_GENERIC, ICON_OPEN, county.name());
+				resp.addButton("districts", ELM_GENERIC, ICON_OPEN, districts.size());
 				resp.addRow("manager", ELM_GENERIC, manage.getManagerName());
 				resp.addButton("staff", ELM_GREEN, ICON_OPEN, manage.staff.size());
 				resp.addBlank();
@@ -203,15 +205,26 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 				resp.addButton("staff.add", ELM_BLUE, ICON_ADD);
 				resp.addBlank();
 				resp.addRow("staff.list", ELM_YELLOW);
-				for(UUID staff : manage.staff.keySet()){
-					resp.addRow("staff." + staff, ELM_GENERIC, ICON_OPEN, VALONLY + "- " + ResManager.getPlayerName(staff));
+				for(Staff staff : manage.staff){
+					resp.addButton("staff.edit." + staff.uuid, ELM_GENERIC, ICON_OPEN, VALONLY + "- " + staff.getPlayerName());
 				}
 				return;
 			}
 			case UI_STAFF_EDIT:{
 				resp.setTitle("municipality.staff.edit.title");
-				resp.addRow("id", ELM_GENERIC, id);
-				//
+				Staff staff = manage.staff.get(container.z);
+				resp.addRow("staff.name", ELM_GENERIC, staff.getPlayerName());
+				resp.addRow("staff.uuid", ELM_GENERIC, staff.uuid);
+				if(container.player.adm || !manage.isManager(staff)){
+					resp.addButton("staff.remove", ELM_RED, ICON_REM);
+					resp.addButton("staff.setmanager", ELM_BLUE, ICON_ADD);
+				}
+				resp.addHiddenField("uuid", staff.uuid);
+				resp.addRow("staff.permissions", ELM_YELLOW);
+				for(Entry<PermAction, Boolean> entry : staff.actions.entrySet()){
+					resp.addButton("staff.permission." + entry.getKey().name().toLowerCase(), ELM_GENERIC, enabled(entry.getValue()));
+				}
+				resp.setNoSubmit();
 				return;
 			}
 			case UI_STAFF_ADD:{
@@ -317,6 +330,14 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 				NormModule.processBool(norms, container, req, UI_NORM_EDIT);
 				return;
 			}
+			case "staff.remove":{
+				Print.debug(req.getCompound());
+				return;
+			}
+			case "staff.setmanager":{
+				Print.debug(req.getCompound());
+				return;
+			}
 			case "create.submit":{
 				Chunk_ chunk = ResManager.getChunk(container.player.entity);
 				County county = chunk.district.county();
@@ -418,8 +439,24 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 			}
 		}
 		if(NormModule.isNormReq(norms, container, req, UI_NORM_EDIT, id)) return;
-		if(req.event().startsWith("staff.")){
-			//
+		if(req.event().startsWith("staff.edit.")){
+			Staff staff = manage.getStaff(UUID.fromString(req.event().substring("staff.edit.".length())));
+			if(staff == null) return;
+			container.open(UI_STAFF_EDIT, id, manage.staff.indexOf(staff));
+			return;
+		}
+		if(req.event().startsWith("staff.permission.")){
+			if(!canman) return;
+			Staff staff = manage.getStaff(req.getUUIDField());
+			if(manage.isManager(staff)){
+				container.sendMsg("staff.permissions.ismanager");
+				return;
+			}
+			PermAction action = PermAction.get(req.event().substring("staff.permission.".length()).toUpperCase());
+			if(action == null) return;
+			staff.actions.put(action, !staff.actions.get(action));
+			container.open(UI_STAFF_EDIT);
+			return;
 		}
 		external.on_interact(container, req);
 	}
