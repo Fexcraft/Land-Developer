@@ -38,6 +38,7 @@ public class LDGuiContainer extends GenericContainer {
 	public LDGuiBase gui;
 	public final Player player;
 	private boolean form;
+	private boolean nosubmit;
 	protected HashMap<String, Boolean> checkboxes = new HashMap<>();
 	protected ArrayList<String> radioboxes = new ArrayList<>();
 	protected String radiobox;
@@ -224,7 +225,7 @@ public class LDGuiContainer extends GenericContainer {
 			LDGuiElementType icon = LDGuiElementType.valueOf(lis.getStringTagAt(2));
 			String bools = lis.getStringTagAt(3);
 			String val = lis.tagCount() > 4 ? lis.getStringTagAt(4) : null;
-			gui.addElm(index, elm, icon, bools.charAt(0) == '1', bools.charAt(1) == '1', bools.charAt(2) == '1', val);
+			gui.addElm(index, elm, icon, bools.charAt(0) == '1', bools.charAt(1) == '1', bools.charAt(2), val);
 			if(icon.is_checkbox()){
 				checkboxes.put(index, icon.checkbox());
 			}
@@ -234,6 +235,7 @@ public class LDGuiContainer extends GenericContainer {
 			}
 		}
 		if(packet.hasKey("form")) form = packet.getBoolean("form");
+		if(packet.hasKey("nosubmit")) form = packet.getBoolean("nosubmit");
 		if(gui.showicon = (packet.hasKey("gui_icon") && gui.elements().size() > 6)){
 			gui.iconurl = ExternalTextureHelper.get(packet.getString("gui_icon"));
 			gui.color.packed = packet.getInteger("gui_color");
@@ -244,6 +246,10 @@ public class LDGuiContainer extends GenericContainer {
 
 	public boolean form(){
 		return form;
+	}
+
+	public boolean nosubmit(){
+		return nosubmit;
 	}
 
 	public void sendMsg(String string, boolean addprefix){
