@@ -1,7 +1,8 @@
 package net.fexcraft.mod.landdev.data;
 
-import java.util.HashMap;
-import java.util.TreeMap;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import net.fexcraft.app.json.JsonMap;
@@ -12,12 +13,12 @@ import net.fexcraft.mod.landdev.util.ResManager;
 public class Manageable implements Saveable, PermInteractive {
 	
 	protected UUID manager;
-	public TreeMap<UUID, Staff> staff = null;
+	public ArrayList<Staff> staff = null;
 	protected PermActions actions;
 	protected String manager_name;
 	
 	public Manageable(boolean hasstaff, PermActions actions){
-		if(hasstaff) staff = new TreeMap<>();
+		if(hasstaff) staff = new ArrayList<>();
 		this.actions = actions;
 	}
 
@@ -26,10 +27,10 @@ public class Manageable implements Saveable, PermInteractive {
 		if(manager != null) map.add("manager", manager.toString());
 		if(staff != null){
 			JsonMap sta = map.getMap("staff");
-			staff.forEach((key, staff) -> {
+			staff.forEach(staff -> {
 				JsonMap stf = new JsonMap();
 				staff.save(stf);
-				sta.add(key.toString(), stf);
+				sta.add(staff.uuid.toString(), stf);
 			});
 		}
 	}
@@ -42,7 +43,7 @@ public class Manageable implements Saveable, PermInteractive {
 			map.getMap("staff").value.forEach((key, val) -> {
 				Staff stf = new Staff(UUID.fromString(key), actions);
 				stf.load(val.asMap());
-				staff.put(stf.uuid, stf);
+				staff.add(stf);
 			});
 		}
 	}
@@ -50,20 +51,34 @@ public class Manageable implements Saveable, PermInteractive {
 	public boolean isManager(UUID uuid){
 		return uuid.equals(manager);
 	}
-	
-	public boolean isStaff(UUID uuid){
-		return staff == null ? false : staff.get(uuid) != null;
+
+	public boolean isManager(Staff staff){
+		return staff.uuid.equals(manager);
 	}
 	
+	public boolean isStaff(UUID uuid){
+		for(Staff stf : staff){
+			if(stf.uuid.equals(uuid)) return true;
+		}
+		return false;
+	}
+
+	public Staff getStaff(UUID uuid){
+		for(Staff stf : staff){
+			if(stf.uuid.equals(uuid)) return stf;
+		}
+		return null;
+	}
+
 	public static class Staff implements Saveable {
 		
-		protected HashMap<PermAction, Boolean> actions = new HashMap<>();
-		protected UUID uuid;
+		public Map<PermAction, Boolean> actions = new LinkedHashMap<>();
+		public final UUID uuid;
 		
 		public Staff(UUID uiid, PermActions pacts){
 			uuid = uiid;
 			for(PermAction action : pacts.actions){
-				actions.put(action, true);
+				actions.put(action, false);
 			}
 		}
 
@@ -81,14 +96,18 @@ public class Manageable implements Saveable, PermInteractive {
 				}
 			});
 		}
-		
+
+		public String getPlayerName(){
+			return ResManager.getPlayerName(uuid);
+		}
+
 	}
 
 	@Override
 	public boolean can(PermAction act, UUID uuid){
 		if(!actions.isValid(act)) return false;
 		if(manager != null && manager.equals(uuid)) return true;
-		Staff sta = staff.get(uuid);
+		Staff sta = getStaff(uuid);
 		return sta != null && sta.actions.get(act);
 	}
 
@@ -97,7 +116,7 @@ public class Manageable implements Saveable, PermInteractive {
 		for(PermAction act : acts){
 			if(!actions.isValid(act)) continue;
 			if(manager != null && manager.equals(uuid)) return true;
-			Staff sta = staff.get(uuid);
+			Staff sta = getStaff(uuid);
 			if(sta != null && sta.actions.get(act)) return true;
 		}
 		return false;
@@ -110,7 +129,7 @@ public class Manageable implements Saveable, PermInteractive {
 
 	public void add(Player player){
 		if(staff == null) return;
-		staff.put(player.uuid, new Staff(player.uuid, actions));
+		staff.add(new Staff(player.uuid, actions));
 	}
 
 	public void setManager(Player player){
