@@ -201,7 +201,7 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 			case UI_STAFF:{
 				resp.setTitle("municipality.staff.title");
 				resp.addRow("id", ELM_GENERIC, id);
-				resp.addButton("manager", ELM_GENERIC, ICON_OPEN, manage.getManagerName());
+				resp.addRow("manager", ELM_GENERIC, manage.getManagerName());
 				resp.addButton("staff.add", ELM_BLUE, ICON_ADD);
 				resp.addBlank();
 				resp.addRow("staff.list", ELM_YELLOW);
@@ -220,6 +220,7 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 					resp.addButton("staff.setmanager", ELM_BLUE, ICON_ADD);
 				}
 				resp.addHiddenField("uuid", staff.uuid);
+				resp.addBlank();
 				resp.addRow("staff.permissions", ELM_YELLOW);
 				for(Entry<PermAction, Boolean> entry : staff.actions.entrySet()){
 					resp.addButton("staff.permission." + entry.getKey().name().toLowerCase(), ELM_GENERIC, enabled(entry.getValue()));
