@@ -76,6 +76,7 @@ public class LDGuiElement {
 					if(gui.container().radiobox != null) com.setString("radiobox", gui.container().radiobox);
 					NBTTagCompound fields = new NBTTagCompound();
 					gui.fields().forEach((key, val) -> fields.setString(key, val.getText()));
+					gui.container().sfields.forEach((key, val) -> fields.setString(key, val));
 					com.setTag("fields", fields);
 					gui.container().send(Side.SERVER, com);
 					return true;
@@ -91,9 +92,9 @@ public class LDGuiElement {
 		return this;
 	}
 
-	public LDGuiElement field(LDGuiBase gui, String val, boolean wide, boolean hide){
+	public LDGuiElement field(LDGuiBase gui, String val, boolean wide){
 		gui.add(index, field = new TextField(pos, gui.fontrenderer(), gui.getGuiLeft() + 7, 0, wide ? 212 : 198, 10).setMaxLength(256));
-		if(val != null) gui.setField(index, val, hide);
+		if(val != null) gui.setField(index, val);
 		return this;
 	}
 
