@@ -58,6 +58,11 @@ public class Mail implements Saveable {
 		return this;
 	}
 
+	public Mail setStaffInvite(){
+		staff = true;
+		return this;
+	}
+
 	@Override
 	public void save(JsonMap map){
 		map.add("read", !unread);
