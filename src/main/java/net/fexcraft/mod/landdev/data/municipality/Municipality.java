@@ -232,7 +232,10 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 			case UI_STAFF_ADD:{
 				resp.setTitle("municipality.staff.add.title");
 				resp.addRow("id", ELM_GENERIC, id);
-				//
+				resp.addRow("staff.add.info", ELM_YELLOW);
+				resp.addField("staff.add.field");
+				resp.addButton("staff.add.submit", ELM_GENERIC, ICON_OPEN);
+				resp.setFormular();
 				return;
 			}
 			case UI_PRICE:
@@ -332,22 +335,65 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 				NormModule.processBool(norms, container, req, UI_NORM_EDIT);
 				return;
 			}
+			case "staff.add":{
+				container.open(UI_STAFF_ADD);
+				return;
+			}
+			case "staff.add.submit":{
+				if(!canman) return;
+				Player ply = req.getPlayerField("staff.add.field");
+				if(ply == null){
+					container.sendMsg("staff.add.notfound");
+					return;
+				}
+				if(!citizens.isCitizen(ply.uuid)){
+					container.sendMsg("staff.add.notmember");
+					return;
+				}
+				Mail mail = new Mail(MailType.INVITE, Layers.MUNICIPALITY, id, Layers.PLAYER, ply.uuid).expireInDays(7);
+				mail.setTitle(name()).setStaffInvite();
+				mail.addMessage(translate("mail.municipality.staff.invite0"));
+				mail.addMessage(translate("mail.municipality.staff.invite1"));
+				ply.addMailAndSave(mail);
+				Print.chat(player.entity, translate("gui.municipality.staff.add.success"));
+				player.entity.closeScreen();
+				return;
+			}
 			case "staff.remove":{
 				Staff staff = manage.getStaff(req.getUUIDField());
-				if(staff != null){
+				if(staff != null && !manage.isManager(staff)){
 					manage.staff.remove(staff.uuid);
 					Player ply = ResManager.getPlayer(staff.uuid, true);
-					Mail mail = new Mail(MailType.SYSTEM, Layers.MUNICIPALITY, id, Layers.PLAYER, ply.uuid);
-					mail.expireInDays(7);
-					mail.setTitle(translate("mail.municipality.staff.removed.title", name()));
-					mail.addMessage(translate("mail.municipality.staff.removed.text"));
-					ply.mail.mails.add(mail);
+					Mail mail = new Mail(MailType.SYSTEM, Layers.MUNICIPALITY, id, Layers.PLAYER, ply.uuid).expireInDays(7);
+					mail.setTitle(name()).addMessage(translate("mail.municipality.staff.nolonger"));
+					ply.addMailAndSave(mail);
+					for(Staff stf : manage.staff){
+						Player stp = ResManager.getPlayer(stf.uuid, true);
+						mail = new Mail(MailType.SYSTEM, Layers.MUNICIPALITY, id, Layers.PLAYER, stp.uuid).expireInDays(7);
+						mail.setTitle(name()).addMessage(translate("mail.municipality.staff.removed", staff.getPlayerName()));
+						stp.addMailAndSave(mail);
+					}
 					Announcer.announce(Target.MUNICIPALITY, id, "announce.municipality.staff.removed", staff.getPlayerName(), name(), id);
 				}
 				return;
 			}
 			case "staff.setmanager":{
-				Print.debug(req.getCompound());
+				Staff staff = manage.getStaff(req.getUUIDField());
+				if(staff != null){
+					manage.setManager(staff.uuid);
+					Player ply = ResManager.getPlayer(staff.uuid, true);
+					Mail mail = new Mail(MailType.SYSTEM, Layers.MUNICIPALITY, id, Layers.PLAYER, ply.uuid).expireInDays(7);
+					mail.setTitle(name()).addMessage(translate("mail.municipality.manager_now"));
+					ply.addMailAndSave(mail);
+					save();
+					for(Staff stf : manage.staff){
+						Player stp = ResManager.getPlayer(stf.uuid, true);
+						mail = new Mail(MailType.SYSTEM, Layers.MUNICIPALITY, id, Layers.PLAYER, stp.uuid).expireInDays(7);
+						mail.setTitle(name()).addMessage(translate("mail.municipality.manager_set", staff.getPlayerName()));
+						stp.addMailAndSave(mail);
+					}
+					Announcer.announce(Target.MUNICIPALITY, id, "announce.municipality.manager_set", staff.getPlayerName(), name(), id);
+				}
 				return;
 			}
 			case "create.submit":{
