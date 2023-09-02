@@ -35,13 +35,19 @@ landdev.server.started=Server has started. Running LandDeveloper v%s
 landdev.server.stopping=Server is closing.
 
 landdev.chat.player=%s#&0] %s&0: &f%s
-landdev.announce.municipality.created=&9[&aLD&9] &bThe Municipality &6%s &7(%s) &bjust got created!
-landdev.announce.municipality.staff.removed=&9[&aLD&9] &c%s &bis no longer Staff in &6%s &7(%s)
-landdev.announce.municipality.staff.added=&9[&aLD&9] &a%s &bis now Staff in &6%s &7(%s)
-landdev.announce.municipality.manager_set=&9[&aLD&9] &a%s &bis now Manager in &6%s &7(%s)
+landdev.announce.municipality.created=&9[&2LD&9] &bThe Municipality &6%s &7(%s) &bjust got created!
+landdev.announce.municipality.staff.removed=&9[&2LD&9] &c%s &bis no longer Staff in &6%s &7(%s)
+landdev.announce.municipality.staff.added=&9[&2LD&9] &a%s &bis now Staff in &6%s &7(%s)
+landdev.announce.municipality.manager_set=&9[&2LD&9] &a%s &bis now Manager in &6%s &7(%s)
 
-landdev.mail.municipality.staff.removed.title=%s Management
-landdev.mail.municipality.staff.removed.text=You are no longer Municipality Staff.
+landdev.mail.player.new=&6You have new mail!
+landdev.mail.player.unread=&6You have &3%s &eunread &6mails.
+landdev.mail.municipality.staff.nolonger=You are no longer Municipality Staff.
+landdev.mail.municipality.staff.removed=%s is no longer Municipality Staff.
+landdev.mail.municipality.staff.invite0=You are invited to become
+landdev.mail.municipality.staff.invite1=Municipality Staff (Council Member).
+landdev.mail.municipality.manager_now=You are now Municipality Mayor.
+landdev.mail.municipality.manager_set=%s is now Municipality Mayor.
 
 landdev.chunk_type.private=Private
 landdev.chunk_type.normal=Normal
@@ -316,3 +322,8 @@ landdev.gui.municipality.staff.permission.create_district=District Creation
 landdev.gui.municipality.staff.permission.manage_district=District Management
 landdev.gui.municipality.staff.permission.manage_municipality=Municipality Management (*)
 landdev.gui.municipality.staff.add.title=Add Municipality Staff
+landdev.gui.municipality.staff.add.info=Enter the Name of a Citizen
+landdev.gui.municipality.staff.add.submit=Send Invite to Council
+landdev.gui.municipality.staff.add.notfound=Citizen not found.
+landdev.gui.municipality.staff.add.notmember=Not a Citizen of this Municipality.
+landdev.gui.municipality.staff.add.success=&eInvite sent!
