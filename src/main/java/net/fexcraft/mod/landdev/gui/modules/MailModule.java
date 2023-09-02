@@ -39,11 +39,12 @@ public class MailModule implements LDGuiModule {
 			resp.addRow("notfound", ELM_GENERIC);
 			return;
 		}
-		resp.addRow("title", ELM_GREEN, resp.val(mail.title));
 		resp.addRow("type", ELM_BLUE, mail.type.name().toLowerCase());
-		resp.addRow("from", ELM_BLUE, mail.from + ":" + mail.fromid);
-		resp.addRow("to", ELM_BLUE, mail.receiver);
+		resp.addRow("from", ELM_BLUE, mail.from.name().toLowerCase() + " > " + mail.fromid);
+		//resp.addRow("to", ELM_BLUE, mail.receiver);
 		resp.addRow("at", ELM_BLUE, Time.getAsString(mail.sent));
+		resp.addBlank();
+		resp.addRow("title", ELM_GREEN, resp.val(mail.title));
 		for(int i = 0; i < mail.message.size(); i++){
 			resp.addRow("msg" + i, ELM_GENERIC, resp.val(mail.message.get(i)));
 		}
@@ -69,7 +70,28 @@ public class MailModule implements LDGuiModule {
 	}
 
 	public void on_interact(LDGuiContainer container, ModuleRequest req){
-		//
+		switch(req.event()){
+			case "invite.accept":{
+
+				return;
+			}
+			case "invite.reject":{
+
+				return;
+			}
+			case "request.accept":{
+
+				return;
+			}
+			case "request.reject":{
+
+				return;
+			}
+			case "request.timeout":{
+
+				return;
+			}
+		}
 	}
 
 	public static MailData getMailbox(Player player, int x, int y){
