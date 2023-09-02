@@ -92,7 +92,7 @@ public class Settings {
 		PROTECT_WILDERNESS = config.getBoolean("protect_wilderness", DEFAULT_CAT, true, "If wilderness protection should be enabled.");
 		EDIT_WILDERNESS = !PROTECT_WILDERNESS;
 		CHUNK_LINK_LIMIT = config.getInt("chunk_link_limit", DEFAULT_CAT, 3, 0, 64, "How many chunks can be linked to another. Set to '0' to disable.");
-		REQUEST_TIMEOUT_DAYS = config.getInt("request_timeout_days", DEFAULT_CAT, 7, 1, 64, "Default days value to request timeouts.");
+		REQUEST_TIMEOUT_DAYS = config.getInt("request_timeout_days", DEFAULT_CAT, 7, 1, 64, "Default days value for request timeouts.");
 		//
 		CHAT_OVERRIDE_LANG = TranslationUtil.translate("chat.player");
 		Broadcaster.SENDERS.values().removeIf(s -> !s.type().internal());
