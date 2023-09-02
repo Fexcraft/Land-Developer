@@ -204,4 +204,20 @@ public class Player implements Saveable, Layer, LDGuiModule {
 		//
 	}
 
+	public boolean isCurrentlyInDistrict(int id){
+		return chunk_current != null && chunk_current.district.id == id;
+	}
+
+	public boolean isCurrentlyInMunicipality(int id){
+		return chunk_current != null && !chunk_current.district.owner.is_county && chunk_current.district.municipality().id == id;
+	}
+
+	public boolean isCurrentlyInCounty(int id){
+		return chunk_current != null && chunk_current.district.county().id == id;
+	}
+
+	public boolean isCurrentlyInState(int id){
+		return chunk_current != null && chunk_current.district.state().id == id;
+	}
+
 }
