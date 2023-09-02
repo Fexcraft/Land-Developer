@@ -37,6 +37,7 @@ import net.fexcraft.mod.landdev.gui.modules.ModuleRequest;
 import net.fexcraft.mod.landdev.gui.modules.ModuleResponse;
 import net.fexcraft.mod.landdev.gui.modules.NormModule;
 import net.fexcraft.mod.landdev.util.Announcer;
+import net.fexcraft.mod.landdev.util.Announcer.Target;
 import net.fexcraft.mod.landdev.util.ResManager;
 import net.fexcraft.mod.landdev.util.Settings;
 import net.minecraft.nbt.NBTTagList;
@@ -332,7 +333,17 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 				return;
 			}
 			case "staff.remove":{
-				Print.debug(req.getCompound());
+				Staff staff = manage.getStaff(req.getUUIDField());
+				if(staff != null){
+					manage.staff.remove(staff.uuid);
+					Player ply = ResManager.getPlayer(staff.uuid, true);
+					Mail mail = new Mail(MailType.SYSTEM, Layers.MUNICIPALITY, id, Layers.PLAYER, ply.uuid);
+					mail.expireInDays(7);
+					mail.setTitle(translate("mail.municipality.staff.removed.title", name()));
+					mail.addMessage(translate("mail.municipality.staff.removed.text"));
+					ply.mail.mails.add(mail);
+					Announcer.announce(Target.MUNICIPALITY, id, "announce.municipality.staff.removed", staff.getPlayerName(), name(), id);
+				}
 				return;
 			}
 			case "staff.setmanager":{
@@ -435,7 +446,7 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 				ResManager.bulkSave(mnew, county, player, mold, cold);
 				player.entity.closeScreen();
     			Print.chat(player.entity, translate("gui.municipality.create.complete"));
-    			Announcer.announce(Announcer.Target.GLOBAL, 0, "announce.new_municipality", name, newid);
+    			Announcer.announce(Announcer.Target.GLOBAL, 0, "announce.municipality.created", name, newid);
 				return;
 			}
 		}
