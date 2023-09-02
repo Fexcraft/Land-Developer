@@ -4,6 +4,7 @@ import static net.fexcraft.mod.landdev.gui.GuiHandler.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 import net.fexcraft.lib.mc.gui.GenericContainer;
 import net.fexcraft.lib.mc.gui.GenericGui.BasicButton;
@@ -41,6 +42,7 @@ public class LDGuiContainer extends GenericContainer {
 	private boolean nosubmit;
 	protected HashMap<String, Boolean> checkboxes = new HashMap<>();
 	protected ArrayList<String> radioboxes = new ArrayList<>();
+	protected LinkedHashMap<String, String> sfields = new LinkedHashMap<>();
 	protected String radiobox;
 	protected int backto;
 
@@ -179,6 +181,7 @@ public class LDGuiContainer extends GenericContainer {
 		}
 		else if(!packet.hasKey("elements")) return;
 		NBTTagList list = (NBTTagList)packet.getTag("elements");
+		sfields.clear();
 		gui.clear();
 		gui.addscroll = list.tagCount() > 12;
 		gui.sizeOf(gui.addscroll ? 12 : list.tagCount());
@@ -225,7 +228,10 @@ public class LDGuiContainer extends GenericContainer {
 			LDGuiElementType icon = LDGuiElementType.valueOf(lis.getStringTagAt(2));
 			String bools = lis.getStringTagAt(3);
 			String val = lis.tagCount() > 4 ? lis.getStringTagAt(4) : null;
-			gui.addElm(index, elm, icon, bools.charAt(0) == '1', bools.charAt(1) == '1', bools.charAt(2), val);
+			if(bools.charAt(2) == '2'){
+				sfields.put(index, val);
+			}
+			else gui.addElm(index, elm, icon, bools.charAt(0) == '1', bools.charAt(1) == '1', bools.charAt(2) == '1', val);
 			if(icon.is_checkbox()){
 				checkboxes.put(index, icon.checkbox());
 			}
@@ -234,8 +240,8 @@ public class LDGuiContainer extends GenericContainer {
 				if(icon.radiobox()) radiobox = index;
 			}
 		}
-		if(packet.hasKey("form")) form = packet.getBoolean("form");
-		if(packet.hasKey("nosubmit")) form = packet.getBoolean("nosubmit");
+		form = packet.getBoolean("form");
+		nosubmit = packet.getBoolean("nosubmit");
 		if(gui.showicon = (packet.hasKey("gui_icon") && gui.elements().size() > 6)){
 			gui.iconurl = ExternalTextureHelper.get(packet.getString("gui_icon"));
 			gui.color.packed = packet.getInteger("gui_color");
