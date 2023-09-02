@@ -25,6 +25,37 @@ public class Mail implements Saveable {
 
 	public Mail(){
 		sent = Time.getDate();
+		unread = true;
+		type = MailType.SYSTEM;
+	}
+
+	public Mail(MailType mtype, Layers frl, Object id, Layers rec, Object recid){
+		sent = Time.getDate();
+		type = mtype;
+		from = frl;
+		fromid = id.toString();
+		receiver = rec + "_" + recid.toString();
+		unread = true;
+	}
+
+	public Mail expiry(long time){
+		expiry = Time.getDate() + time;
+		return this;
+	}
+
+	public Mail expireInDays(int days){
+		expiry = Time.getDate() + Time.DAY_MS * days;
+		return this;
+	}
+
+	public Mail setTitle(String ntitle){
+		title = ntitle;
+		return this;
+	}
+
+	public Mail addMessage(String msg){
+		message.add(msg);
+		return this;
 	}
 
 	@Override
