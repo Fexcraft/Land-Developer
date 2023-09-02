@@ -91,6 +91,7 @@ public class ModuleResponse {
 	/** Also sets the response into a Formular */
 	public void addHiddenField(String id, Object value){
 		addEntry(list, id, ELM_BLANK, ELM_BLANK, false, true, value, false, true);
+		setFormular();
 	}
 
 	public void addRadio(String id, LDGuiElementType style, boolean checked){
