@@ -35,7 +35,13 @@ landdev.server.started=Server has started. Running LandDeveloper v%s
 landdev.server.stopping=Server is closing.
 
 landdev.chat.player=%s#&0] %s&0: &f%s
-landdev.announce.new_municipality=&9[&aLD&9] &bThe Municipality &6%s &7(%s) &bjust got created!
+landdev.announce.municipality.created=&9[&aLD&9] &bThe Municipality &6%s &7(%s) &bjust got created!
+landdev.announce.municipality.staff.removed=&9[&aLD&9] &c%s &bis no longer Staff in &6%s &7(%s)
+landdev.announce.municipality.staff.added=&9[&aLD&9] &a%s &bis now Staff in &6%s &7(%s)
+landdev.announce.municipality.manager_set=&9[&aLD&9] &a%s &bis now Manager in &6%s &7(%s)
+
+landdev.mail.municipality.staff.removed.title=%s Management
+landdev.mail.municipality.staff.removed.text=You are no longer Municipality Staff.
 
 landdev.chunk_type.private=Private
 landdev.chunk_type.normal=Normal
