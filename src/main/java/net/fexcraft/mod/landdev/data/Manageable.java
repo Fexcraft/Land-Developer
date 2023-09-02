@@ -149,6 +149,10 @@ public class Manageable implements Saveable, PermInteractive {
 		return manager != null;
 	}
 
+	public UUID getManager(){
+		return manager;
+	}
+
 	public void setNoManager(){
 		manager = null;
 	}
