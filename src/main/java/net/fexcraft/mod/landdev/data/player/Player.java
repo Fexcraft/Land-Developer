@@ -8,11 +8,13 @@ import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fsmm.api.Account;
 import net.fexcraft.mod.fsmm.util.DataManager;
 import net.fexcraft.mod.landdev.LandDev;
 import net.fexcraft.mod.landdev.data.Layer;
 import net.fexcraft.mod.landdev.data.Layers;
+import net.fexcraft.mod.landdev.data.Mail;
 import net.fexcraft.mod.landdev.data.MailData;
 import net.fexcraft.mod.landdev.data.PermAction;
 import net.fexcraft.mod.landdev.data.Saveable;
@@ -26,6 +28,7 @@ import net.fexcraft.mod.landdev.gui.modules.ModuleRequest;
 import net.fexcraft.mod.landdev.gui.modules.ModuleResponse;
 import net.fexcraft.mod.landdev.util.PacketReceiver;
 import net.fexcraft.mod.landdev.util.ResManager;
+import net.fexcraft.mod.landdev.util.TranslationUtil;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
@@ -218,6 +221,18 @@ public class Player implements Saveable, Layer, LDGuiModule {
 
 	public boolean isCurrentlyInState(int id){
 		return chunk_current != null && chunk_current.district.state().id == id;
+	}
+
+	public void addMail(Mail newmail){
+		mail.mails.add(newmail);
+		if(entity != null && mail.unread() > 0){
+			Print.chat(entity, TranslationUtil.translate("mail.player.new"));
+		}
+	}
+
+	public void addMailAndSave(Mail newmail){
+		addMail(newmail);
+		save();
 	}
 
 }
