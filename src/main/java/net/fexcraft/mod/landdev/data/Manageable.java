@@ -70,6 +70,10 @@ public class Manageable implements Saveable, PermInteractive {
 		return null;
 	}
 
+	public void removeStaff(UUID uuid){
+		staff.removeIf(stf -> stf.uuid.equals(uuid));
+	}
+
 	public static class Staff implements Saveable {
 		
 		public Map<PermAction, Boolean> actions = new LinkedHashMap<>();
