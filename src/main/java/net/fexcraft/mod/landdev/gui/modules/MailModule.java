@@ -72,6 +72,7 @@ public class MailModule implements LDGuiModule {
 				resp.addButton("request.timeout", ELM_YELLOW, ICON_REM, Settings.REQUEST_TIMEOUT_DAYS);
 			}
 		}
+		resp.addButton("goback", ELM_GENERIC, ICON_LIST);
 	}
 
 	public void on_interact(LDGuiContainer container, ModuleRequest req){
@@ -137,7 +138,7 @@ public class MailModule implements LDGuiModule {
 			}
 			case "invite.reject":{
 				if(mail.type != MailType.INVITE) return;
-				mail.expiry(Time.getDate());
+				mail.expire();
 				container.open(GuiHandler.MAILBOX, container.x, container.y, container.z);
 				return;
 			}
@@ -153,6 +154,10 @@ public class MailModule implements LDGuiModule {
 			case "request.timeout":{
 				if(mail.type != MailType.REQUEST) return;
 
+				return;
+			}
+			case "goback":{
+				container.open(GuiHandler.MAILBOX, container.x, container.y, container.z);
 				return;
 			}
 		}
