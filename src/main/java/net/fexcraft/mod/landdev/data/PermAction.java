@@ -49,7 +49,9 @@ public enum PermAction {
 		FINANCES_USE,
 		FINANCES_MANAGE,
 		MAIL_READ,
-		MAIL_DELETE
+		MAIL_DELETE,
+		CREATE_DISTRICT,
+		MANAGE_DISTRICT
 	);
 	public static PermActions COUNTY_CITIZEN = new PermActions(
 		CHUNK_CLAIM,
