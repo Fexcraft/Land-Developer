@@ -2,6 +2,7 @@ package net.fexcraft.mod.landdev.data.district;
 
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.mod.fsmm.api.Account;
+import net.fexcraft.mod.landdev.data.Citizens;
 import net.fexcraft.mod.landdev.data.Manageable;
 import net.fexcraft.mod.landdev.data.Saveable;
 import net.fexcraft.mod.landdev.data.county.County;
@@ -67,6 +68,10 @@ public class DistrictOwner implements Saveable {
 
 	public Account account(){
 		return is_county ? county.account : municipality.account;
+	}
+
+	public Citizens citizen(){
+		return is_county ? county.citizens : municipality.citizens;
 	}
 
 }
