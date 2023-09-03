@@ -102,6 +102,7 @@ public class MailModule implements LDGuiModule {
 									mail.setTitle(mun.name()).addMessage(translate("mail.municipality.staff.added", pln));
 									stp.addMailAndSave(mail);
 								}
+								mail.expire();
 							}
 							else{
 								if(player.isMunicipalityManager()){
@@ -113,12 +114,14 @@ public class MailModule implements LDGuiModule {
 									return;
 								}
 								player.setCitizenOf(mun);
+								mail.expire();
 								//TODO announce
 							}
 						}
 						else if(mail.receiver.is(Layers.MUNICIPALITY)){
 							//invites into a county
 						}
+						goback(container);
 						return;
 					}
 					case COUNTY:{
@@ -139,28 +142,50 @@ public class MailModule implements LDGuiModule {
 			case "invite.reject":{
 				if(mail.type != MailType.INVITE) return;
 				mail.expire();
-				container.open(GuiHandler.MAILBOX, container.x, container.y, container.z);
+				goback(container);
 				return;
 			}
 			case "request.accept":{
 				if(mail.type != MailType.REQUEST) return;
+				switch(mail.from){
+					case PLAYER:{
+						if(mail.receiver.is(Layers.MUNICIPALITY)){
+							player = ResManager.getPlayer(mail.fromUUID(), true);
+							Municipality mun = ResManager.getMunicipality(mail.recInt(), true);
+							//
+						}
+						return;
+					}
+				}
 				return;
 			}
-			case "request.reject":{
-				if(mail.type != MailType.REQUEST) return;
-
-				return;
-			}
+			case "request.reject":
 			case "request.timeout":{
 				if(mail.type != MailType.REQUEST) return;
-
+				int mul = req.event().endsWith("timeout") ? Settings.REQUEST_TIMEOUT_DAYS : 1;
+				switch(mail.from){
+					case PLAYER:{
+						if(mail.receiver.is(Layers.MUNICIPALITY)){
+							player = ResManager.getPlayer(mail.fromUUID(), true);
+							Municipality mun = ResManager.getMunicipality(mail.recInt(), true);
+							mun.requests.timeouts.put(player.uuid, Time.getDate() + Time.DAY_MS * mul);
+							mail.expire();
+							goback(container);
+						}
+						return;
+					}
+				}
 				return;
 			}
 			case "goback":{
-				container.open(GuiHandler.MAILBOX, container.x, container.y, container.z);
+				goback(container);
 				return;
 			}
 		}
+	}
+
+	private void goback(LDGuiContainer container){
+		container.open(GuiHandler.MAILBOX, container.x, container.y, container.z);
 	}
 
 	public static MailData getMailbox(Player player, int x, int y){
