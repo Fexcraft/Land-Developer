@@ -258,4 +258,10 @@ public class Player implements Saveable, Layer, LDGuiModule {
 		}
 	}
 
+	public void leaveMunicipality(){
+		municipality.manage.removeStaff(uuid);
+		municipality.citizens.remove(this);
+		municipality = ResManager.getMunicipality(-1, true);
+	}
+
 }
