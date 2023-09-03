@@ -85,7 +85,12 @@ public class LDGuiClaimCon extends GenericContainer {
 				if(!district.can(CHUNK_CLAIM, player.getGameProfile().getId())){
 					com.setString("msg", "landdev.gui.claim.no_perm_district");
 				}
-				else com.setString("msg", "pass");
+				else{
+					com.setString("msg", "pass");
+					if(chunk.district.id > -1) chunk.district.chunks -= 1;
+					chunk.district = district;
+					chunk.district.chunks += 1;
+				}
 				send(Side.CLIENT, com);
 			}
 		}
