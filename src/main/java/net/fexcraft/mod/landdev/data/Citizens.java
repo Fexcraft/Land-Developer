@@ -1,6 +1,5 @@
 package net.fexcraft.mod.landdev.data;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -8,6 +7,7 @@ import java.util.UUID;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.mod.landdev.data.PermAction.PermActions;
 import net.fexcraft.mod.landdev.data.player.Player;
+import net.fexcraft.mod.landdev.util.ResManager;
 
 public class Citizens implements Saveable, PermInteractive {
 	
@@ -60,10 +60,23 @@ public class Citizens implements Saveable, PermInteractive {
 		return 0;
 	}
 
+	public Citizen get(int index){
+		int idx = 0;
+		for(Citizen cit : citizens.values()){
+			if(idx == index) return cit;
+			idx++;
+		}
+		return null;
+	}
+
+	public Citizen get(UUID uuid){
+		return citizens.get(uuid);
+	}
+
 	public static class Citizen implements Saveable {
 		
-		protected HashMap<PermAction, Boolean> actions = new HashMap<>();
-		protected UUID uuid;
+		public LinkedHashMap<PermAction, Boolean> actions = new LinkedHashMap<>();
+		public final UUID uuid;
 		
 		public Citizen(UUID uiid, PermActions pacts){
 			uuid = uiid;
@@ -86,7 +99,11 @@ public class Citizens implements Saveable, PermInteractive {
 				}
 			});
 		}
-		
+
+		public String getPlayerName(){
+			return ResManager.getPlayerName(uuid);
+		}
+
 	}
 
 	@Override
