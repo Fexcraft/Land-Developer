@@ -44,10 +44,14 @@ landdev.mail.player.new=&6You have new mail!
 landdev.mail.player.unread=&6You have &3%s &eunread &6mails.
 landdev.mail.municipality.staff.nolonger=You are no longer Municipality Staff.
 landdev.mail.municipality.staff.removed=%s is no longer Municipality Staff.
+landdev.mail.municipality.staff.added=%s is now Municipality Staff.
 landdev.mail.municipality.staff.invite0=You are invited to become
 landdev.mail.municipality.staff.invite1=Municipality Staff (Council Member).
+landdev.mail.municipality.staff.notmember=You are not a citizen of the Municipality.
 landdev.mail.municipality.manager_now=You are now Municipality Mayor.
 landdev.mail.municipality.manager_set=%s is now Municipality Mayor.
+landdev.mail.municipality.citizen.ismanager=Please appoint a new Mayor before leaving your current Municipality.
+landdev.mail.county.citizen.ismanager=Please appoint a new County Manager before moving to another County.
 
 landdev.chunk_type.private=Private
 landdev.chunk_type.normal=Normal
