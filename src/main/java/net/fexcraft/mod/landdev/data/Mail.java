@@ -30,13 +30,13 @@ public class Mail implements Saveable {
 		type = MailType.SYSTEM;
 	}
 
-	public Mail(MailType mtype, Layers frl, Object id, Layers rec, Object recid){
+	public Mail(MailType mtype, Layers frl, Object id, Layers rec, Object rec_id){
 		sent = Time.getDate();
 		type = mtype;
 		from = frl;
 		fromid = id.toString();
 		receiver = rec;
-		recid = recid.toString();
+		recid = rec_id.toString();
 		unread = true;
 	}
 
