@@ -23,6 +23,7 @@ import net.fexcraft.mod.fsmm.api.Bank;
 import net.fexcraft.mod.fsmm.api.Bank.Action;
 import net.fexcraft.mod.fsmm.util.DataManager;
 import net.fexcraft.mod.landdev.data.*;
+import net.fexcraft.mod.landdev.data.Citizens.Citizen;
 import net.fexcraft.mod.landdev.data.Manageable.Staff;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.data.county.County;
@@ -254,6 +255,23 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 				}
 				return;
 			}
+			case UI_CITIZEN_EDIT:{
+				resp.setTitle("municipality.citizen.edit.title");
+				Citizen cit = citizens.get(container.z);
+				resp.addRow("citizen.name", ELM_GENERIC, cit.getPlayerName());
+				resp.addRow("citizen.uuid", ELM_GENERIC, cit.uuid);
+				if(container.player.adm){
+					resp.addButton("citizen.remove", ELM_RED, ICON_REM);
+				}
+				resp.addHiddenField("uuid", cit.uuid);
+				resp.addBlank();
+				resp.addRow("citizen.permissions", ELM_YELLOW);
+				for(Entry<PermAction, Boolean> entry : cit.actions.entrySet()){
+					resp.addButton("citizen.permission." + entry.getKey().name().toLowerCase(), ELM_GENERIC, enabled(entry.getValue()));
+				}
+				resp.setNoSubmit();
+				return;
+			}
 			case UI_CITIZEN_INVITE:{
 				resp.setTitle("municipality.citizen.invite.title");
 				resp.addRow("id", ELM_GENERIC, id);
@@ -454,6 +472,22 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 				player.entity.closeScreen();
 				return;
 			}
+			case "citizen.remove":{
+				Citizen cit = citizens.get(req.getUUIDField());
+				if(cit != null && !manage.isManager(cit.uuid)){
+					Player ply = ResManager.getPlayer(cit.uuid, true);
+					ply.setCitizenOf(ResManager.getMunicipality(-1, true));
+					Mail mail = new Mail(MailType.SYSTEM, Layers.MUNICIPALITY, id, Layers.PLAYER, ply.uuid).expireInDays(7);
+					mail.setTitle(name()).addMessage(translate("mail.municipality.citizen.nolonger"));
+					ply.addMailAndSave(mail);
+					mail = new Mail(MailType.SYSTEM, Layers.MUNICIPALITY, id, Layers.MUNICIPALITY, id).expireInDays(7);
+					mail.setTitle(name()).addMessage(translate("mail.municipality.citizen.removed", cit.getPlayerName()));
+					this.mail.mails.add(mail);
+					Announcer.announce(Target.MUNICIPALITY, id, "announce.municipality.citizen.removed", cit.getPlayerName(), name(), id);
+				}
+				container.open(UI_CITIZEN_LIST);
+				return;
+			}
 			case "staff.add":{
 				container.open(UI_STAFF_ADD);
 				return;
@@ -494,6 +528,7 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 					}
 					Announcer.announce(Target.MUNICIPALITY, id, "announce.municipality.staff.removed", staff.getPlayerName(), name(), id);
 				}
+				container.open(UI_STAFF_LIST);
 				return;
 			}
 			case "staff.setmanager":{
@@ -641,6 +676,15 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 			if(action == null) return;
 			staff.actions.put(action, !staff.actions.get(action));
 			container.open(UI_STAFF_EDIT);
+			return;
+		}
+		if(req.event().startsWith("citizen.permission.")){
+			if(!canman) return;
+			Citizen cit = citizens.get(req.getUUIDField());
+			PermAction action = PermAction.get(req.event().substring("staff.permission.".length()).toUpperCase());
+			if(action == null) return;
+			cit.actions.put(action, !cit.actions.get(action));
+			container.open(UI_CITIZEN_EDIT);
 			return;
 		}
 		external.on_interact(container, req);
