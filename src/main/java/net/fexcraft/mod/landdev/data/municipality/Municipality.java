@@ -681,7 +681,7 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 		if(req.event().startsWith("citizen.permission.")){
 			if(!canman) return;
 			Citizen cit = citizens.get(req.getUUIDField());
-			PermAction action = PermAction.get(req.event().substring("staff.permission.".length()).toUpperCase());
+			PermAction action = PermAction.get(req.event().substring("citizen.permission.".length()).toUpperCase());
 			if(action == null) return;
 			cit.actions.put(action, !cit.actions.get(action));
 			container.open(UI_CITIZEN_EDIT);
