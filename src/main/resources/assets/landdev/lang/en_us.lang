@@ -113,6 +113,7 @@ landdev.gui.mail.to=To: %s
 landdev.gui.mail.at=Time: %s
 landdev.gui.mail.type=Mail Type: %s
 landdev.gui.mail.expired=This invite expired.
+landdev.gui.mail.goback=Go back to Mailbox.
 landdev.gui.mail.invite.accept=Accept Invite
 landdev.gui.mail.invite.reject=Reject Invite
 landdev.gui.mail.request.accept=Accept Request
