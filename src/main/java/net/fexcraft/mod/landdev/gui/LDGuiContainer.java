@@ -183,8 +183,10 @@ public class LDGuiContainer extends GenericContainer {
 		NBTTagList list = (NBTTagList)packet.getTag("elements");
 		sfields.clear();
 		gui.clear();
-		gui.addscroll = list.tagCount() > 12;
-		gui.sizeOf(gui.addscroll ? 12 : list.tagCount());
+		int size = 0;
+		for(NBTBase base : list) if(((NBTTagList)base).getStringTagAt(3).charAt(2) != '2') size++;
+		gui.addscroll = size > 12;
+		gui.sizeOf(gui.addscroll ? 12 : size);
 		if(gui.addscroll){
 			LDGuiElementType type = LDGuiElementType.SCROLL_UP;
 			gui.add(new BasicButton("scroll_up", gui.getGuiLeft() + type.x - 5, gui.getGuiTop() + type.y, type.x, type.y, type.w, type.h, true){
