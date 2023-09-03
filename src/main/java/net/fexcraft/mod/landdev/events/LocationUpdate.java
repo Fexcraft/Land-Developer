@@ -42,7 +42,7 @@ public class LocationUpdate extends GuiScreen {
 	public void displayLocationUpdate(RenderGameOverlayEvent event){
 		if(event.getType() != ElementType.HOTBAR || !shown()) return;
 		if(client == null) client = Minecraft.getMinecraft();
-		mc.renderEngine.bindTexture(texture);
+		client.renderEngine.bindTexture(texture);
 		GL11.glEnable(GL11.GL_BLEND);
 		reswid = event.getResolution().getScaledWidth();
 		if(Settings.LOCUP_SIDE){
@@ -77,7 +77,7 @@ public class LocationUpdate extends GuiScreen {
 		}
 		//
 		RGB.glColorReset();
-		mc.renderEngine.bindTexture(texture);
+		client.renderEngine.bindTexture(texture);
 		for(int i = 0; i < lines.size(); i++){
 			linelength[i] = client.fontRenderer.getStringWidth(lines.get(i));
 			if(lines.get(i).length() > 0) INST.drawTexturedModalRect(Settings.LOCUP_SIDE ? 0 : reswid - linelength[i] - 4, 40 + (12 * i), 0, 39, linelength[i] + 4, 10);
@@ -110,7 +110,7 @@ public class LocationUpdate extends GuiScreen {
 	}
 
     public void draw(ResourceLocation loc, int x, int y, int width, int height){
-    	mc.renderEngine.bindTexture(loc);
+    	client.renderEngine.bindTexture(loc);
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuffer();
         bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
