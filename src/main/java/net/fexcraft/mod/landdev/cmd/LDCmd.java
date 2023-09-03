@@ -123,7 +123,8 @@ public class LDCmd extends CommandBase {
 						mail.expiry = Time.getDate() + Time.DAY_MS;
 						mail.from = Layers.NONE;
 						mail.fromid = "SYSTEM";
-						mail.receiver = Layers.PLAYER + "_" + player.uuid;
+						mail.receiver = Layers.PLAYER;
+						mail.recid = player.uuid.toString();
 						mail.unread = true;
 						mail.title = "Bulk mail from /ld bulkmail";
 						mail.message.add("Example Mail Text 1");
