@@ -362,7 +362,7 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 			case "staff.remove":{
 				Staff staff = manage.getStaff(req.getUUIDField());
 				if(staff != null && !manage.isManager(staff)){
-					manage.staff.remove(staff.uuid);
+					manage.removeStaff(staff.uuid);
 					Player ply = ResManager.getPlayer(staff.uuid, true);
 					Mail mail = new Mail(MailType.SYSTEM, Layers.MUNICIPALITY, id, Layers.PLAYER, ply.uuid).expireInDays(7);
 					mail.setTitle(name()).addMessage(translate("mail.municipality.staff.nolonger"));
