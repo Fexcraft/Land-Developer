@@ -16,6 +16,7 @@ import java.util.UUID;
 
 import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonMap;
+import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fsmm.api.Account;
 import net.fexcraft.mod.fsmm.api.Bank;
@@ -27,6 +28,7 @@ import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.data.county.County;
 import net.fexcraft.mod.landdev.data.district.District;
 import net.fexcraft.mod.landdev.data.hooks.ExternalData;
+import net.fexcraft.mod.landdev.data.norm.BoolNorm;
 import net.fexcraft.mod.landdev.data.norm.StringNorm;
 import net.fexcraft.mod.landdev.data.player.Permit;
 import net.fexcraft.mod.landdev.data.player.Player;
@@ -55,6 +57,7 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 	public Norms norms = new Norms();
 	public ArrayList<Integer> districts = new ArrayList<>();
 	public Citizens citizens = new Citizens(MUNICIPALITY_CITIZEN);
+	public Joinable requests = new Joinable();
 	public ExternalData external = new ExternalData(this);
 	public Account account;
 	public County county;
@@ -65,6 +68,7 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 		account = DataManager.getAccount("municipality:" + id, false, true);
 		norms.add(new StringNorm("name", ""));
 		norms.add(new StringNorm("title", ""));
+		norms.add(new BoolNorm("open-to-join", true));
 	}
 
 	@Override
@@ -78,6 +82,7 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 		mail.save(map);
 		manage.save(map);
 		citizens.save(map);
+		requests.save(map);
 		norms.save(map);
 		JsonArray array = new JsonArray();
 		districts.forEach(dis -> array.add(dis));
@@ -97,6 +102,7 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 		mail.load(map);
 		manage.load(map);
 		citizens.load(map);
+		requests.load(map);
 		norms.load(map);
 		if(map.has("districts")){
 			JsonArray array = map.getArray("districts");
@@ -158,16 +164,23 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 	public String title(){
 		return norms.get("title").string();
 	}
+
+	public boolean opentojoin(){
+		return norms.get("open-to-join").bool();
+	}
 	
 	public static final int UI_CREATE = -1;
-	public static final int UI_STAFF = 1;
+	public static final int UI_STAFF_LIST = 1;
 	public static final int UI_STAFF_EDIT = 2;
 	public static final int UI_STAFF_ADD = 3;
-	public static final int UI_PRICE = 4;
-	public static final int UI_SET_PRICE = 5;
-	public static final int UI_NORMS = 6;
-	public static final int UI_NORM_EDIT = 7;
-	public static final int UI_APPREARANCE = 8;
+	public static final int UI_CITIZEN_LIST = 4;
+	public static final int UI_CITIZEN_EDIT = 5;
+	public static final int UI_CITIZEN_INVITE = 6;
+	public static final int UI_PRICE = 7;
+	public static final int UI_SET_PRICE = 8;
+	public static final int UI_NORMS = 9;
+	public static final int UI_NORM_EDIT = 10;
+	public static final int UI_APPREARANCE = 11;
 
 
 	@Override
@@ -181,9 +194,10 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 				resp.addRow("name", ELM_GENERIC, canman ? ICON_OPEN : ICON_EMPTY, canman, name());
 				resp.addRow("muntitle", ELM_GENERIC, canman ? ICON_OPEN : ICON_EMPTY, canman, title());
 				resp.addButton("county", ELM_GENERIC, ICON_OPEN, county.name());
-				resp.addButton("districts", ELM_GENERIC, ICON_OPEN, districts.size());
+				resp.addButton("districts", ELM_GENERIC, ICON_LIST, districts.size());
+				resp.addButton("citizen", ELM_GENERIC, ICON_LIST, citizens.size());
 				resp.addRow("manager", ELM_GENERIC, manage.getManagerName());
-				resp.addButton("staff", ELM_GREEN, ICON_OPEN, manage.staff.size());
+				resp.addButton("staff", ELM_GENERIC, ICON_LIST, manage.staff.size());
 				resp.addBlank();
 				if(sell.price > 0){
 					resp.addButton("price", ELM_GENERIC, ICON_OPEN, sell.price_formatted());
@@ -199,7 +213,57 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 				resp.addButton("appearance", ELM_YELLOW, ICON_OPEN);
 				return;
 			}
-			case UI_STAFF:{
+			case UI_CITIZEN_LIST:{
+				resp.setTitle("municipality.citizen.title");
+				if(opentojoin()){
+					resp.addRow("citizen.open", ELM_GREEN);
+				}
+				else{
+					resp.addRow("citizen.closed", ELM_RED);
+				}
+				if(manage.can(PermAction.PLAYER_INVITE, container.player.uuid) || container.player.adm){
+					resp.addButton("citizen.invite", ELM_BLUE, ICON_ADD);
+				}
+				if(container.player.municipality.id != id){
+					long to = requests.get(container.player);
+					if(to > -1){
+						if(to > 0){
+							resp.addRow("citizen.rejected", ELM_RED);
+							resp.addRow("citizen.timeout", ELM_GREEN, Time.getAsString(to));
+						}
+						else{
+							resp.addRow("citizen.pending", ELM_GREEN);
+						}
+					}
+					else{
+						if(opentojoin()){
+							resp.addButton("citizen.join", ELM_BLUE, ICON_ADD);
+						}
+						else{
+							resp.addButton("citizen.request", ELM_BLUE, ICON_ADD);
+						}
+					}
+				}
+				else{
+					resp.addButton("citizen.leave", ELM_RED, ICON_REM);
+				}
+				resp.addBlank();
+				resp.addRow("citizen.list", ELM_YELLOW);
+				for(UUID uuid : citizens.map().keySet()){
+					resp.addButton("citizen.edit." + uuid, ELM_GENERIC, ICON_OPEN, VALONLY + "- " + ResManager.getPlayerName(uuid));
+				}
+				return;
+			}
+			case UI_CITIZEN_INVITE:{
+				resp.setTitle("municipality.citizen.invite.title");
+				resp.addRow("id", ELM_GENERIC, id);
+				resp.addRow("citizen.invite.info", ELM_YELLOW);
+				resp.addField("citizen.invite.field");
+				resp.addButton("citizen.invite.submit", ELM_GENERIC, ICON_OPEN);
+				resp.setFormular();
+				return;
+			}
+			case UI_STAFF_LIST:{
 				resp.setTitle("municipality.staff.title");
 				resp.addRow("id", ELM_GENERIC, id);
 				resp.addRow("manager", ELM_GENERIC, manage.getManagerName());
@@ -301,7 +365,8 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 				container.open(UI_NORM_EDIT, id, norms.index(norms.get("title")));
 				return;
 			}
-			case "staff": container.open(UI_STAFF); return;
+			case "citizen": container.open(UI_CITIZEN_LIST); return;
+			case "staff": container.open(UI_STAFF_LIST); return;
 			case "price": container.open(UI_PRICE); return;
 			case "set_price": if(canman) container.open(UI_SET_PRICE); return;
 			case "mailbox": if(canman) container.open(MAILBOX, getLayer().ordinal(), id, 0); return;
@@ -333,6 +398,60 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 			case "norm_bool":{
 				if(!canman) return;
 				NormModule.processBool(norms, container, req, UI_NORM_EDIT);
+				return;
+			}
+			case "citizen.invite":{
+				container.open(UI_CITIZEN_INVITE);
+				return;
+			}
+			case "citizen.join":{
+				if(!opentojoin()) return;
+				if(player.isMunicipalityManager()){
+					container.sendMsg("landdev.mail.municipality.citizen.ismanager", false);
+					return;
+				}
+				if(player.isCountyManager() && county.id != player.county.id){
+					container.sendMsg("landdev.mail.county.citizen.ismanager", false);
+					return;
+				}
+				player.setCitizenOf(this);
+				container.open(UI_MAIN);
+				return;
+			}
+			case "citizen.leave":{
+				if(player.isMunicipalityManager()){
+					container.sendMsg("landdev.mail.municipality.citizen.ismanager", false);
+					return;
+				}
+				player.leaveMunicipality();
+				container.open(UI_MAIN);
+				return;
+			}
+			case "citizen.request":{
+				if(opentojoin()) return;
+				Mail mail = new Mail(MailType.REQUEST, Layers.PLAYER, player.uuid, Layers.MUNICIPALITY, id);
+				mail.setTitle(player.name_raw()).expireInDays(7);
+				mail.addMessage(translate("mail.player.municipality.join_request0", player.name_raw()));
+				mail.addMessage(translate("mail.player.municipality.join_request1"));
+				this.mail.mails.add(mail);
+				requests.timeouts.put(player.uuid, 0l);
+				container.open(UI_CITIZEN_LIST);
+				return;
+			}
+			case "citizen.invite.submit":{
+				if(!manage.can(PermAction.PLAYER_INVITE, player.uuid) && !player.adm) return;
+				Player ply = req.getPlayerField("citizen.invite.field");
+				if(ply == null){
+					container.sendMsg("citizen.invite.notfound");
+					return;
+				}
+				Mail mail = new Mail(MailType.INVITE, Layers.MUNICIPALITY, id, Layers.PLAYER, ply.uuid);
+				mail.setTitle(name()).expireInDays(7);
+				mail.addMessage(translate("mail.municipality.citizen.invite0"));
+				mail.addMessage(translate("mail.municipality.citizen.invite1", name()));
+				ply.addMailAndSave(mail);
+				Print.chat(player.entity, translate("gui.municipality.citizen.invite.success"));
+				player.entity.closeScreen();
 				return;
 			}
 			case "staff.add":{
@@ -497,6 +616,12 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 			}
 		}
 		if(NormModule.isNormReq(norms, container, req, UI_NORM_EDIT, id)) return;
+		if(req.event().startsWith("citizen.edit.")){
+			UUID uuid = UUID.fromString(req.event().substring("citizen.edit.".length()));
+			if(!citizens.isCitizen(uuid)) return;
+			container.open(UI_CITIZEN_EDIT, id, citizens.indexOf(uuid));
+			return;
+		}
 		if(req.event().startsWith("staff.edit.")){
 			Staff staff = manage.getStaff(UUID.fromString(req.event().substring("staff.edit.".length())));
 			if(staff == null) return;
