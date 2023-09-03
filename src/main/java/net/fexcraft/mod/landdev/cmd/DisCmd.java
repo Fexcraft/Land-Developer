@@ -1,8 +1,14 @@
 package net.fexcraft.mod.landdev.cmd;
 
+import static net.fexcraft.mod.landdev.util.TranslationUtil.translateCmd;
+
 import java.util.List;
 
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.landdev.LandDev;
+import net.fexcraft.mod.landdev.data.chunk.Chunk_;
+import net.fexcraft.mod.landdev.data.district.District;
+import net.fexcraft.mod.landdev.data.player.Player;
 import net.fexcraft.mod.landdev.gui.GuiHandler;
 import net.fexcraft.mod.landdev.util.AliasLoader;
 import net.fexcraft.mod.landdev.util.ResManager;
@@ -38,8 +44,24 @@ public class DisCmd extends CommandBase {
     @Override 
     public void execute(MinecraftServer server, ICommandSender sender, String[] args){ 
     	if(sender instanceof EntityPlayer == false) return;
-    	EntityPlayer player = (EntityPlayer)sender;
-    	player.openGui(LandDev.INSTANCE, GuiHandler.DISTRICT, sender.getEntityWorld(), 0, ResManager.getChunk(player).district.id, 0);
+		Player ply = ResManager.getPlayer((EntityPlayer)sender);
+		Chunk_ chunk = ResManager.getChunk(sender.getCommandSenderEntity());
+		if(args.length > 0){
+			switch(args[0]){
+				case "create":{
+					ply.entity.openGui(LandDev.INSTANCE, GuiHandler.DISTRICT, sender.getEntityWorld(), District.UI_CREATE, 0, 0);
+					return;
+				}
+				default:{
+					Print.chat(sender, translateCmd("unknown_argument"));
+					return;
+				}
+			}
+		}
+		else{
+			ply.entity.openGui(LandDev.INSTANCE, GuiHandler.DISTRICT, sender.getEntityWorld(), 0, chunk.district.id, 0);
+		}
+
     }
 
 }
