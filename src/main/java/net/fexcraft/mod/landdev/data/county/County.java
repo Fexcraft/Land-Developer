@@ -47,6 +47,7 @@ public class County implements Saveable, Layer, LDGuiModule {
 		norms.add(new StringNorm("name", translate("county.norm.name")));
 		norms.add(new BoolNorm("new-municipalities", false));
 		norms.add(new IntegerNorm("new-municipality-fee", 100000));
+		norms.add(new BoolNorm("open-to-join", true));
 	}
 
 	@Override
