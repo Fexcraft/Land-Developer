@@ -111,6 +111,10 @@ public class Mail implements Saveable {
 		return UUID.fromString(recid);
 	}
 
+	public void expire(){
+		expiry = Time.getDate();
+	}
+
 	public boolean expired(){
 		return expiry > 0 && Time.getDate() > expiry;
 	}
