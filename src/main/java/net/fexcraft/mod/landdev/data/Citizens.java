@@ -1,7 +1,8 @@
 package net.fexcraft.mod.landdev.data;
 
 import java.util.HashMap;
-import java.util.TreeMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import net.fexcraft.app.json.JsonMap;
@@ -10,7 +11,7 @@ import net.fexcraft.mod.landdev.data.player.Player;
 
 public class Citizens implements Saveable, PermInteractive {
 	
-	protected TreeMap<UUID, Citizen> citizens = new TreeMap<>();
+	protected LinkedHashMap<UUID, Citizen> citizens = new LinkedHashMap<>();
 	protected PermActions actions;
 	
 	public Citizens(PermActions actions){
@@ -41,7 +42,24 @@ public class Citizens implements Saveable, PermInteractive {
 	public boolean isCitizen(UUID uuid){
 		return citizens.get(uuid) != null;
 	}
-	
+
+	public int size(){
+		return citizens.size();
+	}
+
+	public Map<UUID, Citizen> map(){
+		return citizens;
+	}
+
+	public int indexOf(UUID uuid){
+		int idx = 0;
+		for(UUID uid : citizens.keySet()){
+			if(uuid.equals(uid)) return idx;
+			idx++;
+		}
+		return 0;
+	}
+
 	public static class Citizen implements Saveable {
 		
 		protected HashMap<PermAction, Boolean> actions = new HashMap<>();
