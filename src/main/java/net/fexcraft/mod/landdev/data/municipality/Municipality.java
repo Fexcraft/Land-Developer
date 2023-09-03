@@ -513,6 +513,7 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 					}
 					Announcer.announce(Target.MUNICIPALITY, id, "announce.municipality.manager_set", staff.getPlayerName(), name(), id);
 				}
+				container.open(UI_MAIN);
 				return;
 			}
 			case "create.submit":{
@@ -579,15 +580,16 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 				if(!uca) bank.processAction(Action.TRANSFER, null, SERVER_ACCOUNT, county.norms.get("new-municipality-fee").integer(), county.account);
 				Municipality mold = player.municipality;
 				County cold = player.county;
-				mold.citizens.remove(player);
-				cold.citizens.remove(player);
+				//mold.citizens.remove(player);
+				//cold.citizens.remove(player);
 				Municipality mnew = new Municipality(newid);
 				ResManager.MUNICIPALITIES.put(mnew.id, mnew);
 				mnew.norms.get("name").set(name);
-				mnew.citizens.add(player);
-				county.citizens.add(player);
-				player.municipality = mnew;
-				player.county = county;
+				//mnew.citizens.add(player);
+				//county.citizens.add(player);
+				//player.municipality = mnew;
+				//player.county = county;
+				player.setCitizenOf(mnew);
 				mnew.manage.add(player);
 				mnew.manage.setManager(player);
 				mnew.county = county;
