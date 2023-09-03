@@ -153,6 +153,7 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 		for(PermAction action : manage.actions()){
 			if(action != act) continue;
 			if(man || owner.manageable().can(act, uuid)) return true;
+			if(owner.citizen().can(act, uuid)) return true;
 		}
 		return false;
 	}
