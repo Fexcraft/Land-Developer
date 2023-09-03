@@ -1,12 +1,10 @@
 package net.fexcraft.mod.landdev.data.district;
 
 import static net.fexcraft.mod.fsmm.util.Config.getWorthAsString;
-import static net.fexcraft.mod.landdev.data.PermAction.DISTRICT_ACTIONS;
-import static net.fexcraft.mod.landdev.data.PermAction.FINANCES_MANAGE;
-import static net.fexcraft.mod.landdev.data.PermAction.FINANCES_USE;
-import static net.fexcraft.mod.landdev.data.PermAction.MANAGE_DISTRICT;
+import static net.fexcraft.mod.landdev.data.PermAction.*;
 import static net.fexcraft.mod.landdev.gui.GuiHandler.MAILBOX;
 import static net.fexcraft.mod.landdev.gui.LDGuiElementType.*;
+import static net.fexcraft.mod.landdev.util.ResManager.SERVER_ACCOUNT;
 import static net.fexcraft.mod.landdev.util.TranslationUtil.translate;
 
 import java.util.UUID;
@@ -18,6 +16,7 @@ import net.fexcraft.mod.fsmm.api.Bank;
 import net.fexcraft.mod.fsmm.api.Bank.Action;
 import net.fexcraft.mod.fsmm.util.DataManager;
 import net.fexcraft.mod.landdev.data.*;
+import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.data.county.County;
 import net.fexcraft.mod.landdev.data.hooks.ExternalData;
 import net.fexcraft.mod.landdev.data.municipality.Municipality;
@@ -33,6 +32,7 @@ import net.fexcraft.mod.landdev.gui.modules.LDGuiModule;
 import net.fexcraft.mod.landdev.gui.modules.ModuleRequest;
 import net.fexcraft.mod.landdev.gui.modules.ModuleResponse;
 import net.fexcraft.mod.landdev.gui.modules.NormModule;
+import net.fexcraft.mod.landdev.util.Announcer;
 import net.fexcraft.mod.landdev.util.ResManager;
 import net.fexcraft.mod.landdev.util.Settings;
 import net.fexcraft.mod.landdev.util.TranslationUtil;
@@ -213,6 +213,7 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 		return null;
 	}
 
+	public static final int UI_CREATE = -1;
 	public static final int UI_TYPE = 1;
 	public static final int UI_PRICE = 2;
 	public static final int UI_MANAGER = 3;
@@ -301,6 +302,23 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 				return;
 			case UI_NORM_EDIT:{
 				NormModule.respNormEdit(norms, container, resp, "district", canman);
+				return;
+			}
+			case UI_CREATE:{
+				resp.setTitle("district.create.title");
+				resp.addRow("create.name", ELM_GENERIC);
+				resp.addField("create.name_field");
+				resp.addBlank();
+				resp.addRow("create.owner", ELM_YELLOW);
+				resp.addRadio("create.owner_county", ELM_BLUE, true);
+				if(container.player.municipality.manage.can(CREATE_DISTRICT, container.player.uuid)){
+					resp.addRadio("create.owner_municipality", ELM_BLUE, false);
+				}
+				resp.addCheck("create.owner_funded", ELM_GREEN, true);
+				resp.addBlank();
+				resp.addButton("create.submit", ELM_BLUE, ICON_OPEN);
+				resp.setFormular();
+				resp.setNoBack();
 				return;
 			}
 		}
@@ -437,6 +455,83 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 			case "norm_bool":{
 				if(!canman) return;
 				NormModule.processBool(norms, container, req, UI_NORM_EDIT);
+				return;
+			}
+			case "create.submit":{
+				Chunk_ chunk = ResManager.getChunk(container.player.entity);
+				Player player = container.player;
+				long sum = Settings.DISTRICT_CREATION_FEE;
+				boolean forct = req.getRadio("create.owner_").equals("county");
+				boolean opay = req.getCheck("create.owner_funded");
+				String name = req.getField("create.name_field");
+				Account account = null;
+				if(chunk.district.id > -1){
+					container.sendMsg("create.exists");
+					return;
+				}
+				if(forct){
+					if(chunk.district.county().id < 0){
+						container.sendMsg("create.county_invalid");
+						return;
+					}
+					if(!chunk.district.county().manage.can(CREATE_DISTRICT, player.uuid)){
+						container.sendMsg("create.no_perm");
+						return;
+					}
+					if(opay){
+						if(!chunk.district.county().manage.can(FINANCES_USE, player.uuid)){
+							container.sendMsg("create.no_fund_perm");
+							return;
+						}
+						account = chunk.district.county().account;
+					}
+				}
+				else{
+					if(player.municipality.id < 0) return;
+					if(player.municipality.county.id != chunk.district.county().id){
+						container.sendMsg("create.wrong_county");
+						return;
+					}
+					if(!player.municipality.manage.can(CREATE_DISTRICT, player.uuid)){
+						container.sendMsg("create.no_perm");
+						return;
+					}
+					if(opay){
+						if(!player.municipality.manage.can(FINANCES_USE, player.uuid)){
+							container.sendMsg("create.no_fund_perm");
+							return;
+						}
+						account = player.municipality.account;
+					}
+				}
+				if(account == null) account = player.account;
+				if(account.getBalance() < sum){
+					container.sendMsg("create.not_enough_money");
+					return;
+				}
+				int newid = ResManager.getNewIdFor(saveTable());
+				if(newid < 0){
+					Print.chat(player.entity, "DB ERROR, INVALID NEW ID '" + newid + "'!");
+					return;
+				}
+				Bank bank = DataManager.getBank(account.getBankId(), false, true);
+				if(!bank.processAction(Action.TRANSFER, player.entity, account, sum, SERVER_ACCOUNT)){
+					return;
+				}
+				District dis = new District(newid);
+				ResManager.DISTRICTS.put(dis.id, dis);
+				if(forct) chunk.district.county().districts.add(dis.id);
+				else player.municipality.districts.add(dis.id);
+				if(forct) dis.owner.set(chunk.district.county());
+				else dis.owner.set(player.municipality);
+				if(name.length() > 0) dis.norms.get("name").set(name);
+				dis.save();
+				chunk.district = dis;
+				chunk.save();
+				ResManager.bulkSave(dis.owner.is_county? dis.owner.county : dis.owner.municipality, dis, chunk, player);
+				player.entity.closeScreen();
+				Print.chat(player.entity, translate("gui.district.create.complete"));
+				Announcer.announce(Announcer.Target.GLOBAL, 0, "announce.district.created", name, newid);
 				return;
 			}
 		}
