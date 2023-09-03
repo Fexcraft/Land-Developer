@@ -235,4 +235,27 @@ public class Player implements Saveable, Layer, LDGuiModule {
 		save();
 	}
 
+	public boolean isMunicipalityManager(){
+		return municipality.manage.isManager(uuid);
+	}
+
+	public boolean isCountyManager(){
+		return county.manage.isManager(uuid);
+	}
+
+	public void setCitizenOf(Municipality mun){
+		municipality.manage.removeStaff(uuid);
+		municipality.citizens.remove(this);
+		if(mun.county.id != county.id){
+			county.manage.removeStaff(uuid);
+			county.citizens.remove(this);
+		}
+		municipality = mun;
+		municipality.citizens.add(this);
+		if(mun.county.id != county.id){
+			county = mun.county;
+			county.citizens.add(this);
+		}
+	}
+
 }
