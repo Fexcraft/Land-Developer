@@ -15,7 +15,8 @@ public class Mail implements Saveable {
 	public boolean unread;
 	public Layers from;
 	public String fromid;
-	public String receiver;
+	public Layers receiver;
+	public String recid;
 	public String title;
 	public ArrayList<String> message = new ArrayList<>();
 	public MailType type;
@@ -34,7 +35,8 @@ public class Mail implements Saveable {
 		type = mtype;
 		from = frl;
 		fromid = id.toString();
-		receiver = rec + "_" + recid.toString();
+		receiver = rec;
+		recid = recid.toString();
 		unread = true;
 	}
 
@@ -68,7 +70,8 @@ public class Mail implements Saveable {
 		map.add("read", !unread);
 		map.add("from", from.name());
 		map.add("from_id", fromid);
-		map.add("receiver", receiver);
+		map.add("receiver", receiver.name());
+		map.add("rec_id", recid);
 		map.add("title", title);
 		map.add("message", new JsonArray(message.toArray()));
 		map.add("type", type.name());
@@ -81,8 +84,9 @@ public class Mail implements Saveable {
 	public void load(JsonMap map){
 		unread = !map.getBoolean("read", false);
 		from = Layers.get(map.getString("from", Layers.NONE.name()));
-		fromid = map.getString("from_id", "System");
-		receiver = map.get("receiver", "error/unknown");
+		fromid = map.getString("from_id", "ERROR");
+		receiver = Layers.get(map.getString("receiver", Layers.NONE.name()));
+		recid = map.getString("rec_id", "ERROR");
 		title = map.getString("title", "No Title");
 		message = map.getArray("message").toStringList();
 		type = MailType.get(map.getString("type", "EXPIRED"));
@@ -97,6 +101,14 @@ public class Mail implements Saveable {
 
 	public UUID fromUUID(){
 		return UUID.fromString(fromid);
+	}
+
+	public int recInt(){
+		return Integer.parseInt(recid);
+	}
+
+	public UUID recUUID(){
+		return UUID.fromString(recid);
 	}
 
 	public boolean expired(){
