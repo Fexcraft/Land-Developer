@@ -618,17 +618,18 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 				//mold.citizens.remove(player);
 				//cold.citizens.remove(player);
 				Municipality mnew = new Municipality(newid);
+				mnew.gendef();
 				ResManager.MUNICIPALITIES.put(mnew.id, mnew);
 				mnew.norms.get("name").set(name);
 				//mnew.citizens.add(player);
 				//county.citizens.add(player);
 				//player.municipality = mnew;
 				//player.county = county;
+				mnew.county = county;
+				county.municipalities.add(mnew.id);
 				player.setCitizenOf(mnew);
 				mnew.manage.add(player);
 				mnew.manage.setManager(player);
-				mnew.county = county;
-				county.municipalities.add(mnew.id);
 				if(claim){
 					mnew.districts.add(chunk.district.id);
 					chunk.district.owner.set(mnew);
