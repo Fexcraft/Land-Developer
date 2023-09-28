@@ -57,7 +57,7 @@ public class LDGuiClaim extends GenericGui<LDGuiClaimCon> {
 				if(ckbuttons[i][k].hovered){
 					ChunkData ck = container.chunks[i][k];
 					info.add(Formatter.format(I18n.format("landdev.gui.claim.chunk_coord", ck.x, ck.z)));
-					info.add(Formatter.format(I18n.format("landdev.gui.claim.chunk_price", Config.getWorthAsString(ck.price))));
+					info.add(Formatter.format(I18n.format("landdev.gui.claim.chunk_price", ck.price == 0 ? "&c---" : Config.getWorthAsString(ck.price))));
 					DisData dis = container.dists.get(ck.dis);
 					if(dis == null) return;
 					info.add(Formatter.format(I18n.format("landdev.gui.claim.district", dis.name)));
