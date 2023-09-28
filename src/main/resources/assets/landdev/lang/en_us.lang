@@ -106,11 +106,11 @@ landdev.gui.claim.district=&7District: &6%s
 landdev.gui.claim.municipality=&7Municipality of &6%s
 landdev.gui.claim.county=&6%s &7County
 landdev.gui.claim.no_perm_district=&4No permission to claim for this District.
-landdev.gui.claim.not_for_sale=&cThis chunk is not for sale/claim.
-landdev.gui.claim.county_chunk=&cCan't claim chunks from another County.
-landdev.gui.claim.county_other=&cYou can only claim from your own County or unclaimed land.
-landdev.gui.claim.municipality_chunk=&cChunk is already in a Municipality.
-landdev.gui.claim.municipality_other=&cYou can only (re-)claim from your own Districts or unclaimed land.
+landdev.gui.claim.not_for_sale=&4This chunk is not for sale/claim.
+landdev.gui.claim.county_chunk=&4Can't claim chunks from another County.
+landdev.gui.claim.county_other=&4You can only claim from your own County or unclaimed land.
+landdev.gui.claim.municipality_chunk=&4Chunk is already in a Municipality.
+landdev.gui.claim.municipality_other=&4You can only (re-)claim from your own Districts or unclaimed land.
 landdev.gui.claim.pass=&aChunk Claimed.
 //
 landdev.gui.mailbox.title=Mailbox Interface [Page %s]
