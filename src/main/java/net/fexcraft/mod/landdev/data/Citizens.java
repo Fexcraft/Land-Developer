@@ -110,7 +110,7 @@ public class Citizens implements Saveable, PermInteractive {
 	public boolean can(PermAction act, UUID uuid){
 		if(!actions.isValid(act)) return false;
 		Citizen cit = citizens.get(uuid);
-		return cit.actions.get(act);
+		return cit != null && cit.actions.get(act);
 	}
 
 	@Override
