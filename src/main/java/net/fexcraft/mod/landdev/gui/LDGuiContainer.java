@@ -122,7 +122,7 @@ public class LDGuiContainer extends GenericContainer {
 	}
 
 	public void sendSync(){
-		Chunk_ chunk = ResManager.getChunk(y, z);
+		Chunk_ chunk = ResManager.getChunk(player.entity);
 		ModuleResponse resp = new ModuleResponse();
 		IconHolder holder = null;
 		ColorData color = null;
