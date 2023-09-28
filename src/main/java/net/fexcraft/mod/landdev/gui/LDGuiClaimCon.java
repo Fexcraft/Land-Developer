@@ -12,6 +12,8 @@ import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fsmm.api.Bank;
 import net.fexcraft.mod.fsmm.api.Bank.Action;
 import net.fexcraft.mod.fsmm.util.DataManager;
+import net.fexcraft.mod.landdev.data.Layers;
+import net.fexcraft.mod.landdev.data.chunk.ChunkType;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.data.district.District;
 import net.fexcraft.mod.landdev.data.player.Player;
@@ -104,6 +106,8 @@ public class LDGuiClaimCon extends GenericContainer {
 				chunk.district = district;
 				chunk.district.chunks += 1;
 				chunk.sell.price = 0;
+				chunk.owner.set(district.owner.is_county ? Layers.COUNTY : Layers.MUNICIPALITY, null, district.owner.owid);
+				chunk.type = ChunkType.NORMAL;
 				if(chunk.district.id < 0) chunk.created.setClaimer(player.getGameProfile().getId());
 				chunk.save();
 				sendSync(com);
