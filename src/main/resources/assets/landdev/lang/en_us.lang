@@ -16,6 +16,7 @@ landdev.cmd.adminmode.false=&eAdmin &6mode is now &ainactive&6.
 landdev.cmd.mun.no_new_municipalities=County does not allow creation of new Municipalities.
 landdev.cmd.mun.no_create_permit=You do not have a Municipality creation permit.
 landdev.cmd.mun.not_in_a_municipality=You are not currently in a Municipality.
+landdev.cmd.chunk.mapdesc=&4#&7 - unloaded &8| &9#&7 - claimed &8| &2#&7 - not claimed &8| &7+ your position.
 landdev.cmd.name_too_short=&cName is too short!
 landdev.cmd.name_too_long=&bName is too long!
 landdev.cmd.uuid_player_not_found=UUID/Player not found.
