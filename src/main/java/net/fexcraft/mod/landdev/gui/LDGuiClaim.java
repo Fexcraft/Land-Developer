@@ -20,16 +20,17 @@ public class LDGuiClaim extends GenericGui<LDGuiClaimCon> {
 	private static final ResourceLocation TEXTURE = new ResourceLocation("landdev:textures/gui/claim.png");
 	private static ArrayList<String> info = new ArrayList<>();
 	private static Button[][] ckbuttons = new Button[15][15];
-	private static BasicButton mm, gm;
+	private static BasicButton mm, gm, mg;
 	private static Integer lx, lz;
 	protected static BasicText title;
 	private boolean gridview = true;
+	private boolean mapgrid = true;
 	private boolean deltex;
 
 	public LDGuiClaim(EntityPlayer player, int x, int y, int z){
 		super(TEXTURE, new LDGuiClaimCon(player, x, y, z), player);
-		xSize = 206;
-		ySize = 220;
+		xSize = 220;
+		ySize = 234;
 		ChunkPos pos = new ChunkPos(player.getPosition());
 		if(lx != null && (pos.x != lx || pos.z != lz)) deltex = true;
 		lx = pos.x;
@@ -38,13 +39,13 @@ public class LDGuiClaim extends GenericGui<LDGuiClaimCon> {
 	
 	@Override
 	public void init(){
-		texts.put("title", title = new BasicText(guiLeft + 8, guiTop + 8, 165, 0x0e0e0e, "landdev.gui.claim.title").hoverable(true).autoscale().translate());
+		texts.put("title", title = new BasicText(guiLeft + 8, guiTop + 8, 179, 0x0e0e0e, "landdev.gui.claim.title").hoverable(true).autoscale().translate());
 		for(int i = 0; i < ckbuttons.length; i++){
 			for(int k = 0; k < ckbuttons[i].length; k++){
-				buttons.put(i + "_" + k, ckbuttons[i][k] = new Button(i + "_" + k, guiLeft + 6 + i * 13, guiTop + 20 + k * 13, 6, 20));
+				buttons.put(i + "_" + k, ckbuttons[i][k] = new Button(i + "_" + k, guiLeft + 6 + i * 14, guiTop + 20 + k * 14, 6, 20));
 			}
 		}
-		buttons.put("mapmode", mm = new BasicButton("mm", guiLeft + 203, guiTop + 20, 203, 20, 12, 12, true){
+		buttons.put("mapmode", mm = new BasicButton("mm", guiLeft + 217, guiTop + 20, 217, 20, 12, 12, true){
 			@Override
 			public boolean onclick(int mx, int my, int mb){
 				if(deltex){
@@ -55,10 +56,17 @@ public class LDGuiClaim extends GenericGui<LDGuiClaimCon> {
 				return true;
 			}
 		});
-		buttons.put("gridmode", gm = new BasicButton("gm", guiLeft + 203, guiTop + 33, 203, 33, 12, 12, true){
+		buttons.put("gridmode", gm = new BasicButton("gm", guiLeft + 217, guiTop + 33, 217, 33, 12, 12, true){
 			@Override
 			public boolean onclick(int mx, int my, int mb){
 				gridview = true;
+				return true;
+			}
+		});
+		buttons.put("mapgrid", mg = new BasicButton("mg", guiLeft + 217, guiTop + 61, 217, 61, 12, 12, true){
+			@Override
+			public boolean onclick(int mx, int my, int mb){
+				mapgrid = !mapgrid;
 				return true;
 			}
 		});
@@ -67,12 +75,21 @@ public class LDGuiClaim extends GenericGui<LDGuiClaimCon> {
 
 	@Override
 	public void drawbackground(float ticks, int mx, int my){
-		drawTexturedModalRect(guiLeft + 206, guiTop + 14, 206, 14, 15, 37);
+		drawTexturedModalRect(guiLeft + 220, guiTop + 14, 220, 14, 15, 65);
 		if(!gridview){
+			if(mapgrid){
+				for(int i = 0; i < container.chunks.length; i++){
+					for(int k = 0; k < container.chunks[i].length; k++){
+						container.chunks[i][k].color.glColorApply();
+						drawTexturedModalRect(guiLeft + 5 + (i * 14), guiTop + 19 + (k * 14), 240, 240, 14, 14);
+						RGB.glColorReset();
+					}
+				}
+			}
 			ClaimMapTexture.bind(mc, lx, lz);
 			for(int i = 0; i < container.chunks.length; i++){
 				for(int k = 0; k < container.chunks[i].length; k++){
-					drawTexturedModalRect(guiLeft + 6 + (i * 13), guiTop + 20 + (k * 13), i * 16, k * 16, 12, 12);
+					drawTexturedModalRect(guiLeft + 6 + (i * 14), guiTop + 20 + (k * 14), i * 16, k * 16, 12, 12);
 				}
 			}
 		}
@@ -80,7 +97,7 @@ public class LDGuiClaim extends GenericGui<LDGuiClaimCon> {
 			for(int i = 0; i < container.chunks.length; i++){
 				for(int k = 0; k < container.chunks[i].length; k++){
 					container.chunks[i][k].color.glColorApply();
-					drawTexturedModalRect(guiLeft + 6 + (i * 13), guiTop + 20 + (k * 13), 6, 20, 12, 12);
+					drawTexturedModalRect(guiLeft + 6 + (i * 14), guiTop + 20 + (k * 14), 6, 20, 12, 12);
 					RGB.glColorReset();
 				}
 			}
@@ -107,6 +124,7 @@ public class LDGuiClaim extends GenericGui<LDGuiClaimCon> {
 		if(title.hovered) info.add(title.string);
 		if(gm.hovered) info.add(I18n.format("landdev.gui.claim.gridmode"));
 		if(mm.hovered) info.add(I18n.format("landdev.gui.claim.mapmode"));
+		if(mg.hovered) info.add(I18n.format("landdev.gui.claim.mapgrid"));
 		if(info.size() > 0) drawHoveringText(info, mouseX, mouseY);
 	}
 
