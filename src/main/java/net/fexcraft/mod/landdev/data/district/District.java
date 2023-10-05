@@ -231,7 +231,7 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 		switch(container.x){
 			case UI_MAIN:
 				resp.addRow("id", ELM_GENERIC, id);
-				if(canman){
+				if(canman || canoman){
 					resp.addButton("name", ELM_GENERIC, ICON_OPEN, name());
 					resp.addButton("type", ELM_GENERIC, ICON_OPEN, type.name());
 				}
@@ -449,12 +449,12 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 				return;
 			}
 			case "norm_submit":{
-				if(!canman) return;
+				if(!canman && !canoman) return;
 				NormModule.processNorm(norms, container, req, UI_NORM_EDIT);
 				return;
 			}
 			case "norm_bool":{
-				if(!canman) return;
+				if(!canman && !canoman) return;
 				NormModule.processBool(norms, container, req, UI_NORM_EDIT);
 				return;
 			}
