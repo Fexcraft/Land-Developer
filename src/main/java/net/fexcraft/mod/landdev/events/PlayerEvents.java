@@ -62,9 +62,10 @@ public class PlayerEvents {
 		Player player = ResManager.getPlayer(event.player);
 		if((time = Time.getDate()) > player.last_pos_update){
 			player.last_pos_update = time;
+			player.chunk_last = player.chunk_current;
 			player.chunk_current = ResManager.getChunk(event.player);
 			if(player.chunk_last == null) player.chunk_last = player.chunk_current;
-			moved = player.chunk_current.district != player.chunk_last.district;
+			moved = player.chunk_current.district.id != player.chunk_last.district.id;
 			label = player.chunk_current.label.present && player.chunk_current != player.chunk_last;
 			if(moved || label) player.sendLocationUpdate(moved, label, 0);
 		}
