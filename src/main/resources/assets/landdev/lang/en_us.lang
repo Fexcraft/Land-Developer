@@ -114,6 +114,7 @@ landdev.gui.claim.municipality_other=&4You can only (re-)claim from your own Dis
 landdev.gui.claim.pass=&aChunk Claimed.
 landdev.gui.claim.gridmode=Switch to GridMode
 landdev.gui.claim.mapmode=Switch to MapMode
+landdev.gui.claim.mapgrid=Toggle Grid in MapMode
 landdev.gui.claim.loadingmap=Generating Map...
 //
 landdev.gui.mailbox.title=Mailbox Interface [Page %s]
