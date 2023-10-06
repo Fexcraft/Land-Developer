@@ -663,6 +663,12 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
     			Announcer.announce(Announcer.Target.GLOBAL, 0, "announce.municipality.created", name, newid);
 				return;
 			}
+			case "appearance.submit":{
+				if(!canman) return;
+				AppearModule.req(container, req, icon, color);
+				container.open(UI_MAIN);
+				return;
+			}
 		}
 		if(NormModule.isNormReq(norms, container, req, UI_NORM_EDIT, id)) return;
 		if(req.event().startsWith("district.")){
