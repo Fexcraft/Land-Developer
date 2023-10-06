@@ -2,7 +2,7 @@ package net.fexcraft.mod.landdev.data;
 
 import java.util.ArrayList;
 
-import net.fexcraft.app.json.JsonHandler;
+import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonMap;
 
 public class NeighborData implements Saveable {
@@ -11,12 +11,16 @@ public class NeighborData implements Saveable {
 
 	@Override
 	public void load(JsonMap map){
-		if(map.has("neighbors")) neighbors = JsonHandler.dewrapc(map.getArray("neighbors"));
+		if(map.has("neighbors")) neighbors = map.getArray("neighbors").toIntegerList();
 	}
 
 	@Override
 	public void save(JsonMap map){
-		if(neighbors.size() > 0) map.add("neighbors", JsonHandler.wrap(neighbors, null));
+		if(neighbors.size() > 0){
+			JsonArray array = new JsonArray();
+			for(int n : neighbors) array.add(n);
+			map.add("neighbors", array);
+		}
 	}
 	
 	public ArrayList<Integer> get(){
