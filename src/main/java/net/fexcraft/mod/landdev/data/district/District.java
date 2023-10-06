@@ -296,13 +296,13 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 				resp.setFormular();
 				return;
 			case UI_APPREARANCE:
-				AppearModule.resp(container, resp, "district", icon, color, canman);
+				AppearModule.resp(container, resp, "district", icon, color, canman || canoman);
 				return;
 			case UI_NORMS:
-				NormModule.respNormList(norms, container, resp, "district", canman);
+				NormModule.respNormList(norms, container, resp, "district", canman || canoman);
 				return;
 			case UI_NORM_EDIT:{
-				NormModule.respNormEdit(norms, container, resp, "district", canman);
+				NormModule.respNormEdit(norms, container, resp, "district", canman || canoman);
 				return;
 			}
 			case UI_CREATE:{
@@ -533,6 +533,12 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 				player.entity.closeScreen();
 				Print.chat(player.entity, translate("gui.district.create.complete"));
 				Announcer.announce(Announcer.Target.GLOBAL, 0, "announce.district.created", name, newid);
+				return;
+			}
+			case "appearance.submit":{
+				if(!canman && !canoman) return;
+				AppearModule.req(container, req, icon, color);
+				container.open(UI_MAIN);
 				return;
 			}
 		}
