@@ -112,6 +112,7 @@ landdev.gui.claim.county_chunk=&4Can't claim chunks from another County.
 landdev.gui.claim.county_other=&4You can only claim from your own County or unclaimed land.
 landdev.gui.claim.municipality_chunk=&4Chunk is already in a Municipality.
 landdev.gui.claim.municipality_other=&4You can only (re-)claim from your own Districts or unclaimed land.
+landdev.gui.claim.no_municipality_claim=&4Chunk's District does not allow Municipality claiming from it.
 landdev.gui.claim.pass=&aChunk Claimed.
 landdev.gui.claim.gridmode=Switch to GridMode
 landdev.gui.claim.mapmode=Switch to MapMode
