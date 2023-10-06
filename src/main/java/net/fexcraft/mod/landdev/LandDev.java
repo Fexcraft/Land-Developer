@@ -55,6 +55,7 @@ public class LandDev {
 	public static Database DB = new JsonFileDB();
 	public static File SAVE_DIR;
 
+	public static final String CLIENT_RECEIVER_ID = "landdev:util";
     private static Logger logger;
 
     @EventHandler
