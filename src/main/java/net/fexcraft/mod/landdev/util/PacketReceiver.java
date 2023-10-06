@@ -1,5 +1,7 @@
 package net.fexcraft.mod.landdev.util;
 
+import static net.fexcraft.mod.landdev.LandDev.CLIENT_RECEIVER_ID;
+
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.api.packet.IPacketListener;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
@@ -15,12 +17,10 @@ import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
 
 public class PacketReceiver implements IPacketListener<PacketNBTTagCompound> {
-	
-	public static final String RECEIVER_ID = "landdev:util";
 
 	@Override
 	public String getId(){
-		return RECEIVER_ID;
+		return CLIENT_RECEIVER_ID;
 	}
 
 	@Override
