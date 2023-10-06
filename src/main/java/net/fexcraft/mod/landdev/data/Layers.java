@@ -22,6 +22,14 @@ public enum Layers {
 		return this != NONE && this.ordinal() > 1;
 	}
 
+	public boolean isValidChunkOwner2(){
+		return this != PLAYER && this.ordinal() > 2;
+	}
+
+	public boolean isPlayerBased(){
+		return this == PLAYER || this == COMPANY;
+	}
+
 	public static Layers get(String string){
 		switch(string){
 			case "property": return PROPERTY;
@@ -35,10 +43,6 @@ public enum Layers {
 			case "none": return NONE;
 		}
 		return NONE;
-	}
-
-	public boolean isValidChunkOwner2(){
-		return this != PLAYER && this.ordinal() > 2;
 	}
 
 }
