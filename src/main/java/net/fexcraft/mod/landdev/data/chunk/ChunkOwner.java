@@ -83,4 +83,8 @@ public class ChunkOwner implements Saveable {
 		return owner == other.owner && owid == other.owid;
 	}
 
+	public Layers layer(){
+		return owner;
+	}
+
 }
