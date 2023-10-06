@@ -33,6 +33,7 @@ import net.fexcraft.mod.landdev.data.norm.BoolNorm;
 import net.fexcraft.mod.landdev.data.norm.StringNorm;
 import net.fexcraft.mod.landdev.data.player.Permit;
 import net.fexcraft.mod.landdev.data.player.Player;
+import net.fexcraft.mod.landdev.gui.GuiHandler;
 import net.fexcraft.mod.landdev.gui.LDGuiContainer;
 import net.fexcraft.mod.landdev.gui.modules.AppearModule;
 import net.fexcraft.mod.landdev.gui.modules.LDGuiModule;
@@ -177,11 +178,12 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 	public static final int UI_CITIZEN_LIST = 4;
 	public static final int UI_CITIZEN_EDIT = 5;
 	public static final int UI_CITIZEN_INVITE = 6;
-	public static final int UI_PRICE = 7;
-	public static final int UI_SET_PRICE = 8;
-	public static final int UI_NORMS = 9;
-	public static final int UI_NORM_EDIT = 10;
-	public static final int UI_APPREARANCE = 11;
+	public static final int UI_DISTRICTS = 7;
+	public static final int UI_PRICE = 8;
+	public static final int UI_SET_PRICE = 9;
+	public static final int UI_NORMS = 10;
+	public static final int UI_NORM_EDIT = 11;
+	public static final int UI_APPREARANCE = 12;
 
 
 	@Override
@@ -320,6 +322,13 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 				resp.setFormular();
 				return;
 			}
+			case UI_DISTRICTS:{
+				resp.setTitle("municipality.districts.title");
+				for(int id : districts){
+					resp.addButton("district." + id, ELM_GENERIC, ICON_OPEN, VALONLY + ResManager.getDistrict(id, true).name());//TODO name cache
+				}
+				return;
+			}
 			case UI_PRICE:
 				resp.setTitle("municipality.buy.title");
 				resp.addRow("id", ELM_GENERIC, ICON_BLANK, id);
@@ -383,7 +392,9 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 				container.open(UI_NORM_EDIT, id, norms.index(norms.get("title")));
 				return;
 			}
+			case "county": container.open(GuiHandler.COUNTY, 0, county.id, 0);return;
 			case "citizen": container.open(UI_CITIZEN_LIST); return;
+			case "districts": container.open(UI_DISTRICTS); return;
 			case "staff": container.open(UI_STAFF_LIST); return;
 			case "price": container.open(UI_PRICE); return;
 			case "set_price": if(canman) container.open(UI_SET_PRICE); return;
@@ -654,6 +665,11 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 			}
 		}
 		if(NormModule.isNormReq(norms, container, req, UI_NORM_EDIT, id)) return;
+		if(req.event().startsWith("district.")){
+			int id = Integer.parseInt(req.event().substring("district.".length()));
+			container.open(Layers.DISTRICT.ordinal(), 0, id, 0);
+			return;
+		}
 		if(req.event().startsWith("citizen.edit.")){
 			UUID uuid = UUID.fromString(req.event().substring("citizen.edit.".length()));
 			if(!citizens.isCitizen(uuid)) return;
