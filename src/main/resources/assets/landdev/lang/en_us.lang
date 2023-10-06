@@ -392,3 +392,4 @@ landdev.gui.municipality.citizen.uuid=%s
 landdev.gui.municipality.citizen.remove=Remove Citizen
 landdev.gui.municipality.citizen.permissions=Permissions:
 landdev.gui.municipality.citizen.permission.chunk_claim=Chunk Claiming
+landdev.gui.municipality.districts.title=Municipality Districts
