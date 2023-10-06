@@ -1,5 +1,7 @@
 package net.fexcraft.mod.landdev.data.player;
 
+import static net.fexcraft.mod.landdev.LandDev.CLIENT_RECEIVER_ID;
+
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -26,7 +28,6 @@ import net.fexcraft.mod.landdev.gui.LDGuiContainer;
 import net.fexcraft.mod.landdev.gui.modules.LDGuiModule;
 import net.fexcraft.mod.landdev.gui.modules.ModuleRequest;
 import net.fexcraft.mod.landdev.gui.modules.ModuleResponse;
-import net.fexcraft.mod.landdev.util.PacketReceiver;
 import net.fexcraft.mod.landdev.util.ResManager;
 import net.fexcraft.mod.landdev.util.TranslationUtil;
 import net.minecraft.entity.player.EntityPlayer;
@@ -157,7 +158,7 @@ public class Player implements Saveable, Layer, LDGuiModule {
 
 	public void sendLocationUpdate(boolean moved, boolean label, int time){
 		NBTTagCompound com = new NBTTagCompound();
-		com.setString("target_listener", PacketReceiver.RECEIVER_ID);
+		com.setString("target_listener", CLIENT_RECEIVER_ID);
 		com.setString("task", "location_update");
 		boolean mun = chunk_current.district.municipality() != null;
 		NBTTagList icons = new NBTTagList();
