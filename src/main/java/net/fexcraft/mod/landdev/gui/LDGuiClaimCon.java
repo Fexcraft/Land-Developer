@@ -63,11 +63,6 @@ public class LDGuiClaimCon extends GenericContainer {
 				int[] key = packet.getIntArray("claim");
 				Chunk_ chunk = ResManager.getChunk(key[0] - 7 + x, key[1] - 7 + z);
 				NBTTagCompound com = new NBTTagCompound();
-				if(chunk.sell.price == 0){
-					com.setString("msg", "landdev.gui.claim.not_for_sale");
-					send(Side.CLIENT, com);
-					return;
-				}
 				if(!ldp.adm && !district.can(CHUNK_CLAIM, player.getGameProfile().getId())){
 					com.setString("msg", "landdev.gui.claim.no_perm_district");
 					send(Side.CLIENT, com);
@@ -98,15 +93,29 @@ public class LDGuiClaimCon extends GenericContainer {
 							return;
 						}
 					}
+					if(!district.owner.is_county && !chunk.district.norms.get("municipality-can-claim").bool()){
+						com.setString("msg", "landdev.gui.claim.no_municipality_claim");
+						send(Side.CLIENT, com);
+						return;
+					}
 				}
-				Bank bank = DataManager.getBank(district.owner.account().getBankId(), false, true);
-				if(!bank.processAction(Action.TRANSFER, player, district.account(), chunk.sell.price, SERVER_ACCOUNT)) return;
+				else if(chunk.sell.price == 0){
+					com.setString("msg", "landdev.gui.claim.not_for_sale");
+					send(Side.CLIENT, com);
+					return;
+				}
+				if(chunk.sell.price > 0){
+					Bank bank = DataManager.getBank(district.owner.account().getBankId(), false, true);
+					if(!bank.processAction(Action.TRANSFER, player, district.account(), chunk.sell.price, SERVER_ACCOUNT)) return;
+				}
 				com.setString("msg", "landdev.gui.claim.pass");
 				if(chunk.district.id > -1) chunk.district.chunks -= 1;
 				chunk.district = district;
 				chunk.district.chunks += 1;
 				chunk.sell.price = 0;
-				chunk.owner.set(district.owner.is_county ? Layers.COUNTY : Layers.MUNICIPALITY, null, district.owner.owid);
+				if(!chunk.owner.layer().isPlayerBased()){
+					chunk.owner.set(district.owner.is_county ? Layers.COUNTY : Layers.MUNICIPALITY, null, district.owner.owid);
+				}
 				chunk.type = ChunkType.NORMAL;
 				if(chunk.district.id < 0) chunk.created.setClaimer(player.getGameProfile().getId());
 				chunk.save();
