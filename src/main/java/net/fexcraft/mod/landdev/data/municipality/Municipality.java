@@ -629,6 +629,7 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 				//mold.citizens.remove(player);
 				//cold.citizens.remove(player);
 				Municipality mnew = new Municipality(newid);
+				mnew.created.create(player.uuid);
 				mnew.gendef();
 				ResManager.MUNICIPALITIES.put(mnew.id, mnew);
 				mnew.norms.get("name").set(name);
@@ -649,6 +650,7 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 				}
 				else{
 					District dis = new District(ndid);
+					dis.created.create(player.uuid);
 					ResManager.DISTRICTS.put(dis.id, dis);
 					mnew.districts.add(dis.id);
 					chunk.district = dis;
