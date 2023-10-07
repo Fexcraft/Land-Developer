@@ -41,6 +41,7 @@ public class LDGuiClaimCon extends GenericContainer {
 		this.x = x;
 		dis = y;
 		this.z = z;
+		ldp = ResManager.getPlayer(player);
 		for(int i = 0; i < chunks.length; i++) for(int k = 0; k < chunks[i].length; k++) chunks[i][k] = new ChunkData();
 		if(player.world.isRemote){
 			NBTTagCompound com = new NBTTagCompound();
@@ -48,9 +49,8 @@ public class LDGuiClaimCon extends GenericContainer {
 			send(Side.SERVER, com);
 		}
 		else{
-			district = ResManager.getDistrict(dis, false);
+			district = ResManager.getDistrict(dis, ldp.adm);
 		}
-		ldp = ResManager.getPlayer(player);
 	}
 
 	@Override
