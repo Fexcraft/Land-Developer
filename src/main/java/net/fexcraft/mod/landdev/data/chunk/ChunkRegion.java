@@ -25,7 +25,7 @@ public class ChunkRegion implements Saveable {
 	@Override
 	public void save(JsonMap map){
 		map.add("last_save", Time.getAsString(Time.getDate()));
-		JsonMap cks = new JsonMap();
+		JsonMap cks = map.has("chunks") ? map.getMap("chunks") : new JsonMap();
 		for(Chunk_ ck : chunks.values()){
 			JsonMap ckmap = new JsonMap();
 			ck.save(ckmap);
