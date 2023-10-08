@@ -2,10 +2,11 @@ package net.fexcraft.mod.landdev.events;
 
 import static net.fexcraft.mod.landdev.util.broad.Broadcaster.TargetTransmitter.NO_INTERNAL;
 
-import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.mod.fsmm.FSMM;
 import net.fexcraft.mod.landdev.LandDev;
 import net.fexcraft.mod.landdev.data.chunk.ChunkCap;
+import net.fexcraft.mod.landdev.data.chunk.ChunkKey;
+import net.fexcraft.mod.landdev.data.chunk.ChunkRegion;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.util.ChunkCapabilityUtil;
 import net.fexcraft.mod.landdev.util.ResManager;
@@ -31,16 +32,11 @@ public class ChunkEvents {
     		ResManager.INSTANCE.load();
     		Broadcaster.send(NO_INTERNAL, BroadcastChannel.SERVER, null, TranslationUtil.translate("server.started", LandDev.VERSION));
     	}
-    	Chunk_ chunk = new Chunk_(event.getWorld(), event.getChunk().x, event.getChunk().z);
-        if(ResManager.CHUNKS.containsKey(chunk.key)) return;
-    	if(LandDev.DB.exists(chunk.saveTable(), chunk.saveId())){
-    		chunk.load(LandDev.DB.load(chunk.saveTable(), chunk.saveId()));
-    	}
-    	else{
-    		chunk.load(new JsonMap());
-    		chunk.save();
-    	}
-        ResManager.CHUNKS.put(chunk.key, chunk);
+		ChunkRegion reg = ResManager.getChunkRegion(new ChunkKey(event.getChunk().x, event.getChunk().z, true));
+    	Chunk_ chunk = new Chunk_(reg, event.getChunk().x, event.getChunk().z);
+        //if(reg.chunks.containsKey(chunk.key)) return;
+		chunk.load(LandDev.DB.load(chunk.saveTable(), chunk.saveId()));
+        reg.chunks.put(chunk.key, chunk);
     }
     
     @SubscribeEvent
