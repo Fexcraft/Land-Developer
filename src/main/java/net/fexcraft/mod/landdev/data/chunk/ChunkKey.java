@@ -15,6 +15,10 @@ public class ChunkKey implements Comparable<ChunkKey> {
 		z = Integer.parseInt(split[1].trim());
 	}
 
+	public ChunkKey(int x, int z, boolean reg){
+		this(reg ? (int)Math.floor(x / 32D) : x, reg ? (int)Math.floor(z / 32D) : z);
+	}
+
 	@Override
 	public String toString(){
 		return x + "_" + z;
@@ -30,7 +34,7 @@ public class ChunkKey implements Comparable<ChunkKey> {
 			ChunkKey c = (ChunkKey)o;
 			return x == c.x && z == c.z;
 		}
-		else return false;
+		return super.equals(o);
 	}
 
 	@Override
@@ -46,5 +50,9 @@ public class ChunkKey implements Comparable<ChunkKey> {
 	public String comma(){
 		return x + ", " + z;
 	}
-	
+
+	public ChunkKey asRegion(){
+		return new ChunkKey(x, z, true);
+	}
+
 }
