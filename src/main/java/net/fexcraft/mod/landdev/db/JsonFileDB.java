@@ -16,7 +16,17 @@ public class JsonFileDB implements Database {
 	public void save(Saveable type){
 		File file = new File(LandDev.SAVE_DIR, type.saveTable() + "/" + type.saveId() + ".json");
 		if(!file.getParentFile().exists()) file.getParentFile().mkdirs();
-		JsonMap map = new JsonMap();
+		JsonMap map = null;
+		if(type.equals("chunks") && file.exists()){
+			try{
+				map = JsonHandler.parse(file);
+			}
+			catch(Exception e){
+				e.printStackTrace();
+				map = new JsonMap();
+			}
+		}
+		else map = new JsonMap();
 		type.save(map);
 		JsonHandler.print(file, map, Settings.SAVE_SPACED_JSON ? PrintOption.FLAT : PrintOption.SPACED);
 	}
