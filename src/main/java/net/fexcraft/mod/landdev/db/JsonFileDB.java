@@ -7,6 +7,7 @@ import net.fexcraft.app.json.JsonHandler.PrintOption;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.mod.landdev.LandDev;
 import net.fexcraft.mod.landdev.data.Saveable;
+import net.fexcraft.mod.landdev.data.chunk.ChunkKey;
 import net.fexcraft.mod.landdev.util.Settings;
 
 public class JsonFileDB implements Database {
@@ -22,12 +23,27 @@ public class JsonFileDB implements Database {
 
 	@Override
 	public JsonMap load(String table, String id){
+		if(table.equals("chunks") && !id.startsWith("r_")){
+			File file = new File(LandDev.SAVE_DIR, table + "/" + id + ".json");
+			if(file.exists()){
+				file.deleteOnExit();
+				return JsonHandler.parse(file);
+			}
+			file = new File(LandDev.SAVE_DIR, table + "/r_" + new ChunkKey(id).asRegion().toString() + ".json");
+			if(!file.exists()) return new JsonMap();
+			JsonMap map = JsonHandler.parse(file);
+			if(map.has("chunks")){
+				if(map.getMap("chunks").has(id)) return map.getMap("chunks").getMap(id);
+			}
+			return new JsonMap();
+		}
 		File file = new File(LandDev.SAVE_DIR, table + "/" + id + ".json");
 		return file.exists() ? JsonHandler.parse(file) : new JsonMap();
 	}
 
 	@Override
 	public boolean exists(String table, String id){
+		if(table.equals("chunks")) return true;
 		return new File(LandDev.SAVE_DIR, table + "/" + id + ".json").exists();
 	}
 
