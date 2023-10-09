@@ -40,6 +40,7 @@ public enum Layers {
 			case "county": return COUNTY;
 			case "state": return STATE;
 			case "union": return UNION;
+			case "player": return PLAYER;
 			case "none": return NONE;
 		}
 		return NONE;
