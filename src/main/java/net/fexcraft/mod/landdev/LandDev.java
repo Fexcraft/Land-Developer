@@ -4,6 +4,8 @@ import static net.fexcraft.mod.landdev.util.broad.Broadcaster.TargetTransmitter.
 
 import java.io.File;
 
+import net.fexcraft.mod.landdev.data.chunk.cap.ChunkCapCallable;
+import net.fexcraft.mod.landdev.data.chunk.cap.ChunkCapStorage;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 
@@ -14,13 +16,12 @@ import net.fexcraft.mod.landdev.cmd.DebugCmd;
 import net.fexcraft.mod.landdev.cmd.DisCmd;
 import net.fexcraft.mod.landdev.cmd.LDCmd;
 import net.fexcraft.mod.landdev.cmd.MunCmd;
-import net.fexcraft.mod.landdev.data.chunk.ChunkCap;
+import net.fexcraft.mod.landdev.data.chunk.cap.ChunkCap;
 import net.fexcraft.mod.landdev.db.Database;
 import net.fexcraft.mod.landdev.db.JsonFileDB;
 import net.fexcraft.mod.landdev.events.LocationUpdate;
 import net.fexcraft.mod.landdev.gui.GuiHandler;
 import net.fexcraft.mod.landdev.util.AliasLoader;
-import net.fexcraft.mod.landdev.util.ChunkCapabilityUtil;
 import net.fexcraft.mod.landdev.util.PacketReceiver;
 import net.fexcraft.mod.landdev.util.Protector;
 import net.fexcraft.mod.landdev.util.Settings;
@@ -49,7 +50,7 @@ public class LandDev {
 	
     public static final String MODID = "landdev";
     public static final String NAME = "LandDev";
-    public static final String VERSION = "1.0.6";
+    public static final String VERSION = "1.0.8";
 	@Mod.Instance(MODID)
 	public static LandDev INSTANCE;
 	public static Database DB = new JsonFileDB();
@@ -62,7 +63,7 @@ public class LandDev {
     public void preInit(FMLPreInitializationEvent event){
     	Settings.initialize(event);
         logger = event.getModLog();
-		CapabilityManager.INSTANCE.register(ChunkCap.class, new ChunkCapabilityUtil.Storage(), new ChunkCapabilityUtil.Callable());
+		CapabilityManager.INSTANCE.register(ChunkCap.class, new ChunkCapStorage(), new ChunkCapCallable());
     }
 
     @EventHandler
