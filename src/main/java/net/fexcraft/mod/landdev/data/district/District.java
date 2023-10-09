@@ -231,7 +231,7 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 		switch(container.x){
 			case UI_MAIN:
 				resp.addRow("id", ELM_GENERIC, id);
-				if(canman || canoman){
+				if(canman){
 					resp.addButton("name", ELM_GENERIC, ICON_OPEN, name());
 					resp.addButton("type", ELM_GENERIC, ICON_OPEN, type.name());
 				}
@@ -296,13 +296,13 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 				resp.setFormular();
 				return;
 			case UI_APPREARANCE:
-				AppearModule.resp(container, resp, "district", icon, color, canman || canoman);
+				AppearModule.resp(container, resp, "district", icon, color, canman);
 				return;
 			case UI_NORMS:
-				NormModule.respNormList(norms, container, resp, "district", canman || canoman);
+				NormModule.respNormList(norms, container, resp, "district", canman);
 				return;
 			case UI_NORM_EDIT:{
-				NormModule.respNormEdit(norms, container, resp, "district", canman || canoman);
+				NormModule.respNormEdit(norms, container, resp, "district", canman);
 				return;
 			}
 			case UI_CREATE:{
@@ -449,12 +449,12 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 				return;
 			}
 			case "norm_submit":{
-				if(!canman && !canoman) return;
+				if(!canman) return;
 				NormModule.processNorm(norms, container, req, UI_NORM_EDIT);
 				return;
 			}
 			case "norm_bool":{
-				if(!canman && !canoman) return;
+				if(!canman) return;
 				NormModule.processBool(norms, container, req, UI_NORM_EDIT);
 				return;
 			}
@@ -536,7 +536,7 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 				return;
 			}
 			case "appearance.submit":{
-				if(!canman && !canoman) return;
+				if(!canman) return;
 				AppearModule.req(container, req, icon, color);
 				container.open(UI_MAIN);
 				return;
