@@ -24,7 +24,8 @@ public enum PermAction {
 		CHUNK_TAX,
 		CHUNK_CUSTOMTAX,
 		MAIL_READ,
-		MAIL_DELETE
+		MAIL_DELETE,
+		MANAGE_DISTRICT
 	);
 	public static PermActions MUNICIPALITY_STAFF = new PermActions(
 		CHUNK_CLAIM,
