@@ -11,7 +11,6 @@ import net.fexcraft.mod.fsmm.util.DataManager;
 import net.fexcraft.mod.landdev.LandDev;
 import net.fexcraft.mod.landdev.data.Saveable;
 import net.fexcraft.mod.landdev.data.chunk.ChunkKey;
-import net.fexcraft.mod.landdev.data.chunk.ChunkRegion;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.data.county.County;
 import net.fexcraft.mod.landdev.data.district.District;
@@ -35,7 +34,7 @@ public class ResManager implements Saveable {
 	public boolean LOADED = false;
 	public static ResManager INSTANCE = new ResManager();
 	public static final String CONSOLE_UUID = "f78a4d8d-d51b-4b39-98a3-230f2de0c670";
-	public static ConcurrentHashMap<ChunkKey, ChunkRegion> REGIONS = new ConcurrentHashMap<>();
+	public static ConcurrentHashMap<ChunkKey, Chunk_> CHUNKS = new ConcurrentHashMap<>();
 	public static ConcurrentHashMap<Integer, District> DISTRICTS = new ConcurrentHashMap<>();
 	public static ConcurrentHashMap<Integer, Municipality> MUNICIPALITIES = new ConcurrentHashMap<>();
 	public static ConcurrentHashMap<Integer, County> COUNTIES = new ConcurrentHashMap<>();
@@ -47,34 +46,22 @@ public class ResManager implements Saveable {
 	public static ConcurrentHashMap<Integer, ChunkKey> ST_CENTERS = new ConcurrentHashMap<>();
 	public static Account SERVER_ACCOUNT;
 
-	public static ChunkRegion getChunkRegion(ChunkKey key){
-		for(ChunkRegion reg : REGIONS.values()){
-			if(reg.key.x == key.x && reg.key.z == key.z) return reg;
-		}
-		ChunkRegion region = new ChunkRegion(key);
-		REGIONS.put(key, region);
-		return region;
-	}
-
 	public static Chunk_ getChunk(int x, int z){
-		ChunkRegion reg = getChunkRegion(new ChunkKey(x, z, true));
-		for(Chunk_ ck : reg.chunks.values()){
+		for(Chunk_ ck : CHUNKS.values()){
 			if(ck.key.x == x && ck.key.z == z) return ck;
 		}
 		return null;
 	}
 
 	public static Chunk_ getChunk(ChunkKey key){
-		ChunkRegion reg = getChunkRegion(key.asRegion());
-		for(Chunk_ ck : reg.chunks.values()){
+		for(Chunk_ ck : CHUNKS.values()){
 			if(ck.key.equals(key)) return ck;
 		}
 		return null;
 	}
 
 	public static Chunk_ getChunk(Chunk chunk){
-		ChunkRegion reg = getChunkRegion(new ChunkKey(chunk.x, chunk.z, true));
-		for(Chunk_ ck : reg.chunks.values()){
+		for(Chunk_ ck : CHUNKS.values()){
 			if(ck.key.x == chunk.x && ck.key.z == chunk.z) return ck;
 		}
 		return null;
@@ -93,8 +80,8 @@ public class ResManager implements Saveable {
 	}
 
 	public static void remChunk(Chunk chunk){
-		ChunkRegion reg = REGIONS.get(new ChunkKey(chunk.x, chunk.z, true));
-		if(reg != null) reg.chunks.remove(new ChunkKey(chunk.x, chunk.z));
+		Chunk_ ck = getChunk(chunk.x, chunk.z);
+		if(ck != null) CHUNKS.remove(ck.key);
 	}
 
 	public static District getDistrict(int idx, boolean load){
@@ -178,7 +165,6 @@ public class ResManager implements Saveable {
 	}
 
 	public static void unload(){
-		REGIONS.values().forEach(save -> LandDev.DB.save(save));
 		DISTRICTS.values().forEach(save -> LandDev.DB.save(save));
 		MUNICIPALITIES.values().forEach(save -> LandDev.DB.save(save));
 		COUNTIES.values().forEach(save -> LandDev.DB.save(save));
@@ -189,7 +175,6 @@ public class ResManager implements Saveable {
 	}
 
 	public static void clear(){
-		REGIONS.clear();
 		DISTRICTS.clear();
 		MUNICIPALITIES.clear();
 		COUNTIES.clear();
