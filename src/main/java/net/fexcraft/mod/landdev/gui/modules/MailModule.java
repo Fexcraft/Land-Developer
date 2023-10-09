@@ -152,8 +152,25 @@ public class MailModule implements LDGuiModule {
 						if(mail.receiver.is(Layers.MUNICIPALITY)){
 							player = ResManager.getPlayer(mail.fromUUID(), true);
 							Municipality mun = ResManager.getMunicipality(mail.recInt(), true);
+							if(player.isMunicipalityManager()){
+								Print.chat(player.entity, translate("mail.municipality.request.ismanager"));
+								return;
+							}
+							if(player.isCountyManager() && mun.county.id != player.county.id){
+								Print.chat(player.entity, translate("mail.county.request.ismanager"));
+								return;
+							}
+							player.setCitizenOf(mun);
+							mail.expire();
+							//TODO announce
+						}
+						else if(mail.receiver.is(Layers.COUNTY)){
 							//
 						}
+						else if(mail.receiver.is(Layers.COMPANY)){
+							//
+						}
+						goback(container);
 						return;
 					}
 				}
