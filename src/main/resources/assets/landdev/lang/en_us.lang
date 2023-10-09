@@ -58,7 +58,9 @@ landdev.mail.municipality.citizen.invite1=the Municipality.
 landdev.mail.municipality.manager_now=You are now Municipality Mayor.
 landdev.mail.municipality.manager_set=%s is now Municipality Mayor.
 landdev.mail.municipality.citizen.ismanager=Please appoint a new Mayor before leaving your current Municipality.
+landdev.mail.municipality.request.ismanager=The request sender is Mayor of a Municipality.
 landdev.mail.county.citizen.ismanager=Please appoint a new County Manager before moving to another County.
+landdev.mail.county.request.ismanager=The request sender is a County Manager.
 landdev.mail.player.municipality.join_request0=%s requests to join
 landdev.mail.player.municipality.join_request1=your Municipality.
 
