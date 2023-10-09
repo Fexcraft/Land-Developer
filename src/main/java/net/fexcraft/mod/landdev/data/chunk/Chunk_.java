@@ -31,11 +31,11 @@ import net.fexcraft.mod.landdev.gui.modules.ModuleRequest;
 import net.fexcraft.mod.landdev.gui.modules.ModuleResponse;
 import net.fexcraft.mod.landdev.util.ResManager;
 import net.fexcraft.mod.landdev.util.Settings;
+import net.minecraft.world.chunk.Chunk;
 
 public class Chunk_ implements Saveable, Layer, LDGuiModule {
 	
 	public final ChunkKey key;
-	public final ChunkRegion region;
 	public Createable created = new Createable();
 	public ChunkType type = ChunkType.NORMAL;
 	public Sellable sell = new Sellable(this);
@@ -46,15 +46,16 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 	public ChunkLabel label = new ChunkLabel();
 	public ExternalData external = new ExternalData(this);
 	public District district;
+	public Chunk chunk;
 
-	public Chunk_(ChunkRegion reg, int x, int z){
-		key = new ChunkKey(x, z);
-		region = reg;
+	public Chunk_(Chunk ck){
+		key = new ChunkKey(ck.x, ck.z);
+		chunk = ck;
 	}
 
 	@Override
 	public void save(JsonMap map){
-		//map.add("id", key.toString());
+		map.add("id", key.toString());
 		created.save(map);
 		owner.save(map);
 		map.add("type", type.l1());
@@ -102,7 +103,7 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 
 	@Override
 	public void save(){
-		region.save();
+		chunk.markDirty();
 	}
 
 	@Override
