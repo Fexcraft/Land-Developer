@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 import net.fexcraft.app.json.JsonMap;
+import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fsmm.api.Account;
 import net.fexcraft.mod.fsmm.api.Bank;
 import net.fexcraft.mod.fsmm.api.Bank.Action;
@@ -81,13 +82,13 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 		access.load(map);
 		tax.load(map);
 		label.load(map);
-		district = ResManager.getDistrict(map.getInteger("district", -1), true);
+		district = ResManager.getDistrict(map.getInteger("district", -1));
 		external.load(map);
 	}
 	
 	@Override
 	public void gendef(){
-		district = ResManager.getDistrict(-1, true);
+		district = ResManager.getDistrict(-1);
 		external.gendef();
 	}
 	
