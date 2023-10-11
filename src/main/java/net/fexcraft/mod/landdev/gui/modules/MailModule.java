@@ -210,7 +210,7 @@ public class MailModule implements LDGuiModule {
 		switch(lay){
 			case PLAYER: return player.mail;
 			case DISTRICT: {
-				District dis = ResManager.getDistrict(y, false);
+				District dis = ResManager.getDistrict(y);
 				if(player.adm || dis.can(MAIL_READ, player.uuid)){
 					return dis.mail;
 				}
@@ -246,7 +246,7 @@ public class MailModule implements LDGuiModule {
 		switch(lay){
 			case PLAYER: return true;
 			case DISTRICT: {
-				District dis = ResManager.getDistrict(y, false);
+				District dis = ResManager.getDistrict(y);
 				if(player.adm || dis.can(MAIL_DELETE, player.uuid)) return true;
 				break;
 			}
