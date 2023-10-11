@@ -65,7 +65,7 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 		access.save(map);
 		tax.save(map);
 		label.save(map);
-		map.add("district", district.id);
+		if(district != null) map.add("district", district.id);
 		external.save(map);
 	}
 
