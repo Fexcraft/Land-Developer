@@ -605,6 +605,10 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 					container.sendMsg("create.district_no_forming");
 					return;
 				}
+				if(!claim && chunk.district.id >= 0){
+					container.sendMsg("create.chunk_is_claimed");
+					return;
+				}
 				//todo notifications
 				int newid = ResManager.getNewIdFor(saveTable()), ndid = -2;
 				if(newid < 0){
