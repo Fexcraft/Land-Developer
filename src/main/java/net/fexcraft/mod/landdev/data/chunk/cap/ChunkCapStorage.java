@@ -89,7 +89,8 @@ public class ChunkCapStorage implements IStorage<ChunkCap> {
 			return;
 		}
 		JsonMap map = demap((NBTTagCompound)nbt);
-		instance.getChunk().load(map);
+		if(map.empty()) instance.getChunk().gendef();
+		else instance.getChunk().load(map);
 	}
 
 	private JsonMap demap(NBTTagCompound com){
