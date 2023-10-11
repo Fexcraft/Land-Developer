@@ -325,7 +325,7 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 			case UI_DISTRICTS:{
 				resp.setTitle("municipality.districts.title");
 				for(int id : districts){
-					resp.addButton("district." + id, ELM_GENERIC, ICON_OPEN, VALONLY + ResManager.getDistrict(id, true).name());//TODO name cache
+					resp.addButton("district." + id, ELM_GENERIC, ICON_OPEN, VALONLY + ResManager.getDistrict(id).name());//TODO name cache
 				}
 				return;
 			}
