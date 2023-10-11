@@ -18,6 +18,7 @@ import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.data.district.District;
 import net.fexcraft.mod.landdev.data.player.Player;
 import net.fexcraft.mod.landdev.util.ResManager;
+import net.fexcraft.mod.landdev.util.Settings;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTBase;
@@ -62,6 +63,7 @@ public class LDGuiClaimCon extends GenericContainer {
 			else if(packet.hasKey("claim")){
 				int[] key = packet.getIntArray("claim");
 				Chunk_ chunk = ResManager.getChunk(key[0] - 7 + x, key[1] - 7 + z);
+				if(chunk == null) return;
 				NBTTagCompound com = new NBTTagCompound();
 				if(!ldp.adm && !district.can(CHUNK_CLAIM, player.getGameProfile().getId())){
 					com.setString("msg", "landdev.gui.claim.no_perm_district");
@@ -99,14 +101,15 @@ public class LDGuiClaimCon extends GenericContainer {
 						return;
 					}
 				}
-				else if(chunk.sell.price == 0){
+				else if(chunk.sell.price == 0 && chunk.district.id >= 0){
 					com.setString("msg", "landdev.gui.claim.not_for_sale");
 					send(Side.CLIENT, com);
 					return;
 				}
-				if(chunk.sell.price > 0){
+				long price = chunk.sell.price > 0 ? chunk.sell.price : Settings.DEFAULT_CHUNK_PRICE;
+				if(price > 0){
 					Bank bank = DataManager.getBank(district.owner.account().getBankId(), false, true);
-					if(!bank.processAction(Action.TRANSFER, player, district.account(), chunk.sell.price, SERVER_ACCOUNT)) return;
+					if(!bank.processAction(Action.TRANSFER, player, district.account(), price, SERVER_ACCOUNT)) return;
 				}
 				com.setString("msg", "landdev.gui.claim.pass");
 				if(chunk.district.id > -1) chunk.district.chunks -= 1;
@@ -168,7 +171,7 @@ public class LDGuiClaimCon extends GenericContainer {
 				else{
 					com.setInteger("d", di = chunk.district.id);
 					com.setInteger("c", chunk.district.color.getInteger());
-					com.setLong("p", chunk.sell.price);
+					com.setLong("p", chunk.sell.price == 0 && chunk.district.id == -1 ? Settings.DEFAULT_CHUNK_PRICE : chunk.sell.price);
 				}
 				list.appendTag(com);
 				if(!dis.containsKey(di) && di != -10) dis.put(di, ResManager.getDistrict(di));
