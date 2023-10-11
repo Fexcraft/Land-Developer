@@ -49,7 +49,7 @@ public class LDGuiClaimCon extends GenericContainer {
 			send(Side.SERVER, com);
 		}
 		else{
-			district = ResManager.getDistrict(dis, ldp.adm);
+			district = ResManager.getDistrict(dis);
 		}
 	}
 
@@ -155,15 +155,23 @@ public class LDGuiClaimCon extends GenericContainer {
 		NBTTagList list = new NBTTagList();
 		HashMap<Integer, District> dis = new HashMap<>();
 		Chunk_ chunk = null;
+		int di = -1;
 		for(int i = -7; i < 8; i++){
 			for(int k = -7; k < 8; k++){
 				chunk = ResManager.getChunk(x + i, z + k);
 				NBTTagCompound com = new NBTTagCompound();
-				com.setInteger("c", chunk.district.color.getInteger());
-				com.setInteger("d", chunk.district.id);
-				com.setLong("p", chunk.sell.price);
+				if(chunk == null){
+					com.setInteger("d", di = -10);
+					com.setInteger("c", 0xffffff);
+					com.setLong("p", 0);
+				}
+				else{
+					com.setInteger("d", di = chunk.district.id);
+					com.setInteger("c", chunk.district.color.getInteger());
+					com.setLong("p", chunk.sell.price);
+				}
 				list.appendTag(com);
-				if(!dis.containsKey(chunk.district.id)) dis.put(chunk.district.id, chunk.district);
+				if(!dis.containsKey(di) && di != -10) dis.put(di, ResManager.getDistrict(di));
 			}
 		}
 		compound.setTag("cks", list);
@@ -175,6 +183,15 @@ public class LDGuiClaimCon extends GenericContainer {
 			com.setInteger("o", d.owner.owid);
 			com.setString("m", d.owner.name());
 			com.setBoolean("c", d.owner.is_county);
+			list.appendTag(com);
+		}
+		if(dis.containsKey(-10)){
+			NBTTagCompound com = new NBTTagCompound();
+			com.setInteger("i", -10);
+			com.setString("n", "not loaded");
+			com.setInteger("o", -10);
+			com.setString("m", "Void");
+			com.setBoolean("c", true);
 			list.appendTag(com);
 		}
 		compound.setTag("dis", list);
