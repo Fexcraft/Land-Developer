@@ -45,7 +45,7 @@ public class Permit implements Saveable {
 	public Account getAccount(){
 		switch(origin_layer){
 			case DISTRICT:
-				District dis = ResManager.getDistrict(origin_id, false);
+				District dis = ResManager.getDistrict(origin_id);
 				if(dis != null) return dis.account();
 				break;
 			case MUNICIPALITY:
