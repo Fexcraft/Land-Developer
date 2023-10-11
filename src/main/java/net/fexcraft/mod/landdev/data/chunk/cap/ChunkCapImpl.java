@@ -11,18 +11,17 @@ import net.minecraft.world.chunk.Chunk;
  */
 public class ChunkCapImpl implements ChunkCap {
 
-	private Chunk chunk;
-	private Chunk_ chunk_;
+	private Chunk_ chunk;
 
 	@Override
 	public void setChunk(Chunk ck){
-		chunk_ = new Chunk_(chunk = ck);
-		ResManager.CHUNKS.put(chunk_.key, chunk_);
+		chunk = new Chunk_(ck);
+		ResManager.CHUNKS.put(chunk.key, chunk);
 	}
 
 	@Override
 	public Chunk_ getChunk(){
-		return chunk_;
+		return chunk;
 	}
 
 }
