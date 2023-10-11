@@ -309,6 +309,7 @@ landdev.gui.municipality.create.leave_management=Please leave your current Munic
 landdev.gui.municipality.create.leave_county_management=Please leave your current County's Management first.
 landdev.gui.municipality.create.leave_state_management=Please leave your current State's Management first.
 landdev.gui.municipality.create.district_no_forming=District Norm does not allow full integration.
+landdev.gui.municipality.create.chunk_is_claimed=Chunk is already part of a District.
 landdev.gui.municipality.create.complete=&bNew Municipality created! Try &7/mun&b!
 landdev.gui.municipality.title=Municipality Overview
 landdev.gui.municipality.id=ID: %s
