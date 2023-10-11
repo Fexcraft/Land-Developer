@@ -90,7 +90,7 @@ public class LDGuiContainer extends GenericContainer {
 					break;
 				}
 				case DISTRICT:{
-					District dis = ResManager.getDistrict(y, y > -2);
+					District dis = ResManager.getDistrict(y);
 					if(dis != null){
 						dis.on_interact(this, req);
 						break;
@@ -140,7 +140,7 @@ public class LDGuiContainer extends GenericContainer {
 				break;
 			}
 			case DISTRICT:{
-				District dis = ResManager.getDistrict(y, y > -2);
+				District dis = ResManager.getDistrict(y);
 				if(dis != null){
 					dis.sync_packet(this, resp);
 					holder = dis.icon;
