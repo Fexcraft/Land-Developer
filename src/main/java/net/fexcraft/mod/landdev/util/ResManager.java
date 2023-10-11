@@ -84,10 +84,11 @@ public class ResManager implements Saveable {
 		if(ck != null) CHUNKS.remove(ck.key);
 	}
 
-	public static District getDistrict(int idx, boolean load){
-		if(!load) return DISTRICTS.get(idx);
+	public static District getDistrict(int idx){
 		District dis = DISTRICTS.get(idx);
-		if(dis == null) DISTRICTS.put(idx, load(dis = new District(idx)));
+		if(dis == null && idx >= -2 && LandDev.DB.exists("districts", idx + "")){
+			DISTRICTS.put(idx, load(dis = new District(idx)));
+		}
 		return dis;
 	}
 
