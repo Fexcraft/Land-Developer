@@ -1,7 +1,7 @@
 package net.fexcraft.mod.landdev.data.district;
 
 import net.fexcraft.app.json.JsonMap;
-import net.fexcraft.mod.fsmm.api.Account;
+import net.fexcraft.mod.fsmm.data.Account;
 import net.fexcraft.mod.landdev.data.Citizens;
 import net.fexcraft.mod.landdev.data.Manageable;
 import net.fexcraft.mod.landdev.data.Saveable;
