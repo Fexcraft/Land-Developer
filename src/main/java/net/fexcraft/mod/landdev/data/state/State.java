@@ -50,6 +50,7 @@ public class State implements Saveable, Layer, LDGuiModule {
 		mail.save(map);
 		manage.save(map);
 		norms.save(map);
+		account.setName(name());
 		JsonArray array = new JsonArray();
 		counties.forEach(mun -> array.add(mun));
 		map.add("counties", array);
