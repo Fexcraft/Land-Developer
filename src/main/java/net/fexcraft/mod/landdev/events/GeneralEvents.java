@@ -4,6 +4,7 @@ import net.fexcraft.mod.fsmm.data.AccountPermission;
 import net.fexcraft.mod.fsmm.events.ATMEvent;
 import net.fexcraft.mod.landdev.LandDev;
 import net.fexcraft.mod.landdev.data.PermAction;
+import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.data.player.Player;
 import net.fexcraft.mod.landdev.util.ResManager;
 import net.fexcraft.mod.landdev.util.Settings;
@@ -25,6 +26,16 @@ public class GeneralEvents {
 		Player player = ResManager.getPlayer(event.getPlayer());
 		if(player.adm){
 			event.getAccountsList().add(new AccountPermission(ResManager.SERVER_ACCOUNT, true, true, true, true));
+			Chunk_ ck = ResManager.getChunk(event.getPlayer());
+			if(ck.district.state().id > -1){
+				event.getAccountsList().add(new AccountPermission(ck.district.state().account, true, true, true, true));
+			}
+			if(ck.district.county().id > -1){
+				event.getAccountsList().add(new AccountPermission(ck.district.county().account, true, true, true, true));
+			}
+			if(!ck.district.owner.is_county && ck.district.municipality().id > -1){
+				event.getAccountsList().add(new AccountPermission(ck.district.municipality().account, true, true, true, true));
+			}
 			event.getAccountsList().add(new AccountPermission(ResManager.getState(-1, true).account, true, true, true, true));
 			event.getAccountsList().add(new AccountPermission(ResManager.getCounty(-1, true).account, true, true, true, true));
 			event.getAccountsList().add(new AccountPermission(ResManager.getMunicipality(-1, true).account, true, true, true, true));
