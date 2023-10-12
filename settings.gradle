@@ -1,16 +1,3 @@
-pluginManagement {
-    repositories {
-        maven {
-            name 'MinecraftForge'
-            url 'https://maven.minecraftforge.net/'
-        }
-        maven {
-            name 'Garden of Fancy'
-            url 'https://maven.gofancy.wtf/releases'
-        }
-    }
-}
-
 include ':FCL'
 project(':FCL').projectDir = new File(settingsDir, '../FCL')
 include ':FSMM'
