@@ -1,6 +1,6 @@
 package net.fexcraft.mod.landdev.events;
 
-import net.fexcraft.mod.fsmm.api.AccountPermission;
+import net.fexcraft.mod.fsmm.data.AccountPermission;
 import net.fexcraft.mod.fsmm.events.ATMEvent;
 import net.fexcraft.mod.landdev.LandDev;
 import net.fexcraft.mod.landdev.data.PermAction;
