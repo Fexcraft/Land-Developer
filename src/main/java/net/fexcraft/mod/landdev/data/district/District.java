@@ -11,9 +11,9 @@ import java.util.UUID;
 
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.mod.fsmm.api.Account;
-import net.fexcraft.mod.fsmm.api.Bank;
-import net.fexcraft.mod.fsmm.api.Bank.Action;
+import net.fexcraft.mod.fsmm.data.Account;
+import net.fexcraft.mod.fsmm.data.Bank;
+import net.fexcraft.mod.fsmm.data.Bank.Action;
 import net.fexcraft.mod.fsmm.util.DataManager;
 import net.fexcraft.mod.landdev.data.*;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
@@ -405,8 +405,7 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 						container.sendMsg("buy.notenoughmoney");
 						return;
 					}
-					Bank bank = DataManager.getBank(account.getBankId(), false, true);
-					if(!bank.processAction(Action.TRANSFER, container.player.entity, account, sell.price, ct.account)) return;
+					if(!account.getBank().processAction(Action.TRANSFER, container.player.entity, account, sell.price, ct.account)) return;
 					owner.set(ct);
 					sell.price = 0;
 					container.open(UI_MAIN);
@@ -426,8 +425,7 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 						container.sendMsg("buy.notenoughmoney");
 						return;
 					}
-					Bank bank = DataManager.getBank(account.getBankId(), false, true);
-					if(!bank.processAction(Action.TRANSFER, container.player.entity, account, sell.price, mun.account)) return;
+					if(!account.getBank().processAction(Action.TRANSFER, container.player.entity, account, sell.price, mun.account)) return;
 					owner.set(mun);
 					sell.price = 0;
 					container.open(UI_MAIN);
@@ -515,8 +513,7 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 					Print.chat(player.entity, "DB ERROR, INVALID NEW ID '" + newid + "'!");
 					return;
 				}
-				Bank bank = DataManager.getBank(account.getBankId(), false, true);
-				if(!bank.processAction(Action.TRANSFER, player.entity, account, sum, SERVER_ACCOUNT)){
+				if(!account.getBank().processAction(Action.TRANSFER, player.entity, account, sum, SERVER_ACCOUNT)){
 					return;
 				}
 				District dis = new District(newid);
