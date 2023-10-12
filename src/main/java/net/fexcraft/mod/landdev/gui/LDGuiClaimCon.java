@@ -9,8 +9,7 @@ import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.mc.gui.GenericContainer;
 import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.mod.fsmm.api.Bank;
-import net.fexcraft.mod.fsmm.api.Bank.Action;
+import net.fexcraft.mod.fsmm.data.Bank.Action;
 import net.fexcraft.mod.fsmm.util.DataManager;
 import net.fexcraft.mod.landdev.data.Layers;
 import net.fexcraft.mod.landdev.data.chunk.ChunkType;
@@ -108,8 +107,7 @@ public class LDGuiClaimCon extends GenericContainer {
 				}
 				long price = chunk.sell.price > 0 ? chunk.sell.price : Settings.DEFAULT_CHUNK_PRICE;
 				if(price > 0){
-					Bank bank = DataManager.getBank(district.owner.account().getBankId(), false, true);
-					if(!bank.processAction(Action.TRANSFER, player, district.account(), price, SERVER_ACCOUNT)) return;
+					if(!district.owner.account().getBank().processAction(Action.TRANSFER, player, district.account(), price, SERVER_ACCOUNT)) return;
 				}
 				com.setString("msg", "landdev.gui.claim.pass");
 				if(chunk.district.id > -1) chunk.district.chunks -= 1;
