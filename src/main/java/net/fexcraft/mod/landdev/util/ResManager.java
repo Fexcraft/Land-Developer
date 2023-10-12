@@ -158,6 +158,7 @@ public class ResManager implements Saveable {
 		if(SERVER_ACCOUNT == null){
 			SERVER_ACCOUNT = DataManager.getAccount("server:landdev", false, true);
 			SERVER_ACCOUNT.setBalance(1000000000000l);
+			SERVER_ACCOUNT.setName("LandDeveloper Server Account");
 		}
 		clear();
 		JsonMap map = LandDev.DB.load(saveTable(), saveId());
