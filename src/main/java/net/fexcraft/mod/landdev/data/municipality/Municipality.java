@@ -19,7 +19,6 @@ import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fsmm.data.Account;
-import net.fexcraft.mod.fsmm.data.Bank;
 import net.fexcraft.mod.fsmm.data.Bank.Action;
 import net.fexcraft.mod.fsmm.util.DataManager;
 import net.fexcraft.mod.landdev.data.*;
@@ -106,6 +105,7 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 		citizens.load(map);
 		requests.load(map);
 		norms.load(map);
+		account.setName(name());
 		if(map.has("districts")){
 			JsonArray array = map.getArray("districts");
 			districts.clear();
@@ -448,9 +448,12 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 				return;
 			}
 			case "citizen.leave":{
-				if(player.isMunicipalityManager()){
+				if(player.isMunicipalityManager() && !player.adm){
 					container.sendMsg("landdev.mail.municipality.citizen.ismanager", false);
 					return;
+				}
+				if(player.isMunicipalityManager()){
+					manage.setManager(UUID.fromString(ResManager.CONSOLE_UUID));
 				}
 				player.leaveMunicipality();
 				container.open(UI_MAIN);
