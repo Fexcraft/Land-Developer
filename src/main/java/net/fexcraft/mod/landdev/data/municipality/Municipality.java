@@ -18,9 +18,9 @@ import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.mod.fsmm.api.Account;
-import net.fexcraft.mod.fsmm.api.Bank;
-import net.fexcraft.mod.fsmm.api.Bank.Action;
+import net.fexcraft.mod.fsmm.data.Account;
+import net.fexcraft.mod.fsmm.data.Bank;
+import net.fexcraft.mod.fsmm.data.Bank.Action;
 import net.fexcraft.mod.fsmm.util.DataManager;
 import net.fexcraft.mod.landdev.data.*;
 import net.fexcraft.mod.landdev.data.Citizens.Citizen;
@@ -622,12 +622,10 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 						return;
 					}
 				}
-				Bank bank = DataManager.getBank(acc.getBankId(), false, true);
-				if(!bank.processAction(Action.TRANSFER, player.entity, acc, sum, SERVER_ACCOUNT)){
+				if(!acc.getBank().processAction(Action.TRANSFER, player.entity, acc, sum, SERVER_ACCOUNT)){
 					return;
 				}
-				bank = DataManager.getBank(SERVER_ACCOUNT.getBankId(), false, true);
-				if(!uca) bank.processAction(Action.TRANSFER, null, SERVER_ACCOUNT, county.norms.get("new-municipality-fee").integer(), county.account);
+				if(!uca) SERVER_ACCOUNT.getBank().processAction(Action.TRANSFER, null, SERVER_ACCOUNT, county.norms.get("new-municipality-fee").integer(), county.account);
 				Municipality mold = player.municipality;
 				County cold = player.county;
 				//mold.citizens.remove(player);
@@ -662,7 +660,7 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 					dis.owner.set(mnew);
 					dis.save();
 				}
-				bank.processAction(Action.TRANSFER, null, SERVER_ACCOUNT, Settings.MUNICIPALITY_CREATION_FEE / 2, mnew.account);
+				SERVER_ACCOUNT.getBank().processAction(Action.TRANSFER, null, SERVER_ACCOUNT, Settings.MUNICIPALITY_CREATION_FEE / 2, mnew.account);
 				ResManager.bulkSave(mnew, county, player, mold, cold);
 				player.entity.closeScreen();
     			Print.chat(player.entity, translate("gui.municipality.create.complete"));
