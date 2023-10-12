@@ -2,7 +2,7 @@ package net.fexcraft.mod.landdev.data.player;
 
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.Time;
-import net.fexcraft.mod.fsmm.api.Account;
+import net.fexcraft.mod.fsmm.data.Account;
 import net.fexcraft.mod.landdev.data.Layers;
 import net.fexcraft.mod.landdev.data.PermAction;
 import net.fexcraft.mod.landdev.data.Saveable;
