@@ -84,6 +84,7 @@ public class County implements Saveable, Layer, LDGuiModule {
 		manage.load(map);
 		citizens.load(map);
 		norms.load(map);
+		account.setName(name());
 		if(map.has("districts")){
 			JsonArray array = map.getArray("districts");
 			districts.clear();
