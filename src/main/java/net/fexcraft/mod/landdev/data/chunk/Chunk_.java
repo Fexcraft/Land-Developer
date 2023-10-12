@@ -11,11 +11,8 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 import net.fexcraft.app.json.JsonMap;
-import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.mod.fsmm.api.Account;
-import net.fexcraft.mod.fsmm.api.Bank;
-import net.fexcraft.mod.fsmm.api.Bank.Action;
-import net.fexcraft.mod.fsmm.util.DataManager;
+import net.fexcraft.mod.fsmm.data.Account;
+import net.fexcraft.mod.fsmm.data.Bank.Action;
 import net.fexcraft.mod.landdev.data.Createable;
 import net.fexcraft.mod.landdev.data.Layer;
 import net.fexcraft.mod.landdev.data.Layers;
@@ -431,8 +428,7 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 					container.sendMsg("buy.notenoughmoney");
 					return;
 				}
-				Bank bank = DataManager.getBank(account.getBankId(), false, true);
-				if(!bank.processAction(Action.TRANSFER, container.player.entity, account, sell.price, owner.getAccount(this))) return;
+				if(!account.getBank().processAction(Action.TRANSFER, container.player.entity, account, sell.price, owner.getAccount(this))) return;
 				owner.set(layer, layer.is(Layers.PLAYER) ? container.player.uuid : null, district.getLayerId(layer));
 				sell.price = 0;
 				container.open(UI_MAIN);
