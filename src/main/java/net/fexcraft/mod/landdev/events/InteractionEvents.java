@@ -3,7 +3,7 @@ package net.fexcraft.mod.landdev.events;
 import static net.fexcraft.mod.landdev.util.TranslationUtil.translate;
 
 import net.fexcraft.lib.common.math.Time;
-import net.fexcraft.lib.mc.utils.Formatter;
+import net.fexcraft.lib.common.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.landdev.data.chunk.ChunkType;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
