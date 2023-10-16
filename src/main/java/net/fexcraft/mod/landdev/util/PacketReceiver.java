@@ -3,10 +3,10 @@ package net.fexcraft.mod.landdev.util;
 import static net.fexcraft.mod.landdev.LandDev.CLIENT_RECEIVER_ID;
 
 import net.fexcraft.lib.common.math.Time;
+import net.fexcraft.lib.common.utils.Formatter;
 import net.fexcraft.lib.mc.api.packet.IPacketListener;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.render.ExternalTextureHelper;
-import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.mod.landdev.events.LocationUpdate;
 import net.fexcraft.mod.landdev.gui.LDGuiImgPreview;
 import net.minecraft.client.Minecraft;
