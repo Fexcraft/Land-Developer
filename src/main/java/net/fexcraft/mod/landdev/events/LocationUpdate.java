@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.Time;
+import net.fexcraft.lib.common.utils.Formatter;
 import net.fexcraft.lib.mc.render.ExternalTextureHelper;
-import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.mod.landdev.util.Settings;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.client.Minecraft;
