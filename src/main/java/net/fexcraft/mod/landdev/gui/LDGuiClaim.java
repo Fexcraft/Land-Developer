@@ -3,8 +3,8 @@ package net.fexcraft.mod.landdev.gui;
 import java.util.ArrayList;
 
 import net.fexcraft.lib.common.math.RGB;
+import net.fexcraft.lib.common.utils.Formatter;
 import net.fexcraft.lib.mc.gui.GenericGui;
-import net.fexcraft.lib.mc.utils.Formatter;
 import net.fexcraft.mod.fsmm.util.Config;
 import net.fexcraft.mod.landdev.gui.LDGuiClaimCon.ChunkData;
 import net.fexcraft.mod.landdev.gui.LDGuiClaimCon.DisData;
