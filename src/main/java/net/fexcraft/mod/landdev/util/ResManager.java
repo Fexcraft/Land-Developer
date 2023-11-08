@@ -86,7 +86,7 @@ public class ResManager implements Saveable {
 
 	public static District getDistrict(int idx){
 		District dis = DISTRICTS.get(idx);
-		if(dis == null && idx >= -2 && LandDev.DB.exists("districts", idx + "")){
+		if(dis == null && idx >= -2 /*&& LandDev.DB.exists("districts", idx + "")*/){
 			DISTRICTS.put(idx, load(dis = new District(idx)));
 		}
 		return dis;
