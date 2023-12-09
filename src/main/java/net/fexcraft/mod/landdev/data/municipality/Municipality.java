@@ -20,6 +20,7 @@ import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fsmm.data.Account;
 import net.fexcraft.mod.fsmm.data.Bank.Action;
+import net.fexcraft.mod.fsmm.util.Config;
 import net.fexcraft.mod.fsmm.util.DataManager;
 import net.fexcraft.mod.landdev.data.*;
 import net.fexcraft.mod.landdev.data.Citizens.Citizen;
@@ -201,6 +202,9 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 				resp.addButton("citizen", ELM_GENERIC, ICON_LIST, citizens.size());
 				resp.addRow("manager", ELM_GENERIC, manage.getManagerName());
 				resp.addButton("staff", ELM_GENERIC, ICON_LIST, manage.staff.size());
+				if(canman){
+					resp.addRow("balance", ELM_GENERIC, Config.getWorthAsString(account.getBalance()));
+				}
 				resp.addBlank();
 				if(sell.price > 0){
 					resp.addButton("price", ELM_GENERIC, ICON_OPEN, sell.price_formatted());
