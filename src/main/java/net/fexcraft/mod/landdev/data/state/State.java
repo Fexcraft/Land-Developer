@@ -11,11 +11,14 @@ import net.fexcraft.mod.fsmm.data.Account;
 import net.fexcraft.mod.fsmm.util.DataManager;
 import net.fexcraft.mod.landdev.data.*;
 import net.fexcraft.mod.landdev.data.hooks.ExternalData;
+import net.fexcraft.mod.landdev.data.norm.BoolNorm;
+import net.fexcraft.mod.landdev.data.norm.IntegerNorm;
 import net.fexcraft.mod.landdev.data.norm.StringNorm;
 import net.fexcraft.mod.landdev.gui.LDGuiContainer;
 import net.fexcraft.mod.landdev.gui.modules.LDGuiModule;
 import net.fexcraft.mod.landdev.gui.modules.ModuleRequest;
 import net.fexcraft.mod.landdev.gui.modules.ModuleResponse;
+import net.fexcraft.mod.landdev.util.ResManager;
 
 public class State implements Saveable, Layer, LDGuiModule {
 
@@ -37,6 +40,8 @@ public class State implements Saveable, Layer, LDGuiModule {
 		mail = new MailData(getLayer(), id);
 		account = DataManager.getAccount("state:" + id, false, true);
 		norms.add(new StringNorm("name", translate("state.norm.name")));
+		norms.add(new BoolNorm("new-counties", false));
+		norms.add(new IntegerNorm("new-county-fee", 1000000));
 	}
 
 	@Override
@@ -80,6 +85,7 @@ public class State implements Saveable, Layer, LDGuiModule {
 	public void gendef(){
 		if(id == -1){
 			norms.get("name").set(translate("state.wilderness.name"));
+			norms.get("new-counties").set(true);
 			counties.clear();
 			counties.add(-1);
 			color.set(0x009900);
