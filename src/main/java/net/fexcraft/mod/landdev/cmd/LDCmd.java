@@ -65,9 +65,15 @@ public class LDCmd extends CommandBase {
 	        		long sf = Settings.MUNICIPALITY_CREATION_FEE;
 	        		long cf = chunk.district.county().norms.get("new-municipality-fee").integer();
 	        		Print.chat(sender, TranslationUtil.translateCmd("fees_municipality"));
-	        		Print.chat(sender, TranslationUtil.translateCmd("fees_server", getWorthAsString(sf)));
-	        		Print.chat(sender, TranslationUtil.translateCmd("fees_county", getWorthAsString(cf)));
-	        		Print.chat(sender, TranslationUtil.translateCmd("fees_total", getWorthAsString(sf + cf)));
+	        		Print.chat(sender, TranslationUtil.translateCmd("fees_mun_server", getWorthAsString(sf)));
+	        		Print.chat(sender, TranslationUtil.translateCmd("fees_mun_county", getWorthAsString(cf)));
+	        		Print.chat(sender, TranslationUtil.translateCmd("fees_mun_total", getWorthAsString(sf + cf)));
+					sf = Settings.COUNTY_CREATION_FEE;
+					cf = chunk.district.state().norms.get("new-county-fee").integer();
+					Print.chat(sender, TranslationUtil.translateCmd("fees_county"));
+					Print.chat(sender, TranslationUtil.translateCmd("fees_ct_server", getWorthAsString(sf)));
+					Print.chat(sender, TranslationUtil.translateCmd("fees_ct_state", getWorthAsString(cf)));
+					Print.chat(sender, TranslationUtil.translateCmd("fees_ct_total", getWorthAsString(sf + cf)));
 	        		return;
 	    		}
 	    		case "admin":{
