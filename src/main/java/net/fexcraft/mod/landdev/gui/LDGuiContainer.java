@@ -14,6 +14,7 @@ import net.fexcraft.lib.mc.render.ExternalTextureHelper;
 import net.fexcraft.mod.landdev.data.ColorData;
 import net.fexcraft.mod.landdev.data.IconHolder;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
+import net.fexcraft.mod.landdev.data.county.County;
 import net.fexcraft.mod.landdev.data.district.District;
 import net.fexcraft.mod.landdev.data.municipality.Municipality;
 import net.fexcraft.mod.landdev.data.player.Player;
@@ -54,6 +55,7 @@ public class LDGuiContainer extends GenericContainer {
 			case CHUNK: prefix = "chunk"; break;
 			case DISTRICT: prefix = "district"; break;
 			case MUNICIPALITY: prefix = "municipality"; break;
+			case COUNTY: prefix = "county"; break;
 		}
 		this.player = ResManager.getPlayer(player);
 		this.x = x;
@@ -105,6 +107,18 @@ public class LDGuiContainer extends GenericContainer {
 					Municipality mun = ResManager.getMunicipality(y, y > -2);
 					if(mun != null){
 						mun.on_interact(this, req);
+						break;
+					}
+					break;
+				}
+				case COUNTY:{
+					if(x < 0){
+						ResManager.getCounty(-1, true).on_interact(this, req);
+						break;
+					}
+					County ct = ResManager.getCounty(y, y > -1);
+					if(ct != null){
+						ct.on_interact(this, req);
 						break;
 					}
 					break;
@@ -161,6 +175,22 @@ public class LDGuiContainer extends GenericContainer {
 					mun.sync_packet(this, resp);
 					holder = mun.icon;
 					color = mun.color;
+					break;
+				}
+				break;
+			}
+			case COUNTY:{
+				if(x < 0){
+					ResManager.getCounty(-1, true).sync_packet(this, resp);
+					holder = chunk.district.county().icon;
+					color = chunk.district.county().color;
+					break;
+				}
+				County ct = ResManager.getCounty(y, y > -1);
+				if(ct != null){
+					ct.sync_packet(this, resp);
+					holder = ct.icon;
+					color = ct.color;
 					break;
 				}
 				break;
