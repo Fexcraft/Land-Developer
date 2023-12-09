@@ -323,6 +323,7 @@ landdev.gui.municipality.citizen=Citizens: %s
 landdev.gui.municipality.price=Price: %s
 landdev.gui.municipality.set_price=Set Price for Sale
 landdev.gui.municipality.mailbox=Unread Mail: %s
+landdev.gui.municipality.balance=Balance: %s
 landdev.gui.municipality.norms=Norms/Settings
 landdev.gui.municipality.appearance=Appearance (Icon and Color)
 landdev.gui.municipality.set_price.title=Municipality Price
