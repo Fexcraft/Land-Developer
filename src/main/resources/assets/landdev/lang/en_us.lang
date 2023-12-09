@@ -11,9 +11,9 @@ landdev.cmd.fees_municipality=&3Municipality Creation: &7(/mun create)
 landdev.cmd.fees_mun_server=- %s server fee (50%% return)
 landdev.cmd.fees_mun_county=- %s county fee
 landdev.cmd.fees_mun_total== %s total
-landdev.cmd.fees_county=&bCounty creation&0:
+landdev.cmd.fees_county=&3County Creation: &7(/mun create)
 landdev.cmd.fees_ct_server=- %s server fee (50%% return)
-landdev.cmd.fees_ct_county=- %s state fee
+landdev.cmd.fees_ct_state=- %s state fee
 landdev.cmd.fees_ct_total== %s total
 landdev.cmd.adminmode.true=&eAdmin &6mode is now &cactive&6.
 landdev.cmd.adminmode.false=&eAdmin &6mode is now &ainactive&6.
