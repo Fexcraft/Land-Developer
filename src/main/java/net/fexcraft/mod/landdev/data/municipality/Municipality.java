@@ -118,11 +118,12 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 	
 	@Override
 	public void gendef(){
+		county = ResManager.getCounty(-1, true);
 		if(id == -1){
 			norms.get("name").set(translate("municipality.wilderness.name"));
 			norms.get("title").set(translate("municipality.wilderness.title"));
 			districts.clear();
-			county = ResManager.getCounty(-1, true);
+			if(!county.municipalities.contains(id)) county.municipalities.add(id);
 			color.set(0x009900);
 		}
 		else if(id == 0){
@@ -131,6 +132,7 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 			districts.clear();
 			districts.add(0);
 			county = ResManager.getCounty(0, true);
+			if(!county.municipalities.contains(id)) county.municipalities.add(id);
 			color.set(0xff9900);
 		}
 		else{
