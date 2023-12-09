@@ -4,6 +4,7 @@ import static net.fexcraft.mod.landdev.util.broad.Broadcaster.TargetTransmitter.
 
 import java.io.File;
 
+import net.fexcraft.mod.landdev.cmd.*;
 import net.fexcraft.mod.landdev.data.chunk.cap.ChunkCapCallable;
 import net.fexcraft.mod.landdev.data.chunk.cap.ChunkCapStorage;
 import org.apache.logging.log4j.Level;
@@ -11,11 +12,6 @@ import org.apache.logging.log4j.Logger;
 
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.PacketHandler.PacketHandlerType;
-import net.fexcraft.mod.landdev.cmd.CkCmd;
-import net.fexcraft.mod.landdev.cmd.DebugCmd;
-import net.fexcraft.mod.landdev.cmd.DisCmd;
-import net.fexcraft.mod.landdev.cmd.LDCmd;
-import net.fexcraft.mod.landdev.cmd.MunCmd;
 import net.fexcraft.mod.landdev.data.chunk.cap.ChunkCap;
 import net.fexcraft.mod.landdev.db.Database;
 import net.fexcraft.mod.landdev.db.JsonFileDB;
@@ -89,6 +85,7 @@ public class LandDev {
 		event.registerServerCommand(new CkCmd());
 		event.registerServerCommand(new DisCmd());
 		event.registerServerCommand(new MunCmd());
+		event.registerServerCommand(new CntCmd());
 		DiscordTransmitter.restart();
 	}
     
