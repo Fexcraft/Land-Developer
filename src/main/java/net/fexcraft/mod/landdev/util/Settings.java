@@ -32,6 +32,7 @@ public class Settings {
 	public static boolean EDIT_WILDERNESS;
 	public static boolean LOCUP_SIDE;
 	public static long DEFAULT_CHUNK_PRICE;
+	public static long COUNTY_CREATION_FEE;
 	public static long MUNICIPALITY_CREATION_FEE;
 	public static long DISTRICT_CREATION_FEE;
 	public static int CHUNK_LINK_LIMIT;
@@ -89,6 +90,7 @@ public class Settings {
 		DEFAULT_ICON = config.getString("default_icon", DEFAULT_CAT, DEFAULT_ICON, "Default Dis/Mun/Cou/State Icon to be shown in the Location Update GUI.");
 		SAVE_SPACED_JSON = config.getBoolean("save_spaced_json", DEFAULT_CAT, false, "If true, the JSON will be formatted to be easily readable, otherwise if false it will not have any spacing, to save on disk and load time.");
 		DEFAULT_CHUNK_PRICE = config.getInt("default_chunk_price", DEFAULT_CAT, 100000, 0, 1000000000, "Default price for unclaimed chunks. (1000 = 1$)");
+		COUNTY_CREATION_FEE = config.getInt("county_creation_fee", DEFAULT_CAT, 250000000, 0, Integer.MAX_VALUE, "Server fee for creating a county, half of it goes to the new County.");
 		MUNICIPALITY_CREATION_FEE = config.getInt("municipality_creation_fee", DEFAULT_CAT, 25000000, 0, Integer.MAX_VALUE, "Server fee for creating a municipality, half of it goes to the new Municipality.");
 		DISTRICT_CREATION_FEE = config.getInt("district_creation_fee", DEFAULT_CAT, 5000000, 0, Integer.MAX_VALUE, "Server fee for creating a district.");
 		PROTECT_WILDERNESS = config.getBoolean("protect_wilderness", DEFAULT_CAT, true, "If wilderness protection should be enabled.");
