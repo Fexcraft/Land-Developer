@@ -36,7 +36,7 @@ public class DistrictOwner implements Saveable {
 	}
 
 	public int county_id(){
-		return is_county ? county.id : municipality.id;
+		return is_county ? county.id : municipality.county.id;
 	}
 
 	public Manageable manageable(){
