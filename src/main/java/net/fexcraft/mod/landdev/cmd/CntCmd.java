@@ -72,7 +72,7 @@ public class CntCmd extends CommandBase {
     		}
     	}
     	else{
-        	ply.entity.openGui(LandDev.INSTANCE, GuiHandler.COUNTY, sender.getEntityWorld(), 0, chunk.district.municipality().id, 0);
+        	ply.entity.openGui(LandDev.INSTANCE, GuiHandler.COUNTY, sender.getEntityWorld(), 0, chunk.district.county().id, 0);
     	}
     }
 
