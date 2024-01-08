@@ -231,5 +231,10 @@ public class LDGuiClaimCon extends GenericContainer {
 		}
 		
 	}
+
+    @Override
+    public boolean canInteractWith(EntityPlayer player){
+        return !(player == null);
+    }
 	
 }
