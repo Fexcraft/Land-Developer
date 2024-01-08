@@ -311,5 +311,10 @@ public class LDGuiContainer extends GenericContainer {
 	public void open(int type, int x, int y, int z){
 		player.openGui(type, x, y, z);
 	}
+
+    @Override
+    public boolean canInteractWith(EntityPlayer player){
+        return !(player == null);
+    }
 	
 }
