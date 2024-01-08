@@ -2,11 +2,23 @@ buildscript {
     repositories {
         maven { url = 'https://maven.minecraftforge.net/' }
         mavenCentral()
+        maven { url 'https://jitpack.io' }
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:5.1.+'
     }
 }
+allprojects {
+    repositories {
+        mavenCentral()
+        maven { url 'https://jitpack.io' }
+    }
+}
+configurations.all {
+    resolutionStrategy.cacheDynamicVersionsFor 1, 'seconds'
+}
+
+
 
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'maven-publish'
@@ -76,10 +88,17 @@ dependencies {
     // For more info...
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
-    
-    implementation project(':FCL')
-    implementation project(':FSMM')
 
+    def localrepos = new File(project.projectDir, '/localrepos');
+	if(localrepos.exists()){
+		print "LocalRepos marker exists, using local copies.\n"
+		implementation project(':FCL')
+        implementation project(':FSMM')
+	}
+	else{
+		implementation 'com.github.Fexcraft:FCL:1.12.2-SNAPSHOT'
+        implementation 'com.github.Fexcraft:FSMM:1.12.2-SNAPSHOT'
+	}
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..
