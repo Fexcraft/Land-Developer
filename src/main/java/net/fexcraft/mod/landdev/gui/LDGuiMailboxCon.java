@@ -70,4 +70,9 @@ public class LDGuiMailboxCon extends GenericContainer {
 		send(Side.CLIENT, sync);
 	}
 
+    @Override
+    public boolean canInteractWith(EntityPlayer player){
+        return !(player == null);
+    }
+
 }
