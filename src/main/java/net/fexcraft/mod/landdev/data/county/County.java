@@ -69,6 +69,8 @@ public class County implements Saveable, Layer, LDGuiModule {
 		norms.add(new IntegerNorm("new-municipality-fee", 100000));
 		norms.add(new BoolNorm("open-to-join", true));
 		norms.add(new FloatNorm("municipality-tax-percent", 10));
+		norms.add(new IntegerNorm("citizen-tax", 1000));
+		norms.add(new BoolNorm("kick-bankrupt", false));
 	}
 
 	@Override
@@ -161,6 +163,11 @@ public class County implements Saveable, Layer, LDGuiModule {
 	@Override
 	public Layers getParentLayer(){
 		return Layers.STATE;
+	}
+
+	@Override
+	public int id(){
+		return id;
 	}
 
 	public String name(){
