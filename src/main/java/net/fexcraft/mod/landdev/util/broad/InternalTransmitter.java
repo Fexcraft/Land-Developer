@@ -26,7 +26,7 @@ public class InternalTransmitter implements Transmitter {
 		com.setString("target_listener", CLIENT_RECEIVER_ID);
 		com.setString("task", "chat_message");
 		NBTTagList list = new NBTTagList();
-		if(args != null && args[0].equals("img")){
+		if(args.length > 0 && args[0].equals("img")){
 			list.appendTag(new NBTTagString(channel + "_img"));
 			list.appendTag(new NBTTagString(message));
 			list.appendTag(new NBTTagString(args[1].toString()));
