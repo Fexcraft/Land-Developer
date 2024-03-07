@@ -6,6 +6,7 @@ import java.util.UUID;
 import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.Time;
+import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -37,6 +38,26 @@ public class Mail implements Saveable {
 		fromid = id.toString();
 		receiver = rec;
 		recid = rec_id.toString();
+		unread = true;
+	}
+
+	public Mail(MailType mtype, Chunk_ chunk){
+		sent = Time.getDate();
+		type = mtype;
+		from = chunk.district.owner.layer();
+		fromid = chunk.district.owner.owid + "";
+		receiver = chunk.owner.playerchunk ? Layers.PLAYER : chunk.owner.layer();
+		recid = chunk.owner.playerchunk ? chunk.owner.player.toString() : chunk.owner.owid + "";
+		unread = true;
+	}
+
+	public Mail(MailType mtype, Layers lay, Object id){
+		sent = Time.getDate();
+		type = mtype;
+		from = lay;
+		fromid = id.toString();
+		receiver = lay;
+		recid = id.toString();
 		unread = true;
 	}
 
