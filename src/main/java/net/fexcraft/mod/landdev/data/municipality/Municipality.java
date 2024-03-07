@@ -61,6 +61,7 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 	public Citizens citizens = new Citizens(MUNICIPALITY_CITIZEN);
 	public Joinable requests = new Joinable();
 	public ExternalData external = new ExternalData(this);
+	public long tax_collected;
 	public Account account;
 	public County county;
 	
@@ -90,6 +91,7 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 		districts.forEach(dis -> array.add(dis));
 		map.add("districts", array);
 		map.add("county", county.id);
+		map.add("tax_collected", tax_collected);
 		external.save(map);
 		DataManager.save(account);
 	}
@@ -113,6 +115,7 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 			array.value.forEach(elm -> districts.add(elm.integer_value()));
 		}
 		county = ResManager.getCounty(map.getInteger("county", -1), true);
+		tax_collected = map.getLong("tax_collected", 0);
 		external.load(map);
 	}
 	
