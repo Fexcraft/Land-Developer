@@ -87,4 +87,8 @@ public class ChunkOwner implements Saveable {
 		return owner;
 	}
 
+	public boolean taxable(){
+		return playerchunk || owner.is(Layers.COMPANY);
+	}
+
 }
