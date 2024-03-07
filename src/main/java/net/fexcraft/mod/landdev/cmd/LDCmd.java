@@ -2,6 +2,7 @@ package net.fexcraft.mod.landdev.cmd;
 
 import static net.fexcraft.mod.fsmm.util.Config.getWorthAsString;
 import static net.fexcraft.mod.landdev.LandDev.CLIENT_RECEIVER_ID;
+import static net.fexcraft.mod.landdev.util.TranslationUtil.translate;
 
 import java.util.List;
 
@@ -16,11 +17,7 @@ import net.fexcraft.mod.landdev.data.MailType;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.data.player.Player;
 import net.fexcraft.mod.landdev.gui.GuiHandler;
-import net.fexcraft.mod.landdev.util.AliasLoader;
-import net.fexcraft.mod.landdev.util.Protector;
-import net.fexcraft.mod.landdev.util.ResManager;
-import net.fexcraft.mod.landdev.util.Settings;
-import net.fexcraft.mod.landdev.util.TranslationUtil;
+import net.fexcraft.mod.landdev.util.*;
 import net.fexcraft.mod.landdev.util.broad.DiscordTransmitter;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
@@ -143,6 +140,11 @@ public class LDCmd extends CommandBase {
 					}
 					return;
 				}
+				case "force-tax":{
+					if(!player.adm) return;
+					TaxSystem.INSTANCE.collect(Time.getDate(), true);
+					return;
+				}
     			case "help":
     			default:{
 	        		Print.chat(sender, "&0[&bLD&0]&6>>&2===========");
@@ -151,6 +153,7 @@ public class LDCmd extends CommandBase {
 	        		Print.chat(sender, "/ld admin");
 	        		Print.chat(sender, "/ld fees");
 	        		Print.chat(sender, "/ld reload");
+	        		Print.chat(sender, "/ld force-tax");
     				return;
     			}
     		}
