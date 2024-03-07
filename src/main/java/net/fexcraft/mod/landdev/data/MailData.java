@@ -60,6 +60,10 @@ public class MailData implements Saveable {
 		return unread;
 	}
 
+	public void add(Mail mail){
+		mails.add(0, mail);
+	}
+
 	@Override
 	public String saveId(){
 		return id;
