@@ -10,6 +10,7 @@ import java.util.Locale;
 import java.util.UUID;
 
 import net.fexcraft.lib.common.Static;
+import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.mod.fsmm.util.Config;
 import net.fexcraft.mod.landdev.data.IconHolder;
 import net.fexcraft.mod.landdev.data.district.DistrictType;
@@ -37,6 +38,10 @@ public class Settings {
 	public static long DISTRICT_CREATION_FEE;
 	public static int CHUNK_LINK_LIMIT;
 	public static int REQUEST_TIMEOUT_DAYS;
+	//
+	public static boolean TAX_ENABLED;
+	public static boolean TAX_OFFLINE;
+	public static long TAX_INTERVAL;
 	//
 	public static boolean CHAT_OVERRIDE;
 	public static boolean DISCORD_BOT_ACTIVE;
@@ -97,6 +102,10 @@ public class Settings {
 		EDIT_WILDERNESS = !PROTECT_WILDERNESS;
 		CHUNK_LINK_LIMIT = config.getInt("chunk_link_limit", DEFAULT_CAT, 3, 0, 64, "How many chunks can be linked to another. Set to '0' to disable.");
 		REQUEST_TIMEOUT_DAYS = config.getInt("request_timeout_days", DEFAULT_CAT, 7, 1, 64, "Default days value for request timeouts.");
+		TAX_ENABLED = config.getBoolean("tax_enabled", DEFAULT_CAT, true, "If the Tax System should be enabled.");
+		TAX_INTERVAL = config.getInt("tax_interval", DEFAULT_CAT, 24, 1, 168, "Interval between tax collection cycles, in hours.");
+		TAX_INTERVAL *= Time.HOUR_MS;
+		TAX_OFFLINE = config.getBoolean("tax_offline_players", DEFAULT_CAT, false, "If offline (inactive since more than one interval) players should be taxed as well.");
 		//
 		CHAT_OVERRIDE_LANG = TranslationUtil.translate("chat.player");
 		Broadcaster.SENDERS.values().removeIf(s -> !s.type().internal());
