@@ -11,14 +11,10 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 import net.fexcraft.app.json.JsonMap;
+import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.mod.fsmm.data.Account;
 import net.fexcraft.mod.fsmm.data.Bank.Action;
-import net.fexcraft.mod.landdev.data.Createable;
-import net.fexcraft.mod.landdev.data.Layer;
-import net.fexcraft.mod.landdev.data.Layers;
-import net.fexcraft.mod.landdev.data.Saveable;
-import net.fexcraft.mod.landdev.data.Sellable;
-import net.fexcraft.mod.landdev.data.Taxable;
+import net.fexcraft.mod.landdev.data.*;
 import net.fexcraft.mod.landdev.data.district.District;
 import net.fexcraft.mod.landdev.data.hooks.ExternalData;
 import net.fexcraft.mod.landdev.data.player.Player;
@@ -29,6 +25,7 @@ import net.fexcraft.mod.landdev.gui.modules.ModuleRequest;
 import net.fexcraft.mod.landdev.gui.modules.ModuleResponse;
 import net.fexcraft.mod.landdev.util.ResManager;
 import net.fexcraft.mod.landdev.util.Settings;
+import net.fexcraft.mod.landdev.util.TaxSystem;
 import net.minecraft.world.chunk.Chunk;
 
 public class Chunk_ implements Saveable, Layer, LDGuiModule {
@@ -81,6 +78,7 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 		label.load(map);
 		district = ResManager.getDistrict(map.getInteger("district", -1));
 		external.load(map);
+		TaxSystem.taxChunk(this, Time.getDate(), false);
 	}
 	
 	@Override
@@ -482,6 +480,38 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 			case COUNTY: return district.county().id;
 			case STATE: return district.county().state.id;
 			default: return -1;
+		}
+	}
+
+	public void sendToOwner(Mail mail){
+		if(owner.playerchunk){
+			Player player = ResManager.getPlayer(owner.player, true);
+			player.addMailAndSave(mail);
+			return;
+		}
+		switch(owner.layer()){
+			case COMPANY:
+				//TODO
+				break;
+			case DISTRICT:
+				district.mail.add(mail);
+				district.save();
+				break;
+			case MUNICIPALITY:
+				if(district.owner.is_county) return;
+				district.municipality().mail.add(mail);
+				district.municipality().save();
+				break;
+			case COUNTY:
+				if(!district.owner.is_county) return;
+				district.county().mail.add(mail);
+				district.county().save();
+				break;
+			case STATE:
+				district.state().mail.add(mail);
+				district.state().save();
+				break;
+			case NONE: return;
 		}
 	}
 
