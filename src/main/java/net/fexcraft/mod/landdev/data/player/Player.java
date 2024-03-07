@@ -225,7 +225,7 @@ public class Player implements Saveable, Layer, LDGuiModule {
 	}
 
 	public void addMail(Mail newmail){
-		mail.mails.add(newmail);
+		mail.add(newmail);
 		if(entity != null && mail.unread() > 0){
 			Print.chat(entity, TranslationUtil.translate("mail.player.new"));
 		}
