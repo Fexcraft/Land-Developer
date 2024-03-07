@@ -26,6 +26,7 @@ import net.fexcraft.mod.landdev.data.district.District;
 import net.fexcraft.mod.landdev.data.hooks.ExternalData;
 import net.fexcraft.mod.landdev.data.municipality.Municipality;
 import net.fexcraft.mod.landdev.data.norm.BoolNorm;
+import net.fexcraft.mod.landdev.data.norm.FloatNorm;
 import net.fexcraft.mod.landdev.data.norm.IntegerNorm;
 import net.fexcraft.mod.landdev.data.norm.StringNorm;
 import net.fexcraft.mod.landdev.data.player.Permit;
@@ -54,6 +55,7 @@ public class County implements Saveable, Layer, LDGuiModule {
 	public ArrayList<Integer> municipalities = new ArrayList<>();
 	public Citizens citizens = new Citizens(COUNTY_CITIZEN);
 	public ExternalData external = new ExternalData(this);
+	public long tax_collected;
 	public Municipality main;
 	public Account account;
 	public State state;
@@ -66,6 +68,7 @@ public class County implements Saveable, Layer, LDGuiModule {
 		norms.add(new BoolNorm("new-municipalities", false));
 		norms.add(new IntegerNorm("new-municipality-fee", 100000));
 		norms.add(new BoolNorm("open-to-join", true));
+		norms.add(new FloatNorm("municipality-tax-percent", 10));
 	}
 
 	@Override
@@ -87,6 +90,7 @@ public class County implements Saveable, Layer, LDGuiModule {
 		municipalities.forEach(mun -> marray.add(mun));
 		map.add("municipalities", marray);
 		map.add("state", state.id);
+		map.add("tax_collected", tax_collected);
 		external.save(map);
 		DataManager.save(account);
 	}
@@ -114,6 +118,7 @@ public class County implements Saveable, Layer, LDGuiModule {
 			array.value.forEach(elm -> municipalities.add(elm.integer_value()));
 		}
 		state = ResManager.getState(map.getInteger("state", -1), true);
+		tax_collected = map.getLong("tax_collected", 0);
 		external.load(map);
 	}
 	
