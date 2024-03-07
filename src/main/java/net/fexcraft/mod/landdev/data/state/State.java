@@ -124,6 +124,11 @@ public class State implements Saveable, Layer, LDGuiModule {
 		return Layers.UNION;
 	}
 
+	@Override
+	public int id(){
+		return id;
+	}
+
 	public String name(){
 		return norms.get("name").string();
 	}
