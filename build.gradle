@@ -90,15 +90,16 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
 
     def localrepos = new File(project.projectDir, '/localrepos');
-	if(localrepos.exists()){
-		print "LocalRepos marker exists, using local copies.\n"
-		implementation project(':FCL')
+    if(localrepos.exists()){
+        print "LocalRepos marker exists, using local copies.\n"
+        implementation project(':FCL')
         implementation project(':FSMM')
-	}
-	else{
-		implementation 'com.github.Fexcraft:FCL:1.12.2-SNAPSHOT'
+        implementation files("libs/Dynmap-3.7-beta-4-forge-1.12.2.jar")
+    }
+    else{
+        implementation 'com.github.Fexcraft:FCL:1.12.2-SNAPSHOT'
         implementation 'com.github.Fexcraft:FSMM:1.12.2-SNAPSHOT'
-	}
+    }
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..
