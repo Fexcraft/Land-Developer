@@ -30,6 +30,7 @@ import net.fexcraft.mod.landdev.data.county.County;
 import net.fexcraft.mod.landdev.data.district.District;
 import net.fexcraft.mod.landdev.data.hooks.ExternalData;
 import net.fexcraft.mod.landdev.data.norm.BoolNorm;
+import net.fexcraft.mod.landdev.data.norm.IntegerNorm;
 import net.fexcraft.mod.landdev.data.norm.StringNorm;
 import net.fexcraft.mod.landdev.data.player.Permit;
 import net.fexcraft.mod.landdev.data.player.Player;
@@ -72,6 +73,8 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 		norms.add(new StringNorm("name", ""));
 		norms.add(new StringNorm("title", ""));
 		norms.add(new BoolNorm("open-to-join", true));
+		norms.add(new IntegerNorm("citizen-tax", 1000));
+		norms.add(new BoolNorm("kick-bankrupt", false));
 	}
 
 	@Override
@@ -163,6 +166,11 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 	@Override
 	public Layers getParentLayer(){
 		return Layers.COUNTY;
+	}
+
+	@Override
+	public int id(){
+		return id;
 	}
 
 	public String name(){
