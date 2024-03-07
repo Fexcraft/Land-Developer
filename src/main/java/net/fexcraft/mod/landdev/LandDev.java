@@ -3,10 +3,19 @@ package net.fexcraft.mod.landdev;
 import static net.fexcraft.mod.landdev.util.broad.Broadcaster.TargetTransmitter.NO_INTERNAL;
 
 import java.io.File;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneOffset;
+import java.util.Date;
+import java.util.Timer;
 
+import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.mod.landdev.cmd.*;
 import net.fexcraft.mod.landdev.data.chunk.cap.ChunkCapCallable;
 import net.fexcraft.mod.landdev.data.chunk.cap.ChunkCapStorage;
+import net.fexcraft.mod.landdev.util.*;
+import net.minecraftforge.fml.common.event.*;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 
@@ -17,11 +26,6 @@ import net.fexcraft.mod.landdev.db.Database;
 import net.fexcraft.mod.landdev.db.JsonFileDB;
 import net.fexcraft.mod.landdev.events.LocationUpdate;
 import net.fexcraft.mod.landdev.gui.GuiHandler;
-import net.fexcraft.mod.landdev.util.AliasLoader;
-import net.fexcraft.mod.landdev.util.PacketReceiver;
-import net.fexcraft.mod.landdev.util.Protector;
-import net.fexcraft.mod.landdev.util.Settings;
-import net.fexcraft.mod.landdev.util.TranslationUtil;
 import net.fexcraft.mod.landdev.util.broad.BroadcastChannel;
 import net.fexcraft.mod.landdev.util.broad.Broadcaster;
 import net.fexcraft.mod.landdev.util.broad.DiscordTransmitter;
@@ -30,12 +34,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
-import net.minecraftforge.fml.common.event.FMLServerStoppedEvent;
-import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 
@@ -51,6 +49,7 @@ public class LandDev {
 	public static LandDev INSTANCE;
 	public static Database DB = new JsonFileDB();
 	public static File SAVE_DIR;
+	public static Timer TAX_TIMER;
 
 	public static final String CLIENT_RECEIVER_ID = "landdev:util";
     private static Logger logger;
@@ -87,6 +86,17 @@ public class LandDev {
 		event.registerServerCommand(new MunCmd());
 		event.registerServerCommand(new CntCmd());
 		DiscordTransmitter.restart();
+	}
+
+    @Mod.EventHandler
+	public void serverStarted(FMLServerStartedEvent event){
+		LocalDateTime midnight = LocalDateTime.of(LocalDate.now(ZoneOffset.systemDefault()), LocalTime.MIDNIGHT);
+		long mid = midnight.toInstant(ZoneOffset.UTC).toEpochMilli();
+		long date = Time.getDate();
+		while((mid += Settings.TAX_INTERVAL) < date);
+		if(TAX_TIMER == null && Settings.TAX_ENABLED){
+			(TAX_TIMER = new Timer()).schedule(new TaxSystem().load(), new Date(mid), Settings.TAX_INTERVAL);
+		}
 	}
     
     @Mod.EventHandler
