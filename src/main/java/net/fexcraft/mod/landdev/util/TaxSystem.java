@@ -3,6 +3,7 @@ package net.fexcraft.mod.landdev.util;
 import net.fexcraft.app.json.JsonHandler;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.Time;
+import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fsmm.data.Account;
 import net.fexcraft.mod.fsmm.data.Bank;
 import net.fexcraft.mod.fsmm.util.Config;
@@ -12,14 +13,18 @@ import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.data.county.County;
 import net.fexcraft.mod.landdev.data.district.District;
 import net.fexcraft.mod.landdev.data.municipality.Municipality;
+import net.fexcraft.mod.landdev.data.player.Player;
 import net.fexcraft.mod.landdev.data.state.State;
 import net.fexcraft.mod.landdev.util.broad.BroadcastChannel;
 import net.fexcraft.mod.landdev.util.broad.Broadcaster;
 import net.fexcraft.mod.landdev.util.broad.Broadcaster.TargetTransmitter;
+import net.minecraft.entity.player.EntityPlayer;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.TimerTask;
+import java.util.UUID;
 
 import static net.fexcraft.mod.landdev.LandDev.SAVE_DIR;
 import static net.fexcraft.mod.landdev.util.TranslationUtil.translate;
@@ -29,7 +34,7 @@ public class TaxSystem extends TimerTask {
 	private static String CHATNAME = "TaxSystem";
 	private static String PREFIX = "&b";
 	public static TaxSystem INSTANCE;
-	private long last;
+	private static long last;
 
 	@Override
 	public void run(){
@@ -132,22 +137,107 @@ public class TaxSystem extends TimerTask {
 			st.tax_collected = 0;
 		}
 		HashMap<ChunkKey, Chunk_> map = new HashMap(ResManager.CHUNKS);
-		long sum = 0;
+		long cktax = 0;
+		long pytax = 0;
 		for(Chunk_ chunk : map.values()){
-			sum += taxChunk(chunk, date, ignore);
+			cktax += taxChunk(chunk, date, ignore);
 		}
-		long total = sum;
-		broad(Config.getWorthAsString(sum) + " loaded Chunk tax collected.");
+		broad(Config.getWorthAsString(cktax) + " loaded Chunk tax collected.");
+		ArrayList<EntityPlayer> players = new ArrayList<>(Static.getServer().getPlayerList().getPlayers());
 		if(Settings.TAX_OFFLINE){
-
+			File folder = new File(SAVE_DIR, "players/");
+			if(folder.exists()){
+				for(File file : folder.listFiles()){
+					UUID uuid = UUID.fromString(file.getName().replace(".json", ""));
+					Player player = ResManager.getPlayer(uuid, true);
+					pytax += taxPlayer(player, date, ignore);
+					ResManager.unloadIfOffline(player);
+				}
+			}
 		}
 		else{
-
+			for(EntityPlayer player : players){
+				pytax += taxPlayer(ResManager.getPlayer(player), date, ignore);
+			}
 		}
-		broad(Config.getWorthAsString(total) + " tax collected in total.");
+		broad(Config.getWorthAsString(pytax) + " player tax collected.");
+		broad(Config.getWorthAsString(cktax + pytax) + " tax collected in total.");
 	}
 
-	public static long taxChunk(Chunk_ chunk, long date, boolean ignore){
+	public static long taxPlayer(Player player, Long date, boolean ignore){
+		if(date == null) date = last == 0 ? Time.getDate() : last;
+		if(tooSoon(player.last_tax, date) && !ignore) return 0;
+		long tax = 0;
+		Account account = player.account;
+		Account receiver = null;
+		Layer in = null;
+		boolean kick;
+		if(player.municipality.id >= 0){
+			tax = player.municipality.norms.get("citizen-tax").integer();
+			receiver = player.municipality.account;
+			kick = player.municipality.norms.get("kick-bankrupt").bool();
+			in = player.municipality;
+		}
+		else if(player.county.id < 0) return 0;
+		else{
+			tax = player.county.norms.get("citizen-tax").integer();
+			receiver = player.county.account;
+			kick = player.county.norms.get("kick-bankrupt").bool();
+			in = player.county;
+		}
+		if(tax > 0){
+			Bank bank = player.account.getBank();
+			if(account.getBalance() < tax){
+				if(account.getBalance() <= 0){
+					Mail mail = new Mail(MailType.SYSTEM, in.getLayer(), in.id(), Layers.PLAYER, player.uuid).expireInDays(7);
+					mail.setTitle(translate("tax.unpaid_notice.mail"));
+					mail.addMessage(translate("tax.no_funds"));
+					if(kick && !player.isInManagement(in.getLayer())){
+						mail.addMessage(translate("tax.no_funds.kicked"));
+						if(in.is(Layers.COUNTY)){
+							Mail ml = new Mail(MailType.SYSTEM, in.getLayer(), in.id());
+							ml.setTitle(translate("tax.player_kicked"));
+							ml.addMessage(translate("tax.player_kicked.info"));
+							ml.addMessage(player.name());
+							ml.addMessage(player.uuid.toString());
+							player.county.mail.add(ml);
+							player.leaveCounty();
+						}
+						else{
+							Mail ml = new Mail(MailType.SYSTEM, in.getLayer(), in.id());
+							ml.setTitle(translate("tax.player_kicked"));
+							ml.addMessage(translate("tax.player_kicked.info"));
+							ml.addMessage(player.name());
+							ml.addMessage(player.uuid.toString());
+							player.municipality.mail.add(ml);
+							player.leaveMunicipality();
+						}
+					}
+					player.addMailAndSave(mail);
+					return 0;
+				}
+				else{
+					tax = account.getBalance();
+					Mail mail = new Mail(MailType.SYSTEM, in.getLayer(), in.id(), Layers.PLAYER, player.uuid).expireInDays(7);
+					mail.setTitle(translate("tax.unpaid_notice.mail"));
+					mail.addMessage(translate("tax.missing_funds"));
+					if(kick && !player.isInManagement(in.getLayer())){
+						mail.addMessage(translate("tax.missing_funds.kick"));
+					}
+					player.addMailAndSave(mail);
+				}
+			}
+			bank.processAction(Bank.Action.TRANSFER, null, account, tax, receiver);
+			if(player.municipality.id >= 0) player.municipality.tax_collected += tax;
+			else player.county.tax_collected += tax;
+		}
+		player.last_tax = date;
+		player.save();
+		return tax;
+	}
+
+	public static long taxChunk(Chunk_ chunk, Long date, boolean ignore){
+		if(date == null) date = last == 0 ? Time.getDate() : last;
 		if(tooSoon(chunk.tax.last_tax, date) && !ignore) return 0;
 		if(chunk.link != null && chunk.link.root_key != null){
 			Chunk_ ck = ResManager.getChunk(chunk.link.root_key);
@@ -166,7 +256,7 @@ public class TaxSystem extends TimerTask {
 				String ckoid = chunk.owner.playerchunk ? chunk.owner.player.toString() : chunk.owner.owid + "";
 				if(account.getBalance() <= 0){
 					Mail mail = new Mail(MailType.SYSTEM, chunk).expireInDays(7);
-					mail.setTitle("Tax Unpaid Notice");
+					mail.setTitle(translate("tax.unpaid_notice.mail"));
 					mail.addMessage(translate("tax.no_funds"));
 					if(chunk.district.norms.get("unclaim-bankrupt").bool()){
 						mail.addMessage(translate("tax.no_funds.unclaimed"));
@@ -178,7 +268,7 @@ public class TaxSystem extends TimerTask {
 				}
 				else{
 					Mail mail = new Mail(MailType.SYSTEM, chunk).expireInDays(7);
-					mail.setTitle("Tax Unpaid Notice");
+					mail.setTitle(translate("tax.unpaid_notice.mail"));
 					mail.addMessage(translate("tax.missing_funds"));
 					if(chunk.district.norms.get("unclaim-bankrupt").bool()){
 						mail.addMessage(translate("tax.missing_funds.unclaim"));
