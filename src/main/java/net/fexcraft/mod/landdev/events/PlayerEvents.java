@@ -8,6 +8,7 @@ import net.fexcraft.mod.landdev.data.chunk.cap.ChunkCap;
 import net.fexcraft.mod.landdev.data.player.Player;
 import net.fexcraft.mod.landdev.util.ResManager;
 import net.fexcraft.mod.landdev.util.Settings;
+import net.fexcraft.mod.landdev.util.TaxSystem;
 import net.fexcraft.mod.landdev.util.broad.BroadcastChannel;
 import net.fexcraft.mod.landdev.util.broad.Broadcaster;
 import net.minecraftforge.event.ServerChatEvent;
@@ -30,6 +31,7 @@ public class PlayerEvents {
 		player.offline = false;
 		player.login = Time.getDate();
 		player.chunk_last = ResManager.getChunk(event.player);
+		TaxSystem.taxPlayer(player, null, false);
 		Broadcaster.send(NO_INTERNAL, BroadcastChannel.SERVER, null, translate("server.player_join", player.name_raw()));
     }
     
