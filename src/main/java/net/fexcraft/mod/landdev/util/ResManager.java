@@ -124,6 +124,14 @@ public class ResManager implements Saveable {
 		return PLAYERS.get(player.getGameProfile().getId());
 	}
 
+	public static void unloadIfOffline(Player player){
+		EntityPlayer entity = Static.getServer().getPlayerList().getPlayerByUUID(player.uuid);
+		if(entity == null){
+			player.save();
+			PLAYERS.remove(player.uuid);
+		}
+	}
+
 	public static UUID getUUIDof(String string){
 		GameProfile gp = Static.getServer().getPlayerProfileCache().getGameProfileForUsername(string);
 		return gp == null ? null : gp.getId();
