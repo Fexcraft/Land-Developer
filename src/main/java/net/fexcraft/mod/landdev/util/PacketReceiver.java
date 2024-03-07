@@ -39,9 +39,6 @@ public class PacketReceiver implements IPacketListener<PacketNBTTagCompound> {
 			String c = list.tagCount() > 3 ? list.getStringTagAt(3) : "&a";
 			ITextComponent text = null;
 			switch(list.getStringTagAt(0)){
-			case "chat":
-				text = new TextComponentString(format(Settings.CHAT_OVERRIDE_LANG, c, list.getStringTagAt(1), list.getStringTagAt(2)));
-				break;
 			case "chat_img":
 				text = new TextComponentString(format(list.getStringTagAt(1)));
 				TextComponentString text1 = new TextComponentString(format(" &a[ &6View &a]"));
@@ -53,8 +50,10 @@ public class PacketReceiver implements IPacketListener<PacketNBTTagCompound> {
 				text2.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString(format(list.getStringTagAt(1)))));
 				text.appendSibling(text2);
 				break;
+			case "chat":
 			default:
-				text = new TextComponentString(list.toString());
+				text = new TextComponentString(format(Settings.CHAT_OVERRIDE_LANG, c, list.getStringTagAt(1), list.getStringTagAt(2)));
+				//text = new TextComponentString(list.toString());
 				break;
 			}
 			Minecraft.getMinecraft().ingameGUI.getChatGUI().printChatMessage(text);
