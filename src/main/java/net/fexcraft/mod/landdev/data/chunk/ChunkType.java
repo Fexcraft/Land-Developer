@@ -41,4 +41,8 @@ public enum ChunkType {
 		return null;
 	}
 
+	public boolean taxable(){
+		return this == PRIVATE || this == NORMAL;
+	}
+
 }
