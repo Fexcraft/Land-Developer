@@ -3,6 +3,7 @@ package net.fexcraft.mod.landdev.data.district;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.mod.fsmm.data.Account;
 import net.fexcraft.mod.landdev.data.Citizens;
+import net.fexcraft.mod.landdev.data.Layers;
 import net.fexcraft.mod.landdev.data.Manageable;
 import net.fexcraft.mod.landdev.data.Saveable;
 import net.fexcraft.mod.landdev.data.county.County;
@@ -74,4 +75,12 @@ public class DistrictOwner implements Saveable {
 		return is_county ? county.citizens : municipality.citizens;
 	}
 
+	public Layers layer(){
+		return is_county ? Layers.COUNTY : Layers.MUNICIPALITY;
+	}
+
+	public void addTaxStat(long tax){
+		if(is_county) county.tax_collected += tax;
+		else municipality.tax_collected += tax;
+	}
 }
