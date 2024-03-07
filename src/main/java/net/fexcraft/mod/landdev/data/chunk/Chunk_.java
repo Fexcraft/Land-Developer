@@ -78,7 +78,7 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 		label.load(map);
 		district = ResManager.getDistrict(map.getInteger("district", -1));
 		external.load(map);
-		TaxSystem.taxChunk(this, Time.getDate(), false);
+		TaxSystem.taxChunk(this, null, false);
 	}
 	
 	@Override
