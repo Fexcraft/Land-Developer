@@ -139,6 +139,11 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 		return owner.is_county ? Layers.COUNTY : Layers.MUNICIPALITY;
 	}
 
+	@Override
+	public int id(){
+		return id;
+	}
+
 	public String name(){
 		return norms.get("name").string();
 	}
