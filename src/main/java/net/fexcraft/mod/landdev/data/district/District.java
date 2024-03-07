@@ -51,6 +51,7 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 	public Norms norms = new Norms();
 	public DistrictOwner owner = new DistrictOwner();
 	public ExternalData external = new ExternalData(this);
+	public long tax_collected;
 	public long chunks;
 	
 	public District(int id){
@@ -61,6 +62,7 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 		norms.add(new IntegerNorm("chunk-tax", 1000));
 		norms.add(new BoolNorm("municipality-can-form", false));
 		norms.add(new BoolNorm("municipality-can-claim", false));
+		norms.add(new BoolNorm("unclaim-bankrupt", false));
 	}
 
 	@Override
@@ -76,6 +78,7 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 		manage.save(map);
 		norms.save(map);
 		owner.save(map);
+		map.add("tax_collected", tax_collected);
 		external.save(map);
 		map.add("chunks", chunks);
 	}
@@ -92,6 +95,7 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 		manage.load(map);
 		norms.load(map);
 		owner.load(map);
+		tax_collected = map.getLong("tax_collected", 0);
 		external.load(map);
 		chunks = map.getLong("chunks", 0);
 	}
@@ -541,6 +545,11 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 		}
 		if(NormModule.isNormReq(norms, container, req, UI_NORM_EDIT, id)) return;
 		external.on_interact(container, req);
+	}
+
+	public void addTaxStat(long tax){
+		tax_collected += tax;
+		owner.addTaxStat(tax);
 	}
 
 }
