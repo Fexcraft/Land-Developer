@@ -152,7 +152,11 @@ public class LDGuiBase extends GenericGui<LDGuiContainer> {
 				info.add(Formatter.format(I18n.format(elm.type.translation())));
 			}
 		}
-		if(info.size() > 0) drawHoveringText(info, mouseX, mouseY);
+		if(info.size() > 0 && !isBlankInfo()) drawHoveringText(info, mouseX, mouseY);
+	}
+
+	private boolean isBlankInfo(){
+		return info.size() == 1 && info.get(0).length() == 0;
 	}
 
 	public ArrayList<LDGuiElement> elements(){
