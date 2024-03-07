@@ -42,7 +42,12 @@ public class Player implements Saveable, Layer, LDGuiModule {
 	public UUID uuid;
 	public boolean offline, adm;
 	public EntityPlayer entity;
-	public long joined, login, last_login, last_logout, last_pos_update;
+	public long joined;
+	public long login;
+	public long last_login;
+	public long last_logout;
+	public long last_pos_update;
+	public long last_tax;
 	public MailData mail;
 	public String nickname, colorcode = "2";
 	public Account account;
@@ -80,6 +85,7 @@ public class Player implements Saveable, Layer, LDGuiModule {
 		if(municipality.id >= 0 && county != municipality.county) county = municipality.county;
 		map.add("municipality", municipality.id);
 		map.add("county", county.id);
+		map.add("last_tax", last_tax);
 		external.save(map);
 		DataManager.save(account);
 	}
@@ -102,6 +108,7 @@ public class Player implements Saveable, Layer, LDGuiModule {
 		municipality = ResManager.getMunicipality(map.getInteger("municipality", -1), true);
 		county = ResManager.getCounty(map.getInteger("county", -1), true);
 		if(municipality.id >= 0 && county != municipality.county) county = municipality.county;
+		last_tax = map.getLong("last_tax", 0);
 		external.load(map);
 	}
 	
@@ -263,6 +270,12 @@ public class Player implements Saveable, Layer, LDGuiModule {
 		municipality.manage.removeStaff(uuid);
 		municipality.citizens.remove(this);
 		municipality = ResManager.getMunicipality(-1, true);
+	}
+
+	public void leaveCounty(){
+		county.manage.removeStaff(uuid);
+		county.citizens.remove(this);
+		county = ResManager.getCounty(-1, true);
 	}
 
 }
