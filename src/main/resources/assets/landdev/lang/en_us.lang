@@ -30,6 +30,25 @@ landdev.cmd.player_not_staff=Selected player is not part of the Council.
 landdev.cmd.reload=&eReloaded: &7%s
 landdev.cmd.reload.complete=&eReloaded all reloadable configs.
 
+landdev.tax.summary.mail=Tax Interval Summary
+landdev.tax.warning.mail=Tax System Warning
+landdev.tax.missing_funds=You didn't pay the full tax this interval.
+landdev.tax.missing_funds.unclaim=Your chunk could get unclaimed next time.
+landdev.tax.no_funds=You did not have enough money to pay tax this interval.
+landdev.tax.no_funds.unclaimed=Due to district norms your chunk got unclaimed.
+landdev.tax.district.collected=Tax collected last interval:
+landdev.tax.municipality.collected=Tax collected last interval:
+landdev.tax.municipality.transferred=Tax transferred to County:
+landdev.tax.county.mun_missing_funds0=The Municipality did not pay the full tax.
+landdev.tax.county.mun_missing_funds1=Transferred:
+landdev.tax.county.mun_missing_funds2=Expected:
+landdev.tax.county.collected=Tax collected last interval:
+landdev.tax.county.transferred=Tax transferred to State:
+landdev.tax.state.collected=Tax collected last interval:
+landdev.tax.state.county_missing_funds0=The County did not pay the full tax.
+landdev.tax.state.county_missing_funds1=Transferred:
+landdev.tax.state.county_missing_funds2=Expected:
+
 landdev.interact.break.noperm=No permission to break blocks here.
 landdev.interact.place.noperm=No permission to place blocks here.
 landdev.interact.interact.noperm=No permission to interact with blocks here.
