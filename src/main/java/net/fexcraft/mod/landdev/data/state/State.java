@@ -12,6 +12,7 @@ import net.fexcraft.mod.fsmm.util.DataManager;
 import net.fexcraft.mod.landdev.data.*;
 import net.fexcraft.mod.landdev.data.hooks.ExternalData;
 import net.fexcraft.mod.landdev.data.norm.BoolNorm;
+import net.fexcraft.mod.landdev.data.norm.FloatNorm;
 import net.fexcraft.mod.landdev.data.norm.IntegerNorm;
 import net.fexcraft.mod.landdev.data.norm.StringNorm;
 import net.fexcraft.mod.landdev.gui.LDGuiContainer;
@@ -33,6 +34,7 @@ public class State implements Saveable, Layer, LDGuiModule {
 	public Norms norms = new Norms();
 	public ArrayList<Integer> counties = new ArrayList<>();
 	public ExternalData external = new ExternalData(this);
+	public long tax_collected;
 	public Account account;
 	
 	public State(int id){
@@ -42,6 +44,7 @@ public class State implements Saveable, Layer, LDGuiModule {
 		norms.add(new StringNorm("name", translate("state.norm.name")));
 		norms.add(new BoolNorm("new-counties", false));
 		norms.add(new IntegerNorm("new-county-fee", 1000000));
+		norms.add(new FloatNorm("county-tax-percent", 10));
 	}
 
 	@Override
@@ -59,6 +62,7 @@ public class State implements Saveable, Layer, LDGuiModule {
 		JsonArray array = new JsonArray();
 		counties.forEach(mun -> array.add(mun));
 		map.add("counties", array);
+		map.add("tax_collected", tax_collected);
 		external.save(map);
 		DataManager.save(account);
 	}
@@ -78,6 +82,7 @@ public class State implements Saveable, Layer, LDGuiModule {
 			counties.clear();
 			array.value.forEach(elm -> counties.add(elm.integer_value()));
 		}
+		tax_collected = map.getLong("tax_collected", 0);
 		external.load(map);
 	}
 	
