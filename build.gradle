@@ -94,7 +94,7 @@ dependencies {
         print "LocalRepos marker exists, using local copies.\n"
         implementation project(':FCL')
         implementation project(':FSMM')
-        implementation files("libs/Dynmap-3.7-beta-4-forge-1.12.2.jar")
+        compileOnly files("libs/Dynmap-3.7-beta-4-forge-1.12.2.jar")
     }
     else{
         implementation 'com.github.Fexcraft:FCL:1.12.2-SNAPSHOT'
