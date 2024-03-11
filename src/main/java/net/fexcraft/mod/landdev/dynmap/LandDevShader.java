@@ -145,6 +145,7 @@ public class LandDevShader implements HDShader {
 		}
 
 		private int getLayerColor(Chunk_ ck){
+			if(ck == null) return RGB.BLACK.packed;
 			switch(shader.layer){
 				case COMPANY: return rgb.packed = RGB.BLUE.packed;
 				case DISTRICT: return rgb.packed = ck.district.color.getInteger();
@@ -163,6 +164,7 @@ public class LandDevShader implements HDShader {
 		}
 
 		private boolean isNotSameLayer(Chunk_ ck, int ox, int oz){
+			if(ck == null) return false;
 			boolean bool = false;
 			if(ox < 0){
 				if(ox % -16 == 0 && isNotSameLayer(ck, ResManager.getChunk(ck.key.x - 1, ck.key.z))) bool = true;
@@ -189,6 +191,7 @@ public class LandDevShader implements HDShader {
 				case COMPANY: return false;
 				case DISTRICT: return ck.district.id != ock.district.id;
 				case MUNICIPALITY:{
+					if(ck.district.municipality() == null && ock.district.municipality() == null) return false;
 					if(ck.district.municipality() == null && ock.district.municipality() != null) return true;
 					if(ck.district.municipality() != null && ock.district.municipality() == null) return true;
 					return ck.district.municipality().id != ock.district.municipality().id;
