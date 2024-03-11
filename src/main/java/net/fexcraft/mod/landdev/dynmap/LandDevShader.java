@@ -74,9 +74,9 @@ public class LandDevShader implements HDShader {
 	}
 
 	@Override
-    public void addClientConfiguration(JSONObject mapObject){
-        JSONUtils.s(mapObject, "shader", name);
-    }
+	public void addClientConfiguration(JSONObject mapObject){
+		JSONUtils.s(mapObject, "shader", name);
+	}
 
 	@Override
 	public void exportAsMaterialLibrary(DynmapCommandSender dynmapCommandSender, OBJExport objExport) throws IOException{
@@ -132,36 +132,73 @@ public class LandDevShader implements HDShader {
 		@Override
 		public boolean processBlock(HDPerspectiveState ps){
 			Chunk_ ck = ResManager.getChunk(new Vec3i(mapi.getX(), mapi.getY(), mapi.getZ()));
-			switch(shader.layer){
-				case COMPANY:
-					rgb.packed = RGB.BLUE.packed;
-					break;
-				case DISTRICT:
-					rgb.packed = ck.district.color.getInteger();
-					break;
-				case MUNICIPALITY:
-					if(ck.district.municipality() == null){
-						rgb.packed = ResManager.getMunicipality(-1, true).color.getInteger();
-					}
-					else rgb.packed = ck.district.municipality().color.getInteger();
-					break;
-				case COUNTY:
-					rgb.packed = ck.district.county().color.getInteger();
-					break;
-				case STATE:
-					rgb.packed = ck.district.state().color.getInteger();
-					break;
-				case UNION:
-					rgb.packed = RGB.RED.packed;
-					break;
-				case NONE:
-					rgb.packed = RGB.WHITE.packed;
-					break;
-			}
+			rgb.packed = getLayerColor(ck);
 			byte[] arr = rgb.toByteArray();
+			if(isNotSameLayer(ck, mapi.getX(), mapi.getZ())){
+				for(int i = 0; i < arr.length; i++){
+					arr[i] = (byte)(arr[i] * 0.5);
+				}
+			}
 			color.setRGBA(arr[0] + 128, arr[1] + 128, arr[2] + 128, 255);
 			lighting.applyLighting(ps, this, this.color, this.colors);
 			return true;
+		}
+
+		private int getLayerColor(Chunk_ ck){
+			switch(shader.layer){
+				case COMPANY: return rgb.packed = RGB.BLUE.packed;
+				case DISTRICT: return rgb.packed = ck.district.color.getInteger();
+				case MUNICIPALITY:{
+					if(ck.district.municipality() == null){
+						return rgb.packed = ResManager.getMunicipality(-1, true).color.getInteger();
+					}
+					else return rgb.packed = ck.district.municipality().color.getInteger();
+				}
+				case COUNTY: return rgb.packed = ck.district.county().color.getInteger();
+				case STATE: return rgb.packed = ck.district.state().color.getInteger();
+				case UNION: return rgb.packed = RGB.RED.packed;
+				case NONE:
+				default: return rgb.packed = RGB.WHITE.packed;
+			}
+		}
+
+		private boolean isNotSameLayer(Chunk_ ck, int ox, int oz){
+			boolean bool = false;
+			if(ox < 0){
+				if(ox % -16 == 0 && isNotSameLayer(ck, ResManager.getChunk(ck.key.x - 1, ck.key.z))) bool = true;
+				if(ox % -16 == -1 && isNotSameLayer(ck, ResManager.getChunk(ck.key.x + 1, ck.key.z))) bool = true;
+			}
+			else{
+				if(ox % 16 == 0 && isNotSameLayer(ck, ResManager.getChunk(ck.key.x - 1, ck.key.z))) bool = true;
+				if(ox % 16 == 15 && isNotSameLayer(ck, ResManager.getChunk(ck.key.x + 1, ck.key.z))) bool = true;
+			}
+			if(oz < 0){
+				if(oz % -16 == 0 && isNotSameLayer(ck, ResManager.getChunk(ck.key.x, ck.key.z - 1))) bool = true;
+				if(oz % -16 == -1 && isNotSameLayer(ck, ResManager.getChunk(ck.key.x, ck.key.z + 1))) bool = true;
+			}
+			else{
+				if(oz % 16 == 0 && isNotSameLayer(ck, ResManager.getChunk(ck.key.x, ck.key.z - 1))) bool = true;
+				if(oz % 16 == 15 && isNotSameLayer(ck, ResManager.getChunk(ck.key.x, ck.key.z + 1))) bool = true;
+			}
+			return bool;
+		}
+
+		private boolean isNotSameLayer(Chunk_ ck, Chunk_ ock){
+			if(ock == null) return false;
+			switch(shader.layer){
+				case COMPANY: return false;
+				case DISTRICT: return ck.district.id != ock.district.id;
+				case MUNICIPALITY:{
+					if(ck.district.municipality() == null && ock.district.municipality() != null) return true;
+					if(ck.district.municipality() != null && ock.district.municipality() == null) return true;
+					return ck.district.municipality().id != ock.district.municipality().id;
+				}
+				case COUNTY: return ck.district.county().id != ock.district.county().id;
+				case STATE: return ck.district.state().id != ock.district.state().id;
+				case UNION:
+				case NONE:
+				default: return false;
+			}
 		}
 
 		@Override
