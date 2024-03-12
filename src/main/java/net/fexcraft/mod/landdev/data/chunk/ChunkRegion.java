@@ -6,6 +6,7 @@ import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.landdev.LandDev;
 import net.fexcraft.mod.landdev.db.JsonNBTConverter;
 import net.fexcraft.mod.landdev.util.ResManager;
+import net.fexcraft.mod.landdev.util.Settings;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.chunk.Chunk;
@@ -40,8 +41,7 @@ public class ChunkRegion {
 	}
 
 	public static void save(Chunk_ ck){
-		ChunkRegion region = REGIONS.get(ck.region);
-		if(region == null) REGIONS.put(ck.region, region = new ChunkRegion(ck.region));
+		ChunkRegion region = getRegion(ck.region);
 		region.chunks.put(ck.key, ck);
 		JsonMap map = new JsonMap();
 		ck.save(map);
@@ -51,12 +51,16 @@ public class ChunkRegion {
 
 	public static Chunk_ load(Chunk chunk){
 		Chunk_ ck = get(chunk);
-		ChunkRegion region = REGIONS.get(ck.region);
-		if(region == null) REGIONS.put(ck.region, region = new ChunkRegion(ck.region));
-		region.chunks.put(ck.key, ck);
-		ck.load(JsonNBTConverter.demap(region.compound.getCompoundTag(ck.key.toString())));
-		ResManager.CHUNKS.put(ck.key, ck);
+		ChunkRegion region = getRegion(ck.region);
+		region.load(ck);
 		return ck;
+	}
+
+	private void load(Chunk_ ck){
+		chunks.put(ck.key, ck);
+		ck.load(JsonNBTConverter.demap(compound.getCompoundTag(ck.key.toString())));
+		ResManager.CHUNKS.put(ck.key, ck);
+		last_access = Time.getDate();
 	}
 
 	private static Chunk_ get(Chunk chunk){
@@ -77,6 +81,26 @@ public class ChunkRegion {
 			region.chunks.remove(ck.key);
 			region.last_access = Time.getDate();
 		}
+	}
+
+	public static Chunk_ get(int x, int z){
+		if(!Settings.SAVE_CHUNKS_IN_REGIONS) return null;
+		return get(new ChunkKey(x, z));
+	}
+
+	public static Chunk_ get(ChunkKey key){
+		if(!Settings.SAVE_CHUNKS_IN_REGIONS) return null;
+		ChunkKey rkey = key.asRegion();
+		ChunkRegion region = getRegion(rkey);
+		Chunk_ ck = new Chunk_(key);
+		region.load(ck);
+		return ck;
+	}
+
+	private static ChunkRegion getRegion(ChunkKey key){
+		ChunkRegion region = REGIONS.get(key);
+		if(region == null) REGIONS.put(key, region = new ChunkRegion(key));
+		return region;
 	}
 
 	private void save(){
