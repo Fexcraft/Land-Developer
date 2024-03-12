@@ -17,7 +17,7 @@ public class JsonFileDB implements Database {
 		if(!file.getParentFile().exists()) file.getParentFile().mkdirs();
 		JsonMap map = new JsonMap();
 		type.save(map);
-		JsonHandler.print(file, map, Settings.SAVE_SPACED_JSON ? PrintOption.FLAT : PrintOption.SPACED);
+		JsonHandler.print(file, map, Settings.SAVE_SPACED_JSON ? PrintOption.SPACED : PrintOption.FLAT);
 	}
 
 	@Override
