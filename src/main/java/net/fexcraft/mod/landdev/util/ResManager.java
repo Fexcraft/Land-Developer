@@ -11,6 +11,7 @@ import net.fexcraft.mod.fsmm.util.DataManager;
 import net.fexcraft.mod.landdev.LandDev;
 import net.fexcraft.mod.landdev.data.Saveable;
 import net.fexcraft.mod.landdev.data.chunk.ChunkKey;
+import net.fexcraft.mod.landdev.data.chunk.ChunkRegion;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.data.county.County;
 import net.fexcraft.mod.landdev.data.district.District;
@@ -81,7 +82,10 @@ public class ResManager implements Saveable {
 
 	public static void remChunk(Chunk chunk){
 		Chunk_ ck = getChunk(chunk.x, chunk.z);
-		if(ck != null) CHUNKS.remove(ck.key);
+		if(ck != null){
+			CHUNKS.remove(ck.key);
+			if(Settings.SAVE_CHUNKS_IN_REGIONS) ChunkRegion.unload(ck);
+		}
 	}
 
 	public static District getDistrict(int idx){
@@ -175,6 +179,7 @@ public class ResManager implements Saveable {
 	}
 
 	public static void unload(){
+		ChunkRegion.saveAll();
 		DISTRICTS.values().forEach(save -> LandDev.DB.save(save));
 		MUNICIPALITIES.values().forEach(save -> LandDev.DB.save(save));
 		COUNTIES.values().forEach(save -> LandDev.DB.save(save));
@@ -185,6 +190,7 @@ public class ResManager implements Saveable {
 	}
 
 	public static void clear(){
+		ChunkRegion.REGIONS.clear();
 		DISTRICTS.clear();
 		MUNICIPALITIES.clear();
 		COUNTIES.clear();
