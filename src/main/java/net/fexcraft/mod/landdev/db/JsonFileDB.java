@@ -7,6 +7,8 @@ import net.fexcraft.app.json.JsonHandler.PrintOption;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.mod.landdev.LandDev;
 import net.fexcraft.mod.landdev.data.Saveable;
+import net.fexcraft.mod.landdev.data.chunk.ChunkRegion;
+import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.util.Settings;
 
 public class JsonFileDB implements Database {

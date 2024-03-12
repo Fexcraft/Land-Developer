@@ -14,6 +14,7 @@ import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.mod.fsmm.data.Account;
 import net.fexcraft.mod.fsmm.data.Bank.Action;
+import net.fexcraft.mod.landdev.LandDev;
 import net.fexcraft.mod.landdev.data.*;
 import net.fexcraft.mod.landdev.data.district.District;
 import net.fexcraft.mod.landdev.data.hooks.ExternalData;
@@ -31,6 +32,7 @@ import net.minecraft.world.chunk.Chunk;
 public class Chunk_ implements Saveable, Layer, LDGuiModule {
 	
 	public final ChunkKey key;
+	public final ChunkKey region;
 	public Createable created = new Createable();
 	public ChunkType type = ChunkType.NORMAL;
 	public Sellable sell = new Sellable(this);
@@ -45,7 +47,13 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 
 	public Chunk_(Chunk ck){
 		key = new ChunkKey(ck.x, ck.z);
+		region = key.asRegion();
 		chunk = ck;
+	}
+
+	public Chunk_(ChunkKey ckkey){
+		key = ckkey;
+		region = key.asRegion();
 	}
 
 	@Override
@@ -99,7 +107,8 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 
 	@Override
 	public void save(){
-		chunk.markDirty();
+		if(Settings.SAVE_CHUNKS_IN_REGIONS) ChunkRegion.save(this);
+		if(chunk != null) chunk.markDirty();
 	}
 
 	@Override
