@@ -51,6 +51,11 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 		chunk = ck;
 	}
 
+	public Chunk_(ChunkKey ckkey){
+		key = ckkey;
+		region = key.asRegion();
+	}
+
 	@Override
 	public void save(JsonMap map){
 		map.add("id", key.toString());
@@ -103,7 +108,7 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 	@Override
 	public void save(){
 		if(Settings.SAVE_CHUNKS_IN_REGIONS) ChunkRegion.save(this);
-		chunk.markDirty();
+		if(chunk != null) chunk.markDirty();
 	}
 
 	@Override
