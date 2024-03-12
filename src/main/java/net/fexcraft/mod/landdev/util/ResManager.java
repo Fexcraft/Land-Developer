@@ -51,21 +51,21 @@ public class ResManager implements Saveable {
 		for(Chunk_ ck : CHUNKS.values()){
 			if(ck.key.x == x && ck.key.z == z) return ck;
 		}
-		return null;
+		return ChunkRegion.get(x, z);
 	}
 
 	public static Chunk_ getChunk(ChunkKey key){
 		for(Chunk_ ck : CHUNKS.values()){
 			if(ck.key.equals(key)) return ck;
 		}
-		return null;
+		return ChunkRegion.get(key);
 	}
 
 	public static Chunk_ getChunk(Chunk chunk){
 		for(Chunk_ ck : CHUNKS.values()){
 			if(ck.key.x == chunk.x && ck.key.z == chunk.z) return ck;
 		}
-		return null;
+		return ChunkRegion.get(chunk.x, chunk.z);
 	}
 
 	public static Chunk_ getChunk(Vec3d pos){
