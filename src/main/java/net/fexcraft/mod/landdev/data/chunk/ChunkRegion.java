@@ -43,11 +43,17 @@ public class ChunkRegion {
 
 	public static void save(Chunk_ ck){
 		ChunkRegion region = getRegion(ck.region);
-		region.chunks.put(ck.key, ck);
+		if(region != null){
+			region.chunks.put(ck.key, ck);
+			region.saveChunk(ck);
+		}
+	}
+
+	private void saveChunk(Chunk_ ck){
 		JsonMap map = new JsonMap();
 		ck.save(map);
-		region.compound.setTag(ck.key.toString(), JsonNBTConverter.map(new NBTTagCompound(), map));
-		region.last_access = Time.getDate();
+		compound.setTag(ck.key.toString(), JsonNBTConverter.map(new NBTTagCompound(), map));
+		last_access = Time.getDate();
 	}
 
 	public static Chunk_ load(Chunk chunk){
@@ -91,8 +97,14 @@ public class ChunkRegion {
 		ArrayList<ChunkKey> remreg = new ArrayList<>();
 		for(ChunkRegion region : REGIONS.values()){
 			if(region.last_access + offset < date){
+				region.chunks.values().removeIf(ck -> {
+					if(ck.chunk == null && ck.loaded + offset < date){
+						region.saveChunk(ck);
+						return true;
+					}
+					return false;
+				});
 				region.save();
-				region.chunks.values().removeIf(ck -> ck.chunk == null && ck.loaded + offset < date);
 				if(region.chunks.isEmpty()) remreg.add(region.key);
 			}
 		}
@@ -102,8 +114,10 @@ public class ChunkRegion {
 	public static void unload(Chunk_ ck){
 		ChunkRegion region = REGIONS.get(ck);
 		if(region != null){
-			region.chunks.remove(ck.key);
-			region.last_access = Time.getDate();
+			region.chunks.put(ck.key, ck);
+			region.saveChunk(ck);
+			ck.chunk = null;
+			ck.loaded = Time.getDate();
 		}
 	}
 
