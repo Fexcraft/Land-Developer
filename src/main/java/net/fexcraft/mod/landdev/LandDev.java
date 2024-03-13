@@ -4,6 +4,7 @@ import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.PacketHandler.PacketHandlerType;
 import net.fexcraft.mod.landdev.cmd.*;
+import net.fexcraft.mod.landdev.data.chunk.ChunkRegion;
 import net.fexcraft.mod.landdev.data.chunk.cap.ChunkCap;
 import net.fexcraft.mod.landdev.data.chunk.cap.ChunkCapCallable;
 import net.fexcraft.mod.landdev.data.chunk.cap.ChunkCapStorage;
@@ -33,6 +34,7 @@ import java.time.LocalTime;
 import java.time.ZoneOffset;
 import java.util.Date;
 import java.util.Timer;
+import java.util.TimerTask;
 
 import static net.fexcraft.mod.landdev.util.broad.Broadcaster.TargetTransmitter.NO_INTERNAL;
 
@@ -43,12 +45,13 @@ public class LandDev {
 	
     public static final String MODID = "landdev";
     public static final String NAME = "LandDev";
-    public static final String VERSION = "1.1.14";
+    public static final String VERSION = "1.1.15";
 	@Mod.Instance(MODID)
 	public static LandDev INSTANCE;
 	public static Database DB = new JsonFileDB();
 	public static File SAVE_DIR;
 	public static Timer TAX_TIMER;
+	public static Timer GENERIC_TIMER;
 
 	public static final String CLIENT_RECEIVER_ID = "landdev:util";
     private static Logger logger;
@@ -91,16 +94,37 @@ public class LandDev {
 	public void serverStarted(FMLServerStartedEvent event){
 		LocalDateTime midnight = LocalDateTime.of(LocalDate.now(ZoneOffset.systemDefault()), LocalTime.MIDNIGHT);
 		long mid = midnight.toInstant(ZoneOffset.UTC).toEpochMilli();
+		setupTaxTimer(mid);
+		setupGenericTimer(mid);
+	}
+
+	private void setupTaxTimer(long mid){
 		long date = Time.getDate();
 		while((mid += Settings.TAX_INTERVAL) < date);
 		if(TAX_TIMER == null && Settings.TAX_ENABLED){
 			(TAX_TIMER = new Timer()).schedule(new TaxSystem().load(), new Date(mid), Settings.TAX_INTERVAL);
 		}
 	}
-    
-    @Mod.EventHandler
+
+	private void setupGenericTimer(long mid){
+		if(GENERIC_TIMER != null) return;
+		long date = Time.getDate();
+		long offset = Time.MIN_MS * 6;
+		while((mid += offset) < date);
+		GENERIC_TIMER = new Timer();
+		GENERIC_TIMER.schedule(new TimerTask(){
+			@Override
+			public void run(){
+				ChunkRegion.saveRegions();
+			}
+		}, new Date(mid), offset);
+	}
+
+	@Mod.EventHandler
 	public void serverStopping(FMLServerStoppingEvent event){
 		Broadcaster.send(NO_INTERNAL, BroadcastChannel.SERVER, null, TranslationUtil.translate("server.stopping"));
+		if(TAX_TIMER != null) TAX_TIMER.cancel();
+		if(GENERIC_TIMER != null) GENERIC_TIMER.cancel();
 	}
     
     @Mod.EventHandler
