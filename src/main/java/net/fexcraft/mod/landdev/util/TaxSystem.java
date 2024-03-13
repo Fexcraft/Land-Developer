@@ -46,6 +46,7 @@ public class TaxSystem extends TimerTask {
 			return;
 		}
 		collect(date, false);
+		save();
 	}
 
 	private static boolean tooSoon(long last, long date){
@@ -297,4 +298,11 @@ public class TaxSystem extends TimerTask {
 		INSTANCE = this;
 		return this;
 	}
+
+	public void save(){
+		JsonMap map = new JsonMap();
+		map.add("last-interval", last);
+		JsonHandler.print(new File(SAVE_DIR, "tax.json"), map, JsonHandler.PrintOption.FLAT_SPACED);
+	}
+
 }
