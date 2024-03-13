@@ -103,7 +103,7 @@ public class Settings {
 		EDIT_WILDERNESS = !PROTECT_WILDERNESS;
 		CHUNK_LINK_LIMIT = config.getInt("chunk_link_limit", DEFAULT_CAT, 3, 0, 64, "How many chunks can be linked to another. Set to '0' to disable.");
 		REQUEST_TIMEOUT_DAYS = config.getInt("request_timeout_days", DEFAULT_CAT, 7, 1, 64, "Default days value for request timeouts.");
-		SAVE_CHUNKS_IN_REGIONS = config.getBoolean("save_chunks_in_regions", DEFAULT_CAT, false, "Should chunk data be saved in custom/separate region files rather than the chunks themselves?");
+		SAVE_CHUNKS_IN_REGIONS = config.getBoolean("save_chunks_in_regions", DEFAULT_CAT, false, "Should chunk data be saved in custom/separate region files rather than the chunks themselves? WARNING: Existing chunk data may not port over when changing this setting.");
 		TAX_ENABLED = config.getBoolean("tax_enabled", DEFAULT_CAT, true, "If the Tax System should be enabled.");
 		TAX_INTERVAL = config.getInt("tax_interval", DEFAULT_CAT, 24, 1, 168, "Interval between tax collection cycles, in hours.");
 		TAX_INTERVAL *= Time.HOUR_MS;
