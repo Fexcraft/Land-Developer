@@ -43,6 +43,7 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 	public ChunkLabel label = new ChunkLabel();
 	public ExternalData external = new ExternalData(this);
 	public District district;
+	public long loaded;
 	public Chunk chunk;
 
 	public Chunk_(Chunk ck){
@@ -54,6 +55,7 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 	public Chunk_(ChunkKey ckkey){
 		key = ckkey;
 		region = key.asRegion();
+		loaded = Time.getDate();
 	}
 
 	@Override
