@@ -13,6 +13,7 @@ import net.minecraft.world.chunk.Chunk;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -75,6 +76,29 @@ public class ChunkRegion {
 		}
 	}
 
+	private void save(){
+		try{
+			CompressedStreamTools.write(compound, file);
+		}
+		catch(IOException e){
+			e.printStackTrace();
+		}
+	}
+
+	public static void saveRegions(){
+		long offset = Time.MIN_MS * 5;
+		long date = Time.getDate();
+		ArrayList<ChunkKey> remreg = new ArrayList<>();
+		for(ChunkRegion region : REGIONS.values()){
+			if(region.last_access + offset < date){
+				region.save();
+				region.chunks.values().removeIf(ck -> ck.chunk == null && ck.loaded + offset < date);
+				if(region.chunks.isEmpty()) remreg.add(region.key);
+			}
+		}
+		for(ChunkKey key : remreg) REGIONS.remove(key);
+	}
+
 	public static void unload(Chunk_ ck){
 		ChunkRegion region = REGIONS.get(ck);
 		if(region != null){
@@ -101,15 +125,6 @@ public class ChunkRegion {
 		ChunkRegion region = REGIONS.get(key);
 		if(region == null) REGIONS.put(key, region = new ChunkRegion(key));
 		return region;
-	}
-
-	private void save(){
-		try{
-			CompressedStreamTools.write(compound, file);
-		}
-		catch(IOException e){
-			e.printStackTrace();
-		}
 	}
 
 }
