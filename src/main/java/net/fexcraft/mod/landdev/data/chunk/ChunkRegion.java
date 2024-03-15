@@ -39,41 +39,46 @@ public class ChunkRegion {
 			if(file.exists()) e.printStackTrace();
 		}
 		if(compound == null) compound = new NBTTagCompound();
+		setLastAccess();
 	}
 
 	public static void save(Chunk_ ck){
-		ChunkRegion region = getRegion(ck.region);
-		if(region != null){
-			region.chunks.put(ck.key, ck);
-			region.saveChunk(ck);
-		}
+		getRegion(ck.region).saveChunk(ck);
 	}
 
 	private void saveChunk(Chunk_ ck){
+		chunks.put(ck.key, ck);
 		JsonMap map = new JsonMap();
 		ck.save(map);
 		compound.setTag(ck.key.toString(), JsonNBTConverter.map(new NBTTagCompound(), map));
-		last_access = Time.getDate();
+		setLastAccess();
 	}
 
-	public static Chunk_ load(Chunk chunk){
-		Chunk_ ck = get(chunk);
-		ChunkRegion region = getRegion(ck.region);
-		region.load(ck);
-		return ck;
-	}
-
-	private void load(Chunk_ ck){
+	private void loadChunk(Chunk_ ck){
 		chunks.put(ck.key, ck);
 		ck.load(JsonNBTConverter.demap(compound.getCompoundTag(ck.key.toString())));
 		ResManager.CHUNKS.put(ck.key, ck);
+		setLastAccess();
+	}
+
+	private void setLastAccess(){
 		last_access = Time.getDate();
 	}
 
-	private static Chunk_ get(Chunk chunk){
+	public static Chunk_ getFor(Chunk chunk){
 		ChunkKey key = new ChunkKey(chunk.x, chunk.z);
-		ChunkRegion region = REGIONS.get(key.asRegion());
-		return region == null || !region.chunks.containsKey(key) ? new Chunk_(chunk) : region.chunks.get(key);
+		ChunkRegion region = getRegion(key.asRegion());
+		if(region.chunks.containsKey(key)){
+			Chunk_ ck = region.chunks.get(key);
+			ck.chunk = chunk;
+			ck.loaded = Time.getDate();
+			region.setLastAccess();
+			return ck;
+		}
+		Chunk_ ck = new Chunk_(chunk);
+		region.loadChunk(ck);
+		region.setLastAccess();
+		return ck;
 	}
 
 	public static void saveAll(){
@@ -114,7 +119,6 @@ public class ChunkRegion {
 	public static void unload(Chunk_ ck){
 		ChunkRegion region = REGIONS.get(ck);
 		if(region != null){
-			region.chunks.put(ck.key, ck);
 			region.saveChunk(ck);
 			ck.chunk = null;
 			ck.loaded = Time.getDate();
@@ -128,10 +132,13 @@ public class ChunkRegion {
 
 	public static Chunk_ get(ChunkKey key){
 		if(!Settings.SAVE_CHUNKS_IN_REGIONS) return null;
-		ChunkKey rkey = key.asRegion();
-		ChunkRegion region = getRegion(rkey);
+		ChunkRegion region = getRegion(key.asRegion());
+		if(region.chunks.containsKey(key)){
+			region.setLastAccess();
+			return region.chunks.get(key);
+		}
 		Chunk_ ck = new Chunk_(key);
-		region.load(ck);
+		region.loadChunk(ck);
 		return ck;
 	}
 
