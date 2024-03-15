@@ -17,7 +17,7 @@ public class ChunkCapImpl implements ChunkCap {
 	@Override
 	public void setChunk(Chunk ck){
 		if(Settings.SAVE_CHUNKS_IN_REGIONS){
-			chunk = ChunkRegion.load(ck);
+			chunk = ChunkRegion.getFor(ck);
 		}
 		else{
 			chunk = new Chunk_(ck);
