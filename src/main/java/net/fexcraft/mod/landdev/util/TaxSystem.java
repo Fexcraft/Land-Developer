@@ -43,6 +43,7 @@ public class TaxSystem extends TimerTask {
 		if(tooSoon(last, date)){
 			broad("Tax interval will be skipped. Previous Interval was not long ago.");
 			broad("LAST: " + Time.getAsString(last) + " + INTERVAL:" + (Settings.TAX_INTERVAL / Time.HOUR_MS) + "h > NOW: " + Time.getAsString(date));
+			save();
 			return;
 		}
 		collect(date, false);
