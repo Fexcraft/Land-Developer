@@ -64,6 +64,7 @@ public class InteractionEvents {
 
 	private static boolean control(World world, BlockPos pos, IBlockState state, EntityPlayer entity, boolean interact){
 		Player player = ResManager.getPlayer(entity);
+		if(player == null) return false;
 		if(player.adm) return true;
 		Chunk_ chunk = ResManager.getChunk(pos);
 		if(chunk.district.id < 0){
