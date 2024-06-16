@@ -11,6 +11,7 @@ import net.fexcraft.mod.landdev.util.Settings;
 import net.fexcraft.mod.landdev.util.TaxSystem;
 import net.fexcraft.mod.landdev.util.broad.BroadcastChannel;
 import net.fexcraft.mod.landdev.util.broad.Broadcaster;
+import net.fexcraft.mod.uni.world.MessageSenderI;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -28,6 +29,7 @@ public class PlayerEvents {
     	if(event.player.world.isRemote) return;
     	Player player = ResManager.getPlayer(event.player.getGameProfile().getId(), true);
 		player.entity = event.player;
+		player.sender = new MessageSenderI(player.entity);
 		player.offline = false;
 		player.login = Time.getDate();
 		player.chunk_last = ResManager.getChunk(event.player);
