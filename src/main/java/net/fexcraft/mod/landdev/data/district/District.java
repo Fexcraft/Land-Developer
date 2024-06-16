@@ -414,7 +414,7 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 						container.sendMsg("buy.notenoughmoney");
 						return;
 					}
-					if(!account.getBank().processAction(Action.TRANSFER, container.player.entity, account, sell.price, ct.account)) return;
+					if(!account.getBank().processAction(Action.TRANSFER, container.player.sender, account, sell.price, ct.account)) return;
 					owner.set(ct);
 					sell.price = 0;
 					container.open(UI_MAIN);
@@ -434,7 +434,7 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 						container.sendMsg("buy.notenoughmoney");
 						return;
 					}
-					if(!account.getBank().processAction(Action.TRANSFER, container.player.entity, account, sell.price, mun.account)) return;
+					if(!account.getBank().processAction(Action.TRANSFER, container.player.sender, account, sell.price, mun.account)) return;
 					owner.set(mun);
 					sell.price = 0;
 					container.open(UI_MAIN);
@@ -522,7 +522,7 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 					Print.chat(player.entity, "DB ERROR, INVALID NEW ID '" + newid + "'!");
 					return;
 				}
-				if(!account.getBank().processAction(Action.TRANSFER, player.entity, account, sum, SERVER_ACCOUNT)){
+				if(!account.getBank().processAction(Action.TRANSFER, player.sender, account, sum, SERVER_ACCOUNT)){
 					return;
 				}
 				District dis = new District(newid);
