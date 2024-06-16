@@ -642,7 +642,7 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 						return;
 					}
 				}
-				if(!acc.getBank().processAction(Action.TRANSFER, player.entity, acc, sum, SERVER_ACCOUNT)){
+				if(!acc.getBank().processAction(Action.TRANSFER, player.sender, acc, sum, SERVER_ACCOUNT)){
 					return;
 				}
 				if(!uca) SERVER_ACCOUNT.getBank().processAction(Action.TRANSFER, null, SERVER_ACCOUNT, county.norms.get("new-municipality-fee").integer(), county.account);
