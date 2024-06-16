@@ -17,6 +17,7 @@ import net.fexcraft.mod.landdev.data.district.District;
 import net.fexcraft.mod.landdev.data.player.Player;
 import net.fexcraft.mod.landdev.util.ResManager;
 import net.fexcraft.mod.landdev.util.Settings;
+import net.fexcraft.mod.uni.world.MessageSenderI;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTBase;
@@ -106,7 +107,7 @@ public class LDGuiClaimCon extends GenericContainer {
 				}
 				long price = chunk.sell.price > 0 ? chunk.sell.price : Settings.DEFAULT_CHUNK_PRICE;
 				if(price > 0){
-					if(!district.owner.account().getBank().processAction(Action.TRANSFER, player, district.account(), price, SERVER_ACCOUNT)) return;
+					if(!district.owner.account().getBank().processAction(Action.TRANSFER, new MessageSenderI(player), district.account(), price, SERVER_ACCOUNT)) return;
 				}
 				com.setString("msg", "landdev.gui.claim.pass");
 				if(chunk.district.id > -1) chunk.district.chunks -= 1;
