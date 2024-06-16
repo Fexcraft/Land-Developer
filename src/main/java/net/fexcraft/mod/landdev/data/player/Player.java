@@ -30,6 +30,7 @@ import net.fexcraft.mod.landdev.gui.modules.ModuleRequest;
 import net.fexcraft.mod.landdev.gui.modules.ModuleResponse;
 import net.fexcraft.mod.landdev.util.ResManager;
 import net.fexcraft.mod.landdev.util.TranslationUtil;
+import net.fexcraft.mod.uni.world.MessageSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
@@ -56,6 +57,7 @@ public class Player implements Saveable, Layer, LDGuiModule {
 	public County county;
 	public Chunk_ chunk_current, chunk_last;
 	public ExternalData external = new ExternalData(this);
+	public MessageSender sender;
 	
 	public Player(UUID uuid){
 		offline = true;
