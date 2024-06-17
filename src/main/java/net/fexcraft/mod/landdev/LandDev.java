@@ -10,6 +10,7 @@ import net.fexcraft.mod.landdev.data.chunk.cap.ChunkCapCallable;
 import net.fexcraft.mod.landdev.data.chunk.cap.ChunkCapStorage;
 import net.fexcraft.mod.landdev.db.Database;
 import net.fexcraft.mod.landdev.db.JsonFileDB;
+import net.fexcraft.mod.landdev.events.FsmmEventHooks;
 import net.fexcraft.mod.landdev.events.LocationUpdate;
 import net.fexcraft.mod.landdev.gui.GuiHandler;
 import net.fexcraft.mod.landdev.util.*;
@@ -70,6 +71,7 @@ public class LandDev {
         	PacketHandler.registerListener(PacketHandlerType.NBT, Side.CLIENT, new PacketReceiver());
         	MinecraftForge.EVENT_BUS.register(new LocationUpdate());
         }
+		FsmmEventHooks.init();
     }
 
     @EventHandler
