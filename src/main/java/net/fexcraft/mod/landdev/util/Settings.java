@@ -131,7 +131,7 @@ public class Settings {
 	
 	public static long format_price(String[] err, String val){
 		try{
-			String str = val.replace(Config.getDot(), "").replace(",", ".");
+			String str = val.replace(Config.DOT, "").replace(",", ".");
 			if(str.length() == 0) return 0;
 			String format = df.format(Double.parseDouble(str));
 			return Long.parseLong(format.replace(",", "").replace(".", ""));
