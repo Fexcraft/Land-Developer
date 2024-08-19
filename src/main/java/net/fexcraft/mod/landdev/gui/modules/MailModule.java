@@ -1,8 +1,6 @@
 package net.fexcraft.mod.landdev.gui.modules;
 
-import static net.fexcraft.mod.landdev.data.PermAction.MAIL_DELETE;
-import static net.fexcraft.mod.landdev.data.PermAction.MAIL_READ;
-import static net.fexcraft.mod.landdev.data.PermAction.MUNICIPALITY_STAFF;
+import static net.fexcraft.mod.landdev.data.PermAction.*;
 import static net.fexcraft.mod.landdev.gui.LDGuiElementType.*;
 import static net.fexcraft.mod.landdev.util.TranslationUtil.translate;
 

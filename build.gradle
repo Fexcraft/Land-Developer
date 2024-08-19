@@ -8,17 +8,6 @@ buildscript {
         classpath 'net.minecraftforge.gradle:ForgeGradle:5.1.+'
     }
 }
-allprojects {
-    repositories {
-        mavenCentral()
-        maven { url 'https://jitpack.io' }
-    }
-}
-configurations.all {
-    resolutionStrategy.cacheDynamicVersionsFor 1, 'seconds'
-}
-
-
 
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'maven-publish'
@@ -26,6 +15,19 @@ apply plugin: 'maven-publish'
 version = '1.1.15'
 group = 'net.fexcraft.mod.landdev' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'LandDeveloper'
+
+sourceSets {
+    main {
+        java {
+            srcDirs += 'src/main/java'
+            srcDirs += 'common/java'
+        }
+        resources {
+            srcDirs += 'src/main/resources'
+            srcDirs += 'common/resources'
+        }
+    }
+}
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 
@@ -89,17 +91,17 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
 
-    def localrepos = new File(project.projectDir, '/localrepos');
-    if(localrepos.exists()){
-        print "LocalRepos marker exists, using local copies.\n"
+    //def localrepos = new File(project.projectDir, '/localrepos');
+    //if(localrepos.exists()){
+        //print "LocalRepos marker exists, using local copies.\n"
         implementation project(':FCL')
         implementation project(':FSMM')
         compileOnly files("libs/Dynmap-3.7-beta-4-forge-1.12.2.jar")
-    }
-    else{
-        implementation 'com.github.Fexcraft:FCL:1.12.2-SNAPSHOT'
-        implementation 'com.github.Fexcraft:FSMM:1.12.2-SNAPSHOT'
-    }
+    //}
+    //else{
+    //    implementation 'com.github.Fexcraft:FCL:1.12.2-SNAPSHOT'
+    //    implementation 'com.github.Fexcraft:FSMM:1.12.2-SNAPSHOT'
+    //}
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..
