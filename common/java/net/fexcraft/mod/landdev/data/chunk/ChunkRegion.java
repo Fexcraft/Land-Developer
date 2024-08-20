@@ -3,7 +3,7 @@ package net.fexcraft.mod.landdev.data.chunk;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.mod.landdev.LandDev;
-import net.fexcraft.mod.landdev.db.JsonNBTConverter;
+import net.fexcraft.mod.landdev.db.JsonTagConverter;
 import net.fexcraft.mod.landdev.util.ResManager;
 import net.fexcraft.mod.landdev.util.Settings;
 import net.fexcraft.mod.uni.tag.TagCW;
@@ -50,13 +50,13 @@ public class ChunkRegion {
 		chunks.put(ck.key, ck);
 		JsonMap map = new JsonMap();
 		ck.save(map);
-		compound.setTag(ck.key.toString(), JsonNBTConverter.map(TagCW.create(), map).local());
+		compound.setTag(ck.key.toString(), JsonTagConverter.map(TagCW.create(), map).local());
 		setLastAccess();
 	}
 
 	private void loadChunk(Chunk_ ck){
 		chunks.put(ck.key, ck);
-		ck.load(JsonNBTConverter.demap(compound.getCompoundTag(ck.key.toString())));
+		ck.load(JsonTagConverter.demap(TagCW.wrap(compound.getCompoundTag(ck.key.toString()))));
 		ResManager.CHUNKS.put(ck.key, ck);
 		setLastAccess();
 	}
