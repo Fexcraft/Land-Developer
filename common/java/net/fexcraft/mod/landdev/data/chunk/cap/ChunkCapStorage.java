@@ -2,6 +2,7 @@ package net.fexcraft.mod.landdev.data.chunk.cap;
 
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.mod.landdev.db.JsonNBTConverter;
+import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -20,7 +21,7 @@ public class ChunkCapStorage implements IStorage<ChunkCap> {
 		NBTTagCompound compound = new NBTTagCompound();
 		JsonMap map = new JsonMap();
 		instance.getChunk().save(map);
-		JsonNBTConverter.map(compound, map);
+		JsonNBTConverter.map(TagCW.wrap(compound), map);
 		return compound;
 	}
 
