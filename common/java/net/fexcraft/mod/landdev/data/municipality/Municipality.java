@@ -42,7 +42,6 @@ import net.fexcraft.mod.landdev.util.Announcer;
 import net.fexcraft.mod.landdev.util.Announcer.Target;
 import net.fexcraft.mod.landdev.util.ResManager;
 import net.fexcraft.mod.landdev.util.Settings;
-import net.minecraft.nbt.NBTTagList;
 
 public class Municipality implements Saveable, Layer, LDGuiModule {
 
@@ -166,7 +165,7 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 	}
 
 	@Override
-	public int id(){
+	public int lid(){
 		return id;
 	}
 
@@ -200,7 +199,6 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 	@Override
 	public void sync_packet(LDGuiContainer container, ModuleResponse resp){
 		resp.setTitle("municipality.title");
-		NBTTagList list = new NBTTagList();
 		boolean canman = manage.can(MANAGE_MUNICIPALITY, container.player.uuid) || container.player.adm;
 		switch(container.x){
 			case UI_MAIN:{
@@ -496,8 +494,8 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 				mail.addMessage(translate("mail.municipality.citizen.invite0"));
 				mail.addMessage(translate("mail.municipality.citizen.invite1", name()));
 				ply.addMailAndSave(mail);
-				Print.chat(player.entity, translate("gui.municipality.citizen.invite.success"));
-				player.entity.closeScreen();
+				player.entity.send(translate("gui.municipality.citizen.invite.success"));
+				player.entity.closeUI();
 				return;
 			}
 			case "citizen.remove":{
@@ -536,8 +534,8 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 				mail.addMessage(translate("mail.municipality.staff.invite0"));
 				mail.addMessage(translate("mail.municipality.staff.invite1"));
 				ply.addMailAndSave(mail);
-				Print.chat(player.entity, translate("gui.municipality.staff.add.success"));
-				player.entity.closeScreen();
+				player.entity.send(translate("gui.municipality.staff.add.success"));
+				player.entity.closeUI();
 				return;
 			}
 			case "staff.remove":{
@@ -586,9 +584,9 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
     			boolean cn = county.norms.get("new-municipalities").bool();
     			boolean pp = player.hasPermit(CREATE_MUNICIPALITY, county.getLayer(), county.id);
     			if(!cn && !pp){
-	    			Print.chat(player.entity, translateCmd("mun.no_new_municipalities"));
-	    			Print.chat(player.entity, translateCmd("mun.no_create_permit"));
-	    			player.entity.closeScreen();
+	    			player.entity.send(translateCmd("mun.no_new_municipalities"));
+	    			player.entity.send(translateCmd("mun.no_create_permit"));
+	    			player.entity.closeUI();
     				return;
     			}
     			if(player.isInManagement(Layers.MUNICIPALITY)){
@@ -629,17 +627,17 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 				//todo notifications
 				int newid = ResManager.getNewIdFor(saveTable()), ndid = -2;
 				if(newid < 0){
-					Print.chat(player.entity, "DB ERROR, INVALID NEW ID '" + newid + "'!");
+					player.entity.send("DB ERROR, INVALID NEW ID '" + newid + "'!");
 					return;
 				}
 				if(!claim){
 					ndid = ResManager.getNewIdFor(chunk.district.saveTable());
 					if(ndid < 0){
-						Print.chat(player.entity, "DB ERROR, INVALID NEW DISTRICT ID '" + newid + "'!");
+						player.entity.send("DB ERROR, INVALID NEW DISTRICT ID '" + newid + "'!");
 						return;
 					}
 				}
-				if(!acc.getBank().processAction(Action.TRANSFER, player.sender, acc, sum, SERVER_ACCOUNT)){
+				if(!acc.getBank().processAction(Action.TRANSFER, player.entity, acc, sum, SERVER_ACCOUNT)){
 					return;
 				}
 				if(!uca) SERVER_ACCOUNT.getBank().processAction(Action.TRANSFER, null, SERVER_ACCOUNT, county.norms.get("new-municipality-fee").integer(), county.account);
@@ -679,8 +677,8 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 				}
 				SERVER_ACCOUNT.getBank().processAction(Action.TRANSFER, null, SERVER_ACCOUNT, Settings.MUNICIPALITY_CREATION_FEE / 2, mnew.account);
 				ResManager.bulkSave(mnew, county, player, mold, cold);
-				player.entity.closeScreen();
-    			Print.chat(player.entity, translate("gui.municipality.create.complete"));
+				player.entity.closeUI();
+    			player.entity.send(translate("gui.municipality.create.complete"));
     			Announcer.announce(Announcer.Target.GLOBAL, 0, "announce.municipality.created", name, newid);
 				return;
 			}
