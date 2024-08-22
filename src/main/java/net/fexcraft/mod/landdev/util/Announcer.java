@@ -3,6 +3,7 @@ package net.fexcraft.mod.landdev.util;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.landdev.data.player.Player;
+import net.fexcraft.mod.uni.UniEntity;
 import net.minecraft.entity.player.EntityPlayerMP;
 
 public class Announcer {
@@ -18,25 +19,25 @@ public class Announcer {
 				break;
 			case DISTRICT:
 				Static.getServer().getPlayerList().getPlayers().forEach(player -> {
-					Player ply = ResManager.getPlayer(player);
+					Player ply = ResManager.getPlayer(player.getGameProfile().getId(), true);
 					if(ply.isCurrentlyInDistrict(id)) announce(player, string, objs);
 				});
 				break;
 			case MUNICIPALITY:
 				Static.getServer().getPlayerList().getPlayers().forEach(player -> {
-					Player ply = ResManager.getPlayer(player);
+					Player ply = ResManager.getPlayer(player.getGameProfile().getId(), true);
 					if(ply.municipality.id == id || ply.isCurrentlyInMunicipality(id)) announce(player, string, objs);
 				});
 				break;
 			case COUNTY:
 				Static.getServer().getPlayerList().getPlayers().forEach(player -> {
-					Player ply = ResManager.getPlayer(player);
+					Player ply = ResManager.getPlayer(player.getGameProfile().getId(), true);
 					if(ply.county.id == id || ply.isCurrentlyInCounty(id)) announce(player, string, objs);
 				});
 				break;
 			case STATE:
 				Static.getServer().getPlayerList().getPlayers().forEach(player -> {
-					Player ply = ResManager.getPlayer(player);
+					Player ply = ResManager.getPlayer(player.getGameProfile().getId(), true);
 					if(ply.county.state.id == id || ply.isCurrentlyInState(id)) announce(player, string, objs);
 				});
 				break;
