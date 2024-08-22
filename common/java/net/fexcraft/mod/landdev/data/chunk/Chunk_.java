@@ -26,7 +26,7 @@ import net.fexcraft.mod.landdev.gui.modules.ModuleResponse;
 import net.fexcraft.mod.landdev.util.ResManager;
 import net.fexcraft.mod.landdev.util.Settings;
 import net.fexcraft.mod.landdev.util.TaxSystem;
-import net.minecraft.world.chunk.Chunk;
+import net.fexcraft.mod.uni.UniChunk;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -46,12 +46,12 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 	public ExternalData external = new ExternalData(this);
 	public District district;
 	public long loaded;
-	public Chunk chunk;
+	public UniChunk uck;
 
-	public Chunk_(Chunk ck){
-		key = new ChunkKey(ck.x, ck.z);
+	public Chunk_(UniChunk ck){
+		key = new ChunkKey(ck.chunk.getX(), ck.chunk.getZ());
 		region = key.asRegion();
-		chunk = ck;
+		uck = ck;
 	}
 
 	public Chunk_(ChunkKey ckkey){
@@ -112,7 +112,7 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 	@Override
 	public void save(){
 		if(Settings.SAVE_CHUNKS_IN_REGIONS) ChunkRegion.save(this);
-		if(chunk != null) chunk.markDirty();
+		if(uck != null) uck.chunk.markChanged();
 	}
 
 	@Override
