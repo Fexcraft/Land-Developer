@@ -3,8 +3,7 @@ package net.fexcraft.mod.landdev.data;
 import java.awt.Color;
 
 import net.fexcraft.app.json.JsonMap;
-import net.fexcraft.lib.mc.utils.Print;
-import net.minecraft.command.ICommandSender;
+import net.fexcraft.mod.uni.world.MessageSender;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -48,9 +47,9 @@ public class ColorData implements Saveable {
 		if(color < 0xffffff && color > 0) map.add("color", "#" + Integer.toHexString(color));
 	}
 	
-	public static boolean validString(ICommandSender sender, String newcolor){
+	public static boolean validString(MessageSender sender, String newcolor){
 		if(newcolor.replace("#", "").length() != 6){
-			if(sender != null) Print.chat(sender, "Invalid colour string!");
+			if(sender != null) sender.send("Invalid colour string!");
 			return false;
 		}
 		if(!newcolor.contains("#")){
@@ -60,7 +59,7 @@ public class ColorData implements Saveable {
 			Color.decode(newcolor);
 		}
 		catch(Exception e){
-			if(sender != null) Print.chat(sender, "Parse Error: " + e.getMessage());
+			if(sender != null) sender.send("Parse Error: " + e.getMessage());
 		}
 		return true;
 	}
