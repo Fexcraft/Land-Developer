@@ -34,8 +34,8 @@ public class ChunkEvents {
 	@SubscribeEvent
 	public static void onUnload(ChunkEvent.Unload event){
 		if(event.getWorld().isRemote || event.getWorld().provider.getDimension() != 0) return;
-		Chunk_ chunk = ResManager.getChunk(event.getChunk());
-		if(chunk != null) ResManager.remChunk(event.getChunk());
+		Chunk_ chunk = ResManager.getChunk(event.getChunk().x, event.getChunk().z);
+		if(chunk != null) ResManager.remChunk(event.getChunk().x, event.getChunk().z);
 	}
 
 }
