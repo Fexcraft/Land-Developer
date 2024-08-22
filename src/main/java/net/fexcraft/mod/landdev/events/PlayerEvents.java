@@ -4,13 +4,14 @@ import static net.fexcraft.mod.landdev.util.TranslationUtil.translate;
 import static net.fexcraft.mod.landdev.util.broad.Broadcaster.TargetTransmitter.NO_INTERNAL;
 
 import net.fexcraft.lib.common.math.Time;
-import net.fexcraft.mod.landdev.data.chunk.cap.ChunkCap;
+import net.fexcraft.mod.landdev.data.chunk.ChunkApp;
 import net.fexcraft.mod.landdev.data.player.Player;
 import net.fexcraft.mod.landdev.util.ResManager;
 import net.fexcraft.mod.landdev.util.Settings;
 import net.fexcraft.mod.landdev.util.TaxSystem;
 import net.fexcraft.mod.landdev.util.broad.BroadcastChannel;
 import net.fexcraft.mod.landdev.util.broad.Broadcaster;
+import net.fexcraft.mod.uni.UniChunk;
 import net.fexcraft.mod.uni.world.MessageSenderI;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -68,7 +69,7 @@ public class PlayerEvents {
 		if((time = Time.getDate()) > player.last_pos_update){
 			player.last_pos_update = time;
 			player.chunk_last = player.chunk_current;
-			player.chunk_current = event.player.world.getChunk(event.player.getPosition()).getCapability(ChunkCap.CHUNK, null).getChunk();
+			player.chunk_current = UniChunk.get(event.player.world.getChunk(event.player.getPosition())).getApp(ChunkApp.class).chunk;
 			if(player.chunk_current == null) return;
 			if(player.chunk_last == null) player.chunk_last = player.chunk_current;
 			moved = player.chunk_current.district.id != player.chunk_last.district.id;
