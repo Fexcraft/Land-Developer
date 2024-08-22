@@ -5,6 +5,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import com.mojang.authlib.GameProfile;
 import net.fexcraft.app.json.JsonMap;
+import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fsmm.data.Account;
 import net.fexcraft.mod.fsmm.util.DataManager;
@@ -18,11 +19,8 @@ import net.fexcraft.mod.landdev.data.district.District;
 import net.fexcraft.mod.landdev.data.municipality.Municipality;
 import net.fexcraft.mod.landdev.data.player.Player;
 import net.fexcraft.mod.landdev.data.state.State;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3i;
-import net.minecraft.world.chunk.Chunk;
+import net.fexcraft.mod.uni.UniEntity;
+import net.fexcraft.mod.uni.world.EntityW;
 
 /**
  * Resource Manager / Data Manager
@@ -61,27 +59,20 @@ public class ResManager implements Saveable {
 		return ChunkRegion.get(key);
 	}
 
-	public static Chunk_ getChunk(Chunk chunk){
-		for(Chunk_ ck : CHUNKS.values()){
-			if(ck.key.x == chunk.x && ck.key.z == chunk.z) return ck;
-		}
-		return ChunkRegion.get(chunk.x, chunk.z);
-	}
-
-	public static Chunk_ getChunk(Vec3d pos){
+	public static Chunk_ getChunk(V3D pos){
 		return getChunk((int)pos.x >> 4, (int)pos.z >> 4);
 	}
 
-	public static Chunk_ getChunk(Entity player){
-		return getChunk((int)player.posX >> 4, (int)player.posZ >> 4);
+	public static Chunk_ getChunk(EntityW player){
+		return getChunk(player.getPos());
 	}
 
-	public static Chunk_ getChunk(Vec3i pos){
-		return getChunk((int)pos.getX() >> 4, (int)pos.getZ() >> 4);
+	public static Chunk_ getChunk(Object player){
+		return getChunk(UniEntity.get(player).entity);
 	}
 
-	public static void remChunk(Chunk chunk){
-		Chunk_ ck = getChunk(chunk.x, chunk.z);
+	public static void remChunk(int x, int z){
+		Chunk_ ck = getChunk(x, z);
 		if(ck != null){
 			CHUNKS.remove(ck.key);
 			if(Settings.SAVE_CHUNKS_IN_REGIONS) ChunkRegion.unload(ck);
@@ -124,12 +115,16 @@ public class ResManager implements Saveable {
 		return ply;
 	}
 
-	public static Player getPlayer(EntityPlayer player){
-		return PLAYERS.get(player.getGameProfile().getId());
+	public static Player getPlayer(UniEntity player){
+		return PLAYERS.get(player.entity.getUUID());
+	}
+
+	public static Player getPlayer(Object player){
+		return getPlayer(UniEntity.get(player));
 	}
 
 	public static void unloadIfOffline(Player player){
-		EntityPlayer entity = Static.getServer().getPlayerList().getPlayerByUUID(player.uuid);
+		Object entity = Static.getServer().getPlayerList().getPlayerByUUID(player.uuid);
 		if(entity == null){
 			player.save();
 			PLAYERS.remove(player.uuid);
