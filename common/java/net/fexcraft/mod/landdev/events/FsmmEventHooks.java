@@ -8,7 +8,6 @@ import net.fexcraft.mod.landdev.data.PermAction;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.data.player.Player;
 import net.fexcraft.mod.landdev.util.ResManager;
-import net.minecraft.entity.player.EntityPlayer;
 import org.apache.commons.lang3.math.NumberUtils;
 
 /**
@@ -18,10 +17,10 @@ public class FsmmEventHooks {
 
 	public static void init(){
 		FsmmEvent.addListener(ATMEvent.GatherAccounts.class, event -> {
-			Player player = ResManager.getPlayer(event.getPlayer().local());
+			Player player = ResManager.getPlayer(event.getPlayer());
 			if(player.adm){
 				event.getAccountsList().add(new AccountPermission(ResManager.SERVER_ACCOUNT, true, true, true, true));
-				Chunk_ ck = ResManager.getChunk((EntityPlayer)event.getPlayer().direct());
+				Chunk_ ck = ResManager.getChunk(event.getPlayer());
 				if(ck.district.state().id > -1){
 					event.getAccountsList().add(new AccountPermission(ck.district.state().account, true, true, true, true));
 				}
@@ -36,12 +35,12 @@ public class FsmmEventHooks {
 				event.getAccountsList().add(new AccountPermission(ResManager.getMunicipality(-1, true).account, true, true, true, true));
 			}
 			boolean use = player.county.manage.can(PermAction.FINANCES_USE, player.uuid);
-			boolean man = player.county.manage.can(PermAction.FINANCES_USE, player.uuid);
+			boolean man = player.county.manage.can(PermAction.MANAGE_COUNTY, player.uuid);
 			if(use || man){
 				event.getAccountsList().add(new AccountPermission(player.county.account, use || man, true, man, man));
 			}
 			use = player.municipality.manage.can(PermAction.FINANCES_USE, player.uuid);
-			man = player.municipality.manage.can(PermAction.FINANCES_USE, player.uuid);
+			man = player.municipality.manage.can(PermAction.MANAGE_MUNICIPALITY, player.uuid);
 			if(use || man){
 				event.getAccountsList().add(new AccountPermission(player.municipality.account, use || man, true, man, man));
 			}
