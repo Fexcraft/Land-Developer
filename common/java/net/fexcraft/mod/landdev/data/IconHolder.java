@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.fexcraft.app.json.JsonMap;
-import net.minecraft.nbt.NBTTagCompound;
+import net.fexcraft.mod.uni.tag.TagCW;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -58,18 +58,18 @@ public class IconHolder implements Saveable {
 		icon = null;
 	}
 	
-	public static final List<String> PACKET_COLOURS = Arrays.asList(new String[]{ "green", "yellow", "red", "blue" });
+	public static final List<String> PACKET_COLOURS = Arrays.asList("green", "yellow", "red", "blue");
 	
-	public static final void writeLocPacketIcon(NBTTagCompound compound, IconHolder icon, int id, String color){
+	public static final void writeLocPacketIcon(TagCW compound, IconHolder icon, int id, String color){
 		if(icon != null){
-			compound.setString("icon_" + id, icon.getnn());
+			compound.set("icon_" + id, icon.getnn());
 		}
 		else if(color == null){
-			compound.setInteger("x_" + id, 64);
-			compound.setInteger("y_" + id, 224);
+			compound.set("x_" + id, 64);
+			compound.set("y_" + id, 224);
 		}
 		else{
-			compound.setString("color_" + id, color);
+			compound.set("color_" + id, color);
 		}
 	}
 	
