@@ -24,6 +24,7 @@ import net.fexcraft.mod.landdev.gui.modules.Missing;
 import net.fexcraft.mod.landdev.gui.modules.ModuleRequest;
 import net.fexcraft.mod.landdev.gui.modules.ModuleResponse;
 import net.fexcraft.mod.landdev.util.ResManager;
+import net.fexcraft.mod.uni.UniEntity;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTBase;
@@ -57,7 +58,7 @@ public class LDGuiContainer extends GenericContainer {
 			case MUNICIPALITY: prefix = "municipality"; break;
 			case COUNTY: prefix = "county"; break;
 		}
-		this.player = ResManager.getPlayer(player);
+		this.player = ResManager.getPlayer(UniEntity.get(player));
 		this.x = x;
 		this.y = y;
 		this.z = z;
@@ -129,7 +130,7 @@ public class LDGuiContainer extends GenericContainer {
 		if(packet.hasKey("go_back")){
 			if(x != 0) open(backto);
 			else{
-				Chunk_ chunk = ResManager.getChunk(player);
+				Chunk_ chunk = ResManager.getChunk(player.chunkCoordX, player.chunkCoordZ);
 				open(MAIN, 0, chunk.key.x, chunk.key.z);
 			}
 		}
