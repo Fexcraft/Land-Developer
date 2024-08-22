@@ -14,7 +14,6 @@ import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fsmm.data.Account;
 import net.fexcraft.mod.fsmm.data.Bank.Action;
-import net.fexcraft.mod.landdev.data.*;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.data.county.County;
 import net.fexcraft.mod.landdev.data.hooks.ExternalData;
@@ -142,7 +141,7 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 	}
 
 	@Override
-	public int id(){
+	public int lid(){
 		return id;
 	}
 
@@ -200,7 +199,7 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 		boolean dis = layer.is(Layers.DISTRICT);
 		if((dis && !owner.is_county) || layer.is(Layers.MUNICIPALITY)){
 			if(!owner.municipality.manage.can(container.player.uuid, FINANCES_USE, FINANCES_MANAGE)){
-				if(container == null) Print.chat(container.player.entity, TranslationUtil.translateCmd("account.noperm.municipality"));
+				if(container == null) container.player.entity.send(TranslationUtil.translateCmd("account.noperm.municipality"));
 				else container.sendMsg("landdev.cmd.account.noperm.municipality", false);
 				return null;
 			}
@@ -208,7 +207,7 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 		}
 		if((dis && owner.is_county) || layer.is(Layers.COUNTY)){
 			if(!county().manage.can(container.player.uuid, FINANCES_USE, FINANCES_MANAGE)){
-				if(container == null) Print.chat(container.player.entity, TranslationUtil.translateCmd("account.noperm.county"));
+				if(container == null) container.player.entity.send(TranslationUtil.translateCmd("account.noperm.county"));
 				else container.sendMsg("landdev.cmd.account.noperm.county", false);
 				return null;
 			}
@@ -216,7 +215,7 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 		}
 		if(layer.is(Layers.STATE)){
 			if(!state().manage.can(container.player.uuid, FINANCES_USE, FINANCES_MANAGE)){
-				if(container == null) Print.chat(container.player.entity, TranslationUtil.translateCmd("account.noperm.state"));
+				if(container == null) container.player.entity.send(TranslationUtil.translateCmd("account.noperm.state"));
 				else container.sendMsg("landdev.cmd.account.noperm.state", false);
 				return null;
 			}
@@ -416,7 +415,7 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 						container.sendMsg("buy.notenoughmoney");
 						return;
 					}
-					if(!account.getBank().processAction(Action.TRANSFER, container.player.sender, account, sell.price, ct.account)) return;
+					if(!account.getBank().processAction(Action.TRANSFER, container.player.entity, account, sell.price, ct.account)) return;
 					owner.set(ct);
 					sell.price = 0;
 					container.open(UI_MAIN);
@@ -436,7 +435,7 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 						container.sendMsg("buy.notenoughmoney");
 						return;
 					}
-					if(!account.getBank().processAction(Action.TRANSFER, container.player.sender, account, sell.price, mun.account)) return;
+					if(!account.getBank().processAction(Action.TRANSFER, container.player.entity, account, sell.price, mun.account)) return;
 					owner.set(mun);
 					sell.price = 0;
 					container.open(UI_MAIN);
@@ -521,10 +520,10 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 				}
 				int newid = ResManager.getNewIdFor(saveTable());
 				if(newid < 0){
-					Print.chat(player.entity, "DB ERROR, INVALID NEW ID '" + newid + "'!");
+					player.entity.send("DB ERROR, INVALID NEW ID '" + newid + "'!");
 					return;
 				}
-				if(!account.getBank().processAction(Action.TRANSFER, player.sender, account, sum, SERVER_ACCOUNT)){
+				if(!account.getBank().processAction(Action.TRANSFER, player.entity, account, sum, SERVER_ACCOUNT)){
 					return;
 				}
 				District dis = new District(newid);
@@ -538,8 +537,8 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 				chunk.district = dis;
 				chunk.save();
 				ResManager.bulkSave(dis.owner.is_county? dis.owner.county : dis.owner.municipality, dis, chunk, player);
-				player.entity.closeScreen();
-				Print.chat(player.entity, translate("gui.district.create.complete"));
+				player.entity.closeUI();
+				player.entity.send(translate("gui.district.create.complete"));
 				Announcer.announce(Announcer.Target.GLOBAL, 0, "announce.district.created", name, newid);
 				return;
 			}
