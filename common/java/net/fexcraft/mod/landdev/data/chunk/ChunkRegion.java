@@ -6,6 +6,7 @@ import net.fexcraft.mod.landdev.LandDev;
 import net.fexcraft.mod.landdev.db.JsonTagConverter;
 import net.fexcraft.mod.landdev.util.ResManager;
 import net.fexcraft.mod.landdev.util.Settings;
+import net.fexcraft.mod.uni.UniChunk;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
@@ -65,17 +66,17 @@ public class ChunkRegion {
 		last_access = Time.getDate();
 	}
 
-	public static Chunk_ getFor(Chunk chunk){
-		ChunkKey key = new ChunkKey(chunk.x, chunk.z);
+	public static Chunk_ getFor(UniChunk uck){
+		ChunkKey key = new ChunkKey(uck.chunk.getX(), uck.chunk.getZ());
 		ChunkRegion region = getRegion(key.asRegion());
 		if(region.chunks.containsKey(key)){
 			Chunk_ ck = region.chunks.get(key);
-			ck.chunk = chunk;
+			ck.uck = UniChunk.get(uck);
 			ck.loaded = Time.getDate();
 			region.setLastAccess();
 			return ck;
 		}
-		Chunk_ ck = new Chunk_(chunk);
+		Chunk_ ck = new Chunk_(UniChunk.get(uck));
 		region.loadChunk(ck);
 		region.setLastAccess();
 		return ck;
@@ -103,7 +104,7 @@ public class ChunkRegion {
 		for(ChunkRegion region : REGIONS.values()){
 			if(region.last_access + offset < date){
 				region.chunks.values().removeIf(ck -> {
-					if(ck.chunk == null && ck.loaded + offset < date){
+					if(ck.uck == null && ck.loaded + offset < date){
 						region.saveChunk(ck);
 						return true;
 					}
@@ -120,7 +121,7 @@ public class ChunkRegion {
 		ChunkRegion region = REGIONS.get(ck);
 		if(region != null){
 			region.saveChunk(ck);
-			ck.chunk = null;
+			ck.uck = null;
 			ck.loaded = Time.getDate();
 		}
 	}
