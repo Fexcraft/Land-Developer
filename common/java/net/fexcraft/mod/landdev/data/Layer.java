@@ -13,7 +13,7 @@ public interface Layer {
 
 	public Layers getParentLayer();
 
-	public default int id(){
+	public default int lid(){
 		return 0;
 	}
 
