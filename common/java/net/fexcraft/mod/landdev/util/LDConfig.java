@@ -67,7 +67,7 @@ public class LDConfig extends ConfigBase {
 
 	@Override
 	protected void fillInfo(JsonMap map){
-		map.add("info", "FSMM 3 Main Configuration File");
+		map.add("info", "Land-Developer Main Configuration File");
 		map.add("wiki", "https://fexcraft.net/wiki/mod/fsmm");
 	}
 
