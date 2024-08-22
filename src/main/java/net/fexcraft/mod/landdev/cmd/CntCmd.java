@@ -9,6 +9,7 @@ import net.fexcraft.mod.landdev.data.state.State;
 import net.fexcraft.mod.landdev.gui.GuiHandler;
 import net.fexcraft.mod.landdev.util.AliasLoader;
 import net.fexcraft.mod.landdev.util.ResManager;
+import net.fexcraft.mod.uni.UniEntity;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
@@ -46,7 +47,7 @@ public class CntCmd extends CommandBase {
     @Override 
     public void execute(MinecraftServer server, ICommandSender sender, String[] args){ 
     	if(sender instanceof EntityPlayer == false) return;
-    	Player ply = ResManager.getPlayer((EntityPlayer)sender);
+    	Player ply = ResManager.getPlayer(UniEntity.get(sender));
 		Chunk_ chunk = ResManager.getChunk(sender.getCommandSenderEntity());
     	if(args.length > 0){
     		switch(args[0]){
@@ -59,7 +60,7 @@ public class CntCmd extends CommandBase {
 		    			Print.chat(sender, translateCmd("ct.no_create_permit"));
 	    			}
 	    			else{
-	    				ply.entity.openGui(LandDev.INSTANCE, GuiHandler.COUNTY, sender.getEntityWorld(), County.UI_CREATE, 0, 0);
+	    				//TODO ply.entity.openGui(LandDev.INSTANCE, GuiHandler.COUNTY, sender.getEntityWorld(), County.UI_CREATE, 0, 0);
 	    			}
 	    			return;
 	    		}
@@ -70,7 +71,7 @@ public class CntCmd extends CommandBase {
     		}
     	}
     	else{
-        	ply.entity.openGui(LandDev.INSTANCE, GuiHandler.COUNTY, sender.getEntityWorld(), 0, chunk.district.county().id, 0);
+        	//TODO ply.entity.openGui(LandDev.INSTANCE, GuiHandler.COUNTY, sender.getEntityWorld(), 0, chunk.district.county().id, 0);
     	}
     }
 
