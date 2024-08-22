@@ -12,6 +12,7 @@ import net.fexcraft.mod.landdev.util.TaxSystem;
 import net.fexcraft.mod.landdev.util.broad.BroadcastChannel;
 import net.fexcraft.mod.landdev.util.broad.Broadcaster;
 import net.fexcraft.mod.uni.UniChunk;
+import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.world.MessageSenderI;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -29,8 +30,7 @@ public class PlayerEvents {
     public static void onPlayerLogin(PlayerLoggedInEvent event){
     	if(event.player.world.isRemote) return;
     	Player player = ResManager.getPlayer(event.player.getGameProfile().getId(), true);
-		player.entity = event.player;
-		player.sender = new MessageSenderI(player.entity);
+		player.entity = UniEntity.getEntity(event.player);
 		player.offline = false;
 		player.login = Time.getDate();
 		player.chunk_last = ResManager.getChunk(event.player);
@@ -56,7 +56,7 @@ public class PlayerEvents {
 	@SubscribeEvent
 	public static void onPlayerRespawn(PlayerRespawnEvent event){
 		Player player = ResManager.getPlayer(event.player.getGameProfile().getId(), false);
-		if(player != null) player.entity = event.player;
+		if(player != null) player.entity = UniEntity.getEntity(event.player);
 	}
 	
 	private static long time;
