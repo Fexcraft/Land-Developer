@@ -4,10 +4,8 @@ import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.PacketHandler.PacketHandlerType;
 import net.fexcraft.mod.landdev.cmd.*;
+import net.fexcraft.mod.landdev.data.chunk.ChunkApp;
 import net.fexcraft.mod.landdev.data.chunk.ChunkRegion;
-import net.fexcraft.mod.landdev.data.chunk.cap.ChunkCap;
-import net.fexcraft.mod.landdev.data.chunk.cap.ChunkCapCallable;
-import net.fexcraft.mod.landdev.data.chunk.cap.ChunkCapStorage;
 import net.fexcraft.mod.landdev.db.Database;
 import net.fexcraft.mod.landdev.db.JsonFileDB;
 import net.fexcraft.mod.landdev.events.FsmmEventHooks;
@@ -17,9 +15,9 @@ import net.fexcraft.mod.landdev.util.*;
 import net.fexcraft.mod.landdev.util.broad.BroadcastChannel;
 import net.fexcraft.mod.landdev.util.broad.Broadcaster;
 import net.fexcraft.mod.landdev.util.broad.DiscordTransmitter;
+import net.fexcraft.mod.uni.UniChunk;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.*;
@@ -61,7 +59,7 @@ public class LandDev {
     public void preInit(FMLPreInitializationEvent event){
     	Settings.initialize(event);
         logger = event.getModLog();
-		CapabilityManager.INSTANCE.register(ChunkCap.class, new ChunkCapStorage(), new ChunkCapCallable());
+		UniChunk.register(new ChunkApp(null));
     }
 
     @EventHandler
