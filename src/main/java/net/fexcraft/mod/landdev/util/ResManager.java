@@ -75,7 +75,7 @@ public class ResManager implements Saveable {
 		Chunk_ ck = getChunk(x, z);
 		if(ck != null){
 			CHUNKS.remove(ck.key);
-			if(Settings.SAVE_CHUNKS_IN_REGIONS) ChunkRegion.unload(ck);
+			if(LDConfig.SAVE_CHUNKS_IN_REGIONS) ChunkRegion.unload(ck);
 		}
 	}
 

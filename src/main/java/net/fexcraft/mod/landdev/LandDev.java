@@ -41,8 +41,7 @@ import java.util.TimerTask;
 import static net.fexcraft.mod.landdev.util.broad.Broadcaster.TargetTransmitter.NO_INTERNAL;
 
 @Mod(modid = LandDev.MODID, name = LandDev.NAME, version = LandDev.VERSION,
-	dependencies = "required-after:fcl", guiFactory = "net.fexcraft.mod.landdev.util.GuiFactory",
-	acceptedMinecraftVersions = "*", acceptableRemoteVersions = "*")
+	dependencies = "required-after:fcl", acceptedMinecraftVersions = "*", acceptableRemoteVersions = "*")
 public class LandDev {
 	
     public static final String MODID = "landdev";
@@ -51,6 +50,7 @@ public class LandDev {
 	@Mod.Instance(MODID)
 	public static LandDev INSTANCE;
 	public static Database DB = new JsonFileDB();
+	public static LDConfig CONFIG;
 	public static File SAVE_DIR;
 	public static Timer TAX_TIMER;
 	public static Timer GENERIC_TIMER;
@@ -60,7 +60,7 @@ public class LandDev {
 
 	@EventHandler
     public void preInit(FMLPreInitializationEvent event){
-    	Settings.initialize(event);
+		CONFIG = new LDConfig(new File(event.getModConfigurationDirectory(), "landdev.json"));
         logger = event.getModLog();
 		UniChunk.register(new ChunkApp(null));
     }
@@ -103,9 +103,9 @@ public class LandDev {
 
 	private void setupTaxTimer(long mid){
 		long date = Time.getDate();
-		while((mid += Settings.TAX_INTERVAL) < date);
-		if(TAX_TIMER == null && Settings.TAX_ENABLED){
-			(TAX_TIMER = new Timer()).schedule(new TaxSystem().load(), new Date(mid), Settings.TAX_INTERVAL);
+		while((mid += LDConfig.TAX_INTERVAL) < date);
+		if(TAX_TIMER == null && LDConfig.TAX_ENABLED){
+			(TAX_TIMER = new Timer()).schedule(new TaxSystem().load(), new Date(mid), LDConfig.TAX_INTERVAL);
 		}
 	}
 

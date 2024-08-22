@@ -24,7 +24,7 @@ import net.fexcraft.mod.landdev.gui.modules.LDGuiModule;
 import net.fexcraft.mod.landdev.gui.modules.ModuleRequest;
 import net.fexcraft.mod.landdev.gui.modules.ModuleResponse;
 import net.fexcraft.mod.landdev.util.ResManager;
-import net.fexcraft.mod.landdev.util.Settings;
+import net.fexcraft.mod.landdev.util.LDConfig;
 import net.fexcraft.mod.landdev.util.TaxSystem;
 import net.fexcraft.mod.uni.UniChunk;
 
@@ -111,7 +111,7 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 
 	@Override
 	public void save(){
-		if(Settings.SAVE_CHUNKS_IN_REGIONS) ChunkRegion.save(this);
+		if(LDConfig.SAVE_CHUNKS_IN_REGIONS) ChunkRegion.save(this);
 		if(uck != null) uck.chunk.markChanged();
 	}
 
@@ -155,7 +155,7 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 		case UI_MAIN:
 			boolean canman = can_manage(container.player);// || container.player.adm;
 			resp.addRow("key", ELM_GENERIC, key.comma());
-			if(Settings.CHUNK_LINK_LIMIT > 0){
+			if(LDConfig.CHUNK_LINK_LIMIT > 0){
 				if(link == null){
 					if(canman) resp.addButton("link", ELM_GENERIC, ICON_ADD);
 					else resp.addRow("link", ELM_GENERIC, ICON_EMPTY);
@@ -316,7 +316,7 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 			}
 			case "link": container.open(UI_LINK); return;
 			case "link.submit":{
-				if(!canman || Settings.CHUNK_LINK_LIMIT == 0 || link != null) return;
+				if(!canman || LDConfig.CHUNK_LINK_LIMIT == 0 || link != null) return;
 				ChunkKey ckk = new ChunkKey(req.getField("link.field"));
 				Chunk_ ck = ResManager.getChunk(ckk);
 				if(ck == null){
@@ -333,7 +333,7 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 					container.sendMsg("link.islinked");
 					return;
 				}
-				if(ckl.linked.size() > Settings.CHUNK_LINK_LIMIT){
+				if(ckl.linked.size() > LDConfig.CHUNK_LINK_LIMIT){
 					container.sendMsg("link.limit");
 					return;
 				}
@@ -401,7 +401,7 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 				if(!canman) return;
 				String[] err = new String[]{ "" };
 				String val = req.getField("set_price.field");
-				long value = Settings.format_price(err, val);
+				long value = LDConfig.format_price(err, val);
 				if(err[0].length() > 0){
 					container.sendMsg(err[0], false);
 				}
@@ -449,7 +449,7 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 				if(!district.can(CHUNK_CUSTOMTAX, container.player.uuid) && !container.player.adm) return;
 				String val = req.getField("set_tax.field");
 				String[] err = new String[]{ "" };
-				long value = Settings.format_price(err, val);
+				long value = LDConfig.format_price(err, val);
 				if(err[0].length() > 0){
 					container.sendMsg(err[0], false);
 				}

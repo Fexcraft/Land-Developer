@@ -1,6 +1,6 @@
 package net.fexcraft.mod.landdev.data;
 
-import static net.fexcraft.mod.landdev.util.Settings.DEFAULT_ICON;
+import static net.fexcraft.mod.landdev.util.LDConfig.DEFAULT_ICON;
 
 import java.util.Arrays;
 import java.util.List;

@@ -6,7 +6,7 @@ import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.common.utils.Formatter;
 import net.fexcraft.lib.mc.render.ExternalTextureHelper;
-import net.fexcraft.mod.landdev.util.Settings;
+import net.fexcraft.mod.landdev.util.LDConfig;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
@@ -45,7 +45,7 @@ public class LocationUpdate extends GuiScreen {
 		client.renderEngine.bindTexture(texture);
 		GL11.glEnable(GL11.GL_BLEND);
 		reswid = event.getResolution().getScaledWidth();
-		if(Settings.LOCUP_SIDE){
+		if(LDConfig.LOCUP_SIDE){
 			INST.drawTexturedModalRect(0, 0, 0, 0, 81, 37);
 			if(quadcon){
 				INST.drawTexturedModalRect(81, 0, 81, 0, 28, 29);
@@ -80,11 +80,11 @@ public class LocationUpdate extends GuiScreen {
 		client.renderEngine.bindTexture(texture);
 		for(int i = 0; i < lines.size(); i++){
 			linelength[i] = client.fontRenderer.getStringWidth(lines.get(i));
-			if(lines.get(i).length() > 0) INST.drawTexturedModalRect(Settings.LOCUP_SIDE ? 0 : reswid - linelength[i] - 4, 40 + (12 * i), 0, 39, linelength[i] + 4, 10);
+			if(lines.get(i).length() > 0) INST.drawTexturedModalRect(LDConfig.LOCUP_SIDE ? 0 : reswid - linelength[i] - 4, 40 + (12 * i), 0, 39, linelength[i] + 4, 10);
 		}
 		for(int i = 0; i < lines.size(); i++){
 			if(lines.get(i).length() > 0){
-				if(Settings.LOCUP_SIDE) client.fontRenderer.drawString(lines.get(i), 2, 41 + (12 * i), MapColor.SNOW.colorValue);
+				if(LDConfig.LOCUP_SIDE) client.fontRenderer.drawString(lines.get(i), 2, 41 + (12 * i), MapColor.SNOW.colorValue);
 				else  client.fontRenderer.drawString(lines.get(i), reswid - linelength[i] - 2, 41 + (12 * i), MapColor.SNOW.colorValue);
 			}
 		}

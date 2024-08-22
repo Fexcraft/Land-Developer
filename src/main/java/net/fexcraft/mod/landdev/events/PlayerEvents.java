@@ -7,7 +7,7 @@ import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.mod.landdev.data.chunk.ChunkApp;
 import net.fexcraft.mod.landdev.data.player.Player;
 import net.fexcraft.mod.landdev.util.ResManager;
-import net.fexcraft.mod.landdev.util.Settings;
+import net.fexcraft.mod.landdev.util.LDConfig;
 import net.fexcraft.mod.landdev.util.TaxSystem;
 import net.fexcraft.mod.landdev.util.broad.BroadcastChannel;
 import net.fexcraft.mod.landdev.util.broad.Broadcaster;
@@ -82,7 +82,7 @@ public class PlayerEvents {
 	public static void onMessage(ServerChatEvent event){
 		Player player = ResManager.getPlayer(event.getPlayer());
 		Broadcaster.send(player, event.getMessage());
-		event.setCanceled(Settings.CHAT_OVERRIDE);
+		event.setCanceled(LDConfig.CHAT_OVERRIDE);
 	}
 
 }

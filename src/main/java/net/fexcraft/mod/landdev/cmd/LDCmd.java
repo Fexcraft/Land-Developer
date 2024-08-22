@@ -59,13 +59,13 @@ public class LDCmd extends CommandBase {
 	    		case "fees":{
 	    			Chunk_ chunk = ResManager.getChunk(player.entity);
 	        		Print.chat(sender, TranslationUtil.translateCmd("fees"));
-	        		long sf = Settings.MUNICIPALITY_CREATION_FEE;
+	        		long sf = LDConfig.MUNICIPALITY_CREATION_FEE;
 	        		long cf = chunk.district.county().norms.get("new-municipality-fee").integer();
 	        		Print.chat(sender, TranslationUtil.translateCmd("fees_municipality"));
 	        		Print.chat(sender, TranslationUtil.translateCmd("fees_mun_server", getWorthAsString(sf)));
 	        		Print.chat(sender, TranslationUtil.translateCmd("fees_mun_county", getWorthAsString(cf)));
 	        		Print.chat(sender, TranslationUtil.translateCmd("fees_mun_total", getWorthAsString(sf + cf)));
-					sf = Settings.COUNTY_CREATION_FEE;
+					sf = LDConfig.COUNTY_CREATION_FEE;
 					cf = chunk.district.state().norms.get("new-county-fee").integer();
 					Print.chat(sender, TranslationUtil.translateCmd("fees_county"));
 					Print.chat(sender, TranslationUtil.translateCmd("fees_ct_server", getWorthAsString(sf)));

@@ -41,7 +41,7 @@ import net.fexcraft.mod.landdev.gui.modules.NormModule;
 import net.fexcraft.mod.landdev.util.Announcer;
 import net.fexcraft.mod.landdev.util.Announcer.Target;
 import net.fexcraft.mod.landdev.util.ResManager;
-import net.fexcraft.mod.landdev.util.Settings;
+import net.fexcraft.mod.landdev.util.LDConfig;
 
 public class Municipality implements Saveable, Layer, LDGuiModule {
 
@@ -421,7 +421,7 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 				if(!canman) return;
 				String[] err = new String[]{ "" };
 				String val = req.getField("set_price.field");
-				long value = Settings.format_price(err, val);
+				long value = LDConfig.format_price(err, val);
 				if(err[0].length() > 0){
 					container.sendMsg(err[0], false);
 				}
@@ -580,7 +580,7 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 			case "create.submit":{
 				Chunk_ chunk = ResManager.getChunk(container.player.entity);
 				County county = chunk.district.county();
-				long sum = Settings.MUNICIPALITY_CREATION_FEE;
+				long sum = LDConfig.MUNICIPALITY_CREATION_FEE;
     			boolean cn = county.norms.get("new-municipalities").bool();
     			boolean pp = player.hasPermit(CREATE_MUNICIPALITY, county.getLayer(), county.id);
     			if(!cn && !pp){
@@ -675,7 +675,7 @@ public class Municipality implements Saveable, Layer, LDGuiModule {
 					dis.owner.set(mnew);
 					dis.save();
 				}
-				SERVER_ACCOUNT.getBank().processAction(Action.TRANSFER, null, SERVER_ACCOUNT, Settings.MUNICIPALITY_CREATION_FEE / 2, mnew.account);
+				SERVER_ACCOUNT.getBank().processAction(Action.TRANSFER, null, SERVER_ACCOUNT, LDConfig.MUNICIPALITY_CREATION_FEE / 2, mnew.account);
 				ResManager.bulkSave(mnew, county, player, mold, cold);
 				player.entity.closeUI();
     			player.entity.send(translate("gui.municipality.create.complete"));

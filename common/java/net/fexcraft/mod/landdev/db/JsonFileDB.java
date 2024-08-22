@@ -7,7 +7,7 @@ import net.fexcraft.app.json.JsonHandler.PrintOption;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.mod.landdev.LandDev;
 import net.fexcraft.mod.landdev.data.Saveable;
-import net.fexcraft.mod.landdev.util.Settings;
+import net.fexcraft.mod.landdev.util.LDConfig;
 
 public class JsonFileDB implements Database {
 
@@ -17,7 +17,7 @@ public class JsonFileDB implements Database {
 		if(!file.getParentFile().exists()) file.getParentFile().mkdirs();
 		JsonMap map = new JsonMap();
 		type.save(map);
-		JsonHandler.print(file, map, Settings.SAVE_SPACED_JSON ? PrintOption.SPACED : PrintOption.FLAT);
+		JsonHandler.print(file, map, LDConfig.SAVE_SPACED_JSON ? PrintOption.SPACED : PrintOption.FLAT);
 	}
 
 	@Override

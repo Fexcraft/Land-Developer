@@ -32,7 +32,7 @@ import net.fexcraft.mod.landdev.gui.modules.ModuleResponse;
 import net.fexcraft.mod.landdev.gui.modules.NormModule;
 import net.fexcraft.mod.landdev.util.Announcer;
 import net.fexcraft.mod.landdev.util.ResManager;
-import net.fexcraft.mod.landdev.util.Settings;
+import net.fexcraft.mod.landdev.util.LDConfig;
 import net.fexcraft.mod.landdev.util.TranslationUtil;
 
 /**
@@ -446,7 +446,7 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 				if(!canoman) return;
 				String[] err = new String[]{ "" };
 				String val = req.getField("set_price.field");
-				long value = Settings.format_price(err, val);
+				long value = LDConfig.format_price(err, val);
 				if(err[0].length() > 0){
 					container.sendMsg(err[0], false);
 				}
@@ -469,7 +469,7 @@ public class District implements Saveable, Layer, PermInteractive, LDGuiModule {
 			case "create.submit":{
 				Chunk_ chunk = ResManager.getChunk(container.player.entity);
 				Player player = container.player;
-				long sum = Settings.DISTRICT_CREATION_FEE;
+				long sum = LDConfig.DISTRICT_CREATION_FEE;
 				boolean forct = req.getRadio("create.owner_").equals("county");
 				boolean opay = req.getCheck("create.owner_funded");
 				String name = req.getField("create.name_field");

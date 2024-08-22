@@ -16,7 +16,7 @@ public class AliasLoader {
 	private static final ArrayList<String> NONE = new ArrayList<>();
 
 	public static void load(){
-		File file = new File(Settings.CONFIG_PATH, "landdev-cmds.json");
+		File file = new File(LDConfig.CONFIG_PATH, "landdev-cmds.json");
 		if(!file.exists()) generate(file);
 		JsonMap map = JsonHandler.parse(file);
 		if(map.has("aliases")){

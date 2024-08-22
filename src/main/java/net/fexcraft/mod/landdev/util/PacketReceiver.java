@@ -52,7 +52,7 @@ public class PacketReceiver implements IPacketListener<PacketNBTTagCompound> {
 				break;
 			case "chat":
 			default:
-				text = new TextComponentString(format(Settings.CHAT_OVERRIDE_LANG, c, list.getStringTagAt(1), list.getStringTagAt(2)));
+				text = new TextComponentString(format(LDConfig.CHAT_OVERRIDE_LANG, c, list.getStringTagAt(1), list.getStringTagAt(2)));
 				//text = new TextComponentString(list.toString());
 				break;
 			}

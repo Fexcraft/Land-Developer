@@ -42,7 +42,7 @@ public class TaxSystem extends TimerTask {
 		long date = Time.getDate();
 		if(tooSoon(last, date)){
 			broad("Tax interval will be skipped. Previous Interval was not long ago.");
-			broad("LAST: " + Time.getAsString(last) + " + INTERVAL:" + (Settings.TAX_INTERVAL / Time.HOUR_MS) + "h > NOW: " + Time.getAsString(date));
+			broad("LAST: " + Time.getAsString(last) + " + INTERVAL:" + (LDConfig.TAX_INTERVAL / Time.HOUR_MS) + "h > NOW: " + Time.getAsString(date));
 			save();
 			return;
 		}
@@ -51,7 +51,7 @@ public class TaxSystem extends TimerTask {
 	}
 
 	private static boolean tooSoon(long last, long date){
-		return last + Settings.TAX_INTERVAL - 100 > date;
+		return last + LDConfig.TAX_INTERVAL - 100 > date;
 	}
 
 	public void collect(long date, boolean ignore){
@@ -145,7 +145,7 @@ public class TaxSystem extends TimerTask {
 			cktax += taxChunk(chunk, date, ignore);
 		}
 		broad(Config.getWorthAsString(cktax) + " loaded Chunk tax collected.");
-		if(Settings.TAX_OFFLINE){
+		if(LDConfig.TAX_OFFLINE){
 			File folder = new File(SAVE_DIR, "players/");
 			if(folder.exists()){
 				for(File file : folder.listFiles()){

@@ -16,7 +16,7 @@ import net.fexcraft.app.json.JsonHandler.PrintOption;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.landdev.LandDev;
-import net.fexcraft.mod.landdev.util.Settings;
+import net.fexcraft.mod.landdev.util.LDConfig;
 import net.fexcraft.mod.landdev.util.broad.Broadcaster.TargetTransmitter;
 import net.fexcraft.mod.landdev.util.broad.Broadcaster.Transmitter;
 import net.fexcraft.mod.landdev.util.broad.Broadcaster.TransmitterType;
@@ -52,7 +52,7 @@ public class DiscordTransmitter implements Transmitter {
 
 	public static void restart(){
 		exit();
-		if(!Settings.DISCORD_BOT_ACTIVE) return;
+		if(!LDConfig.DISCORD_BOT_ACTIVE) return;
 		Broadcaster.SENDERS.values().removeIf(transmitter -> transmitter instanceof DiscordTransmitter);
 		Broadcaster.SENDERS.put(TransmitterType.DISCORD, INST = new DiscordTransmitter());
 		new Thread(() -> {
@@ -78,9 +78,9 @@ public class DiscordTransmitter implements Transmitter {
                     ch.pipeline().addLast(new MsgDecoder(), new MsgEncoder(), new ClientHandler());
                 }
             });
-			fut = boot.connect(Settings.DISCORD_BOT_ADRESS, Settings.DISCORD_BOT_PORT).sync();
+			fut = boot.connect(LDConfig.DISCORD_BOT_ADRESS, LDConfig.DISCORD_BOT_PORT).sync();
 			Channel channel = fut.sync().channel();
-			channel.writeAndFlush(new Message("token=" + Settings.DISCORD_BOT_TOKEN));
+			channel.writeAndFlush(new Message("token=" + LDConfig.DISCORD_BOT_TOKEN));
 			fut.channel().closeFuture().sync();
 		}
 		finally{
@@ -103,10 +103,10 @@ public class DiscordTransmitter implements Transmitter {
 			JsonMap map = (JsonMap)JsonHandler.parse(msg.value.substring(4), true);
 			String user = map.getString("s", "DiscordUser");
 			if(map.get("m").string_value().length() > 0){
-				Broadcaster.send(TargetTransmitter.NO_DISCORD, BroadcastChannel.CHAT, "&2" + user, map.getString("m", "<MESSAGE_TEXT>"), Settings.CHAT_DISCORD_COLOR);
+				Broadcaster.send(TargetTransmitter.NO_DISCORD, BroadcastChannel.CHAT, "&2" + user, map.getString("m", "<MESSAGE_TEXT>"), LDConfig.CHAT_DISCORD_COLOR);
 				Broadcaster.send(TargetTransmitter.LOG_ONLY, BroadcastChannel.CHAT, "D|" + user, map.getString("m", "<MESSAGE_TEXT>"));
 			}
-			else Broadcaster.send(TargetTransmitter.INTERNAL_ONLY, BroadcastChannel.CHAT, "&2" + user, "&b[!] &6Embeds: " + (map.has("a") ? map.get("a").asArray().size() : "ERR"), Settings.CHAT_DISCORD_COLOR);
+			else Broadcaster.send(TargetTransmitter.INTERNAL_ONLY, BroadcastChannel.CHAT, "&2" + user, "&b[!] &6Embeds: " + (map.has("a") ? map.get("a").asArray().size() : "ERR"), LDConfig.CHAT_DISCORD_COLOR);
 			if(map.has("a")){
 				int[] idx = { 1 };
 				map.get("a").asArray().elements().forEach(elm -> {

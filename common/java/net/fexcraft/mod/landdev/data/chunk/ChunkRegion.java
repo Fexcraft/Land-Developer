@@ -5,7 +5,7 @@ import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.mod.landdev.LandDev;
 import net.fexcraft.mod.landdev.db.JsonTagConverter;
 import net.fexcraft.mod.landdev.util.ResManager;
-import net.fexcraft.mod.landdev.util.Settings;
+import net.fexcraft.mod.landdev.util.LDConfig;
 import net.fexcraft.mod.uni.UniChunk;
 import net.fexcraft.mod.uni.tag.TagCW;
 
@@ -124,12 +124,12 @@ public class ChunkRegion {
 	}
 
 	public static Chunk_ get(int x, int z){
-		if(!Settings.SAVE_CHUNKS_IN_REGIONS) return null;
+		if(!LDConfig.SAVE_CHUNKS_IN_REGIONS) return null;
 		return get(new ChunkKey(x, z));
 	}
 
 	public static Chunk_ get(ChunkKey key){
-		if(!Settings.SAVE_CHUNKS_IN_REGIONS) return null;
+		if(!LDConfig.SAVE_CHUNKS_IN_REGIONS) return null;
 		ChunkRegion region = getRegion(key.asRegion());
 		if(region.chunks.containsKey(key)){
 			region.setLastAccess();

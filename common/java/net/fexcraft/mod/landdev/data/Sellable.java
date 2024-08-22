@@ -2,7 +2,7 @@ package net.fexcraft.mod.landdev.data;
 
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.mod.fsmm.util.Config;
-import net.fexcraft.mod.landdev.util.Settings;
+import net.fexcraft.mod.landdev.util.LDConfig;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -23,7 +23,7 @@ public class Sellable implements Saveable {
 
 	@Override
 	public void load(JsonMap map){
-		price = map.getLong("price", layer.is(Layers.CHUNK) ? Settings.DEFAULT_CHUNK_PRICE : 0);
+		price = map.getLong("price", layer.is(Layers.CHUNK) ? LDConfig.DEFAULT_CHUNK_PRICE : 0);
 	}
 
 	public String price_formatted(){

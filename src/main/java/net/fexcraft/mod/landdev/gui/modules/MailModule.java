@@ -19,7 +19,7 @@ import net.fexcraft.mod.landdev.data.state.State;
 import net.fexcraft.mod.landdev.gui.GuiHandler;
 import net.fexcraft.mod.landdev.gui.LDGuiContainer;
 import net.fexcraft.mod.landdev.util.ResManager;
-import net.fexcraft.mod.landdev.util.Settings;
+import net.fexcraft.mod.landdev.util.LDConfig;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -67,7 +67,7 @@ public class MailModule implements LDGuiModule {
 			else{
 				resp.addButton("request.accept", ELM_GREEN, ICON_ADD);
 				resp.addButton("request.reject", ELM_RED, ICON_REM);
-				resp.addButton("request.timeout", ELM_YELLOW, ICON_REM, Settings.REQUEST_TIMEOUT_DAYS);
+				resp.addButton("request.timeout", ELM_YELLOW, ICON_REM, LDConfig.REQUEST_TIMEOUT_DAYS);
 			}
 		}
 		resp.addButton("goback", ELM_GENERIC, ICON_LIST);
@@ -177,7 +177,7 @@ public class MailModule implements LDGuiModule {
 			case "request.reject":
 			case "request.timeout":{
 				if(mail.type != MailType.REQUEST) return;
-				int mul = req.event().endsWith("timeout") ? Settings.REQUEST_TIMEOUT_DAYS : 1;
+				int mul = req.event().endsWith("timeout") ? LDConfig.REQUEST_TIMEOUT_DAYS : 1;
 				switch(mail.from){
 					case PLAYER:{
 						if(mail.receiver.is(Layers.MUNICIPALITY)){

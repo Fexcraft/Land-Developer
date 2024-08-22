@@ -3,7 +3,7 @@ package net.fexcraft.mod.landdev.data.chunk;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.mod.landdev.db.JsonTagConverter;
 import net.fexcraft.mod.landdev.util.ResManager;
-import net.fexcraft.mod.landdev.util.Settings;
+import net.fexcraft.mod.landdev.util.LDConfig;
 import net.fexcraft.mod.uni.Appendable;
 import net.fexcraft.mod.uni.UniChunk;
 import net.fexcraft.mod.uni.tag.TagCW;
@@ -20,7 +20,7 @@ public class ChunkApp implements Appendable<UniChunk> {
 			chunk = null;
 			return;
 		}
-		if(Settings.SAVE_CHUNKS_IN_REGIONS){
+		if(LDConfig.SAVE_CHUNKS_IN_REGIONS){
 			chunk = ChunkRegion.getFor(type);
 		}
 		else{

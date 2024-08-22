@@ -8,9 +8,9 @@ import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.landdev.data.chunk.ChunkType;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.data.player.Player;
+import net.fexcraft.mod.landdev.util.LDConfig;
 import net.fexcraft.mod.landdev.util.Protector;
 import net.fexcraft.mod.landdev.util.ResManager;
-import net.fexcraft.mod.landdev.util.Settings;
 import net.minecraft.block.BlockSign;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -69,7 +69,7 @@ public class InteractionEvents {
 		Chunk_ chunk = ResManager.getChunk(pos);
 		if(chunk.district.id < 0){
 			if(chunk.district.id == -1){
-				return Settings.EDIT_WILDERNESS;
+				return LDConfig.EDIT_WILDERNESS;
 			}
 			else if(chunk.district.id == -2){
 				//TODO temporary claims

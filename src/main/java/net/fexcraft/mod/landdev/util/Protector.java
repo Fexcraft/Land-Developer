@@ -15,7 +15,7 @@ public class Protector {
 	public static Instance INSTANCE;
 	
 	public static void load(){
-		File file = new File(Settings.CONFIG_PATH, "landdev-interaction.json");
+		File file = new File(LDConfig.CONFIG_PATH, "landdev-interaction.json");
 		if(!file.exists()) generate(file);
 		JsonMap map = JsonHandler.parse(file);
 		boolean abs = map.getBoolean("absolute_block_protection", false);

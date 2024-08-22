@@ -16,7 +16,7 @@ import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.data.district.District;
 import net.fexcraft.mod.landdev.data.player.Player;
 import net.fexcraft.mod.landdev.util.ResManager;
-import net.fexcraft.mod.landdev.util.Settings;
+import net.fexcraft.mod.landdev.util.LDConfig;
 import net.fexcraft.mod.uni.world.MessageSenderI;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
@@ -105,7 +105,7 @@ public class LDGuiClaimCon extends GenericContainer {
 					send(Side.CLIENT, com);
 					return;
 				}
-				long price = chunk.sell.price > 0 ? chunk.sell.price : Settings.DEFAULT_CHUNK_PRICE;
+				long price = chunk.sell.price > 0 ? chunk.sell.price : LDConfig.DEFAULT_CHUNK_PRICE;
 				if(price > 0){
 					if(!district.owner.account().getBank().processAction(Action.TRANSFER, new MessageSenderI(player), district.account(), price, SERVER_ACCOUNT)) return;
 				}
@@ -169,7 +169,7 @@ public class LDGuiClaimCon extends GenericContainer {
 				else{
 					com.setInteger("d", di = chunk.district.id);
 					com.setInteger("c", chunk.district.color.getInteger());
-					com.setLong("p", chunk.sell.price == 0 && chunk.district.id == -1 ? Settings.DEFAULT_CHUNK_PRICE : chunk.sell.price);
+					com.setLong("p", chunk.sell.price == 0 && chunk.district.id == -1 ? LDConfig.DEFAULT_CHUNK_PRICE : chunk.sell.price);
 				}
 				list.appendTag(com);
 				if(!dis.containsKey(di) && di != -10) dis.put(di, ResManager.getDistrict(di));
