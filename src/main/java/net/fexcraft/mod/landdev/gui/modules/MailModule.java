@@ -88,7 +88,7 @@ public class MailModule implements LDGuiModule {
 							Municipality mun = ResManager.getMunicipality(mail.fromInt(), true);
 							if(mail.staff){
 								if(!mun.citizens.isCitizen(player.uuid)){
-									Print.chat(player.entity, translate("mail.municipality.staff.notmember"));
+									player.entity.send(translate("mail.municipality.staff.notmember"));
 									return;
 								}
 								mun.manage.staff.add(new Staff(player.uuid, MUNICIPALITY_STAFF));
@@ -104,11 +104,11 @@ public class MailModule implements LDGuiModule {
 							}
 							else{
 								if(player.isMunicipalityManager()){
-									Print.chat(player.entity, translate("mail.municipality.citizen.ismanager"));
+									player.entity.send(translate("mail.municipality.citizen.ismanager"));
 									return;
 								}
 								if(player.isCountyManager() && mun.county.id != player.county.id){
-									Print.chat(player.entity, translate("mail.county.citizen.ismanager"));
+									player.entity.send(translate("mail.county.citizen.ismanager"));
 									return;
 								}
 								player.setCitizenOf(mun);
@@ -151,11 +151,11 @@ public class MailModule implements LDGuiModule {
 							player = ResManager.getPlayer(mail.fromUUID(), true);
 							Municipality mun = ResManager.getMunicipality(mail.recInt(), true);
 							if(player.isMunicipalityManager()){
-								Print.chat(player.entity, translate("mail.municipality.request.ismanager"));
+								player.entity.send(translate("mail.municipality.request.ismanager"));
 								return;
 							}
 							if(player.isCountyManager() && mun.county.id != player.county.id){
-								Print.chat(player.entity, translate("mail.county.request.ismanager"));
+								player.entity.send(translate("mail.county.request.ismanager"));
 								return;
 							}
 							player.setCitizenOf(mun);
