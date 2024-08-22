@@ -439,7 +439,7 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 					container.sendMsg("buy.notenoughmoney");
 					return;
 				}
-				if(!account.getBank().processAction(Action.TRANSFER, container.player.sender, account, sell.price, owner.getAccount(this))) return;
+				if(!account.getBank().processAction(Action.TRANSFER, container.player.entity, account, sell.price, owner.getAccount(this))) return;
 				owner.set(layer, layer.is(Layers.PLAYER) ? container.player.uuid : null, district.getLayerId(layer));
 				sell.price = 0;
 				container.open(UI_MAIN);
