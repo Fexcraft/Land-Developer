@@ -16,6 +16,8 @@ import net.fexcraft.mod.landdev.util.broad.BroadcastChannel;
 import net.fexcraft.mod.landdev.util.broad.Broadcaster;
 import net.fexcraft.mod.landdev.util.broad.DiscordTransmitter;
 import net.fexcraft.mod.uni.UniChunk;
+import net.fexcraft.mod.uni.tag.TagCW;
+import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
@@ -27,6 +29,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -55,7 +58,7 @@ public class LandDev {
 	public static final String CLIENT_RECEIVER_ID = "landdev:util";
     private static Logger logger;
 
-    @EventHandler
+	@EventHandler
     public void preInit(FMLPreInitializationEvent event){
     	Settings.initialize(event);
         logger = event.getModLog();
@@ -142,6 +145,14 @@ public class LandDev {
 	
 	public static void log(Object obj){
 		logger.log(Level.INFO, obj);
+	}
+
+	public static TagCW read(File file) throws IOException {
+		return TagCW.wrap(CompressedStreamTools.read(file));
+	}
+
+	public static void write(TagCW compound, File file) throws IOException {
+		CompressedStreamTools.write(compound.local(), file);
 	}
 	
 }
