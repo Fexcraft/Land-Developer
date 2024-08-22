@@ -10,10 +10,8 @@ import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
-import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fsmm.data.Account;
 import net.fexcraft.mod.fsmm.util.DataManager;
-import net.fexcraft.mod.landdev.LandDev;
 import net.fexcraft.mod.landdev.data.Layer;
 import net.fexcraft.mod.landdev.data.Mail;
 import net.fexcraft.mod.landdev.data.MailData;
@@ -30,22 +28,22 @@ import net.fexcraft.mod.landdev.gui.modules.ModuleRequest;
 import net.fexcraft.mod.landdev.gui.modules.ModuleResponse;
 import net.fexcraft.mod.landdev.util.ResManager;
 import net.fexcraft.mod.landdev.util.TranslationUtil;
+import net.fexcraft.mod.uni.Appendable;
+import net.fexcraft.mod.uni.UniEntity;
+import net.fexcraft.mod.uni.tag.TagCW;
+import net.fexcraft.mod.uni.tag.TagLW;
+import net.fexcraft.mod.uni.world.EntityW;
 import net.fexcraft.mod.uni.world.MessageSender;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.nbt.NBTTagString;
-import net.minecraft.world.World;
+import net.fexcraft.mod.uni.world.WorldW;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class Player implements Saveable, Layer, LDGuiModule {
+public class Player implements Saveable, Layer, LDGuiModule, Appendable<UniEntity> {
 
 	public UUID uuid;
 	public boolean offline, adm;
-	public EntityPlayer entity;
+	public EntityW entity;
 	public long joined;
 	public long login;
 	public long last_login;
@@ -60,7 +58,6 @@ public class Player implements Saveable, Layer, LDGuiModule {
 	public County county;
 	public Chunk_ chunk_current, chunk_last;
 	public ExternalData external = new ExternalData(this);
-	public MessageSender sender;
 	
 	public Player(UUID uuid){
 		offline = true;
@@ -147,12 +144,12 @@ public class Player implements Saveable, Layer, LDGuiModule {
 		return null;
 	}
 
-	public World world(){
-		return entity.world;
+	public WorldW world(){
+		return entity.getWorld();
 	}
 
 	public void openGui(int ID, int x, int y, int z){
-		entity.openGui(LandDev.INSTANCE, ID, entity.world, x, y, z);
+		//TODO uent.openGui(LandDev.INSTANCE, ID, uent.world, x, y, z);
 	}
 
 	public boolean isInManagement(Layers layer){
@@ -169,35 +166,35 @@ public class Player implements Saveable, Layer, LDGuiModule {
 	}
 
 	public void sendLocationUpdate(boolean moved, boolean label, int time){
-		NBTTagCompound com = new NBTTagCompound();
-		com.setString("target_listener", CLIENT_RECEIVER_ID);
-		com.setString("task", "location_update");
+		TagCW com = TagCW.create();
+		com.set("target_listener", CLIENT_RECEIVER_ID);
+		com.set("task", "location_update");
 		boolean mun = chunk_current.district.municipality() != null;
-		NBTTagList icons = new NBTTagList();
-		icons.appendTag(new NBTTagString(chunk_current.district.icon.getnn()));
-		if(mun) icons.appendTag(new NBTTagString(chunk_current.district.municipality().icon.getnn()));
-		icons.appendTag(new NBTTagString(chunk_current.district.county().icon.getnn()));
-		icons.appendTag(new NBTTagString(chunk_current.district.state().icon.getnn()));
-		com.setTag("icons", icons);
-		NBTTagList lines = new NBTTagList();
+		TagLW icons = TagLW.create();
+		icons.add(chunk_current.district.icon.getnn());
+		if(mun) icons.add(chunk_current.district.municipality().icon.getnn());
+		icons.add(chunk_current.district.county().icon.getnn());
+		icons.add(chunk_current.district.state().icon.getnn());
+		com.set("icons", icons);
+		TagLW lines = TagLW.create();
 		if(moved){
-			lines.appendTag(new NBTTagString(chunk_current.district.state().name()));
-			lines.appendTag(new NBTTagString(chunk_current.district.county().name()));
-			if(mun) lines.appendTag(new NBTTagString(chunk_current.district.municipality().name()));
-			lines.appendTag(new NBTTagString(chunk_current.district.name()));
+			lines.add(chunk_current.district.state().name());
+			lines.add(chunk_current.district.county().name());
+			if(mun) lines.add(chunk_current.district.municipality().name());
+			lines.add(chunk_current.district.name());
 		}
-		if(label) lines.appendTag(new NBTTagString(chunk_current.label.label));
-		com.setTag("lines", lines);
-		if(time > 0){ com.setInteger("time", time); }
-		PacketHandler.getInstance().sendTo(new PacketNBTTagCompound(com), (EntityPlayerMP)entity);
+		if(label) lines.add(chunk_current.label.label);
+		com.set("lines", lines);
+		if(time > 0){ com.set("time", time); }
+		PacketHandler.getInstance().sendTo(new PacketNBTTagCompound(com.local()), entity.local());
 	}
 
 	public String name(){
-		return "&" + colorcode + (nickname == null ? entity == null ? "<PEN>" : entity.getDisplayNameString() : nickname);
+		return "&" + colorcode + (nickname == null ? entity == null ? "<PEN>" : entity.getName() : nickname);
 	}
 
 	public String name_raw(){
-		return (nickname == null ? entity == null ? "<PEN>" : entity.getDisplayNameString() : nickname);
+		return (nickname == null ? entity == null ? "<PEN>" : entity.getName() : nickname);
 	}
 
 	@Override
@@ -239,7 +236,7 @@ public class Player implements Saveable, Layer, LDGuiModule {
 	public void addMail(Mail newmail){
 		mail.add(newmail);
 		if(entity != null && mail.unread() > 0){
-			Print.chat(entity, TranslationUtil.translate("mail.player.new"));
+			entity.send(TranslationUtil.translate("mail.player.new"));
 		}
 	}
 
@@ -281,6 +278,16 @@ public class Player implements Saveable, Layer, LDGuiModule {
 		county.manage.removeStaff(uuid);
 		county.citizens.remove(this);
 		county = ResManager.getCounty(-1, true);
+	}
+
+	@Override
+	public Appendable<UniEntity> create(UniEntity type){
+		return new Player(type.entity.local());
+	}
+
+	@Override
+	public String id(){
+		return "landdev:player";
 	}
 
 }
