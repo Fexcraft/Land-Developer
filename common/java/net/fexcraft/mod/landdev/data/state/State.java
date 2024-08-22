@@ -124,7 +124,7 @@ public class State implements Saveable, Layer, LDGuiModule {
 	}
 
 	@Override
-	public int id(){
+	public int lid(){
 		return id;
 	}
 
