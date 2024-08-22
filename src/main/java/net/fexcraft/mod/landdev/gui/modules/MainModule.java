@@ -44,8 +44,8 @@ public class MainModule implements LDGuiModule {
 					container.open(MUNICIPALITY, 0, chunk.district.owner.municipality.id, 0);
 				}
 				else{
-					Print.chat(container.player.entity, TranslationUtil.translate("district.not_part_of_municipality"));
-					container.player.entity.closeScreen();
+					container.player.entity.send(TranslationUtil.translate("district.not_part_of_municipality"));
+					container.player.entity.closeUI();
 				}
 				return;
 			}
