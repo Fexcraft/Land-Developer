@@ -76,7 +76,7 @@ public class InteractionEvents {
 				return false;
 			}
 			else{
-				Print.bar(player.entity, erpfx + translate("interact.control.unknown_district"));
+				player.entity.bar(erpfx + translate("interact.control.unknown_district"));
 				return false;
 			}
 		}
@@ -142,7 +142,7 @@ public class InteractionEvents {
 			}
 			break;
 		default:
-			Print.bar(player.entity, erpfx + translate("interact.control.unknown_chunk_type"));
+			player.entity.bar(erpfx + translate("interact.control.unknown_chunk_type"));
 			return false;
 		
 		}
