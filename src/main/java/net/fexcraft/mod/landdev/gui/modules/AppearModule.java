@@ -33,7 +33,7 @@ public class AppearModule {
 			color.set(req.getField("appearance.color_field"));
 		}
 		catch(Exception e){
-			Print.chat(container.player.entity, "&cerror parsing color");
+			container.player.entity.send("&cerror parsing color");
 			e.printStackTrace();
 		}
 	}
