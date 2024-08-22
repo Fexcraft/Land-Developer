@@ -53,7 +53,7 @@ public class LDCmd extends CommandBase {
     @Override 
     public void execute(MinecraftServer server, ICommandSender sender, String[] args){ 
     	if(sender instanceof EntityPlayer == false) return;
-    	Player player = ResManager.getPlayer((EntityPlayer)sender);
+    	Player player = ResManager.getPlayer(sender);
     	if(args.length > 0){
     		switch(args[0]){
 	    		case "fees":{
@@ -74,7 +74,7 @@ public class LDCmd extends CommandBase {
 	        		return;
 	    		}
 	    		case "admin":{
-	    			if(server.isSinglePlayer() || Static.isOp(player.entity)){
+	    			if(server.isSinglePlayer() || Static.isOp((EntityPlayer)player.entity.direct())){
 	    				player.adm = !player.adm;
 		        		Print.chat(sender, TranslationUtil.translateCmd("adminmode." + player.adm));
 	    			}
@@ -111,7 +111,7 @@ public class LDCmd extends CommandBase {
 						mail.expiry = Time.getDate() + Time.DAY_MS;
 						mail.from = Layers.NONE;
 						mail.fromid = "SYSTEM";
-						mail.receiver = dis.getLayer() + "_" + dis.id;
+						mail.receiver = dis.getLayer() + "_" + dis.lid;
 						mail.unread = true;
 						mail.title = "Bulk mail from /ld bulkmail";
 						mail.message.add("Example Mail Text 1");
@@ -158,7 +158,7 @@ public class LDCmd extends CommandBase {
     			}
     		}
     	}
-    	player.openGui(-1, 0, (int)player.entity.posX >> 4, (int)player.entity.posZ >> 4);
+    	player.openGui(-1, 0, (int)player.entity.getPos().x >> 4, (int)player.entity.getPos().z >> 4);
     }
 
 }
