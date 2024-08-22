@@ -49,7 +49,7 @@ public class DisCmd extends CommandBase {
 		if(args.length > 0){
 			switch(args[0]){
 				case "create":{
-					ply.entity.openGui(LandDev.INSTANCE, GuiHandler.DISTRICT, sender.getEntityWorld(), District.UI_CREATE, 0, 0);
+					//TODO ply.entity.openGui(LandDev.INSTANCE, GuiHandler.DISTRICT, sender.getEntityWorld(), District.UI_CREATE, 0, 0);
 					return;
 				}
 				default:{
@@ -59,7 +59,7 @@ public class DisCmd extends CommandBase {
 			}
 		}
 		else{
-			ply.entity.openGui(LandDev.INSTANCE, GuiHandler.DISTRICT, sender.getEntityWorld(), 0, chunk.district.id, 0);
+			//TODO ply.entity.openGui(LandDev.INSTANCE, GuiHandler.DISTRICT, sender.getEntityWorld(), 0, chunk.district.id, 0);
 		}
 
     }
