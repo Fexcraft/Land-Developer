@@ -25,7 +25,6 @@ import net.fexcraft.mod.landdev.gui.GuiHandler;
 import net.fexcraft.mod.landdev.gui.LDGuiContainer;
 import net.fexcraft.mod.landdev.gui.modules.*;
 import net.fexcraft.mod.landdev.util.ResManager;
-import net.minecraft.nbt.NBTTagList;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -156,7 +155,7 @@ public class County implements Saveable, Layer, LDGuiModule {
 	}
 
 	@Override
-	public int id(){
+	public int lid(){
 		return id;
 	}
 
@@ -182,7 +181,6 @@ public class County implements Saveable, Layer, LDGuiModule {
 	@Override
 	public void sync_packet(LDGuiContainer container, ModuleResponse resp){
 		resp.setTitle("county.title");
-		NBTTagList list = new NBTTagList();
 		boolean canman = manage.can(MANAGE_COUNTY, container.player.uuid) || container.player.adm;
 		switch(container.x){
 			case UI_MAIN:{
