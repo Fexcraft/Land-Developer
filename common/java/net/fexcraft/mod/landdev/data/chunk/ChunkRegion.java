@@ -8,9 +8,6 @@ import net.fexcraft.mod.landdev.util.ResManager;
 import net.fexcraft.mod.landdev.util.Settings;
 import net.fexcraft.mod.uni.UniChunk;
 import net.fexcraft.mod.uni.tag.TagCW;
-import net.minecraft.nbt.CompressedStreamTools;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.world.chunk.Chunk;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,7 +21,7 @@ public class ChunkRegion {
 
 	public static ConcurrentHashMap<ChunkKey, ChunkRegion> REGIONS = new ConcurrentHashMap<>();
 	public ConcurrentHashMap<ChunkKey, Chunk_> chunks = new ConcurrentHashMap<>();
-	private NBTTagCompound compound;
+	private TagCW compound;
 	private ChunkKey key;
 	private File file;
 	public long last_access;
@@ -34,12 +31,12 @@ public class ChunkRegion {
 		file = new File(LandDev.SAVE_DIR + "/chunks/" + key.toString() + ".nbt");
 		if(!file.getParentFile().exists()) file.getParentFile().mkdirs();
 		try{
-			compound = CompressedStreamTools.read(file);
+			compound = LandDev.read(file);
 		}
 		catch(IOException e){
 			if(file.exists()) e.printStackTrace();
 		}
-		if(compound == null) compound = new NBTTagCompound();
+		if(compound == null) compound = TagCW.create();
 		setLastAccess();
 	}
 
@@ -51,13 +48,13 @@ public class ChunkRegion {
 		chunks.put(ck.key, ck);
 		JsonMap map = new JsonMap();
 		ck.save(map);
-		compound.setTag(ck.key.toString(), JsonTagConverter.map(TagCW.create(), map).local());
+		compound.set(ck.key.toString(), JsonTagConverter.map(TagCW.create(), map));
 		setLastAccess();
 	}
 
 	private void loadChunk(Chunk_ ck){
 		chunks.put(ck.key, ck);
-		ck.load(JsonTagConverter.demap(TagCW.wrap(compound.getCompoundTag(ck.key.toString()))));
+		ck.load(JsonTagConverter.demap(TagCW.wrap(compound.getCompound(ck.key.toString()))));
 		ResManager.CHUNKS.put(ck.key, ck);
 		setLastAccess();
 	}
@@ -90,7 +87,7 @@ public class ChunkRegion {
 
 	private void save(){
 		try{
-			CompressedStreamTools.write(compound, file);
+			LandDev.write(compound, file);
 		}
 		catch(IOException e){
 			e.printStackTrace();
