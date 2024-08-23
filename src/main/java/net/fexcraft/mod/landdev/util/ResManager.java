@@ -9,6 +9,7 @@ import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fsmm.data.Account;
 import net.fexcraft.mod.fsmm.util.DataManager;
+import net.fexcraft.mod.landdev.LDN;
 import net.fexcraft.mod.landdev.LandDev;
 import net.fexcraft.mod.landdev.data.Saveable;
 import net.fexcraft.mod.landdev.data.chunk.ChunkKey;
@@ -21,6 +22,8 @@ import net.fexcraft.mod.landdev.data.player.Player;
 import net.fexcraft.mod.landdev.data.state.State;
 import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.world.EntityW;
+
+import static net.fexcraft.mod.landdev.LDN.DB;
 
 /**
  * Resource Manager / Data Manager
@@ -150,11 +153,11 @@ public class ResManager implements Saveable {
 	}
 
 	public static <S> S load(Saveable save){
-		if(!LandDev.DB.exists(save.saveTable(), save.saveId())){
+		if(!DB.exists(save.saveTable(), save.saveId())){
 			save.gendef();
 			return (S)save;
 		}
-		JsonMap map = LandDev.DB.load(save.saveTable(), save.saveId());
+		JsonMap map = DB.load(save.saveTable(), save.saveId());
 		if(map != null) save.load(map);
 		else save.gendef();
 		return (S)save;
@@ -168,18 +171,18 @@ public class ResManager implements Saveable {
 			SERVER_ACCOUNT.setName("LandDeveloper Server Account");
 		}
 		clear();
-		JsonMap map = LandDev.DB.load(saveTable(), saveId());
+		JsonMap map = DB.load(saveTable(), saveId());
 		if(map != null) load(map);
 		LOADED = true;
 	}
 
 	public static void unload(){
 		ChunkRegion.saveAll();
-		DISTRICTS.values().forEach(save -> LandDev.DB.save(save));
-		MUNICIPALITIES.values().forEach(save -> LandDev.DB.save(save));
-		COUNTIES.values().forEach(save -> LandDev.DB.save(save));
-		STATES.values().forEach(save -> LandDev.DB.save(save));
-		PLAYERS.values().forEach(save -> LandDev.DB.save(save));
+		DISTRICTS.values().forEach(save -> DB.save(save));
+		MUNICIPALITIES.values().forEach(save -> DB.save(save));
+		COUNTIES.values().forEach(save -> DB.save(save));
+		STATES.values().forEach(save -> DB.save(save));
+		PLAYERS.values().forEach(save -> DB.save(save));
 		INSTANCE.save();
 		INSTANCE.LOADED = false;
 	}
@@ -264,7 +267,7 @@ public class ResManager implements Saveable {
 	}
 
 	public static int getNewIdFor(String table){
-		return LandDev.DB.getNewEntryId(table);
+		return DB.getNewEntryId(table);
 	}
 
 	public static void bulkSave(Saveable... saveables){
