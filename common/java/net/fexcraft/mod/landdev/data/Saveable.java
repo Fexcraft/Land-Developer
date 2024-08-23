@@ -4,7 +4,7 @@ import java.util.Map;
 
 import net.fexcraft.app.json.JsonHandler;
 import net.fexcraft.app.json.JsonMap;
-import net.fexcraft.mod.landdev.LandDev;
+import net.fexcraft.mod.landdev.LDN;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -12,7 +12,7 @@ import net.fexcraft.mod.landdev.LandDev;
 public interface Saveable {
 	
 	public default void save(){
-		LandDev.DB.save(this);
+		LDN.DB.save(this);
 	}
 
 	public void save(JsonMap map);
