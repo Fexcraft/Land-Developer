@@ -3,12 +3,15 @@ package net.fexcraft.mod.landdev.events;
 import net.fexcraft.mod.fsmm.data.AccountPermission;
 import net.fexcraft.mod.fsmm.event.ATMEvent;
 import net.fexcraft.mod.fsmm.event.FsmmEvent;
+import net.fexcraft.mod.landdev.LDN;
 import net.fexcraft.mod.landdev.LandDev;
 import net.fexcraft.mod.landdev.data.PermAction;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.data.player.Player;
 import net.fexcraft.mod.landdev.util.ResManager;
 import org.apache.commons.lang3.math.NumberUtils;
+
+import static net.fexcraft.mod.landdev.LDN.DB;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -58,7 +61,7 @@ public class FsmmEventHooks {
 						if(ResManager.STATES.containsKey(id)){
 							event.getAccountsMap().put("state:" + id, new AccountPermission(ResManager.getState(id, true).account));
 						}
-						else if(LandDev.DB.exists("states", event.getSearchedId())){
+						else if(DB.exists("states", event.getSearchedId())){
 							event.getAccountsMap().put("state:" + id, new AccountPermission("state:" + id));
 						}
 					}
@@ -73,7 +76,7 @@ public class FsmmEventHooks {
 						if(ResManager.COUNTIES.containsKey(id)){
 							event.getAccountsMap().put("county:" + id, new AccountPermission(ResManager.getCounty(id, true).account));
 						}
-						else if(LandDev.DB.exists("counties", event.getSearchedId())){
+						else if(DB.exists("counties", event.getSearchedId())){
 							event.getAccountsMap().put("county:" + id, new AccountPermission("county:" + id));
 						}
 					}
@@ -88,7 +91,7 @@ public class FsmmEventHooks {
 						if(ResManager.MUNICIPALITIES.containsKey(id)){
 							event.getAccountsMap().put("municipality:" + id, new AccountPermission(ResManager.getMunicipality(id, true).account));
 						}
-						else if(LandDev.DB.exists("municipalities", event.getSearchedId())){
+						else if(DB.exists("municipalities", event.getSearchedId())){
 							event.getAccountsMap().put("municipality:" + id, new AccountPermission("municipality:" + id));
 						}
 					}
