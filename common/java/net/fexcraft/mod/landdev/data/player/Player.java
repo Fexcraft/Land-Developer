@@ -23,9 +23,9 @@ import net.fexcraft.mod.landdev.data.municipality.Municipality;
 import net.fexcraft.mod.landdev.data.Layers;
 import net.fexcraft.mod.landdev.data.Saveable;
 import net.fexcraft.mod.landdev.gui.LDGuiContainer;
-import net.fexcraft.mod.landdev.gui.modules.LDGuiModule;
-import net.fexcraft.mod.landdev.gui.modules.ModuleRequest;
-import net.fexcraft.mod.landdev.gui.modules.ModuleResponse;
+import net.fexcraft.mod.landdev.ui.LDUIModule;
+import net.fexcraft.mod.landdev.ui.modules.ModuleRequest;
+import net.fexcraft.mod.landdev.ui.modules.ModuleResponse;
 import net.fexcraft.mod.landdev.util.ResManager;
 import net.fexcraft.mod.landdev.util.TranslationUtil;
 import net.fexcraft.mod.uni.Appendable;
@@ -33,13 +33,12 @@ import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.tag.TagLW;
 import net.fexcraft.mod.uni.world.EntityW;
-import net.fexcraft.mod.uni.world.MessageSender;
 import net.fexcraft.mod.uni.world.WorldW;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class Player implements Saveable, Layer, LDGuiModule, Appendable<UniEntity> {
+public class Player implements Saveable, Layer, LDUIModule, Appendable<UniEntity> {
 
 	public UUID uuid;
 	public boolean offline, adm;
