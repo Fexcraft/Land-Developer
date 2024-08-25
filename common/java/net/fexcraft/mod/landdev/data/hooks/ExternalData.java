@@ -21,7 +21,7 @@ public class ExternalData implements Saveable, LDUIModule {
 	public static final HashMap<Layers, ArrayList<Class<? extends ExternalSaveable>>> REGISTRY = new HashMap<>();
 	static{ for(Layers layer : Layers.values()) REGISTRY.put(layer, new ArrayList<>()); }
 	public List<ExternalSaveable> saveables = new ArrayList<>();
-	public List<LDGuiSubModule> modules = new ArrayList<>();
+	public List<LDUISubModule> modules = new ArrayList<>();
 	public final LDUIModule module;
 
 	public ExternalData(LDUIModule module){
@@ -30,7 +30,7 @@ public class ExternalData implements Saveable, LDUIModule {
 			try{
 				ExternalSaveable save = clazz.newInstance();
 				saveables.add(save);
-				if(save instanceof LDGuiSubModule) modules.add((LDGuiSubModule)save);
+				if(save instanceof LDUISubModule) modules.add((LDUISubModule)save);
 				save.setup((Layer)module);
 			}
 			catch(Exception e){
@@ -69,7 +69,7 @@ public class ExternalData implements Saveable, LDUIModule {
 	 */
 	@Override
 	public void sync_packet(LDGuiContainer container, ModuleResponse resp){
-		for(LDGuiSubModule submod : modules) if(submod.sync_packet(module, container, resp)) return ;
+		for(LDUISubModule submod : modules) if(submod.sync_packet(module, container, resp)) return ;
 	}
 
 	/**
@@ -77,7 +77,7 @@ public class ExternalData implements Saveable, LDUIModule {
 	 */
 	@Override
 	public void on_interact(LDGuiContainer container, ModuleRequest req){
-		for(LDGuiSubModule submod : modules) if(submod.on_interact(module, container, req)) return;
+		for(LDUISubModule submod : modules) if(submod.on_interact(module, container, req)) return;
 	}
 
 	public ExternalSaveable get(String id){
