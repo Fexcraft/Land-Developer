@@ -9,22 +9,22 @@ import net.fexcraft.mod.landdev.data.Layer;
 import net.fexcraft.mod.landdev.data.Layers;
 import net.fexcraft.mod.landdev.data.Saveable;
 import net.fexcraft.mod.landdev.gui.LDGuiContainer;
-import net.fexcraft.mod.landdev.gui.modules.LDGuiModule;
-import net.fexcraft.mod.landdev.gui.modules.ModuleRequest;
-import net.fexcraft.mod.landdev.gui.modules.ModuleResponse;
+import net.fexcraft.mod.landdev.ui.LDUIModule;
+import net.fexcraft.mod.landdev.ui.modules.ModuleRequest;
+import net.fexcraft.mod.landdev.ui.modules.ModuleResponse;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class ExternalData implements Saveable, LDGuiModule {
+public class ExternalData implements Saveable, LDUIModule {
 
 	public static final HashMap<Layers, ArrayList<Class<? extends ExternalSaveable>>> REGISTRY = new HashMap<>();
 	static{ for(Layers layer : Layers.values()) REGISTRY.put(layer, new ArrayList<>()); }
 	public List<ExternalSaveable> saveables = new ArrayList<>();
 	public List<LDGuiSubModule> modules = new ArrayList<>();
-	public final LDGuiModule module;
+	public final LDUIModule module;
 
-	public ExternalData(LDGuiModule module){
+	public ExternalData(LDUIModule module){
 		this.module = module;
 		for(Class<? extends ExternalSaveable> clazz : REGISTRY.get(((Layer)module).getLayer())){
 			try{
