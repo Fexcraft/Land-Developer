@@ -13,7 +13,6 @@ import java.util.UUID;
 import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.Time;
-import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.fsmm.data.Account;
 import net.fexcraft.mod.fsmm.data.Bank.Action;
 import net.fexcraft.mod.fsmm.util.Config;
@@ -30,20 +29,19 @@ import net.fexcraft.mod.landdev.data.norm.IntegerNorm;
 import net.fexcraft.mod.landdev.data.norm.StringNorm;
 import net.fexcraft.mod.landdev.data.player.Permit;
 import net.fexcraft.mod.landdev.data.player.Player;
-import net.fexcraft.mod.landdev.gui.GuiHandler;
 import net.fexcraft.mod.landdev.gui.LDGuiContainer;
-import net.fexcraft.mod.landdev.gui.modules.AppearModule;
-import net.fexcraft.mod.landdev.gui.modules.LDGuiModule;
-import net.fexcraft.mod.landdev.gui.modules.ModuleRequest;
-import net.fexcraft.mod.landdev.gui.modules.ModuleResponse;
-import net.fexcraft.mod.landdev.gui.modules.NormModule;
+import net.fexcraft.mod.landdev.ui.modules.AppearModule;
+import net.fexcraft.mod.landdev.ui.LDUIModule;
+import net.fexcraft.mod.landdev.ui.modules.ModuleRequest;
+import net.fexcraft.mod.landdev.ui.modules.ModuleResponse;
+import net.fexcraft.mod.landdev.ui.modules.NormModule;
 import net.fexcraft.mod.landdev.ui.LDKeys;
 import net.fexcraft.mod.landdev.util.Announcer;
 import net.fexcraft.mod.landdev.util.Announcer.Target;
 import net.fexcraft.mod.landdev.util.ResManager;
 import net.fexcraft.mod.landdev.util.LDConfig;
 
-public class Municipality implements Saveable, Layer, LDGuiModule {
+public class Municipality implements Saveable, Layer, LDUIModule {
 
 	public final int id;
 	public Createable created = new Createable();
