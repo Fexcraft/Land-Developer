@@ -18,13 +18,14 @@ import net.fexcraft.mod.landdev.data.county.County;
 import net.fexcraft.mod.landdev.data.district.District;
 import net.fexcraft.mod.landdev.data.municipality.Municipality;
 import net.fexcraft.mod.landdev.data.player.Player;
-import net.fexcraft.mod.landdev.gui.modules.MailModule;
-import net.fexcraft.mod.landdev.gui.modules.MainModule;
-import net.fexcraft.mod.landdev.gui.modules.Missing;
-import net.fexcraft.mod.landdev.gui.modules.ModuleRequest;
-import net.fexcraft.mod.landdev.gui.modules.ModuleResponse;
+import net.fexcraft.mod.landdev.ui.modules.MailModule;
+import net.fexcraft.mod.landdev.ui.modules.MainModule;
+import net.fexcraft.mod.landdev.ui.modules.ModuleRequest;
+import net.fexcraft.mod.landdev.ui.modules.ModuleResponse;
+import net.fexcraft.mod.landdev.ui.LDUIModule;
 import net.fexcraft.mod.landdev.util.ResManager;
 import net.fexcraft.mod.uni.UniEntity;
+import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTBase;
@@ -77,7 +78,7 @@ public class LDGuiContainer extends GenericContainer {
 			return;
 		}
 		if(packet.hasKey("interact")){
-			ModuleRequest req = new ModuleRequest(packet);
+			ModuleRequest req = new ModuleRequest(TagCW.wrap(packet));
 			switch(type){
 				case MAIN:{
 					MainModule.INST.on_interact(this, req);
@@ -124,7 +125,7 @@ public class LDGuiContainer extends GenericContainer {
 					}
 					break;
 				}
-				default: Missing.INST.on_interact(this, req); break;
+				default: LDUIModule.Missing.INST.on_interact(this, req); break;
 			}
 		}
 		if(packet.hasKey("go_back")){
@@ -196,13 +197,13 @@ public class LDGuiContainer extends GenericContainer {
 				}
 				break;
 			}
-			default: Missing.INST.sync_packet(this, resp); break;
+			default: LDUIModule.Missing.INST.sync_packet(this, resp); break;
 		}
 		if(holder != null){
-			resp.getCompound().setString("gui_icon", holder.getnn());
-			resp.getCompound().setInteger("gui_color", color.getInteger());
+			resp.getCompound().set("gui_icon", holder.getnn());
+			resp.getCompound().set("gui_color", color.getInteger());
 		}
-		send(Side.CLIENT, resp.build());
+		send(Side.CLIENT, resp.build().local());
 	}
 
 	private void client_packet(NBTTagCompound packet, EntityPlayer player){
