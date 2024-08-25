@@ -17,11 +17,10 @@ import net.fexcraft.mod.landdev.data.*;
 import net.fexcraft.mod.landdev.data.district.District;
 import net.fexcraft.mod.landdev.data.hooks.ExternalData;
 import net.fexcraft.mod.landdev.data.player.Player;
-import net.fexcraft.mod.landdev.gui.GuiHandler;
 import net.fexcraft.mod.landdev.gui.LDGuiContainer;
-import net.fexcraft.mod.landdev.gui.modules.LDGuiModule;
-import net.fexcraft.mod.landdev.gui.modules.ModuleRequest;
-import net.fexcraft.mod.landdev.gui.modules.ModuleResponse;
+import net.fexcraft.mod.landdev.ui.LDUIModule;
+import net.fexcraft.mod.landdev.ui.modules.ModuleRequest;
+import net.fexcraft.mod.landdev.ui.modules.ModuleResponse;
 import net.fexcraft.mod.landdev.ui.LDKeys;
 import net.fexcraft.mod.landdev.util.ResManager;
 import net.fexcraft.mod.landdev.util.LDConfig;
@@ -31,7 +30,7 @@ import net.fexcraft.mod.uni.UniChunk;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class Chunk_ implements Saveable, Layer, LDGuiModule {
+public class Chunk_ implements Saveable, Layer, LDUIModule {
 	
 	public final ChunkKey key;
 	public final ChunkKey region;
