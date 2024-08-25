@@ -21,16 +21,19 @@ import net.fexcraft.mod.landdev.data.norm.IntegerNorm;
 import net.fexcraft.mod.landdev.data.norm.StringNorm;
 import net.fexcraft.mod.landdev.data.player.Player;
 import net.fexcraft.mod.landdev.data.state.State;
-import net.fexcraft.mod.landdev.gui.GuiHandler;
 import net.fexcraft.mod.landdev.gui.LDGuiContainer;
-import net.fexcraft.mod.landdev.gui.modules.*;
+import net.fexcraft.mod.landdev.ui.LDUIModule;
 import net.fexcraft.mod.landdev.ui.LDKeys;
+import net.fexcraft.mod.landdev.ui.modules.AppearModule;
+import net.fexcraft.mod.landdev.ui.modules.ModuleRequest;
+import net.fexcraft.mod.landdev.ui.modules.ModuleResponse;
+import net.fexcraft.mod.landdev.ui.modules.NormModule;
 import net.fexcraft.mod.landdev.util.ResManager;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class County implements Saveable, Layer, LDGuiModule {
+public class County implements Saveable, Layer, LDUIModule {
 
 	public final int id;
 	public Createable created = new Createable();
