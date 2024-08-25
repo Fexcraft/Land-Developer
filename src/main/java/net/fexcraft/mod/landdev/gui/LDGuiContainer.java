@@ -1,6 +1,6 @@
 package net.fexcraft.mod.landdev.gui;
 
-import static net.fexcraft.mod.landdev.gui.GuiHandler.*;
+import static net.fexcraft.mod.landdev.ui.LDKeys.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -5,7 +5,7 @@ import java.util.List;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.landdev.LandDev;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
-import net.fexcraft.mod.landdev.gui.GuiHandler;
+import net.fexcraft.mod.landdev.ui.LDKeys;
 import net.fexcraft.mod.landdev.util.AliasLoader;
 import net.fexcraft.mod.landdev.util.ResManager;
 import net.fexcraft.mod.landdev.util.TranslationUtil;
@@ -46,7 +46,7 @@ public class CkCmd extends CommandBase {
     	if(args.length > 0){
 			if(args[0].equals("claim")){
 				int dis = args.length > 1 ? Integer.parseInt(args[1]) : chunk.district.id;
-				player.openGui(LandDev.INSTANCE, GuiHandler.CLAIM, sender.getEntityWorld(), chunk.key.x, dis, chunk.key.z);
+				player.openGui(LandDev.INSTANCE, LDKeys.CLAIM, sender.getEntityWorld(), chunk.key.x, dis, chunk.key.z);
 			}
 			else if(args[0].equals("map")){
 				String marker = null;
@@ -67,7 +67,7 @@ public class CkCmd extends CommandBase {
 			}
     	}
     	else{
-        	player.openGui(LandDev.INSTANCE, GuiHandler.CHUNK, sender.getEntityWorld(), 0, chunk.key.x, chunk.key.z);
+        	player.openGui(LandDev.INSTANCE, LDKeys.CHUNK, sender.getEntityWorld(), 0, chunk.key.x, chunk.key.z);
     	}
     }
 

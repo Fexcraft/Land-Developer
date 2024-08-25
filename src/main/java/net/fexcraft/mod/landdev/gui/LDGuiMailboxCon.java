@@ -9,6 +9,7 @@ import net.fexcraft.mod.landdev.data.Layers;
 import net.fexcraft.mod.landdev.data.MailData;
 import net.fexcraft.mod.landdev.data.player.Player;
 import net.fexcraft.mod.landdev.gui.modules.MailModule;
+import net.fexcraft.mod.landdev.ui.LDKeys;
 import net.fexcraft.mod.landdev.util.ResManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -42,7 +43,7 @@ public class LDGuiMailboxCon extends GenericContainer {
 			}
 			else if(packet.hasKey("read")){
 				mailbox.mails.get(packet.getInteger("read")).unread = false;
-				player.openGui(LandDev.INSTANCE, GuiHandler.MAIL, player.world, x, y, packet.getInteger("read"));
+				player.openGui(LandDev.INSTANCE, LDKeys.MAIL, player.world, x, y, packet.getInteger("read"));
 				return;
 			}
 			else if(packet.hasKey("delete")){

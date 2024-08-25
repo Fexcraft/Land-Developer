@@ -66,7 +66,7 @@ public class LandDev {
         	PacketHandler.registerListener(PacketHandlerType.NBT, Side.CLIENT, new PacketReceiver());
         	MinecraftForge.EVENT_BUS.register(new LocationUpdate());
         }
-		LDN.init();
+		LDN.init(this);
     }
 
     @EventHandler
@@ -76,6 +76,7 @@ public class LandDev {
     
     @Mod.EventHandler
 	public void serverStarting(FMLServerStartingEvent event){
+		LDN.onServerStarting();
 		AliasLoader.load();
 		event.registerServerCommand(new DebugCmd());
 		event.registerServerCommand(new LDCmd());
@@ -83,12 +84,11 @@ public class LandDev {
 		event.registerServerCommand(new DisCmd());
 		event.registerServerCommand(new MunCmd());
 		event.registerServerCommand(new CntCmd());
-		DiscordTransmitter.restart();
 	}
 
     @Mod.EventHandler
 	public void serverStarted(FMLServerStartedEvent event){
-		LDN.onServerStart();
+		LDN.onServerStarted();
 	}
 
 	@Mod.EventHandler

@@ -1,7 +1,7 @@
 package net.fexcraft.mod.landdev.data.county;
 
 import static net.fexcraft.mod.landdev.data.PermAction.*;
-import static net.fexcraft.mod.landdev.gui.GuiHandler.MAILBOX;
+import static net.fexcraft.mod.landdev.ui.LDKeys.MAILBOX;
 import static net.fexcraft.mod.landdev.gui.LDGuiElementType.*;
 import static net.fexcraft.mod.landdev.util.TranslationUtil.translate;
 
@@ -24,6 +24,7 @@ import net.fexcraft.mod.landdev.data.state.State;
 import net.fexcraft.mod.landdev.gui.GuiHandler;
 import net.fexcraft.mod.landdev.gui.LDGuiContainer;
 import net.fexcraft.mod.landdev.gui.modules.*;
+import net.fexcraft.mod.landdev.ui.LDKeys;
 import net.fexcraft.mod.landdev.util.ResManager;
 
 /**
@@ -238,8 +239,8 @@ public class County implements Saveable, Layer, LDGuiModule {
 				container.open(UI_NORM_EDIT, id, norms.index(norms.get("name")));
 				return;
 			}
-			case "seat": if(main != null) container.open(GuiHandler.MUNICIPALITY, 0, main.id, 0);return;
-			case "state": container.open(GuiHandler.STATE, 0, state.id, 0); return;
+			case "seat": if(main != null) container.open(LDKeys.MUNICIPALITY, 0, main.id, 0);return;
+			case "state": container.open(LDKeys.STATE, 0, state.id, 0); return;
 			case "citizen": container.open(UI_CITIZEN_LIST); return;
 			case "municipalities": container.open(UI_MUNICIPALITIES); return;
 			case "districts": container.open(UI_DISTRICTS); return;

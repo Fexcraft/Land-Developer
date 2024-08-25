@@ -14,6 +14,7 @@ import net.fexcraft.mod.landdev.util.broad.BroadcastChannel;
 import net.fexcraft.mod.landdev.util.broad.Broadcaster;
 import net.fexcraft.mod.landdev.util.broad.DiscordTransmitter;
 import net.fexcraft.mod.uni.UniChunk;
+import net.fexcraft.mod.uni.UniReg;
 
 import java.io.File;
 import java.time.LocalDate;
@@ -43,8 +44,9 @@ public class LDN {
 		
 	}
 
-	public static void init(){
+	public static void init(LandDev inst){
 		FsmmEventHooks.init();
+		UniReg.registerMod(MODID, inst);
 	}
 
 	public static void postinit(){
@@ -52,7 +54,11 @@ public class LDN {
 		DiscordTransmitter.restart();
 	}
 
-	public static void onServerStart(){
+	public static void onServerStarting(){
+		DiscordTransmitter.restart();
+	}
+
+	public static void onServerStarted(){
 		LocalDateTime midnight = LocalDateTime.of(LocalDate.now(ZoneOffset.systemDefault()), LocalTime.MIDNIGHT);
 		long mid = midnight.toInstant(ZoneOffset.UTC).toEpochMilli();
 		setupTaxTimer(mid);

@@ -1,10 +1,9 @@
 package net.fexcraft.mod.landdev.gui.modules;
 
-import static net.fexcraft.mod.landdev.gui.GuiHandler.*;
+import static net.fexcraft.mod.landdev.ui.LDKeys.*;
 import static net.fexcraft.mod.landdev.gui.LDGuiElementType.ELM_GENERIC;
 import static net.fexcraft.mod.landdev.gui.LDGuiElementType.ICON_OPEN;
 
-import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.landdev.data.Layers;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.gui.LDGuiContainer;

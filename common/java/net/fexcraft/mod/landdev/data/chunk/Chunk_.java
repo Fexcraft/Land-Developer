@@ -4,7 +4,6 @@ import static net.fexcraft.lib.common.math.Time.getAsString;
 import static net.fexcraft.mod.fsmm.util.Config.getWorthAsString;
 import static net.fexcraft.mod.landdev.data.PermAction.CHUNK_CUSTOMTAX;
 import static net.fexcraft.mod.landdev.data.PermAction.MANAGE_DISTRICT;
-import static net.fexcraft.mod.landdev.gui.GuiHandler.DISTRICT;
 import static net.fexcraft.mod.landdev.gui.LDGuiElementType.*;
 
 import java.util.ArrayList;
@@ -23,6 +22,7 @@ import net.fexcraft.mod.landdev.gui.LDGuiContainer;
 import net.fexcraft.mod.landdev.gui.modules.LDGuiModule;
 import net.fexcraft.mod.landdev.gui.modules.ModuleRequest;
 import net.fexcraft.mod.landdev.gui.modules.ModuleResponse;
+import net.fexcraft.mod.landdev.ui.LDKeys;
 import net.fexcraft.mod.landdev.util.ResManager;
 import net.fexcraft.mod.landdev.util.LDConfig;
 import net.fexcraft.mod.landdev.util.TaxSystem;
@@ -357,12 +357,12 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 			case "links.submit":{
 				if(!canman) return;
 				ChunkKey key = link.linked.get(req.getRadioInt("links.key"));
-				container.open(GuiHandler.CHUNK, 0, key.x, key.z);
+				container.open(LDKeys.CHUNK, 0, key.x, key.z);
 				return;
 			}
 			case "linked": container.open(UI_LINKED); return;
 			case "linked.key":{
-				container.open(GuiHandler.CHUNK, 0, link.root_key.x, link.root_key.z);
+				container.open(LDKeys.CHUNK, 0, link.root_key.x, link.root_key.z);
 				return;
 			}
 			case "linked.disconnect":{
@@ -377,7 +377,7 @@ public class Chunk_ implements Saveable, Layer, LDGuiModule {
 				return;
 			}
 			case "type": if(canman) container.open(UI_TYPE); return;
-			case "district": container.open(DISTRICT, 0, district.id, 0);
+			case "district": container.open(LDKeys.DISTRICT, 0, district.id, 0);
 			case "owner": if(canman) container.open(UI_OWNER); return;
 			case "price": if(!canman) container.open(UI_PRICE); return;
 			case "set_price": container.open(UI_SET_PRICE); return;

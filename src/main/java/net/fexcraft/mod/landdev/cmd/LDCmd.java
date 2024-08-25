@@ -17,6 +17,7 @@ import net.fexcraft.mod.landdev.data.MailType;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.data.player.Player;
 import net.fexcraft.mod.landdev.gui.GuiHandler;
+import net.fexcraft.mod.landdev.ui.LDKeys;
 import net.fexcraft.mod.landdev.util.*;
 import net.fexcraft.mod.landdev.util.broad.DiscordTransmitter;
 import net.minecraft.command.CommandBase;
@@ -94,7 +95,7 @@ public class LDCmd extends CommandBase {
 	    		case "img":{
 	    			int w = args.length > 2 ? Integer.parseInt(args[2]) : 256;
 	    			int h = args.length > 3 ? Integer.parseInt(args[3]) : 256;
-	    			player.openGui(GuiHandler.IMG_PREVIEW, w, h, 0);
+	    			player.openGui(LDKeys.IMG_PREVIEW, w, h, 0);
 	    			NBTTagCompound com = new NBTTagCompound();
 	    			com.setString("target_listener", CLIENT_RECEIVER_ID);
 	    			com.setString("task", "img_preview_url");

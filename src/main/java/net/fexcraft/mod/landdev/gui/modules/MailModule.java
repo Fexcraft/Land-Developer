@@ -18,6 +18,7 @@ import net.fexcraft.mod.landdev.data.player.Player;
 import net.fexcraft.mod.landdev.data.state.State;
 import net.fexcraft.mod.landdev.gui.GuiHandler;
 import net.fexcraft.mod.landdev.gui.LDGuiContainer;
+import net.fexcraft.mod.landdev.ui.LDKeys;
 import net.fexcraft.mod.landdev.util.ResManager;
 import net.fexcraft.mod.landdev.util.LDConfig;
 
@@ -200,7 +201,7 @@ public class MailModule implements LDGuiModule {
 	}
 
 	private void goback(LDGuiContainer container){
-		container.open(GuiHandler.MAILBOX, container.x, container.y, container.z);
+		container.open(LDKeys.MAILBOX, container.x, container.y, container.z);
 	}
 
 	public static MailData getMailbox(Player player, int x, int y){
