@@ -4,7 +4,7 @@ import static net.fexcraft.lib.common.math.Time.getAsString;
 import static net.fexcraft.mod.fsmm.util.Config.getWorthAsString;
 import static net.fexcraft.mod.landdev.data.PermAction.CHUNK_CUSTOMTAX;
 import static net.fexcraft.mod.landdev.data.PermAction.MANAGE_DISTRICT;
-import static net.fexcraft.mod.landdev.gui.LDGuiElementType.*;
+import static net.fexcraft.mod.landdev.ui.LDUIElmType.*;
 
 import java.util.ArrayList;
 import java.util.UUID;
