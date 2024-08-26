@@ -2,7 +2,7 @@ package net.fexcraft.mod.landdev.data.county;
 
 import static net.fexcraft.mod.landdev.data.PermAction.*;
 import static net.fexcraft.mod.landdev.ui.LDKeys.MAILBOX;
-import static net.fexcraft.mod.landdev.gui.LDGuiElementType.*;
+import static net.fexcraft.mod.landdev.ui.LDUIElmType.*;
 import static net.fexcraft.mod.landdev.util.TranslationUtil.translate;
 
 import java.util.ArrayList;
