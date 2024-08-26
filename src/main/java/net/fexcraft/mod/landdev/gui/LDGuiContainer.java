@@ -18,6 +18,7 @@ import net.fexcraft.mod.landdev.data.county.County;
 import net.fexcraft.mod.landdev.data.district.District;
 import net.fexcraft.mod.landdev.data.municipality.Municipality;
 import net.fexcraft.mod.landdev.data.player.Player;
+import net.fexcraft.mod.landdev.ui.LDUIElmType;
 import net.fexcraft.mod.landdev.ui.modules.MailModule;
 import net.fexcraft.mod.landdev.ui.modules.MainModule;
 import net.fexcraft.mod.landdev.ui.modules.ModuleRequest;
@@ -220,7 +221,7 @@ public class LDGuiContainer extends GenericContainer {
 		gui.addscroll = size > 12;
 		gui.sizeOf(gui.addscroll ? 12 : size);
 		if(gui.addscroll){
-			LDGuiElementType type = LDGuiElementType.SCROLL_UP;
+			LDUIElmType type = LDUIElmType.SCROLL_UP;
 			gui.add(new BasicButton("scroll_up", gui.getGuiLeft() + type.x - 5, gui.getGuiTop() + type.y, type.x, type.y, type.w, type.h, true){
 				@Override
 				public boolean onclick(int x, int y, int m){
@@ -228,7 +229,7 @@ public class LDGuiContainer extends GenericContainer {
 					return true;
 				}
 			});
-			type = LDGuiElementType.SCROLL_DOWN;
+			type = LDUIElmType.SCROLL_DOWN;
 			gui.add(new BasicButton("scroll_down", gui.getGuiLeft() + type.x - 5, gui.getGuiTop() + type.y, type.x, type.y, type.w, type.h, true){
 				@Override
 				public boolean onclick(int x, int y, int m){
@@ -258,8 +259,8 @@ public class LDGuiContainer extends GenericContainer {
 		for(NBTBase base : list){
 			NBTTagList lis = (NBTTagList)base;
 			String index = lis.getStringTagAt(0);
-			LDGuiElementType elm = LDGuiElementType.valueOf(lis.getStringTagAt(1));
-			LDGuiElementType icon = LDGuiElementType.valueOf(lis.getStringTagAt(2));
+			LDUIElmType elm = LDUIElmType.valueOf(lis.getStringTagAt(1));
+			LDUIElmType icon = LDUIElmType.valueOf(lis.getStringTagAt(2));
 			String bools = lis.getStringTagAt(3);
 			String val = lis.tagCount() > 4 ? lis.getStringTagAt(4) : null;
 			if(bools.charAt(2) == '2'){
