@@ -1,0 +1,42 @@
+{
+	"_info_": "LandDev UI Base",
+	"background": true,
+	"size": [ 225, 136 ],
+	"tabs": {
+		"top": {
+			"texture": "landdev:textures/ui/base.png",
+			"size": [ 255, 19 ],
+			"pos": [ 0, 0 ],
+			"texts": [ "title" ]
+		},
+		"tab": {
+			"texture": "landdev:textures/ui/base.png",
+			"size": [ 255, 136 ],
+			"pos": [ 0, 0 ],
+			"buttons": [],
+			"texts": [],
+			"fields": []
+		}
+	},
+	"buttons": {
+		"button": {
+			"size": [ 0, 0 ],
+			"pos": [ 0, 0 ]
+		}
+	},
+	"texts": {
+		"title": {
+			"size": [ 196, 8 ],
+			"pos": [ 8, 8 ],
+			"autoscale": true,
+			"color": "#0e0e0e"
+		}
+	},
+	"fields": {
+		"field": {
+			"size": [ 0, 0 ],
+			"pos": [ 0, 0 ],
+			"background": false
+		}
+	}
+}
