@@ -8,6 +8,7 @@ import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.common.utils.Formatter;
 import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.lib.mc.registry.UCResourceLocation;
+import net.fexcraft.mod.landdev.ui.LDUIElmType;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
@@ -17,7 +18,7 @@ import net.minecraftforge.fml.relauncher.Side;
 
 public class LDGuiBase extends GenericGui<LDGuiContainer> {
 	
-	private static final ResourceLocation TEXTURE = new ResourceLocation("landdev:textures/gui/guibase.png");
+	private static final ResourceLocation TEXTURE = new ResourceLocation("landdev:textures/gui/base.png");
 	private static final ResourceLocation NOTIFICATION = new ResourceLocation("landdev:textures/gui/notification.png");
 	private static ArrayList<String> info = new ArrayList<>();
 	private ArrayList<LDGuiElement> elements = new ArrayList<>();
@@ -47,9 +48,9 @@ public class LDGuiBase extends GenericGui<LDGuiContainer> {
 		container.send(Side.SERVER, com);
 	}
 
-	protected void addElm(String id, LDGuiElementType elm, LDGuiElementType icon, boolean text, boolean button, boolean field, String val){
+	protected void addElm(String id, LDUIElmType elm, LDUIElmType icon, boolean text, boolean button, boolean field, String val){
 		if(!field) elements().add(new LDGuiElement(id + "_elm", elm).text(this, text ? id : null, val));
-		else elements().add(new LDGuiElement(id, elm).field(this, val, icon == LDGuiElementType.ICON_BLANK));
+		else elements().add(new LDGuiElement(id, elm).field(this, val, icon == LDUIElmType.ICON_BLANK));
 		elements().add(new LDGuiElement(id, icon).button(this, button));
 	}
 
@@ -62,24 +63,24 @@ public class LDGuiBase extends GenericGui<LDGuiContainer> {
 	
 	@Override
 	public void drawbackground(float ticks, int mx, int my){
-		drawElement(LDGuiElementType.TOP, guiTop);
+		drawElement(LDUIElmType.TOP, guiTop);
 		rebind = false;
 		for(LDGuiElement elm : elements()){
 			if(elm.visible) drawElement(elm.type, elm.pos);
 		}
 		if(addscroll){
-			LDGuiElementType elm = LDGuiElementType.SCROLLBAR;
+			LDUIElmType elm = LDUIElmType.SCROLLBAR;
 			drawTexturedModalRect(guiLeft + elm.x - 5, guiTop + 17, elm.x, elm.y, elm.w, elm.h);
 		}
-		drawElement(LDGuiElementType.BOTTOM, guiTop + ySize - 6);
+		drawElement(LDUIElmType.BOTTOM, guiTop + ySize - 6);
 		if(backbutton != null){
-			LDGuiElementType elm = LDGuiElementType.GO_BACK;
+			LDUIElmType elm = LDUIElmType.GO_BACK;
 			drawTexturedModalRect(guiLeft - 13, guiTop + 2, elm.x, elm.y, elm.w, elm.h);
 		}
 		if(showicon){
-			LDGuiElementType elm = LDGuiElementType.ICONBAR;
+			LDUIElmType elm = LDUIElmType.ICONBAR;
 			drawTexturedModalRect(guiLeft - 29, guiTop + 20, elm.x, elm.y, elm.w, elm.h);
-			elm = LDGuiElementType.ICONBARCOLOR;
+			elm = LDUIElmType.ICONBARCOLOR;
 			color.glColorApply();
 			drawTexturedModalRect(guiLeft - 26, guiTop + 53, elm.x, elm.y, elm.w, elm.h);
 			RGB.glColorReset();
@@ -96,7 +97,7 @@ public class LDGuiBase extends GenericGui<LDGuiContainer> {
 		if(rebind) mc.renderEngine.bindTexture(TEXTURE);
 	}
 	
-	private void drawElement(LDGuiElementType elm, int y){
+	private void drawElement(LDUIElmType elm, int y){
 		drawTexturedModalRect(guiLeft + elm.x, y, elm.x, elm.y, elm.w, elm.h);
 	}
 
