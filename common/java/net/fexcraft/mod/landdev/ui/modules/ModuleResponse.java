@@ -1,11 +1,11 @@
 package net.fexcraft.mod.landdev.ui.modules;
 
-import static net.fexcraft.mod.landdev.gui.LDGuiElementType.ELM_BLANK;
-import static net.fexcraft.mod.landdev.gui.LDGuiElementType.ICON_BLANK;
-import static net.fexcraft.mod.landdev.gui.LDGuiElementType.checkbox;
-import static net.fexcraft.mod.landdev.gui.LDGuiElementType.radio;
+import static net.fexcraft.mod.landdev.ui.LDUIElmType.ELM_BLANK;
+import static net.fexcraft.mod.landdev.ui.LDUIElmType.ICON_BLANK;
+import static net.fexcraft.mod.landdev.ui.LDUIElmType.checkbox;
+import static net.fexcraft.mod.landdev.ui.LDUIElmType.radio;
 
-import net.fexcraft.mod.landdev.gui.LDGuiElementType;
+import net.fexcraft.mod.landdev.ui.LDUIElmType;
 import net.fexcraft.mod.landdev.ui.LDUIModule;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.tag.TagLW;
@@ -52,31 +52,31 @@ public class ModuleResponse {
 		compound.set("title_lang", title);
 	}
 
-	public void addRow(String id, LDGuiElementType style){
+	public void addRow(String id, LDUIElmType style){
 		addEntry(list, id, style, ICON_BLANK, false, false, null);
 	}
 
-	public void addRow(String id, LDGuiElementType style, Object value){
+	public void addRow(String id, LDUIElmType style, Object value){
 		addEntry(list, id, style, ICON_BLANK, false, false, value);
 	}
 
-	public void addRow(String id, LDGuiElementType style, LDGuiElementType icon){
+	public void addRow(String id, LDUIElmType style, LDUIElmType icon){
 		addEntry(list, id, style, icon, false, false, null);
 	}
 
-	public void addRow(String id, LDGuiElementType style, LDGuiElementType icon, Object value){
+	public void addRow(String id, LDUIElmType style, LDUIElmType icon, Object value){
 		addEntry(list, id, style, icon, false, false, value);
 	}
 
-	public void addRow(String id, LDGuiElementType style, LDGuiElementType icon, boolean button, Object value){
+	public void addRow(String id, LDUIElmType style, LDUIElmType icon, boolean button, Object value){
 		addEntry(list, id, style, icon, button, false, value);
 	}
 
-	public void addButton(String id, LDGuiElementType style, LDGuiElementType icon){
+	public void addButton(String id, LDUIElmType style, LDUIElmType icon){
 		addEntry(list, id, style, icon, true, false, null);
 	}
 
-	public void addButton(String id, LDGuiElementType style, LDGuiElementType icon, Object value){
+	public void addButton(String id, LDUIElmType style, LDUIElmType icon, Object value){
 		addEntry(list, id, style, icon, true, false, value);
 	}
 
@@ -94,19 +94,19 @@ public class ModuleResponse {
 		setFormular();
 	}
 
-	public void addRadio(String id, LDGuiElementType style, boolean checked){
+	public void addRadio(String id, LDUIElmType style, boolean checked){
 		addEntry(list, id, style, radio(checked), true, false, null);
 	}
 
-	public void addRadio(String id, LDGuiElementType style, boolean checked, Object value){
+	public void addRadio(String id, LDUIElmType style, boolean checked, Object value){
 		addEntry(list, id, style, radio(checked), true, false, value);
 	}
 
-	public void addCheck(String id, LDGuiElementType style, boolean checked){
+	public void addCheck(String id, LDUIElmType style, boolean checked){
 		addEntry(list, id, style, checkbox(checked), true, false, null);
 	}
 
-	public void addCheck(String id, LDGuiElementType style, boolean checked, Object value){
+	public void addCheck(String id, LDUIElmType style, boolean checked, Object value){
 		addEntry(list, id, style, checkbox(checked), true, false, value);
 	}
 
@@ -116,15 +116,15 @@ public class ModuleResponse {
 
 	//
 
-	public void addEntry(TagLW root, String index, LDGuiElementType elm, LDGuiElementType icon, boolean button, boolean field, Object value){
+	public void addEntry(TagLW root, String index, LDUIElmType elm, LDUIElmType icon, boolean button, boolean field, Object value){
 		addEntry(root, index, elm, icon, button, field, value, false);
 	}
 
-	public void addEntry(TagLW root, String index, LDGuiElementType elm, LDGuiElementType icon, boolean button, boolean field, Object value, boolean valonly){
+	public void addEntry(TagLW root, String index, LDUIElmType elm, LDUIElmType icon, boolean button, boolean field, Object value, boolean valonly){
 		addEntry(root, index, elm, icon, button, field, value, valonly, false);
 	}
 
-	public void addEntry(TagLW root, String index, LDGuiElementType elm, LDGuiElementType icon, boolean button, boolean field, Object value, boolean valonly, boolean hidefield){
+	public void addEntry(TagLW root, String index, LDUIElmType elm, LDUIElmType icon, boolean button, boolean field, Object value, boolean valonly, boolean hidefield){
 		TagLW list = TagLW.create();
 		list.add(index);
 		list.add(elm.name());
