@@ -3,6 +3,7 @@ package net.fexcraft.mod.landdev.gui;
 import net.fexcraft.lib.mc.gui.GenericGui.BasicButton;
 import net.fexcraft.lib.mc.gui.GenericGui.BasicText;
 import net.fexcraft.lib.mc.gui.GenericGui.TextField;
+import net.fexcraft.mod.landdev.ui.LDUIElmType;
 import net.fexcraft.mod.landdev.ui.LDUIModule;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.nbt.NBTTagCompound;
@@ -11,7 +12,7 @@ import net.minecraftforge.fml.relauncher.Side;
 public class LDGuiElement {
 	
 	public String index;
-	public LDGuiElementType type;
+	public LDUIElmType type;
 	protected int pos, off;
 	protected boolean visible;
 	//
@@ -19,7 +20,7 @@ public class LDGuiElement {
 	private BasicButton button;
 	private TextField field;
 	
-	public LDGuiElement(String index, LDGuiElementType type){
+	public LDGuiElement(String index, LDUIElmType type){
 		this.index = index;
 		this.type = type;
 	}
@@ -47,7 +48,7 @@ public class LDGuiElement {
 				if(type.is_checkbox()){
 					boolean bool = !gui.container().checkboxes.get(index);
 					gui.container().checkboxes.put(index, bool);
-					type = LDGuiElementType.checkbox(bool);
+					type = LDUIElmType.checkbox(bool);
 					tx = type.x;
 					ty = type.y;
 					return true;
@@ -55,12 +56,12 @@ public class LDGuiElement {
 				if(type.is_radiobox()){
 					for(LDGuiElement elm : gui.elements()){
 						if(!elm.type.is_radiobox()) continue;
-						elm.type = LDGuiElementType.radio(false);
+						elm.type = LDUIElmType.radio(false);
 						elm.button.tx = elm.type.x;
 						elm.button.ty = elm.type.y;
 					}
 					gui.container().radiobox = index;
-					type = LDGuiElementType.radio(true);
+					type = LDUIElmType.radio(true);
 					tx = type.x;
 					ty = type.y;
 					return true;
