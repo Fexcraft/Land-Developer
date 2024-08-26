@@ -1,8 +1,8 @@
 package net.fexcraft.mod.landdev.ui.modules;
 
 import static net.fexcraft.mod.landdev.ui.LDKeys.*;
-import static net.fexcraft.mod.landdev.gui.LDGuiElementType.ELM_GENERIC;
-import static net.fexcraft.mod.landdev.gui.LDGuiElementType.ICON_OPEN;
+import static net.fexcraft.mod.landdev.ui.LDUIElmType.ELM_GENERIC;
+import static net.fexcraft.mod.landdev.ui.LDUIElmType.ICON_OPEN;
 
 import net.fexcraft.mod.landdev.data.Layers;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
