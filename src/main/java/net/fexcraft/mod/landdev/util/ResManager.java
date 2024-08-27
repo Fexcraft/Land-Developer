@@ -55,6 +55,14 @@ public class ResManager implements Saveable {
 		return ChunkRegion.get(x, z);
 	}
 
+	public static Chunk_ getChunkS(double x, double z){
+		return getChunk((int)x >> 4, (int)z >> 4);
+	}
+
+	public static Chunk_ getChunkS(int x, int z){
+		return getChunk(x >> 4, z >> 4);
+	}
+
 	public static Chunk_ getChunk(ChunkKey key){
 		for(Chunk_ ck : CHUNKS.values()){
 			if(ck.key.equals(key)) return ck;
@@ -70,7 +78,7 @@ public class ResManager implements Saveable {
 		return getChunk(player.getPos());
 	}
 
-	public static Chunk_ getChunk(Object player){
+	public static Chunk_ getChunkP(Object player){
 		return getChunk(UniEntity.get(player).entity);
 	}
 
