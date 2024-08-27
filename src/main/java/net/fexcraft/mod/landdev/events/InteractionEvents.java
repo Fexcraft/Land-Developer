@@ -66,7 +66,7 @@ public class InteractionEvents {
 		Player player = ResManager.getPlayer(entity);
 		if(player == null) return false;
 		if(player.adm) return true;
-		Chunk_ chunk = ResManager.getChunk(pos);
+		Chunk_ chunk = ResManager.getChunkS(pos.getX(), pos.getZ());
 		if(chunk.district.id < 0){
 			if(chunk.district.id == -1){
 				return LDConfig.EDIT_WILDERNESS;
