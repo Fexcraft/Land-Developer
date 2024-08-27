@@ -23,19 +23,19 @@ public class LDKeys {
 	public static final int IMG_PREVIEW = 200;
 
 
-	public static final UIKey UI_MAIN = new UIKey(MAIN, "landdev:main");
-	public static final UIKey UI_PROPERTY = new UIKey(PROPERTY, "landdev:property");
-	public static final UIKey UI_CHUNK = new UIKey(CHUNK, "landdev:chunk");
-	public static final UIKey UI_COMPANY = new UIKey(COMPANY, "landdev:company");
-	public static final UIKey UI_DISTRICT = new UIKey(MAIN, "landdev:district");
-	public static final UIKey UI_MUNICIPALITY = new UIKey(MAIN, "landdev:municipality");
-	public static final UIKey UI_COUNTY = new UIKey(MAIN, "landdev:county");
-	public static final UIKey UI_STATE = new UIKey(MAIN, "landdev:state");
-	public static final UIKey UI_PLAYER = new UIKey(MAIN, "landdev:player");
-	public static final UIKey UI_POLL = new UIKey(MAIN, "landdev:poll");
-	public static final UIKey UI_MAILBOX = new UIKey(MAIN, "landdev:mailbox");
-	public static final UIKey UI_MAIL = new UIKey(MAIN, "landdev:mail");
-	public static final UIKey UI_CLAIM = new UIKey(MAIN, "landdev:claim");
-	public static final UIKey UI_IMG_VIEW = new UIKey(MAIN, "landdev:img_view");
+	public static final UIKey KEY_MAIN = new UIKey(MAIN, "landdev:main");
+	public static final UIKey KEY_PROPERTY = new UIKey(PROPERTY, "landdev:property");
+	public static final UIKey KEY_CHUNK = new UIKey(CHUNK, "landdev:chunk");
+	public static final UIKey KEY_COMPANY = new UIKey(COMPANY, "landdev:company");
+	public static final UIKey KEY_DISTRICT = new UIKey(MAIN, "landdev:district");
+	public static final UIKey KEY_MUNICIPALITY = new UIKey(MAIN, "landdev:municipality");
+	public static final UIKey KEY_COUNTY = new UIKey(MAIN, "landdev:county");
+	public static final UIKey KEY_STATE = new UIKey(MAIN, "landdev:state");
+	public static final UIKey KEY_PLAYER = new UIKey(MAIN, "landdev:player");
+	public static final UIKey KEY_POLL = new UIKey(MAIN, "landdev:poll");
+	public static final UIKey KEY_MAILBOX = new UIKey(MAIN, "landdev:mailbox");
+	public static final UIKey KEY_MAIL = new UIKey(MAIN, "landdev:mail");
+	public static final UIKey KEY_CLAIM = new UIKey(MAIN, "landdev:claim");
+	public static final UIKey KEY_IMG_VIEW = new UIKey(MAIN, "landdev:img_view");
 
 }
