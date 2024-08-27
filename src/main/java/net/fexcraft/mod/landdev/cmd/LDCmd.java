@@ -159,7 +159,7 @@ public class LDCmd extends CommandBase {
     			}
     		}
     	}
-		player.entity.openUI(LDKeys.UI_MAIN, new V3I(0, (int)player.entity.getPos().x >> 4, (int)player.entity.getPos().z >> 4));
+		player.entity.openUI(LDKeys.KEY_MAIN, new V3I(0, (int)player.entity.getPos().x >> 4, (int)player.entity.getPos().z >> 4));
     }
 
 }
