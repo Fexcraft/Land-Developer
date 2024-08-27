@@ -9,6 +9,7 @@ import net.fexcraft.mod.landdev.ui.LDKeys;
 import net.fexcraft.mod.landdev.util.AliasLoader;
 import net.fexcraft.mod.landdev.util.ResManager;
 import net.fexcraft.mod.landdev.util.TranslationUtil;
+import net.fexcraft.mod.uni.UniEntity;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
@@ -42,7 +43,7 @@ public class CkCmd extends CommandBase {
     public void execute(MinecraftServer server, ICommandSender sender, String[] args){ 
     	if(sender instanceof EntityPlayer == false) return;
     	EntityPlayer player = (EntityPlayer)sender;
-		Chunk_ chunk = ResManager.getChunk(player);
+		Chunk_ chunk = ResManager.getChunkP(player);
     	if(args.length > 0){
 			if(args[0].equals("claim")){
 				int dis = args.length > 1 ? Integer.parseInt(args[1]) : chunk.district.id;
@@ -67,7 +68,7 @@ public class CkCmd extends CommandBase {
 			}
     	}
     	else{
-        	player.openGui(LandDev.INSTANCE, LDKeys.CHUNK, sender.getEntityWorld(), 0, chunk.key.x, chunk.key.z);
+			UniEntity.getEntity(player).openUI(LDKeys.UI_CHUNK, 0, chunk.key.x, chunk.key.z);
     	}
     }
 
