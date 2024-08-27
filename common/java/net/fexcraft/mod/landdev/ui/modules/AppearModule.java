@@ -1,8 +1,8 @@
 package net.fexcraft.mod.landdev.ui.modules;
 
+import static net.fexcraft.mod.landdev.ui.LDUIButton.OPEN;
 import static net.fexcraft.mod.landdev.ui.LDUIElmType.ELM_BLUE;
 import static net.fexcraft.mod.landdev.ui.LDUIElmType.ELM_GENERIC;
-import static net.fexcraft.mod.landdev.ui.LDUIElmType.ICON_OPEN;
 
 import net.fexcraft.mod.landdev.data.ColorData;
 import net.fexcraft.mod.landdev.data.IconHolder;
@@ -21,7 +21,7 @@ public class AppearModule {
 		resp.addRow("appearance.color", ELM_GENERIC);
 		resp.addField("appearance.color_field", color.getString());
 		if(canman){
-			resp.addButton("appearance.submit", ELM_BLUE, ICON_OPEN);
+			resp.addButton("appearance.submit", ELM_BLUE, OPEN);
 			resp.setFormular();
 		}
 	}
