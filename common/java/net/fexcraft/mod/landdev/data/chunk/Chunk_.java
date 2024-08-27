@@ -18,7 +18,7 @@ import net.fexcraft.mod.landdev.data.*;
 import net.fexcraft.mod.landdev.data.district.District;
 import net.fexcraft.mod.landdev.data.hooks.ExternalData;
 import net.fexcraft.mod.landdev.data.player.LDPlayer;
-import net.fexcraft.mod.landdev.gui.LDGuiContainer;
+import net.fexcraft.mod.landdev.ui.BaseCon;
 import net.fexcraft.mod.landdev.ui.LDUIModule;
 import net.fexcraft.mod.landdev.ui.modules.ModuleRequest;
 import net.fexcraft.mod.landdev.ui.modules.ModuleResponse;
@@ -149,11 +149,11 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 		;
 
 	@Override
-	public void sync_packet(LDGuiContainer container, ModuleResponse resp){
+	public void sync_packet(BaseCon container, ModuleResponse resp){
 		resp.setTitle("chunk.title");
-		switch(container.x){
+		switch(container.pos.x){
 		case UI_MAIN:
-			boolean canman = can_manage(container.player);// || container.player.adm;
+			boolean canman = can_manage(container.ldp);// || container.ldp.adm;
 			resp.addRow("key", ELM_GENERIC, key.comma());
 			if(LDConfig.CHUNK_LINK_LIMIT > 0){
 				if(link == null){
@@ -255,7 +255,7 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 			resp.setFormular();
 			return;
 		case UI_TAX:
-			boolean bool = district.can(CHUNK_CUSTOMTAX, container.player.uuid) || container.player.adm;
+			boolean bool = district.can(CHUNK_CUSTOMTAX, container.ldp.uuid) || container.ldp.adm;
 			resp.setTitle("chunk.tax.title");
 			resp.addRow("tax.info0", ELM_YELLOW, BLANK);
 			resp.addRow("tax.info1", ELM_YELLOW, BLANK);
@@ -276,7 +276,7 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 			return;
 		case UI_ACC_PLAYER:
 			resp.setTitle("chunk.access_player.title");
-			boolean bcm = can_manage(container.player);
+			boolean bcm = can_manage(container.ldp);
 			if(bcm){
 				resp.addRow("access_player.info", ELM_GREEN, BLANK);
 				resp.addField("access_player.field");
@@ -305,13 +305,13 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 	}
 
 	@Override
-	public void on_interact(LDGuiContainer container, ModuleRequest req){
-		boolean canman = can_manage(container.player);
+	public void on_interact(BaseCon container, ModuleRequest req){
+		boolean canman = can_manage(container.ldp);
 		switch(req.event()){
 			case "access_interact":{
 				if(!canman) return;
 				access.interact = !access.interact;
-				container.sendSync();
+				container.sendResp();
 				return;
 			}
 			case "link": container.open(UI_LINK); return;
@@ -320,29 +320,29 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 				ChunkKey ckk = new ChunkKey(req.getField("link.field"));
 				Chunk_ ck = ResManager.getChunk(ckk);
 				if(ck == null){
-					container.sendMsg("link.notfound");
+					container.msg("link.notfound");
 					return;
 				}
 				if(ck.link != null && ck.link.root_key != null){
-					container.sendMsg("link.issub");
+					container.msg("link.issub");
 					return;
 				}
 				ChunkLink ckl = ck.link == null ? new ChunkLink(ck) : ck.link;
 				if(ckl.linked == null) ckl.linked = new ArrayList<>();
 				if(key.equals(ckk) || ckl.linked.contains(ckk)){
-					container.sendMsg("link.islinked");
+					container.msg("link.islinked");
 					return;
 				}
 				if(ckl.linked.size() > LDConfig.CHUNK_LINK_LIMIT){
-					container.sendMsg("link.limit");
+					container.msg("link.limit");
 					return;
 				}
 				if(!ckl.validate(key)){
-					container.sendMsg("link.noborder");
+					container.msg("link.noborder");
 					return;
 				}
 				if(!ck.owner.issame(owner)){
-					container.sendMsg("link.nosameowner");
+					container.msg("link.nosameowner");
 					return;
 				}
 				(ck.link = ckl).linked.add(key);
@@ -357,12 +357,12 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 			case "links.submit":{
 				if(!canman) return;
 				ChunkKey key = link.linked.get(req.getRadioInt("links.key"));
-				container.open(LDKeys.CHUNK, 0, key.x, key.z);
+				container.open(LDKeys.KEY_CHUNK, 0, key.x, key.z);
 				return;
 			}
 			case "linked": container.open(UI_LINKED); return;
 			case "linked.key":{
-				container.open(LDKeys.CHUNK, 0, link.root_key.x, link.root_key.z);
+				container.open(LDKeys.KEY_CHUNK, 0, link.root_key.x, link.root_key.z);
 				return;
 			}
 			case "linked.disconnect":{
@@ -377,7 +377,7 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 				return;
 			}
 			case "type": if(canman) container.open(UI_TYPE); return;
-			case "district": container.open(LDKeys.DISTRICT, 0, district.id, 0);
+			case "district": container.open(LDKeys.KEY_DISTRICT, 0, district.id, 0);
 			case "owner": if(canman) container.open(UI_OWNER); return;
 			case "price": if(!canman) container.open(UI_PRICE); return;
 			case "set_price": container.open(UI_SET_PRICE); return;
@@ -390,7 +390,7 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 				ChunkType type = ChunkType.get(req.getRadio("type."));
 				if(type == null) return;
 				if(owner.playerchunk && type == ChunkType.RESTRICTED){
-					container.sendMsg("select_type.notforplayerchunks");
+					container.msg("select_type.notforplayerchunks");
 					return;
 				}
 				this.type = type;
@@ -403,7 +403,7 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 				String val = req.getField("set_price.field");
 				long value = LDConfig.format_price(err, val);
 				if(err[0].length() > 0){
-					container.sendMsg(err[0], false);
+					container.msg(err[0], false);
 				}
 				else{
 					sell.price = value;
@@ -416,7 +416,7 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 				Layers layer = Layers.get(req.getRadio("set_owner."));
 				if(!layer.isValidChunkOwner2()) return;
 				if(layer.is(Layers.MUNICIPALITY) && district.owner.is_county){
-					container.sendMsg("landdev.district.not_part_of_municipality", false);
+					container.msg("landdev.district.not_part_of_municipality", false);
 					return;
 				}
 				owner.set(layer, null, getLayerId(layer));
@@ -429,29 +429,29 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 				Layers layer = radio.endsWith(".self") ? Layers.PLAYER : Layers.get(radio.replace("buy.", ""));
 				if(!layer.isValidChunkOwner()) return;
 				if(layer.is(Layers.MUNICIPALITY) && district.owner.is_county){
-					container.sendMsg("landdev.district.not_part_of_municipality", false);
+					container.msg("landdev.district.not_part_of_municipality", false);
 					return;
 				}
 				boolean npp = req.getCheck("buy.payer");
-				Account account = npp ? district.getLayerAccount(layer, container) : container.player.account;
+				Account account = npp ? district.getLayerAccount(layer, container) : container.ldp.account;
 				if(account == null) return;
 				if(account.getBalance() < sell.price){
-					container.sendMsg("buy.notenoughmoney");
+					container.msg("buy.notenoughmoney");
 					return;
 				}
-				if(!account.getBank().processAction(Action.TRANSFER, container.player.entity, account, sell.price, owner.getAccount(this))) return;
-				owner.set(layer, layer.is(Layers.PLAYER) ? container.player.uuid : null, district.getLayerId(layer));
+				if(!account.getBank().processAction(Action.TRANSFER, container.ldp.entity, account, sell.price, owner.getAccount(this))) return;
+				owner.set(layer, layer.is(Layers.PLAYER) ? container.ldp.uuid : null, district.getLayerId(layer));
 				sell.price = 0;
 				container.open(UI_MAIN);
 				return;
 			}
 			case "set_tax.submit":{
-				if(!district.can(CHUNK_CUSTOMTAX, container.player.uuid) && !container.player.adm) return;
+				if(!district.can(CHUNK_CUSTOMTAX, container.ldp.uuid) && !container.ldp.adm) return;
 				String val = req.getField("set_tax.field");
 				String[] err = new String[]{ "" };
 				long value = LDConfig.format_price(err, val);
 				if(err[0].length() > 0){
-					container.sendMsg(err[0], false);
+					container.msg(err[0], false);
 				}
 				else{
 					tax.custom_tax = value;
@@ -460,10 +460,10 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 				return;
 			}
 			case "access_player.add.submit":{
-				if(!can_manage(container.player)) return;
+				if(!can_manage(container.ldp)) return;
 				LDPlayer other = req.getPlayerField("access_player.field", true);
 				if(other == null){
-					container.sendMsg("access_player.notfound");
+					container.msg("access_player.notfound");
 					return;
 				}
 				access.players.put(other.uuid, 0l);
@@ -471,10 +471,10 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 				return;
 			}
 			case "access_player.rem.submit":{
-				if(!can_manage(container.player)) return;
+				if(!can_manage(container.ldp)) return;
 				UUID uuid = UUID.fromString(req.getRadio("access_player.id_"));
 				if(!access.players.containsKey(uuid)){
-					container.sendMsg("access_player.notfound");
+					container.msg("access_player.notfound");
 					return;
 				}
 				access.players.remove(uuid);
