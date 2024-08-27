@@ -6,6 +6,8 @@ import net.fexcraft.mod.landdev.data.chunk.ChunkRegion;
 import net.fexcraft.mod.landdev.db.Database;
 import net.fexcraft.mod.landdev.db.JsonFileDB;
 import net.fexcraft.mod.landdev.events.FsmmEventHooks;
+import net.fexcraft.mod.landdev.ui.BaseCon;
+import net.fexcraft.mod.landdev.ui.BaseUI;
 import net.fexcraft.mod.landdev.ui.LDKeys;
 import net.fexcraft.mod.landdev.util.LDConfig;
 import net.fexcraft.mod.landdev.util.Protector;
@@ -50,8 +52,8 @@ public class LDN {
 	public static void init(LandDev inst){
 		FsmmEventHooks.init();
 		UniReg.registerMod(MODID, inst);
-		UniReg.registerUI(LDKeys.UI_MAIN, UserInterface.class);
-		UniReg.registerMenu(LDKeys.UI_MAIN, "assets/landdev/uis/base", ContainerInterface.class);
+		UniReg.registerUI(LDKeys.UI_MAIN, BaseUI.class);
+		UniReg.registerMenu(LDKeys.UI_MAIN, "assets/landdev/uis/base", BaseCon.class);
 	}
 
 	public static void postinit(){
