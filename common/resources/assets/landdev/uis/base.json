@@ -5,14 +5,94 @@
 	"tabs": {
 		"top": {
 			"texture": "landdev:textures/ui/base.png",
-			"size": [ 255, 19 ],
+			"size": [ 225, 19 ],
 			"pos": [ 0, 0 ],
 			"texts": [ "title" ]
 		},
+		"bottom": {
+			"texture": "landdev:textures/ui/base.png",
+			"size": [ 225, 5 ],
+			"pos": [ 0, 19 ],
+			"uv": [ 0, 251 ]
+		},
+		"elm_green": {
+			"texture": "landdev:textures/ui/base.png",
+			"visible": false,
+			"size": [ 225, 14 ],
+			"pos": [ 0, 19 ],
+			"uv": [ 0, 19 ]
+		},
+		"elm_red": {
+			"texture": "landdev:textures/ui/base.png",
+			"visible": false,
+			"size": [ 225, 14 ],
+			"pos": [ 0, 19 ],
+			"uv": [ 0, 33 ]
+		},
+		"elm_blue": {
+			"texture": "landdev:textures/ui/base.png",
+			"visible": false,
+			"size": [ 225, 14 ],
+			"pos": [ 0, 19 ],
+			"uv": [ 0, 47 ]
+		},
+		"elm_generic": {
+			"texture": "landdev:textures/ui/base.png",
+			"visible": false,
+			"size": [ 225, 14 ],
+			"pos": [ 0, 19 ],
+			"uv": [ 0, 61 ]
+		},
+		"elm_empty": {
+			"texture": "landdev:textures/ui/base.png",
+			"visible": false,
+			"size": [ 225, 14 ],
+			"pos": [ 0, 19 ],
+			"uv": [ 0, 75 ]
+		},
+		"elm_blank": {
+			"texture": "landdev:textures/ui/base.png",
+			"visible": false,
+			"size": [ 225, 14 ],
+			"pos": [ 0, 19 ],
+			"uv": [ 0, 89 ]
+		},
+		"elm_yellow": {
+			"texture": "landdev:textures/ui/base.png",
+			"visible": false,
+			"size": [ 225, 14 ],
+			"pos": [ 0, 19 ],
+			"uv": [ 0, 103 ]
+		},
+		"scroll": {
+			"texture": "landdev:textures/ui/base.png",
+			"visible": false,
+			"size": [ 17, 32 ],
+			"pos": [ 221, 17 ],
+			"uv": [ 226, 17 ],
+			"buttons": [ "scroll_up", "scroll_down" ]
+		},
+		"icon": {
+			"texture": "landdev:textures/ui/base.png",
+			"visible": false,
+			"size": [ 31, 44 ],
+			"pos": [ -29, 18 ],
+			"uv": [ 225, 59 ],
+			"buttons": [ "color" ]
+		},
+		"back": {
+			"texture": "landdev:textures/ui/base.png",
+			"visible": false,
+			"size": [ 16, 18 ],
+			"pos": [ -13, 1 ],
+			"uv": [ 240, 0 ],
+			"buttons": [ "back" ]
+		},
 		"tab": {
 			"texture": "landdev:textures/ui/base.png",
-			"size": [ 255, 136 ],
+			"size": [ 225, 136 ],
 			"pos": [ 0, 0 ],
+			"visible": false,
 			"buttons": [],
 			"texts": [],
 			"fields": []
@@ -22,6 +102,96 @@
 		"button": {
 			"size": [ 0, 0 ],
 			"pos": [ 0, 0 ]
+		},
+		"add": {
+			"size": [ 12, 12 ],
+			"pos": [ 208, 20 ],
+			"uv": [ 208, 20 ]
+		},
+		"rem": {
+			"size": [ 12, 12 ],
+			"pos": [ 208, 20 ],
+			"uv": [ 208, 34 ]
+		},
+		"open": {
+			"size": [ 12, 12 ],
+			"pos": [ 208, 20 ],
+			"uv": [ 208, 48 ]
+		},
+		"up": {
+			"size": [ 12, 12 ],
+			"pos": [ 208, 20 ],
+			"uv": [ 208, 62 ]
+		},
+		"down": {
+			"size": [ 12, 12 ],
+			"pos": [ 208, 20 ],
+			"uv": [ 208, 76 ]
+		},
+		"blank": {
+			"size": [ 12, 12 ],
+			"pos": [ 208, 20 ],
+			"uv": [ 208, 90 ]
+		},
+		"list": {
+			"size": [ 12, 12 ],
+			"pos": [ 208, 20 ],
+			"uv": [ 208, 104 ]
+		},
+		"empty": {
+			"size": [ 12, 12 ],
+			"pos": [ 208, 20 ],
+			"uv": [ 208, 118 ]
+		},
+		"enabled": {
+			"size": [ 12, 12 ],
+			"pos": [ 208, 20 ],
+			"uv": [ 208, 132 ]
+		},
+		"disabled": {
+			"size": [ 12, 12 ],
+			"pos": [ 208, 20 ],
+			"uv": [ 208, 146 ]
+		},
+		"check+": {
+			"size": [ 12, 12 ],
+			"pos": [ 208, 20 ],
+			"uv": [ 208, 160 ]
+		},
+		"check-": {
+			"size": [ 12, 12 ],
+			"pos": [ 208, 20 ],
+			"uv": [ 208, 174 ]
+		},
+		"radio+": {
+			"size": [ 12, 12 ],
+			"pos": [ 208, 20 ],
+			"uv": [ 208, 188 ]
+		},
+		"radio-": {
+			"size": [ 12, 12 ],
+			"pos": [ 208, 20 ],
+			"uv": [ 208, 202 ]
+		},
+		"color": {
+			"size": [ 28, 8 ],
+			"pos": [ -26, 51 ],
+			"uv": [ 228, 92 ]
+		},
+		"scroll_up": {
+			"size": [ 11, 11 ],
+			"pos": [ 224, 21 ],
+			"uv": [ 229, 21 ]
+		},
+		"scroll_down": {
+			"size": [ 11, 11 ],
+			"pos": [ 224, 34 ],
+			"uv": [ 229, 34 ]
+		},
+		"back": {
+			"size": [ 11, 11 ],
+			"pos": [ -10, 4 ],
+			"uv": [ 243, 3 ]
 		}
 	},
 	"texts": {
