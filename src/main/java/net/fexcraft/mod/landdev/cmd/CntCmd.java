@@ -59,7 +59,7 @@ public class CntCmd extends CommandBase {
 		    			Print.chat(sender, translateCmd("ct.no_create_permit"));
 	    			}
 	    			else{
-						ply.entity.openUI(LDKeys.UI_COUNTY, County.UI_CREATE, 0, 0);
+						ply.entity.openUI(LDKeys.KEY_COUNTY, County.UI_CREATE, 0, 0);
 	    			}
 	    			return;
 	    		}
@@ -70,7 +70,7 @@ public class CntCmd extends CommandBase {
     		}
     	}
     	else{
-			ply.entity.openUI(LDKeys.UI_COUNTY, 0, chunk.district.county().id, 0);
+			ply.entity.openUI(LDKeys.KEY_COUNTY, 0, chunk.district.county().id, 0);
     	}
     }
 
