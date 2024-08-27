@@ -33,7 +33,7 @@ public class PlayerEvents {
 		player.entity = UniEntity.getEntity(event.player);
 		player.offline = false;
 		player.login = Time.getDate();
-		player.chunk_last = ResManager.getChunk(event.player);
+		player.chunk_last = ResManager.getChunkP(event.player);
 		TaxSystem.taxPlayer(player, null, false);
 		Broadcaster.send(NO_INTERNAL, BroadcastChannel.SERVER, null, translate("server.player_join", player.name_raw()));
     }
