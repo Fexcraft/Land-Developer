@@ -1,8 +1,8 @@
 package net.fexcraft.mod.landdev.ui.modules;
 
 import static net.fexcraft.mod.landdev.ui.LDKeys.*;
+import static net.fexcraft.mod.landdev.ui.LDUIButton.OPEN;
 import static net.fexcraft.mod.landdev.ui.LDUIElmType.ELM_GENERIC;
-import static net.fexcraft.mod.landdev.ui.LDUIElmType.ICON_OPEN;
 
 import net.fexcraft.mod.landdev.data.Layers;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
@@ -18,16 +18,16 @@ public class MainModule implements LDUIModule {
 	@Override
 	public void sync_packet(LDGuiContainer container, ModuleResponse resp){
 		resp.setTitle("main.title");
-		resp.addButton("player", ELM_GENERIC, ICON_OPEN);
-		resp.addButton("mail", ELM_GENERIC, ICON_OPEN);
-		resp.addButton("property", ELM_GENERIC, ICON_OPEN);
-		resp.addButton("company", ELM_GENERIC, ICON_OPEN);
+		resp.addButton("player", ELM_GENERIC, OPEN);
+		resp.addButton("mail", ELM_GENERIC, OPEN);
+		resp.addButton("property", ELM_GENERIC, OPEN);
+		resp.addButton("company", ELM_GENERIC, OPEN);
 		resp.addBlank();
-		resp.addButton("chunk", ELM_GENERIC, ICON_OPEN);
-		resp.addButton("district", ELM_GENERIC, ICON_OPEN);
-		resp.addButton("municipality", ELM_GENERIC, ICON_OPEN);
-		resp.addButton("county", ELM_GENERIC, ICON_OPEN);
-		resp.addButton("state", ELM_GENERIC, ICON_OPEN);
+		resp.addButton("chunk", ELM_GENERIC, OPEN);
+		resp.addButton("district", ELM_GENERIC, OPEN);
+		resp.addButton("municipality", ELM_GENERIC, OPEN);
+		resp.addButton("county", ELM_GENERIC, OPEN);
+		resp.addButton("state", ELM_GENERIC, OPEN);
 	}
 
 	public void on_interact(LDGuiContainer container, ModuleRequest req){
