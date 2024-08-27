@@ -28,7 +28,7 @@ public class WorldEvents {
 	@SubscribeEvent
 	public static void onExplosion(ExplosionEvent event){
 		if(event.getWorld().provider.getDimension() != 0 || event.getWorld().isRemote || !event.isCancelable()) return;
-		Chunk_ chunk = ResManager.getChunk(event.getExplosion().getPosition());
+		Chunk_ chunk = ResManager.getChunkS(event.getExplosion().getPosition().x, event.getExplosion().getPosition().z);
 		event.setCanceled(!chunk.district.norms.get("explosions").bool());
 	}
 	
