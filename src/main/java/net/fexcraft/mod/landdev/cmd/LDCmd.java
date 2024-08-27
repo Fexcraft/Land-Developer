@@ -7,6 +7,7 @@ import static net.fexcraft.mod.landdev.util.TranslationUtil.translate;
 import java.util.List;
 
 import net.fexcraft.lib.common.math.Time;
+import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.Print;
@@ -16,7 +17,6 @@ import net.fexcraft.mod.landdev.data.Mail;
 import net.fexcraft.mod.landdev.data.MailType;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.data.player.Player;
-import net.fexcraft.mod.landdev.gui.GuiHandler;
 import net.fexcraft.mod.landdev.ui.LDKeys;
 import net.fexcraft.mod.landdev.util.*;
 import net.fexcraft.mod.landdev.util.broad.DiscordTransmitter;
@@ -159,7 +159,7 @@ public class LDCmd extends CommandBase {
     			}
     		}
     	}
-    	player.openGui(-1, 0, (int)player.entity.getPos().x >> 4, (int)player.entity.getPos().z >> 4);
+		player.entity.openUI(LDKeys.UI_MAIN, new V3I(0, (int)player.entity.getPos().x >> 4, (int)player.entity.getPos().z >> 4));
     }
 
 }
