@@ -8,6 +8,7 @@ import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.common.utils.Formatter;
 import net.fexcraft.lib.mc.gui.GenericGui;
 import net.fexcraft.lib.mc.registry.UCResourceLocation;
+import net.fexcraft.mod.landdev.ui.LDUIButton;
 import net.fexcraft.mod.landdev.ui.LDUIElmType;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.resources.I18n;
@@ -48,9 +49,9 @@ public class LDGuiBase extends GenericGui<LDGuiContainer> {
 		container.send(Side.SERVER, com);
 	}
 
-	protected void addElm(String id, LDUIElmType elm, LDUIElmType icon, boolean text, boolean button, boolean field, String val){
+	protected void addElm(String id, LDUIElmType elm, LDUIButton icon, boolean text, boolean button, boolean field, String val){
 		if(!field) elements().add(new LDGuiElement(id + "_elm", elm).text(this, text ? id : null, val));
-		else elements().add(new LDGuiElement(id, elm).field(this, val, icon == LDUIElmType.ICON_BLANK));
+		else elements().add(new LDGuiElement(id, elm).field(this, val, icon == LDUIButton.BLANK));
 		elements().add(new LDGuiElement(id, icon).button(this, button));
 	}
 
@@ -148,7 +149,7 @@ public class LDGuiBase extends GenericGui<LDGuiContainer> {
 		if(container.checkboxes.size() > 0 || container.radioboxes.size() > 0){
 			BasicButton button = null;
 			for(LDGuiElement elm : elements()){
-				if(!elm.type.is_checkbox() && !elm.type.is_radiobox()) continue;
+				if(!elm.btype.isCheck() && !elm.btype.isRadio()) continue;
 				if((button = buttons.get(elm.index)) == null || !button.hovered) continue;
 				info.add(Formatter.format(I18n.format(elm.type.translation())));
 			}
