@@ -48,7 +48,7 @@ public class DisCmd extends CommandBase {
 		if(args.length > 0){
 			switch(args[0]){
 				case "create":{
-					ply.entity.openUI(LDKeys.UI_DISTRICT, District.UI_CREATE, 0, 0);
+					ply.entity.openUI(LDKeys.KEY_DISTRICT, District.UI_CREATE, 0, 0);
 					return;
 				}
 				default:{
@@ -58,7 +58,7 @@ public class DisCmd extends CommandBase {
 			}
 		}
 		else{
-			ply.entity.openUI(LDKeys.UI_DISTRICT, 0, chunk.district.id, 0);
+			ply.entity.openUI(LDKeys.KEY_DISTRICT, 0, chunk.district.id, 0);
 		}
 
     }
