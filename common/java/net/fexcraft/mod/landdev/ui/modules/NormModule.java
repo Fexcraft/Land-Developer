@@ -10,7 +10,7 @@ import java.util.Map.Entry;
 
 import net.fexcraft.mod.landdev.data.Norms;
 import net.fexcraft.mod.landdev.data.norm.Norm;
-import net.fexcraft.mod.landdev.gui.LDGuiContainer;
+import net.fexcraft.mod.landdev.ui.BaseCon;
 import net.fexcraft.mod.landdev.ui.LDUIButton;
 
 /**
@@ -19,15 +19,15 @@ import net.fexcraft.mod.landdev.ui.LDUIButton;
  */
 public class NormModule {
 
-	public static void processNorm(Norms norms, LDGuiContainer container, ModuleRequest req, int uiid){
-		Norm norm = norms.get(container.z);
+	public static void processNorm(Norms norms, BaseCon container, ModuleRequest req, int uiid){
+		Norm norm = norms.get(container.pos.z);
 		if(norm == null) return;
 		if(norm.type.isInteger()){
 			try{
 				norm.set(Integer.parseInt(req.getField("norm_field")));
 			}
 			catch(Exception e){
-				container.sendMsg("Error: " + e.getMessage());
+				container.msg("Error: " + e.getMessage());
 			}
 		}
 		else if(norm.type.isDecimal()){
@@ -35,7 +35,7 @@ public class NormModule {
 				norm.set(Float.parseFloat(req.getField("norm_field")));
 			}
 			catch(Exception e){
-				container.sendMsg("Error: " + e.getMessage());
+				container.msg("Error: " + e.getMessage());
 			}
 		}
 		else{
@@ -44,15 +44,15 @@ public class NormModule {
 		container.open(uiid);
 	}
 
-	public static void processBool(Norms norms, LDGuiContainer container, ModuleRequest req, int uiid){
-		Norm norm = norms.get(container.z);
+	public static void processBool(Norms norms, BaseCon container, ModuleRequest req, int uiid){
+		Norm norm = norms.get(container.pos.z);
 		if(norm == null) return;
 		if(!norm.type.isBool()) return;
 		norm.toggle();
 		container.open(uiid);
 	}
 
-	public static boolean isNormReq(Norms norms, LDGuiContainer container, ModuleRequest req, int uiid, int lid){
+	public static boolean isNormReq(Norms norms, BaseCon container, ModuleRequest req, int uiid, int lid){
 		if(!req.event().startsWith("norm.")) return false;
 		Norm norm = norms.get(req.event().substring(5));
 		if(norm == null) return false;
@@ -60,7 +60,7 @@ public class NormModule {
 		return true;
 	}
 
-	public static void respNormList(Norms norms, LDGuiContainer container, ModuleResponse resp, String prefix, boolean canman){
+	public static void respNormList(Norms norms, BaseCon container, ModuleResponse resp, String prefix, boolean canman){
 		resp.setTitle(prefix + ".norms");
 		LDUIButton icon = canman ? OPEN : EMPTY;
 		for(Entry<String, Norm> entry : norms.norms.entrySet()){
@@ -73,9 +73,9 @@ public class NormModule {
 		}
 	}
 
-	public static void respNormEdit(Norms norms, LDGuiContainer container, ModuleResponse resp, String prefix, boolean canman){
+	public static void respNormEdit(Norms norms, BaseCon container, ModuleResponse resp, String prefix, boolean canman){
 		resp.setTitle(prefix + ".norm_editor");
-		Norm norm = norms.get(container.z);
+		Norm norm = norms.get(container.pos.z);
 		if(norm == null) return;
 		resp.addRow("norm_id", ELM_GREEN, norm.id);
 		resp.addRow("norm_value", ELM_GENERIC, norm.string());
