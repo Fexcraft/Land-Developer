@@ -68,7 +68,7 @@ public class CkCmd extends CommandBase {
 			}
     	}
     	else{
-			UniEntity.getEntity(player).openUI(LDKeys.UI_CHUNK, 0, chunk.key.x, chunk.key.z);
+			UniEntity.getEntity(player).openUI(LDKeys.KEY_CHUNK, 0, chunk.key.x, chunk.key.z);
     	}
     }
 
