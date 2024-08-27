@@ -1,6 +1,7 @@
 package net.fexcraft.mod.landdev.data.municipality;
 
 import static net.fexcraft.mod.landdev.data.PermAction.*;
+import static net.fexcraft.mod.landdev.ui.LDUIButton.*;
 import static net.fexcraft.mod.landdev.ui.LDUIElmType.*;
 import static net.fexcraft.mod.landdev.util.ResManager.SERVER_ACCOUNT;
 import static net.fexcraft.mod.landdev.util.TranslationUtil.translate;
@@ -201,29 +202,29 @@ public class Municipality implements Saveable, Layer, LDUIModule {
 		switch(container.x){
 			case UI_MAIN:{
 				resp.addRow("id", ELM_GENERIC, id);
-				resp.addRow("name", ELM_GENERIC, canman ? ICON_OPEN : ICON_EMPTY, canman, name());
-				resp.addRow("muntitle", ELM_GENERIC, canman ? ICON_OPEN : ICON_EMPTY, canman, title());
-				resp.addButton("county", ELM_GENERIC, ICON_OPEN, county.name());
-				resp.addButton("districts", ELM_GENERIC, ICON_LIST, districts.size());
-				resp.addButton("citizen", ELM_GENERIC, ICON_LIST, citizens.size());
+				resp.addRow("name", ELM_GENERIC, canman ? OPEN : EMPTY, canman, name());
+				resp.addRow("muntitle", ELM_GENERIC, canman ? OPEN : EMPTY, canman, title());
+				resp.addButton("county", ELM_GENERIC, OPEN, county.name());
+				resp.addButton("districts", ELM_GENERIC, LIST, districts.size());
+				resp.addButton("citizen", ELM_GENERIC, LIST, citizens.size());
 				resp.addRow("manager", ELM_GENERIC, manage.getManagerName());
-				resp.addButton("staff", ELM_GENERIC, ICON_LIST, manage.staff.size());
+				resp.addButton("staff", ELM_GENERIC, LIST, manage.staff.size());
 				if(canman){
 					resp.addRow("balance", ELM_GENERIC, Config.getWorthAsString(account.getBalance()));
 				}
 				resp.addBlank();
 				if(sell.price > 0){
-					resp.addButton("price", ELM_GENERIC, ICON_OPEN, sell.price_formatted());
+					resp.addButton("price", ELM_GENERIC, OPEN, sell.price_formatted());
 				}
 				if(canman){
-					resp.addButton("set_price", ELM_GENERIC, ICON_OPEN);
+					resp.addButton("set_price", ELM_GENERIC, OPEN);
 				}
 				if(sell.price > 0) resp.addBlank();
 				if(canman){
-					resp.addButton("mailbox", ELM_GENERIC, ICON_OPEN, mail.unread());
+					resp.addButton("mailbox", ELM_GENERIC, OPEN, mail.unread());
 				}
-				resp.addButton("norms", ELM_GREEN, ICON_OPEN);
-				resp.addButton("appearance", ELM_YELLOW, ICON_OPEN);
+				resp.addButton("norms", ELM_GREEN, OPEN);
+				resp.addButton("appearance", ELM_YELLOW, OPEN);
 				return;
 			}
 			case UI_CITIZEN_LIST:{
@@ -235,7 +236,7 @@ public class Municipality implements Saveable, Layer, LDUIModule {
 					resp.addRow("citizen.closed", ELM_RED);
 				}
 				if(manage.can(PermAction.PLAYER_INVITE, container.player.uuid) || container.player.adm){
-					resp.addButton("citizen.invite", ELM_BLUE, ICON_ADD);
+					resp.addButton("citizen.invite", ELM_BLUE, ADD);
 				}
 				if(container.player.municipality.id != id){
 					long to = requests.get(container.player);
@@ -250,20 +251,20 @@ public class Municipality implements Saveable, Layer, LDUIModule {
 					}
 					else{
 						if(opentojoin()){
-							resp.addButton("citizen.join", ELM_BLUE, ICON_ADD);
+							resp.addButton("citizen.join", ELM_BLUE, ADD);
 						}
 						else{
-							resp.addButton("citizen.request", ELM_BLUE, ICON_ADD);
+							resp.addButton("citizen.request", ELM_BLUE, ADD);
 						}
 					}
 				}
 				else{
-					resp.addButton("citizen.leave", ELM_RED, ICON_REM);
+					resp.addButton("citizen.leave", ELM_RED, REM);
 				}
 				resp.addBlank();
 				resp.addRow("citizen.list", ELM_YELLOW);
 				for(UUID uuid : citizens.map().keySet()){
-					resp.addButton("citizen.edit." + uuid, ELM_GENERIC, ICON_OPEN, VALONLY + "- " + ResManager.getPlayerName(uuid));
+					resp.addButton("citizen.edit." + uuid, ELM_GENERIC, OPEN, VALONLY + "- " + ResManager.getPlayerName(uuid));
 				}
 				return;
 			}
@@ -273,7 +274,7 @@ public class Municipality implements Saveable, Layer, LDUIModule {
 				resp.addRow("citizen.name", ELM_GENERIC, cit.getPlayerName());
 				resp.addRow("citizen.uuid", ELM_GENERIC, cit.uuid);
 				if(container.player.adm){
-					resp.addButton("citizen.remove", ELM_RED, ICON_REM);
+					resp.addButton("citizen.remove", ELM_RED, REM);
 				}
 				resp.addHiddenField("uuid", cit.uuid);
 				resp.addBlank();
@@ -289,7 +290,7 @@ public class Municipality implements Saveable, Layer, LDUIModule {
 				resp.addRow("id", ELM_GENERIC, id);
 				resp.addRow("citizen.invite.info", ELM_YELLOW);
 				resp.addField("citizen.invite.field");
-				resp.addButton("citizen.invite.submit", ELM_GENERIC, ICON_OPEN);
+				resp.addButton("citizen.invite.submit", ELM_GENERIC, OPEN);
 				resp.setFormular();
 				return;
 			}
@@ -297,11 +298,11 @@ public class Municipality implements Saveable, Layer, LDUIModule {
 				resp.setTitle("municipality.staff.title");
 				resp.addRow("id", ELM_GENERIC, id);
 				resp.addRow("manager", ELM_GENERIC, manage.getManagerName());
-				resp.addButton("staff.add", ELM_BLUE, ICON_ADD);
+				resp.addButton("staff.add", ELM_BLUE, ADD);
 				resp.addBlank();
 				resp.addRow("staff.list", ELM_YELLOW);
 				for(Staff staff : manage.staff){
-					resp.addButton("staff.edit." + staff.uuid, ELM_GENERIC, ICON_OPEN, VALONLY + "- " + staff.getPlayerName());
+					resp.addButton("staff.edit." + staff.uuid, ELM_GENERIC, OPEN, VALONLY + "- " + staff.getPlayerName());
 				}
 				return;
 			}
@@ -311,8 +312,8 @@ public class Municipality implements Saveable, Layer, LDUIModule {
 				resp.addRow("staff.name", ELM_GENERIC, staff.getPlayerName());
 				resp.addRow("staff.uuid", ELM_GENERIC, staff.uuid);
 				if(container.player.adm || !manage.isManager(staff)){
-					resp.addButton("staff.remove", ELM_RED, ICON_REM);
-					resp.addButton("staff.setmanager", ELM_BLUE, ICON_ADD);
+					resp.addButton("staff.remove", ELM_RED, REM);
+					resp.addButton("staff.setmanager", ELM_BLUE, ADD);
 				}
 				resp.addHiddenField("uuid", staff.uuid);
 				resp.addBlank();
@@ -328,31 +329,31 @@ public class Municipality implements Saveable, Layer, LDUIModule {
 				resp.addRow("id", ELM_GENERIC, id);
 				resp.addRow("staff.add.info", ELM_YELLOW);
 				resp.addField("staff.add.field");
-				resp.addButton("staff.add.submit", ELM_GENERIC, ICON_OPEN);
+				resp.addButton("staff.add.submit", ELM_GENERIC, OPEN);
 				resp.setFormular();
 				return;
 			}
 			case UI_DISTRICTS:{
 				resp.setTitle("municipality.districts.title");
 				for(int id : districts){
-					resp.addButton("district." + id, ELM_GENERIC, ICON_OPEN, VALONLY + ResManager.getDistrict(id).name());//TODO name cache
+					resp.addButton("district." + id, ELM_GENERIC, OPEN, VALONLY + ResManager.getDistrict(id).name());//TODO name cache
 				}
 				return;
 			}
 			case UI_PRICE:
 				resp.setTitle("municipality.buy.title");
-				resp.addRow("id", ELM_GENERIC, ICON_BLANK, id);
-				resp.addRow("buy.info0", ELM_YELLOW, ICON_BLANK, null);
-				resp.addRow("buy.info1", ELM_YELLOW, ICON_BLANK, null);
-				resp.addButton("buy.county_pays", ELM_GENERIC, ICON_CHECKBOX_UNCHECKED);
-				resp.addButton("buy.submit", ELM_GENERIC, ICON_OPEN);
+				resp.addRow("id", ELM_GENERIC, BLANK, id);
+				resp.addRow("buy.info0", ELM_YELLOW, BLANK, null);
+				resp.addRow("buy.info1", ELM_YELLOW, BLANK, null);
+				resp.addButton("buy.county_pays", ELM_GENERIC, CHECK_UNCHECKED);
+				resp.addButton("buy.submit", ELM_GENERIC, OPEN);
 				resp.setFormular();
 				return;
 			case UI_SET_PRICE:
 				resp.setTitle("municipality.set_price.title");
-				resp.addRow("id", ELM_GENERIC, ICON_BLANK, id);
+				resp.addRow("id", ELM_GENERIC, BLANK, id);
 				resp.addField("set_price.field");
-				resp.addButton("set_price.submit", ELM_GENERIC, ICON_OPEN);
+				resp.addButton("set_price.submit", ELM_GENERIC, OPEN);
 				resp.setFormular();
 				return;
 			case UI_APPREARANCE:
@@ -372,14 +373,14 @@ public class Municipality implements Saveable, Layer, LDUIModule {
 				boolean cn = county.norms.get("new-municipalities").bool();
 				boolean pp = container.player.hasPermit(CREATE_MUNICIPALITY, county.getLayer(), county.id);
 				if(!cn && !pp){
-					resp.addRow("create.no_perm", ELM_GENERIC, ICON_BLANK);
+					resp.addRow("create.no_perm", ELM_GENERIC, BLANK);
 					return;
 				}
 				resp.addRow("create.name", ELM_GENERIC);
 				resp.addField("create.name_field");
 				resp.addCheck("create.county_funded", ELM_GENERIC, pp);
 				resp.addCheck("create.claim_district", ELM_GENERIC, pp);
-				resp.addButton("create.submit", ELM_BLUE, ICON_OPEN);
+				resp.addButton("create.submit", ELM_BLUE, OPEN);
 				resp.setFormular();
 				resp.setNoBack();
 				return;
