@@ -18,8 +18,6 @@ import net.fexcraft.mod.landdev.util.broad.Broadcaster;
 import net.fexcraft.mod.landdev.util.broad.DiscordTransmitter;
 import net.fexcraft.mod.uni.UniChunk;
 import net.fexcraft.mod.uni.UniReg;
-import net.fexcraft.mod.uni.ui.ContainerInterface;
-import net.fexcraft.mod.uni.ui.UserInterface;
 
 import java.io.File;
 import java.time.LocalDate;
@@ -52,8 +50,8 @@ public class LDN {
 	public static void init(LandDev inst){
 		FsmmEventHooks.init();
 		UniReg.registerMod(MODID, inst);
-		UniReg.registerUI(LDKeys.UI_MAIN, BaseUI.class);
-		UniReg.registerMenu(LDKeys.UI_MAIN, "assets/landdev/uis/base", BaseCon.class);
+		UniReg.registerUI(LDKeys.KEY_MAIN, BaseUI.class);
+		UniReg.registerMenu(LDKeys.KEY_MAIN, "assets/landdev/uis/base", BaseCon.class);
 	}
 
 	public static void postinit(){
