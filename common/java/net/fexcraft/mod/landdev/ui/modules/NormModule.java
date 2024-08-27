@@ -1,9 +1,8 @@
 package net.fexcraft.mod.landdev.ui.modules;
 
+import static net.fexcraft.mod.landdev.ui.LDUIButton.*;
 import static net.fexcraft.mod.landdev.ui.LDUIElmType.*;
 import static net.fexcraft.mod.landdev.ui.LDUIElmType.ELM_BLUE;
-import static net.fexcraft.mod.landdev.ui.LDUIElmType.ICON_DISABLED;
-import static net.fexcraft.mod.landdev.ui.LDUIElmType.ICON_ENABLED;
 import static net.fexcraft.mod.landdev.ui.LDUIModule.LANG_NO;
 import static net.fexcraft.mod.landdev.ui.LDUIModule.LANG_YES;
 
@@ -12,10 +11,10 @@ import java.util.Map.Entry;
 import net.fexcraft.mod.landdev.data.Norms;
 import net.fexcraft.mod.landdev.data.norm.Norm;
 import net.fexcraft.mod.landdev.gui.LDGuiContainer;
-import net.fexcraft.mod.landdev.ui.LDUIElmType;
+import net.fexcraft.mod.landdev.ui.LDUIButton;
 
 /**
- * Standarized Norm List/Editor across all Layers
+ * Standardised Norm List/Editor across all Layers
  * @author Ferdindand Calo'
  */
 public class NormModule {
@@ -63,7 +62,7 @@ public class NormModule {
 
 	public static void respNormList(Norms norms, LDGuiContainer container, ModuleResponse resp, String prefix, boolean canman){
 		resp.setTitle(prefix + ".norms");
-		LDUIElmType icon = canman ? ICON_OPEN : ICON_EMPTY;
+		LDUIButton icon = canman ? OPEN : EMPTY;
 		for(Entry<String, Norm> entry : norms.norms.entrySet()){
 			if(entry.getValue().type.isBool()){
 				resp.addRow("norm." + entry.getKey(), ELM_GENERIC, icon, canman, entry.getValue().bool() ? LANG_YES : LANG_NO);
@@ -82,11 +81,11 @@ public class NormModule {
 		resp.addRow("norm_value", ELM_GENERIC, norm.string());
 		if(!canman) return;
 		if(norm.type.isBool()){
-			resp.addButton("norm_bool", ELM_BLUE, norm.bool() ? ICON_ENABLED : ICON_DISABLED);
+			resp.addButton("norm_bool", ELM_BLUE, norm.bool() ? ENABLED : DISABLED);
 		}
 		else{
 			resp.addField("norm_field", norm.string());
-			resp.addButton("norm_submit", ELM_BLUE, ICON_OPEN);
+			resp.addButton("norm_submit", ELM_BLUE, OPEN);
 			resp.setFormular();
 		}
 	}
