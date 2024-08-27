@@ -8,7 +8,7 @@ import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.mod.landdev.data.Layer;
 import net.fexcraft.mod.landdev.data.Layers;
 import net.fexcraft.mod.landdev.data.Saveable;
-import net.fexcraft.mod.landdev.gui.LDGuiContainer;
+import net.fexcraft.mod.landdev.ui.BaseCon;
 import net.fexcraft.mod.landdev.ui.LDUIModule;
 import net.fexcraft.mod.landdev.ui.modules.ModuleRequest;
 import net.fexcraft.mod.landdev.ui.modules.ModuleResponse;
@@ -68,7 +68,7 @@ public class ExternalData implements Saveable, LDUIModule {
 	 * Does get called only if any default behaviour didn't return true already.
 	 */
 	@Override
-	public void sync_packet(LDGuiContainer container, ModuleResponse resp){
+	public void sync_packet(BaseCon container, ModuleResponse resp){
 		for(LDUISubModule submod : modules) if(submod.sync_packet(module, container, resp)) return ;
 	}
 
@@ -76,7 +76,7 @@ public class ExternalData implements Saveable, LDUIModule {
 	 * Does get called only if any default behaviour didn't return true already.
 	 */
 	@Override
-	public void on_interact(LDGuiContainer container, ModuleRequest req){
+	public void on_interact(BaseCon container, ModuleRequest req){
 		for(LDUISubModule submod : modules) if(submod.on_interact(module, container, req)) return;
 	}
 
