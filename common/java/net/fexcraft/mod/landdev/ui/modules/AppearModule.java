@@ -6,7 +6,7 @@ import static net.fexcraft.mod.landdev.ui.LDUIElmType.ELM_GENERIC;
 
 import net.fexcraft.mod.landdev.data.ColorData;
 import net.fexcraft.mod.landdev.data.IconHolder;
-import net.fexcraft.mod.landdev.gui.LDGuiContainer;
+import net.fexcraft.mod.landdev.ui.BaseCon;
 
 /**
  * Standarized Appearance Editor across all Layers
@@ -14,7 +14,7 @@ import net.fexcraft.mod.landdev.gui.LDGuiContainer;
  */
 public class AppearModule {
 
-	public static void resp(LDGuiContainer container, ModuleResponse resp, String prefix, IconHolder icon, ColorData color, boolean canman){
+	public static void resp(BaseCon container, ModuleResponse resp, String prefix, IconHolder icon, ColorData color, boolean canman){
 		resp.setTitle(prefix + ".appearance.title");
 		resp.addRow("appearance.icon", ELM_GENERIC);
 		resp.addField("appearance.icon_field", icon.getn());
@@ -26,7 +26,7 @@ public class AppearModule {
 		}
 	}
 
-	public static void req(LDGuiContainer container, ModuleRequest req, IconHolder icon, ColorData color){
+	public static void req(BaseCon container, ModuleRequest req, IconHolder icon, ColorData color){
 		icon.set(req.getField("appearance.icon_field"));
 		try{
 			color.set(req.getField("appearance.color_field"));
