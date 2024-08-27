@@ -2,6 +2,7 @@ package net.fexcraft.mod.landdev.data.county;
 
 import static net.fexcraft.mod.landdev.data.PermAction.*;
 import static net.fexcraft.mod.landdev.ui.LDKeys.MAILBOX;
+import static net.fexcraft.mod.landdev.ui.LDUIButton.*;
 import static net.fexcraft.mod.landdev.ui.LDUIElmType.*;
 import static net.fexcraft.mod.landdev.util.TranslationUtil.translate;
 
@@ -189,30 +190,30 @@ public class County implements Saveable, Layer, LDUIModule {
 		switch(container.x){
 			case UI_MAIN:{
 				resp.addRow("id", ELM_GENERIC, id);
-				resp.addRow("name", ELM_GENERIC, canman ? ICON_OPEN : ICON_EMPTY, canman, name());
-				if(main != null) resp.addButton("seat", ELM_GENERIC, ICON_OPEN, main.name());
-				resp.addButton("state", ELM_GENERIC, ICON_OPEN, state.name());
-				resp.addButton("municipalities", ELM_GENERIC, ICON_LIST, municipalities.size());
-				resp.addButton("districts", ELM_GENERIC, ICON_LIST, districts.size());
-				resp.addButton("citizen", ELM_GENERIC, ICON_LIST, citizens.size());
+				resp.addRow("name", ELM_GENERIC, canman ? OPEN : EMPTY, canman, name());
+				if(main != null) resp.addButton("seat", ELM_GENERIC, OPEN, main.name());
+				resp.addButton("state", ELM_GENERIC, OPEN, state.name());
+				resp.addButton("municipalities", ELM_GENERIC, LIST, municipalities.size());
+				resp.addButton("districts", ELM_GENERIC, LIST, districts.size());
+				resp.addButton("citizen", ELM_GENERIC, LIST, citizens.size());
 				resp.addRow("manager", ELM_GENERIC, manage.getManagerName());
-				resp.addButton("staff", ELM_GENERIC, ICON_LIST, manage.staff.size());
+				resp.addButton("staff", ELM_GENERIC, LIST, manage.staff.size());
 				if(canman){
 					resp.addRow("balance", ELM_GENERIC, Config.getWorthAsString(account.getBalance()));
 				}
 				resp.addBlank();
 				if(sell.price > 0){
-					resp.addButton("price", ELM_GENERIC, ICON_OPEN, sell.price_formatted());
+					resp.addButton("price", ELM_GENERIC, OPEN, sell.price_formatted());
 				}
 				if(canman){
-					resp.addButton("set_price", ELM_GENERIC, ICON_OPEN);
+					resp.addButton("set_price", ELM_GENERIC, OPEN);
 				}
 				if(sell.price > 0) resp.addBlank();
 				if(canman){
-					resp.addButton("mailbox", ELM_GENERIC, ICON_OPEN, mail.unread());
+					resp.addButton("mailbox", ELM_GENERIC, OPEN, mail.unread());
 				}
-				resp.addButton("norms", ELM_GREEN, ICON_OPEN);
-				resp.addButton("appearance", ELM_YELLOW, ICON_OPEN);
+				resp.addButton("norms", ELM_GREEN, OPEN);
+				resp.addButton("appearance", ELM_YELLOW, OPEN);
 				return;
 			}
 			//
