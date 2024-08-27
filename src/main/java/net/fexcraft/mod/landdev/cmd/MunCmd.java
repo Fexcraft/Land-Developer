@@ -8,7 +8,9 @@ import java.util.List;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.data.county.County;
+import net.fexcraft.mod.landdev.data.municipality.Municipality;
 import net.fexcraft.mod.landdev.data.player.Player;
+import net.fexcraft.mod.landdev.ui.LDKeys;
 import net.fexcraft.mod.landdev.util.AliasLoader;
 import net.fexcraft.mod.landdev.util.ResManager;
 import net.minecraft.command.CommandBase;
@@ -44,7 +46,7 @@ public class MunCmd extends CommandBase {
     public void execute(MinecraftServer server, ICommandSender sender, String[] args){ 
     	if(sender instanceof EntityPlayer == false) return;
     	Player ply = ResManager.getPlayer((EntityPlayer)sender);
-		Chunk_ chunk = ResManager.getChunk(sender.getCommandSenderEntity());
+		Chunk_ chunk = ResManager.getChunkP(sender.getCommandSenderEntity());
     	if(args.length > 0){
     		switch(args[0]){
 	    		case "create":{
@@ -56,7 +58,7 @@ public class MunCmd extends CommandBase {
 		    			Print.chat(sender, translateCmd("mun.no_create_permit"));
 	    			}
 	    			else{
-	    				//TODO ply.entity.openGui(LandDev.INSTANCE, GuiHandler.MUNICIPALITY, sender.getEntityWorld(), Municipality.UI_CREATE, 0, 0);
+	    				ply.entity.openUI(LDKeys.UI_MUNICIPALITY, Municipality.UI_CREATE, 0, 0);
 	    			}
 	    			return;
 	    		}
@@ -71,7 +73,7 @@ public class MunCmd extends CommandBase {
     			Print.chat(sender, translateCmd("mun.not_in_a_municipality"));
     			return;
     		}
-        	//TODO ply.entity.openGui(LandDev.INSTANCE, GuiHandler.MUNICIPALITY, sender.getEntityWorld(), 0, chunk.district.municipality().id, 0);
+        	ply.entity.openUI(LDKeys.UI_MUNICIPALITY, 0, chunk.district.municipality().id, 0);
     	}
     }
 
