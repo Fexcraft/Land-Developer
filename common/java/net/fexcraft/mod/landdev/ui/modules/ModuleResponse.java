@@ -1,10 +1,11 @@
 package net.fexcraft.mod.landdev.ui.modules;
 
+import static net.fexcraft.mod.landdev.ui.LDUIButton.BLANK;
+import static net.fexcraft.mod.landdev.ui.LDUIButton.checkbox;
+import static net.fexcraft.mod.landdev.ui.LDUIButton.radio;
 import static net.fexcraft.mod.landdev.ui.LDUIElmType.ELM_BLANK;
-import static net.fexcraft.mod.landdev.ui.LDUIElmType.ICON_BLANK;
-import static net.fexcraft.mod.landdev.ui.LDUIElmType.checkbox;
-import static net.fexcraft.mod.landdev.ui.LDUIElmType.radio;
 
+import net.fexcraft.mod.landdev.ui.LDUIButton;
 import net.fexcraft.mod.landdev.ui.LDUIElmType;
 import net.fexcraft.mod.landdev.ui.LDUIModule;
 import net.fexcraft.mod.uni.tag.TagCW;
@@ -53,44 +54,44 @@ public class ModuleResponse {
 	}
 
 	public void addRow(String id, LDUIElmType style){
-		addEntry(list, id, style, ICON_BLANK, false, false, null);
+		addEntry(list, id, style, BLANK, false, false, null);
 	}
 
 	public void addRow(String id, LDUIElmType style, Object value){
-		addEntry(list, id, style, ICON_BLANK, false, false, value);
+		addEntry(list, id, style, BLANK, false, false, value);
 	}
 
-	public void addRow(String id, LDUIElmType style, LDUIElmType icon){
+	public void addRow(String id, LDUIElmType style, LDUIButton icon){
 		addEntry(list, id, style, icon, false, false, null);
 	}
 
-	public void addRow(String id, LDUIElmType style, LDUIElmType icon, Object value){
+	public void addRow(String id, LDUIElmType style, LDUIButton icon, Object value){
 		addEntry(list, id, style, icon, false, false, value);
 	}
 
-	public void addRow(String id, LDUIElmType style, LDUIElmType icon, boolean button, Object value){
+	public void addRow(String id, LDUIElmType style, LDUIButton icon, boolean button, Object value){
 		addEntry(list, id, style, icon, button, false, value);
 	}
 
-	public void addButton(String id, LDUIElmType style, LDUIElmType icon){
+	public void addButton(String id, LDUIElmType style, LDUIButton icon){
 		addEntry(list, id, style, icon, true, false, null);
 	}
 
-	public void addButton(String id, LDUIElmType style, LDUIElmType icon, Object value){
+	public void addButton(String id, LDUIElmType style, LDUIButton icon, Object value){
 		addEntry(list, id, style, icon, true, false, value);
 	}
 
 	public void addField(String id){
-		addEntry(list, id, ELM_BLANK, ELM_BLANK, false, true, null);
+		addEntry(list, id, ELM_BLANK, BLANK, false, true, null);
 	}
 
 	public void addField(String id, Object value){
-		addEntry(list, id, ELM_BLANK, ELM_BLANK, false, true, value);
+		addEntry(list, id, ELM_BLANK, BLANK, false, true, value);
 	}
 
 	/** Also sets the response into a Formular */
 	public void addHiddenField(String id, Object value){
-		addEntry(list, id, ELM_BLANK, ELM_BLANK, false, true, value, false, true);
+		addEntry(list, id, ELM_BLANK, BLANK, false, true, value, false, true);
 		setFormular();
 	}
 
@@ -111,20 +112,20 @@ public class ModuleResponse {
 	}
 
 	public void addBlank(){
-		addEntry(list, "spacer", ELM_BLANK, ICON_BLANK, false, false, null);
+		addEntry(list, "spacer", ELM_BLANK, BLANK, false, false, null);
 	}
 
 	//
 
-	public void addEntry(TagLW root, String index, LDUIElmType elm, LDUIElmType icon, boolean button, boolean field, Object value){
+	public void addEntry(TagLW root, String index, LDUIElmType elm, LDUIButton icon, boolean button, boolean field, Object value){
 		addEntry(root, index, elm, icon, button, field, value, false);
 	}
 
-	public void addEntry(TagLW root, String index, LDUIElmType elm, LDUIElmType icon, boolean button, boolean field, Object value, boolean valonly){
+	public void addEntry(TagLW root, String index, LDUIElmType elm, LDUIButton icon, boolean button, boolean field, Object value, boolean valonly){
 		addEntry(root, index, elm, icon, button, field, value, valonly, false);
 	}
 
-	public void addEntry(TagLW root, String index, LDUIElmType elm, LDUIElmType icon, boolean button, boolean field, Object value, boolean valonly, boolean hidefield){
+	public void addEntry(TagLW root, String index, LDUIElmType elm, LDUIButton icon, boolean button, boolean field, Object value, boolean valonly, boolean hidefield){
 		TagLW list = TagLW.create();
 		list.add(index);
 		list.add(elm.name());
