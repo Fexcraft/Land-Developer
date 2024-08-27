@@ -1,6 +1,7 @@
 package net.fexcraft.mod.landdev.ui.modules;
 
 import static net.fexcraft.mod.landdev.data.PermAction.*;
+import static net.fexcraft.mod.landdev.ui.LDUIButton.*;
 import static net.fexcraft.mod.landdev.ui.LDUIElmType.*;
 import static net.fexcraft.mod.landdev.util.TranslationUtil.translate;
 
@@ -56,8 +57,8 @@ public class MailModule implements LDUIModule {
 				resp.addRow("expired", ELM_RED);
 			}
 			else{
-				resp.addButton("invite.accept", ELM_GREEN, ICON_ADD);
-				resp.addButton("invite.reject", ELM_RED, ICON_REM);
+				resp.addButton("invite.accept", ELM_GREEN, ADD);
+				resp.addButton("invite.reject", ELM_RED, REM);
 			}
 		}
 		if(mail.request()){
@@ -65,12 +66,12 @@ public class MailModule implements LDUIModule {
 				resp.addRow("expired", ELM_RED);
 			}
 			else{
-				resp.addButton("request.accept", ELM_GREEN, ICON_ADD);
-				resp.addButton("request.reject", ELM_RED, ICON_REM);
-				resp.addButton("request.timeout", ELM_YELLOW, ICON_REM, LDConfig.REQUEST_TIMEOUT_DAYS);
+				resp.addButton("request.accept", ELM_GREEN, ADD);
+				resp.addButton("request.reject", ELM_RED, REM);
+				resp.addButton("request.timeout", ELM_YELLOW, REM, LDConfig.REQUEST_TIMEOUT_DAYS);
 			}
 		}
-		resp.addButton("goback", ELM_GENERIC, ICON_LIST);
+		resp.addButton("goback", ELM_GENERIC, LIST);
 	}
 
 	public void on_interact(LDGuiContainer container, ModuleRequest req){
