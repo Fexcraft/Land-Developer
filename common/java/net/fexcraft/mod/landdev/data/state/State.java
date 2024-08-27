@@ -15,7 +15,7 @@ import net.fexcraft.mod.landdev.data.norm.BoolNorm;
 import net.fexcraft.mod.landdev.data.norm.FloatNorm;
 import net.fexcraft.mod.landdev.data.norm.IntegerNorm;
 import net.fexcraft.mod.landdev.data.norm.StringNorm;
-import net.fexcraft.mod.landdev.gui.LDGuiContainer;
+import net.fexcraft.mod.landdev.ui.BaseCon;
 import net.fexcraft.mod.landdev.ui.LDUIModule;
 import net.fexcraft.mod.landdev.ui.modules.ModuleRequest;
 import net.fexcraft.mod.landdev.ui.modules.ModuleResponse;
@@ -133,12 +133,12 @@ public class State implements Saveable, Layer, LDUIModule {
 	}
 
 	@Override
-	public void sync_packet(LDGuiContainer container, ModuleResponse resp){
+	public void sync_packet(BaseCon container, ModuleResponse resp){
 		//
 	}
 
 	@Override
-	public void on_interact(LDGuiContainer container, ModuleRequest req){
+	public void on_interact(BaseCon container, ModuleRequest req){
 		//
 	}
 
