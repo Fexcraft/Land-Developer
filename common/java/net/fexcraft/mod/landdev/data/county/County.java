@@ -1,6 +1,7 @@
 package net.fexcraft.mod.landdev.data.county;
 
 import static net.fexcraft.mod.landdev.data.PermAction.*;
+import static net.fexcraft.mod.landdev.ui.LDKeys.KEY_MAILBOX;
 import static net.fexcraft.mod.landdev.ui.LDKeys.MAILBOX;
 import static net.fexcraft.mod.landdev.ui.LDUIButton.*;
 import static net.fexcraft.mod.landdev.ui.LDUIElmType.*;
@@ -22,7 +23,7 @@ import net.fexcraft.mod.landdev.data.norm.IntegerNorm;
 import net.fexcraft.mod.landdev.data.norm.StringNorm;
 import net.fexcraft.mod.landdev.data.player.LDPlayer;
 import net.fexcraft.mod.landdev.data.state.State;
-import net.fexcraft.mod.landdev.gui.LDGuiContainer;
+import net.fexcraft.mod.landdev.ui.BaseCon;
 import net.fexcraft.mod.landdev.ui.LDUIModule;
 import net.fexcraft.mod.landdev.ui.LDKeys;
 import net.fexcraft.mod.landdev.ui.modules.AppearModule;
@@ -184,10 +185,10 @@ public class County implements Saveable, Layer, LDUIModule {
 	public static final int UI_APPREARANCE = 13;
 
 	@Override
-	public void sync_packet(LDGuiContainer container, ModuleResponse resp){
+	public void sync_packet(BaseCon container, ModuleResponse resp){
 		resp.setTitle("county.title");
-		boolean canman = manage.can(MANAGE_COUNTY, container.player.uuid) || container.player.adm;
-		switch(container.x){
+		boolean canman = manage.can(MANAGE_COUNTY, container.ldp.uuid) || container.ldp.adm;
+		switch(container.pos.x){
 			case UI_MAIN:{
 				resp.addRow("id", ELM_GENERIC, id);
 				resp.addRow("name", ELM_GENERIC, canman ? OPEN : EMPTY, canman, name());
@@ -234,24 +235,24 @@ public class County implements Saveable, Layer, LDUIModule {
 	}
 
 	@Override
-	public void on_interact(LDGuiContainer container, ModuleRequest req){
-		LDPlayer player = container.player;
-		boolean canman = manage.can(MANAGE_MUNICIPALITY, container.player.uuid) || container.player.adm;
+	public void on_interact(BaseCon container, ModuleRequest req){
+		LDPlayer player = container.ldp;
+		boolean canman = manage.can(MANAGE_MUNICIPALITY, container.ldp.uuid) || container.ldp.adm;
 		switch(req.event()){
 			case "name":{
 				if(!canman) return;
 				container.open(UI_NORM_EDIT, id, norms.index(norms.get("name")));
 				return;
 			}
-			case "seat": if(main != null) container.open(LDKeys.MUNICIPALITY, 0, main.id, 0);return;
-			case "state": container.open(LDKeys.STATE, 0, state.id, 0); return;
+			case "seat": if(main != null) container.open(LDKeys.KEY_MUNICIPALITY, 0, main.id, 0);return;
+			case "state": container.open(LDKeys.KEY_STATE, 0, state.id, 0); return;
 			case "citizen": container.open(UI_CITIZEN_LIST); return;
 			case "municipalities": container.open(UI_MUNICIPALITIES); return;
 			case "districts": container.open(UI_DISTRICTS); return;
 			case "staff": container.open(UI_STAFF_LIST); return;
 			case "price": container.open(UI_PRICE); return;
 			case "set_price": if(canman) container.open(UI_SET_PRICE); return;
-			case "mailbox": if(canman) container.open(MAILBOX, getLayer().ordinal(), id, 0); return;
+			case "mailbox": if(canman) container.open(KEY_MAILBOX, getLayer().ordinal(), id, 0); return;
 			case "norms": container.open(UI_NORMS); return;
 			case "appearance": container.open(UI_APPREARANCE); return;
 			//
