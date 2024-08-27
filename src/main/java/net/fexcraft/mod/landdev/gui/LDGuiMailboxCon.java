@@ -7,7 +7,7 @@ import net.fexcraft.lib.mc.gui.GenericContainer;
 import net.fexcraft.mod.landdev.LandDev;
 import net.fexcraft.mod.landdev.data.Layers;
 import net.fexcraft.mod.landdev.data.MailData;
-import net.fexcraft.mod.landdev.data.player.Player;
+import net.fexcraft.mod.landdev.data.player.LDPlayer;
 import net.fexcraft.mod.landdev.ui.modules.MailModule;
 import net.fexcraft.mod.landdev.ui.LDKeys;
 import net.fexcraft.mod.landdev.util.ResManager;
@@ -22,7 +22,7 @@ public class LDGuiMailboxCon extends GenericContainer {
 	public final int x, y, z;
 	@SideOnly(Side.CLIENT)
 	public LDGuiMailbox gui;
-	private Player ldplayer;
+	private LDPlayer ldplayer;
 
 	public LDGuiMailboxCon(EntityPlayer entity, int x, int y, int z){
 		super(entity);

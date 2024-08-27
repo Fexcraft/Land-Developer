@@ -38,7 +38,7 @@ import net.fexcraft.mod.uni.world.WorldW;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class Player implements Saveable, Layer, LDUIModule, Appendable<UniEntity> {
+public class LDPlayer implements Saveable, Layer, LDUIModule, Appendable<UniEntity> {
 
 	public UUID uuid;
 	public boolean offline, adm;
@@ -58,7 +58,7 @@ public class Player implements Saveable, Layer, LDUIModule, Appendable<UniEntity
 	public Chunk_ chunk_current, chunk_last;
 	public ExternalData external = new ExternalData(this);
 	
-	public Player(UUID uuid){
+	public LDPlayer(UUID uuid){
 		offline = true;
 		this.uuid = uuid;
 		mail = new MailData(Layers.PLAYER, uuid);
@@ -281,7 +281,7 @@ public class Player implements Saveable, Layer, LDUIModule, Appendable<UniEntity
 
 	@Override
 	public Appendable<UniEntity> create(UniEntity type){
-		return new Player(type.entity.local());
+		return new LDPlayer(type.entity.local());
 	}
 
 	@Override

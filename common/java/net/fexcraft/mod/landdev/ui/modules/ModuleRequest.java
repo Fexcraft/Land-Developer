@@ -2,7 +2,7 @@ package net.fexcraft.mod.landdev.ui.modules;
 
 import java.util.UUID;
 
-import net.fexcraft.mod.landdev.data.player.Player;
+import net.fexcraft.mod.landdev.data.player.LDPlayer;
 import net.fexcraft.mod.landdev.util.ResManager;
 import net.fexcraft.mod.uni.tag.TagCW;
 
@@ -35,11 +35,11 @@ public class ModuleRequest {
 		return UUID.fromString(compound.getCompound("fields").getString("uuid"));
 	}
 
-	public Player getPlayerField(String key){
+	public LDPlayer getPlayerField(String key){
 		return ResManager.getPlayer(getField(key), true);
 	}
 
-	public Player getPlayerField(String key, boolean load){
+	public LDPlayer getPlayerField(String key, boolean load){
 		return ResManager.getPlayer(getField(key), load);
 	}
 

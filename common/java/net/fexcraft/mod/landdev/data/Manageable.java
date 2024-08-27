@@ -7,7 +7,7 @@ import java.util.UUID;
 
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.mod.landdev.data.PermAction.PermActions;
-import net.fexcraft.mod.landdev.data.player.Player;
+import net.fexcraft.mod.landdev.data.player.LDPlayer;
 import net.fexcraft.mod.landdev.util.ResManager;
 
 /**
@@ -134,12 +134,12 @@ public class Manageable implements Saveable, PermInteractive {
 		if(staff != null) staff.clear();
 	}
 
-	public void add(Player player){
+	public void add(LDPlayer player){
 		if(staff == null) return;
 		staff.add(new Staff(player.uuid, actions));
 	}
 
-	public void setManager(Player player){
+	public void setManager(LDPlayer player){
 		manager = player.uuid;
 	}
 

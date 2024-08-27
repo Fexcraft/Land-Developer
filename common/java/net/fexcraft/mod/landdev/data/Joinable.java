@@ -4,7 +4,7 @@ import java.util.TreeMap;
 import java.util.UUID;
 
 import net.fexcraft.app.json.JsonMap;
-import net.fexcraft.mod.landdev.data.player.Player;
+import net.fexcraft.mod.landdev.data.player.LDPlayer;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -32,11 +32,11 @@ public class Joinable implements Saveable {
 		});
 	}
 
-	public boolean contains(Player player){
+	public boolean contains(LDPlayer player){
 		return timeouts.get(player.uuid) != null;
 	}
 
-	public long get(Player player){
+	public long get(LDPlayer player){
 		if(!timeouts.containsKey(player.uuid)) return -1;
 		return timeouts.get(player.uuid);
 	}

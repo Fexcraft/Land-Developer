@@ -21,7 +21,7 @@ import net.fexcraft.mod.landdev.data.municipality.Municipality;
 import net.fexcraft.mod.landdev.data.norm.BoolNorm;
 import net.fexcraft.mod.landdev.data.norm.IntegerNorm;
 import net.fexcraft.mod.landdev.data.norm.StringNorm;
-import net.fexcraft.mod.landdev.data.player.Player;
+import net.fexcraft.mod.landdev.data.player.LDPlayer;
 import net.fexcraft.mod.landdev.data.state.State;
 import net.fexcraft.mod.landdev.gui.LDGuiContainer;
 import net.fexcraft.mod.landdev.ui.modules.AppearModule;
@@ -366,7 +366,7 @@ public class District implements Saveable, Layer, PermInteractive, LDUIModule {
 			}
 			case "manager.submit":{
 				if(!canoman) return;
-				Player man = req.getPlayerField("manager.field");
+				LDPlayer man = req.getPlayerField("manager.field");
 				if(man == null){
 					container.sendMsg("landdev.cmd.uuid_player_not_found", false);
 					return;
@@ -468,7 +468,7 @@ public class District implements Saveable, Layer, PermInteractive, LDUIModule {
 			}
 			case "create.submit":{
 				Chunk_ chunk = ResManager.getChunk(container.player.entity);
-				Player player = container.player;
+				LDPlayer player = container.player;
 				long sum = LDConfig.DISTRICT_CREATION_FEE;
 				boolean forct = req.getRadio("create.owner_").equals("county");
 				boolean opay = req.getCheck("create.owner_funded");

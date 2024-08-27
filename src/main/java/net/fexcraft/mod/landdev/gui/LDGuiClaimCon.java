@@ -14,7 +14,7 @@ import net.fexcraft.mod.landdev.data.Layers;
 import net.fexcraft.mod.landdev.data.chunk.ChunkType;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.data.district.District;
-import net.fexcraft.mod.landdev.data.player.Player;
+import net.fexcraft.mod.landdev.data.player.LDPlayer;
 import net.fexcraft.mod.landdev.util.ResManager;
 import net.fexcraft.mod.landdev.util.LDConfig;
 import net.fexcraft.mod.uni.world.MessageSenderI;
@@ -31,7 +31,7 @@ public class LDGuiClaimCon extends GenericContainer {
 	protected ChunkData[][] chunks = new ChunkData[15][15];
 	protected HashMap<Integer, DisData> dists = new HashMap<>();
 	protected District district;
-	protected Player ldp;
+	protected LDPlayer ldp;
 	public final int x, z, dis;
 	@SideOnly(Side.CLIENT)
 	public LDGuiClaim gui;

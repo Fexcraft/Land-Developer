@@ -15,7 +15,7 @@ import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.data.county.County;
 import net.fexcraft.mod.landdev.data.district.District;
 import net.fexcraft.mod.landdev.data.municipality.Municipality;
-import net.fexcraft.mod.landdev.data.player.Player;
+import net.fexcraft.mod.landdev.data.player.LDPlayer;
 import net.fexcraft.mod.landdev.data.state.State;
 import net.fexcraft.mod.landdev.util.broad.BroadcastChannel;
 import net.fexcraft.mod.landdev.util.broad.Broadcaster;
@@ -149,7 +149,7 @@ public class TaxSystem extends TimerTask {
 			if(folder.exists()){
 				for(File file : folder.listFiles()){
 					UUID uuid = UUID.fromString(file.getName().replace(".json", ""));
-					Player player = ResManager.getPlayer(uuid, true);
+					LDPlayer player = ResManager.getPlayer(uuid, true);
 					pytax += taxPlayer(player, date, ignore);
 					ResManager.unloadIfOffline(player);
 				}
@@ -165,7 +165,7 @@ public class TaxSystem extends TimerTask {
 		broad(Config.getWorthAsString(cktax + pytax) + " tax collected in total.");
 	}
 
-	public static long taxPlayer(Player player, Long date, boolean ignore){
+	public static long taxPlayer(LDPlayer player, Long date, boolean ignore){
 		if(date == null) date = last == 0 ? Time.getDate() : last;
 		if(tooSoon(player.last_tax, date) && !ignore) return 0;
 		long tax = 0;

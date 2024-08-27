@@ -17,7 +17,7 @@ import net.fexcraft.mod.fsmm.data.Bank.Action;
 import net.fexcraft.mod.landdev.data.*;
 import net.fexcraft.mod.landdev.data.district.District;
 import net.fexcraft.mod.landdev.data.hooks.ExternalData;
-import net.fexcraft.mod.landdev.data.player.Player;
+import net.fexcraft.mod.landdev.data.player.LDPlayer;
 import net.fexcraft.mod.landdev.gui.LDGuiContainer;
 import net.fexcraft.mod.landdev.ui.LDUIModule;
 import net.fexcraft.mod.landdev.ui.modules.ModuleRequest;
@@ -125,7 +125,7 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 		return Layers.DISTRICT;
 	}
 
-	public boolean can_manage(Player player){
+	public boolean can_manage(LDPlayer player){
 		if(player.adm) return true;
 		UUID uuid = player.uuid;
 		if(owner.playerchunk && owner.player.equals(uuid)) return true;
@@ -461,7 +461,7 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 			}
 			case "access_player.add.submit":{
 				if(!can_manage(container.player)) return;
-				Player other = req.getPlayerField("access_player.field", true);
+				LDPlayer other = req.getPlayerField("access_player.field", true);
 				if(other == null){
 					container.sendMsg("access_player.notfound");
 					return;
@@ -498,7 +498,7 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 
 	public void sendToOwner(Mail mail){
 		if(owner.playerchunk){
-			Player player = ResManager.getPlayer(owner.player, true);
+			LDPlayer player = ResManager.getPlayer(owner.player, true);
 			player.addMailAndSave(mail);
 			return;
 		}

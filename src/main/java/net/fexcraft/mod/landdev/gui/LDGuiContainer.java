@@ -17,7 +17,7 @@ import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.data.county.County;
 import net.fexcraft.mod.landdev.data.district.District;
 import net.fexcraft.mod.landdev.data.municipality.Municipality;
-import net.fexcraft.mod.landdev.data.player.Player;
+import net.fexcraft.mod.landdev.data.player.LDPlayer;
 import net.fexcraft.mod.landdev.ui.LDUIButton;
 import net.fexcraft.mod.landdev.ui.LDUIElmType;
 import net.fexcraft.mod.landdev.ui.modules.MailModule;
@@ -42,7 +42,7 @@ public class LDGuiContainer extends GenericContainer {
 	public final int type, x, y, z;
 	@SideOnly(Side.CLIENT)
 	public LDGuiBase gui;
-	public final Player player;
+	public final LDPlayer player;
 	private boolean form;
 	private boolean nosubmit;
 	protected HashMap<String, Boolean> checkboxes = new HashMap<>();

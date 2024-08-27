@@ -8,7 +8,7 @@ import net.fexcraft.mod.landdev.data.Manageable;
 import net.fexcraft.mod.landdev.data.Saveable;
 import net.fexcraft.mod.landdev.data.county.County;
 import net.fexcraft.mod.landdev.data.municipality.Municipality;
-import net.fexcraft.mod.landdev.data.player.Player;
+import net.fexcraft.mod.landdev.data.player.LDPlayer;
 import net.fexcraft.mod.landdev.util.ResManager;
 
 /**
@@ -62,7 +62,7 @@ public class DistrictOwner implements Saveable {
 		owid = county.id;
 	}
 
-	public boolean isPartOf(Player player){
+	public boolean isPartOf(LDPlayer player){
 		if(is_county) return player.county.id == owid;
 		else return player.municipality.id == owid;
 	}

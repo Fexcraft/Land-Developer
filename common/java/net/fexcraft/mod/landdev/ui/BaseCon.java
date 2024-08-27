@@ -3,7 +3,7 @@ package net.fexcraft.mod.landdev.ui;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
-import net.fexcraft.mod.landdev.data.player.Player;
+import net.fexcraft.mod.landdev.data.player.LDPlayer;
 import net.fexcraft.mod.landdev.util.ResManager;
 import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.ui.ContainerInterface;
@@ -14,7 +14,7 @@ import net.fexcraft.mod.uni.ui.ContainerInterface;
 public class BaseCon extends ContainerInterface {
 
 	protected Chunk_ chunk;
-	protected Player ldp;
+	protected LDPlayer ldp;
 
 	public BaseCon(JsonMap map, UniEntity ply, V3I pos){
 		super(map, ply, pos);

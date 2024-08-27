@@ -16,7 +16,7 @@ import net.fexcraft.mod.landdev.data.Layers;
 import net.fexcraft.mod.landdev.data.Mail;
 import net.fexcraft.mod.landdev.data.MailType;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
-import net.fexcraft.mod.landdev.data.player.Player;
+import net.fexcraft.mod.landdev.data.player.LDPlayer;
 import net.fexcraft.mod.landdev.ui.LDKeys;
 import net.fexcraft.mod.landdev.util.*;
 import net.fexcraft.mod.landdev.util.broad.DiscordTransmitter;
@@ -54,7 +54,7 @@ public class LDCmd extends CommandBase {
     @Override 
     public void execute(MinecraftServer server, ICommandSender sender, String[] args){ 
     	if(sender instanceof EntityPlayer == false) return;
-    	Player player = ResManager.getPlayer(sender);
+    	LDPlayer player = ResManager.getPlayer(sender);
     	if(args.length > 0){
     		switch(args[0]){
 	    		case "fees":{

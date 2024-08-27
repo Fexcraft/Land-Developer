@@ -6,7 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.Nullable;
 
-import net.fexcraft.mod.landdev.data.player.Player;
+import net.fexcraft.mod.landdev.data.player.LDPlayer;
 import net.fexcraft.mod.landdev.util.LDConfig;
 
 public class Broadcaster {
@@ -17,7 +17,7 @@ public class Broadcaster {
 		SENDERS.put(TransmitterType.LOG, new LogTransmitter());
 	}
 
-	public static void send(Player player, String message){
+	public static void send(LDPlayer player, String message){
 		send(TargetTransmitter.ALL, CHAT.name, player.name(), message, player.adm ? LDConfig.CHAT_ADMIN_COLOR : LDConfig.CHAT_PLAYER_COLOR);
 	}
 

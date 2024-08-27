@@ -20,7 +20,7 @@ import net.fexcraft.mod.landdev.data.norm.BoolNorm;
 import net.fexcraft.mod.landdev.data.norm.FloatNorm;
 import net.fexcraft.mod.landdev.data.norm.IntegerNorm;
 import net.fexcraft.mod.landdev.data.norm.StringNorm;
-import net.fexcraft.mod.landdev.data.player.Player;
+import net.fexcraft.mod.landdev.data.player.LDPlayer;
 import net.fexcraft.mod.landdev.data.state.State;
 import net.fexcraft.mod.landdev.gui.LDGuiContainer;
 import net.fexcraft.mod.landdev.ui.LDUIModule;
@@ -235,7 +235,7 @@ public class County implements Saveable, Layer, LDUIModule {
 
 	@Override
 	public void on_interact(LDGuiContainer container, ModuleRequest req){
-		Player player = container.player;
+		LDPlayer player = container.player;
 		boolean canman = manage.can(MANAGE_MUNICIPALITY, container.player.uuid) || container.player.adm;
 		switch(req.event()){
 			case "name":{

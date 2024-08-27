@@ -29,7 +29,7 @@ import net.fexcraft.mod.landdev.data.norm.BoolNorm;
 import net.fexcraft.mod.landdev.data.norm.IntegerNorm;
 import net.fexcraft.mod.landdev.data.norm.StringNorm;
 import net.fexcraft.mod.landdev.data.player.Permit;
-import net.fexcraft.mod.landdev.data.player.Player;
+import net.fexcraft.mod.landdev.data.player.LDPlayer;
 import net.fexcraft.mod.landdev.gui.LDGuiContainer;
 import net.fexcraft.mod.landdev.ui.modules.AppearModule;
 import net.fexcraft.mod.landdev.ui.LDUIModule;
@@ -390,7 +390,7 @@ public class Municipality implements Saveable, Layer, LDUIModule {
 
 	@Override
 	public void on_interact(LDGuiContainer container, ModuleRequest req){
-		Player player = container.player;
+		LDPlayer player = container.player;
 		boolean canman = manage.can(MANAGE_MUNICIPALITY, container.player.uuid) || container.player.adm;
 		switch(req.event()){
 			case "name":{
@@ -483,7 +483,7 @@ public class Municipality implements Saveable, Layer, LDUIModule {
 			}
 			case "citizen.invite.submit":{
 				if(!manage.can(PermAction.PLAYER_INVITE, player.uuid) && !player.adm) return;
-				Player ply = req.getPlayerField("citizen.invite.field");
+				LDPlayer ply = req.getPlayerField("citizen.invite.field");
 				if(ply == null){
 					container.sendMsg("citizen.invite.notfound");
 					return;
@@ -500,7 +500,7 @@ public class Municipality implements Saveable, Layer, LDUIModule {
 			case "citizen.remove":{
 				Citizen cit = citizens.get(req.getUUIDField());
 				if(cit != null && !manage.isManager(cit.uuid)){
-					Player ply = ResManager.getPlayer(cit.uuid, true);
+					LDPlayer ply = ResManager.getPlayer(cit.uuid, true);
 					ply.setCitizenOf(ResManager.getMunicipality(-1, true));
 					Mail mail = new Mail(MailType.SYSTEM, Layers.MUNICIPALITY, id, Layers.PLAYER, ply.uuid).expireInDays(7);
 					mail.setTitle(name()).addMessage(translate("mail.municipality.citizen.nolonger"));
@@ -519,7 +519,7 @@ public class Municipality implements Saveable, Layer, LDUIModule {
 			}
 			case "staff.add.submit":{
 				if(!canman) return;
-				Player ply = req.getPlayerField("staff.add.field");
+				LDPlayer ply = req.getPlayerField("staff.add.field");
 				if(ply == null){
 					container.sendMsg("staff.add.notfound");
 					return;
@@ -541,12 +541,12 @@ public class Municipality implements Saveable, Layer, LDUIModule {
 				Staff staff = manage.getStaff(req.getUUIDField());
 				if(staff != null && !manage.isManager(staff)){
 					manage.removeStaff(staff.uuid);
-					Player ply = ResManager.getPlayer(staff.uuid, true);
+					LDPlayer ply = ResManager.getPlayer(staff.uuid, true);
 					Mail mail = new Mail(MailType.SYSTEM, Layers.MUNICIPALITY, id, Layers.PLAYER, ply.uuid).expireInDays(7);
 					mail.setTitle(name()).addMessage(translate("mail.municipality.staff.nolonger"));
 					ply.addMailAndSave(mail);
 					for(Staff stf : manage.staff){
-						Player stp = ResManager.getPlayer(stf.uuid, true);
+						LDPlayer stp = ResManager.getPlayer(stf.uuid, true);
 						mail = new Mail(MailType.SYSTEM, Layers.MUNICIPALITY, id, Layers.PLAYER, stp.uuid).expireInDays(7);
 						mail.setTitle(name()).addMessage(translate("mail.municipality.staff.removed", staff.getPlayerName()));
 						stp.addMailAndSave(mail);
@@ -560,13 +560,13 @@ public class Municipality implements Saveable, Layer, LDUIModule {
 				Staff staff = manage.getStaff(req.getUUIDField());
 				if(staff != null){
 					manage.setManager(staff.uuid);
-					Player ply = ResManager.getPlayer(staff.uuid, true);
+					LDPlayer ply = ResManager.getPlayer(staff.uuid, true);
 					Mail mail = new Mail(MailType.SYSTEM, Layers.MUNICIPALITY, id, Layers.PLAYER, ply.uuid).expireInDays(7);
 					mail.setTitle(name()).addMessage(translate("mail.municipality.manager_now"));
 					ply.addMailAndSave(mail);
 					save();
 					for(Staff stf : manage.staff){
-						Player stp = ResManager.getPlayer(stf.uuid, true);
+						LDPlayer stp = ResManager.getPlayer(stf.uuid, true);
 						mail = new Mail(MailType.SYSTEM, Layers.MUNICIPALITY, id, Layers.PLAYER, stp.uuid).expireInDays(7);
 						mail.setTitle(name()).addMessage(translate("mail.municipality.manager_set", staff.getPlayerName()));
 						stp.addMailAndSave(mail);

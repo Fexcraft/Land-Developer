@@ -7,7 +7,7 @@ import net.fexcraft.lib.common.utils.Formatter;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.landdev.data.chunk.ChunkType;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
-import net.fexcraft.mod.landdev.data.player.Player;
+import net.fexcraft.mod.landdev.data.player.LDPlayer;
 import net.fexcraft.mod.landdev.util.LDConfig;
 import net.fexcraft.mod.landdev.util.Protector;
 import net.fexcraft.mod.landdev.util.ResManager;
@@ -63,7 +63,7 @@ public class InteractionEvents {
 	}
 
 	private static boolean control(World world, BlockPos pos, IBlockState state, EntityPlayer entity, boolean interact){
-		Player player = ResManager.getPlayer(entity);
+		LDPlayer player = ResManager.getPlayer(entity);
 		if(player == null) return false;
 		if(player.adm) return true;
 		Chunk_ chunk = ResManager.getChunkS(pos.getX(), pos.getZ());
@@ -83,7 +83,7 @@ public class InteractionEvents {
 		return hasperm(chunk, player, interact);
 	}
 
-	private static boolean hasperm(Chunk_ chunk, Player player, boolean interact){
+	private static boolean hasperm(Chunk_ chunk, LDPlayer player, boolean interact){
 		if(interact && chunk.access.interact) return true;
 		ChunkType type = chunk.owner.unowned ? ChunkType.NORMAL : chunk.type;
 		boolean pass = false;

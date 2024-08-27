@@ -5,7 +5,7 @@ import static net.fexcraft.mod.landdev.util.broad.Broadcaster.TargetTransmitter.
 
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.mod.landdev.data.chunk.ChunkApp;
-import net.fexcraft.mod.landdev.data.player.Player;
+import net.fexcraft.mod.landdev.data.player.LDPlayer;
 import net.fexcraft.mod.landdev.util.ResManager;
 import net.fexcraft.mod.landdev.util.LDConfig;
 import net.fexcraft.mod.landdev.util.TaxSystem;
@@ -13,7 +13,6 @@ import net.fexcraft.mod.landdev.util.broad.BroadcastChannel;
 import net.fexcraft.mod.landdev.util.broad.Broadcaster;
 import net.fexcraft.mod.uni.UniChunk;
 import net.fexcraft.mod.uni.UniEntity;
-import net.fexcraft.mod.uni.world.MessageSenderI;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -29,7 +28,7 @@ public class PlayerEvents {
     @SubscribeEvent
     public static void onPlayerLogin(PlayerLoggedInEvent event){
     	if(event.player.world.isRemote) return;
-    	Player player = ResManager.getPlayer(event.player.getGameProfile().getId(), true);
+    	LDPlayer player = ResManager.getPlayer(event.player.getGameProfile().getId(), true);
 		player.entity = UniEntity.getEntity(event.player);
 		player.offline = false;
 		player.login = Time.getDate();
@@ -41,7 +40,7 @@ public class PlayerEvents {
 	@SubscribeEvent
 	public static void onPlayerLogout(PlayerLoggedOutEvent event){
     	if(event.player.world.isRemote) return;
-		Player player = ResManager.getPlayer(event.player.getGameProfile().getId(), false);
+		LDPlayer player = ResManager.getPlayer(event.player.getGameProfile().getId(), false);
 		if(player != null){
 			Broadcaster.send(NO_INTERNAL, BroadcastChannel.SERVER, null, translate("server.player_left", player.name_raw()));
 			player.save();
@@ -55,7 +54,7 @@ public class PlayerEvents {
 	
 	@SubscribeEvent
 	public static void onPlayerRespawn(PlayerRespawnEvent event){
-		Player player = ResManager.getPlayer(event.player.getGameProfile().getId(), false);
+		LDPlayer player = ResManager.getPlayer(event.player.getGameProfile().getId(), false);
 		if(player != null) player.entity = UniEntity.getEntity(event.player);
 	}
 	
@@ -65,7 +64,7 @@ public class PlayerEvents {
 	@SubscribeEvent
 	public static void onTick(TickEvent.PlayerTickEvent event){
 		if(event.player.world.isRemote || event.player.dimension != 0) return;
-		Player player = ResManager.getPlayer(event.player);
+		LDPlayer player = ResManager.getPlayer(event.player);
 		if((time = Time.getDate()) > player.last_pos_update){
 			player.last_pos_update = time;
 			player.chunk_last = player.chunk_current;
@@ -80,7 +79,7 @@ public class PlayerEvents {
 	
 	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public static void onMessage(ServerChatEvent event){
-		Player player = ResManager.getPlayer(event.getPlayer());
+		LDPlayer player = ResManager.getPlayer(event.getPlayer());
 		Broadcaster.send(player, event.getMessage());
 		event.setCanceled(LDConfig.CHAT_OVERRIDE);
 	}

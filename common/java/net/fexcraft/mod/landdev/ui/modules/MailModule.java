@@ -14,7 +14,7 @@ import net.fexcraft.mod.landdev.data.Manageable.Staff;
 import net.fexcraft.mod.landdev.data.county.County;
 import net.fexcraft.mod.landdev.data.district.District;
 import net.fexcraft.mod.landdev.data.municipality.Municipality;
-import net.fexcraft.mod.landdev.data.player.Player;
+import net.fexcraft.mod.landdev.data.player.LDPlayer;
 import net.fexcraft.mod.landdev.data.state.State;
 import net.fexcraft.mod.landdev.gui.LDGuiContainer;
 import net.fexcraft.mod.landdev.ui.LDUIModule;
@@ -77,7 +77,7 @@ public class MailModule implements LDUIModule {
 	public void on_interact(LDGuiContainer container, ModuleRequest req){
 		MailData mailbox = getMailbox(container.player, container.x, container.y);
 		if(mailbox == null) return;
-		Player player = container.player;
+		LDPlayer player = container.player;
 		Mail mail = container.z >= mailbox.mails.size() ? null : mailbox.mails.get(container.z);
 		switch(req.event()){
 			case "invite.accept":{
@@ -96,7 +96,7 @@ public class MailModule implements LDUIModule {
 								mun.save();
 								String pln = ResManager.getPlayerName(player.uuid);
 								for(Staff stf : mun.manage.staff){
-									Player stp = ResManager.getPlayer(stf.uuid, true);
+									LDPlayer stp = ResManager.getPlayer(stf.uuid, true);
 									mail = new Mail(MailType.SYSTEM, Layers.MUNICIPALITY, mun.id, Layers.PLAYER, stp.uuid).expireInDays(7);
 									mail.setTitle(mun.name()).addMessage(translate("mail.municipality.staff.added", pln));
 									stp.addMailAndSave(mail);
@@ -204,7 +204,7 @@ public class MailModule implements LDUIModule {
 		container.open(LDKeys.MAILBOX, container.x, container.y, container.z);
 	}
 
-	public static MailData getMailbox(Player player, int x, int y){
+	public static MailData getMailbox(LDPlayer player, int x, int y){
 		Layers lay = Layers.values()[x];
 		switch(lay){
 			case PLAYER: return player.mail;
@@ -240,7 +240,7 @@ public class MailModule implements LDUIModule {
 		return null;
 	}
 
-	public static boolean canDelete(Player player, int x, int y){
+	public static boolean canDelete(LDPlayer player, int x, int y){
 		Layers lay = Layers.values()[x];
 		switch(lay){
 			case PLAYER: return true;

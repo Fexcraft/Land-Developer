@@ -9,8 +9,6 @@ import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fsmm.data.Account;
 import net.fexcraft.mod.fsmm.util.DataManager;
-import net.fexcraft.mod.landdev.LDN;
-import net.fexcraft.mod.landdev.LandDev;
 import net.fexcraft.mod.landdev.data.Saveable;
 import net.fexcraft.mod.landdev.data.chunk.ChunkKey;
 import net.fexcraft.mod.landdev.data.chunk.ChunkRegion;
@@ -18,7 +16,7 @@ import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.data.county.County;
 import net.fexcraft.mod.landdev.data.district.District;
 import net.fexcraft.mod.landdev.data.municipality.Municipality;
-import net.fexcraft.mod.landdev.data.player.Player;
+import net.fexcraft.mod.landdev.data.player.LDPlayer;
 import net.fexcraft.mod.landdev.data.state.State;
 import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.world.EntityW;
@@ -41,7 +39,7 @@ public class ResManager implements Saveable {
 	public static ConcurrentHashMap<Integer, Municipality> MUNICIPALITIES = new ConcurrentHashMap<>();
 	public static ConcurrentHashMap<Integer, County> COUNTIES = new ConcurrentHashMap<>();
 	public static ConcurrentHashMap<Integer, State> STATES = new ConcurrentHashMap<>();
-	public static ConcurrentHashMap<UUID, Player> PLAYERS = new ConcurrentHashMap<>();
+	public static ConcurrentHashMap<UUID, LDPlayer> PLAYERS = new ConcurrentHashMap<>();
 	//
 	public static ConcurrentHashMap<Integer, ChunkKey> MUN_CENTERS = new ConcurrentHashMap<>();
 	public static ConcurrentHashMap<Integer, ChunkKey> CT_CENTERS = new ConcurrentHashMap<>();
@@ -119,22 +117,22 @@ public class ResManager implements Saveable {
 		return stt;
 	}
 
-	public static Player getPlayer(UUID uuid, boolean load){
+	public static LDPlayer getPlayer(UUID uuid, boolean load){
 		if(!load) return PLAYERS.get(uuid);
-		Player ply = PLAYERS.get(uuid);
-		if(ply == null) PLAYERS.put(uuid, load(ply = new Player(uuid)));
+		LDPlayer ply = PLAYERS.get(uuid);
+		if(ply == null) PLAYERS.put(uuid, load(ply = new LDPlayer(uuid)));
 		return ply;
 	}
 
-	public static Player getPlayer(UniEntity player){
+	public static LDPlayer getPlayer(UniEntity player){
 		return PLAYERS.get(player.entity.getUUID());
 	}
 
-	public static Player getPlayer(Object player){
+	public static LDPlayer getPlayer(Object player){
 		return getPlayer(UniEntity.get(player));
 	}
 
-	public static void unloadIfOffline(Player player){
+	public static void unloadIfOffline(LDPlayer player){
 		Object entity = Static.getServer().getPlayerList().getPlayerByUUID(player.uuid);
 		if(entity == null){
 			player.save();
@@ -147,7 +145,7 @@ public class ResManager implements Saveable {
 		return gp == null ? null : gp.getId();
 	}
 
-	public static Player getPlayer(String string, boolean load){
+	public static LDPlayer getPlayer(String string, boolean load){
 		UUID uuid = null;
 		try{
 			uuid = UUID.fromString(string);

@@ -3,11 +3,9 @@ package net.fexcraft.mod.landdev.events;
 import net.fexcraft.mod.fsmm.data.AccountPermission;
 import net.fexcraft.mod.fsmm.event.ATMEvent;
 import net.fexcraft.mod.fsmm.event.FsmmEvent;
-import net.fexcraft.mod.landdev.LDN;
-import net.fexcraft.mod.landdev.LandDev;
 import net.fexcraft.mod.landdev.data.PermAction;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
-import net.fexcraft.mod.landdev.data.player.Player;
+import net.fexcraft.mod.landdev.data.player.LDPlayer;
 import net.fexcraft.mod.landdev.util.ResManager;
 import org.apache.commons.lang3.math.NumberUtils;
 
@@ -20,7 +18,7 @@ public class FsmmEventHooks {
 
 	public static void init(){
 		FsmmEvent.addListener(ATMEvent.GatherAccounts.class, event -> {
-			Player player = ResManager.getPlayer(event.getPlayer());
+			LDPlayer player = ResManager.getPlayer(event.getPlayer());
 			if(player.adm){
 				event.getAccountsList().add(new AccountPermission(ResManager.SERVER_ACCOUNT, true, true, true, true));
 				Chunk_ ck = ResManager.getChunk(event.getPlayer());

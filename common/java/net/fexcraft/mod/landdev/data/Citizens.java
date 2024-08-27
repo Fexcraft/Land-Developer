@@ -6,7 +6,7 @@ import java.util.UUID;
 
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.mod.landdev.data.PermAction.PermActions;
-import net.fexcraft.mod.landdev.data.player.Player;
+import net.fexcraft.mod.landdev.data.player.LDPlayer;
 import net.fexcraft.mod.landdev.util.ResManager;
 
 /**
@@ -126,11 +126,11 @@ public class Citizens implements Saveable, PermInteractive {
 		return false;
 	}
 
-	public void remove(Player player){
+	public void remove(LDPlayer player){
 		citizens.remove(player.uuid);
 	}
 
-	public void add(Player player){
+	public void add(LDPlayer player){
 		citizens.put(player.uuid, new Citizen(player.uuid, actions));
 	}
 
