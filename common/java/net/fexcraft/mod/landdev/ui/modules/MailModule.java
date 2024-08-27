@@ -17,6 +17,7 @@ import net.fexcraft.mod.landdev.data.municipality.Municipality;
 import net.fexcraft.mod.landdev.data.player.LDPlayer;
 import net.fexcraft.mod.landdev.data.state.State;
 import net.fexcraft.mod.landdev.gui.LDGuiContainer;
+import net.fexcraft.mod.landdev.ui.BaseCon;
 import net.fexcraft.mod.landdev.ui.LDUIModule;
 import net.fexcraft.mod.landdev.ui.LDKeys;
 import net.fexcraft.mod.landdev.util.ResManager;
@@ -30,15 +31,15 @@ public class MailModule implements LDUIModule {
 	public static MailModule INST = new MailModule();
 
 	@Override
-	public void sync_packet(LDGuiContainer container, ModuleResponse resp){
+	public void sync_packet(BaseCon container, ModuleResponse resp){
 		resp.setTitle("mail.title");
 		resp.setNoBack();
-		MailData mailbox = getMailbox(container.player, container.x, container.y);
+		MailData mailbox = getMailbox(container.ldp, container.pos.x, container.pos.y);
 		if(mailbox == null){
 			resp.addRow("boxnotfound", ELM_GENERIC);
 			return;
 		}
-		Mail mail = container.z >= mailbox.mails.size() ? null : mailbox.mails.get(container.z);
+		Mail mail = container.pos.z >= mailbox.mails.size() ? null : mailbox.mails.get(container.pos.z);
 		if(mail == null){
 			resp.addRow("notfound", ELM_GENERIC);
 			return;
@@ -74,11 +75,11 @@ public class MailModule implements LDUIModule {
 		resp.addButton("goback", ELM_GENERIC, LIST);
 	}
 
-	public void on_interact(LDGuiContainer container, ModuleRequest req){
-		MailData mailbox = getMailbox(container.player, container.x, container.y);
+	public void on_interact(BaseCon container, ModuleRequest req){
+		MailData mailbox = getMailbox(container.ldp, container.pos.x, container.pos.y);
 		if(mailbox == null) return;
-		LDPlayer player = container.player;
-		Mail mail = container.z >= mailbox.mails.size() ? null : mailbox.mails.get(container.z);
+		LDPlayer player;
+		Mail mail = container.pos.z >= mailbox.mails.size() ? null : mailbox.mails.get(container.pos.z);
 		switch(req.event()){
 			case "invite.accept":{
 				if(mail.type != MailType.INVITE) return;
@@ -200,8 +201,8 @@ public class MailModule implements LDUIModule {
 		}
 	}
 
-	private void goback(LDGuiContainer container){
-		container.open(LDKeys.MAILBOX, container.x, container.y, container.z);
+	private void goback(BaseCon container){
+		container.open(LDKeys.KEY_MAILBOX, container.pos.x, container.pos.y, container.pos.z);
 	}
 
 	public static MailData getMailbox(LDPlayer player, int x, int y){
