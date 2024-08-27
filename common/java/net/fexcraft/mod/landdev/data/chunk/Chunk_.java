@@ -4,6 +4,7 @@ import static net.fexcraft.lib.common.math.Time.getAsString;
 import static net.fexcraft.mod.fsmm.util.Config.getWorthAsString;
 import static net.fexcraft.mod.landdev.data.PermAction.CHUNK_CUSTOMTAX;
 import static net.fexcraft.mod.landdev.data.PermAction.MANAGE_DISTRICT;
+import static net.fexcraft.mod.landdev.ui.LDUIButton.*;
 import static net.fexcraft.mod.landdev.ui.LDUIElmType.*;
 
 import java.util.ArrayList;
@@ -156,45 +157,45 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 			resp.addRow("key", ELM_GENERIC, key.comma());
 			if(LDConfig.CHUNK_LINK_LIMIT > 0){
 				if(link == null){
-					if(canman) resp.addButton("link", ELM_GENERIC, ICON_ADD);
-					else resp.addRow("link", ELM_GENERIC, ICON_EMPTY);
+					if(canman) resp.addButton("link", ELM_GENERIC, ADD);
+					else resp.addRow("link", ELM_GENERIC, EMPTY);
 				}
 				else if(link.linked != null){
-					resp.addButton("links", ELM_GENERIC, ICON_LIST, link.linked.size());
+					resp.addButton("links", ELM_GENERIC, LIST, link.linked.size());
 				}
 				else if(link.root_key != null){
-					resp.addButton("linked", ELM_GENERIC, canman ? ICON_OPEN : ICON_EMPTY, link.root_key.comma());
+					resp.addButton("linked", ELM_GENERIC, canman ? OPEN : EMPTY, link.root_key.comma());
 				}
 			}
-			resp.addRow("type", ELM_GENERIC, canman ? ICON_OPEN : ICON_EMPTY, canman, type.lang());
-			resp.addButton("district", ELM_GENERIC, ICON_OPEN, district.name());
+			resp.addRow("type", ELM_GENERIC, canman ? OPEN : EMPTY, canman, type.lang());
+			resp.addButton("district", ELM_GENERIC, OPEN, district.name());
 			resp.addBlank();
-			resp.addButton("owner", ELM_GENERIC, ICON_OPEN, owner.name());
+			resp.addButton("owner", ELM_GENERIC, OPEN, owner.name());
 			if(sell.price > 0){
-				resp.addRow("price", ELM_GENERIC, canman ? ICON_EMPTY : ICON_OPEN, !canman, sell.price_formatted());
+				resp.addRow("price", ELM_GENERIC, canman ? EMPTY : OPEN, !canman, sell.price_formatted());
 			}
 			if(canman){
-				resp.addButton("set_price", ELM_GENERIC, ICON_OPEN);
+				resp.addButton("set_price", ELM_GENERIC, OPEN);
 			}
-			resp.addButton("tax", ELM_GENERIC, ICON_OPEN, getWorthAsString(tax.custom_tax == 0 ? district.tax() : tax.custom_tax));
+			resp.addButton("tax", ELM_GENERIC, OPEN, getWorthAsString(tax.custom_tax == 0 ? district.tax() : tax.custom_tax));
 			resp.addBlank();
-			resp.addRow("access_interact", ELM_GENERIC, canman ? access.interact ? ICON_ENABLED : ICON_DISABLED : ICON_EMPTY, canman, access.interact ? LANG_YES : LANG_NO);
-			resp.addButton("access_player", ELM_GENERIC, ICON_LIST, access.players.size());
-			resp.addButton("access_company", ELM_GENERIC, ICON_LIST, access.companies.size());
+			resp.addRow("access_interact", ELM_GENERIC, canman ? access.interact ? ENABLED : DISABLED : EMPTY, canman, access.interact ? LANG_YES : LANG_NO);
+			resp.addButton("access_player", ELM_GENERIC, LIST, access.players.size());
+			resp.addButton("access_company", ELM_GENERIC, LIST, access.companies.size());
 			return;
 		case UI_LINK:
 			resp.setTitle("chunk.link.title");
-			resp.addRow("link.info0", ELM_YELLOW, ICON_BLANK);
-			resp.addRow("link.info1", ELM_YELLOW, ICON_BLANK);
-			resp.addRow("link.key", ELM_GENERIC, ICON_BLANK);
+			resp.addRow("link.info0", ELM_YELLOW, BLANK);
+			resp.addRow("link.info1", ELM_YELLOW, BLANK);
+			resp.addRow("link.key", ELM_GENERIC, BLANK);
 			resp.addField("link.field");
-			resp.addButton("link.submit", ELM_BLUE, ICON_OPEN);
+			resp.addButton("link.submit", ELM_BLUE, OPEN);
 			resp.setFormular();
 			return;
 		case UI_LINKS:
 			resp.setTitle("chunk.links.title");
 			if(link.linked == null) return;
-			resp.addButton("links.submit", ELM_BLUE, ICON_OPEN, key.comma());
+			resp.addButton("links.submit", ELM_BLUE, OPEN, key.comma());
 			boolean first = true;
 			for(int i = 0; i < link.linked.size(); i++){
 				resp.addButton("links.key" + i, ELM_BLUE, radio(first), "!!!" + link.linked.get(i).comma());
@@ -204,22 +205,22 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 			return;
 		case UI_LINKED:
 			resp.setTitle("chunk.linked.title");
-			resp.addButton("linked.key", ELM_GENERIC, ICON_OPEN, "!!!" + link.root_key.comma());
-			resp.addButton("linked.disconnect", ELM_RED, ICON_REM, key.comma());
+			resp.addButton("linked.key", ELM_GENERIC, OPEN, "!!!" + link.root_key.comma());
+			resp.addButton("linked.disconnect", ELM_RED, REM, key.comma());
 			return;
 		case UI_TYPE:
 			resp.setTitle("chunk.select_type.title");
-			resp.addRow("key", ELM_GENERIC, ICON_BLANK, key.comma());
+			resp.addRow("key", ELM_GENERIC, BLANK, key.comma());
 			resp.addRadio("type.normal", ELM_BLUE, type == ChunkType.NORMAL);
 			resp.addRadio("type.private", ELM_BLUE, type == ChunkType.PRIVATE);
 			resp.addRadio("type.restricted", ELM_BLUE, type == ChunkType.RESTRICTED);
 			resp.addRadio("type.public", ELM_BLUE, type == ChunkType.PUBLIC);
-			resp.addButton("select_type.submit", ELM_GENERIC, ICON_OPEN);
+			resp.addButton("select_type.submit", ELM_GENERIC, OPEN);
 			resp.setFormular();
 			return;
 		case UI_OWNER:
 			resp.setTitle("chunk.set_owner.title");
-			resp.addRow("key", ELM_GENERIC, ICON_BLANK, key.comma());
+			resp.addRow("key", ELM_GENERIC, BLANK, key.comma());
 			resp.addRow("set_owner.warning0", ELM_RED);
 			resp.addRow("set_owner.warning1", ELM_RED);
 			resp.addRow("set_owner.warning2", ELM_RED);
@@ -229,47 +230,47 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 			resp.addRadio("set_owner.county", ELM_BLUE, owner.owner == Layers.COUNTY);
 			resp.addRadio("set_owner.state", ELM_BLUE, owner.owner == Layers.STATE);
 			resp.addRadio("set_owner.none", ELM_BLUE, owner.owner == Layers.NONE);
-			resp.addButton("set_owner.submit", ELM_GENERIC, ICON_OPEN);
+			resp.addButton("set_owner.submit", ELM_GENERIC, OPEN);
 			resp.setFormular();
 			return;
 		case UI_PRICE:
 			resp.setTitle("chunk.buy.title");
-			resp.addRow("key", ELM_GENERIC, ICON_BLANK, key.comma());
-			resp.addRow("buy.info", ELM_YELLOW, ICON_BLANK);
-			resp.addButton("buy.self", ELM_BLUE, ICON_RADIOBOX_CHECKED);
-			resp.addButton("buy.company", ELM_BLUE, ICON_RADIOBOX_UNCHECKED);
-			resp.addButton("buy.district", ELM_BLUE, ICON_RADIOBOX_UNCHECKED);
-			if(!district.owner.is_county) resp.addButton("buy.municipality", ELM_BLUE, ICON_RADIOBOX_UNCHECKED);
-			resp.addButton("buy.county", ELM_BLUE, ICON_RADIOBOX_UNCHECKED);
-			resp.addButton("buy.state", ELM_BLUE, ICON_RADIOBOX_UNCHECKED);
-			resp.addButton("buy.payer", ELM_GENERIC, ICON_CHECKBOX_UNCHECKED);
-			resp.addButton("buy.submit", ELM_GENERIC, ICON_OPEN);
+			resp.addRow("key", ELM_GENERIC, BLANK, key.comma());
+			resp.addRow("buy.info", ELM_YELLOW, BLANK);
+			resp.addButton("buy.self", ELM_BLUE, RADIO_CHECKED);
+			resp.addButton("buy.company", ELM_BLUE, RADIO_UNCHECKED);
+			resp.addButton("buy.district", ELM_BLUE, RADIO_UNCHECKED);
+			if(!district.owner.is_county) resp.addButton("buy.municipality", ELM_BLUE, RADIO_UNCHECKED);
+			resp.addButton("buy.county", ELM_BLUE, RADIO_UNCHECKED);
+			resp.addButton("buy.state", ELM_BLUE, RADIO_UNCHECKED);
+			resp.addButton("buy.payer", ELM_GENERIC, CHECK_UNCHECKED);
+			resp.addButton("buy.submit", ELM_GENERIC, OPEN);
 			resp.setFormular();
 			return;
 		case UI_SET_PRICE:
 			resp.setTitle("chunk.set_price.title");
-			resp.addRow("key", ELM_GENERIC, ICON_BLANK, key.comma());
+			resp.addRow("key", ELM_GENERIC, BLANK, key.comma());
 			resp.addField("set_price.field");
-			resp.addButton("set_price.submit", ELM_GENERIC, ICON_OPEN);
+			resp.addButton("set_price.submit", ELM_GENERIC, OPEN);
 			resp.setFormular();
 			return;
 		case UI_TAX:
 			boolean bool = district.can(CHUNK_CUSTOMTAX, container.player.uuid) || container.player.adm;
 			resp.setTitle("chunk.tax.title");
-			resp.addRow("tax.info0", ELM_YELLOW, ICON_BLANK);
-			resp.addRow("tax.info1", ELM_YELLOW, ICON_BLANK);
-			resp.addRow("tax.info2", ELM_YELLOW, ICON_BLANK);
-			resp.addRow("tax.default", ELM_GENERIC, ICON_BLANK, getWorthAsString(district.tax()));
+			resp.addRow("tax.info0", ELM_YELLOW, BLANK);
+			resp.addRow("tax.info1", ELM_YELLOW, BLANK);
+			resp.addRow("tax.info2", ELM_YELLOW, BLANK);
+			resp.addRow("tax.default", ELM_GENERIC, BLANK, getWorthAsString(district.tax()));
 			if(bool || tax.custom_tax > 0){
-				resp.addRow("tax.custom", ELM_GENERIC, ICON_BLANK, getWorthAsString(tax.custom_tax));
+				resp.addRow("tax.custom", ELM_GENERIC, BLANK, getWorthAsString(tax.custom_tax));
 			}
-			resp.addRow("tax.last_amount", ELM_GENERIC, ICON_BLANK, getWorthAsString(tax.last_tax));
-			resp.addRow("tax.last_time", ELM_GENERIC, ICON_BLANK, getAsString(tax.last_interval));
+			resp.addRow("tax.last_amount", ELM_GENERIC, BLANK, getWorthAsString(tax.last_tax));
+			resp.addRow("tax.last_time", ELM_GENERIC, BLANK, getAsString(tax.last_interval));
 			if(bool){
 				resp.addBlank();
-				resp.addRow("set_tax.title", ELM_GENERIC, ICON_BLANK);
+				resp.addRow("set_tax.title", ELM_GENERIC, BLANK);
 				resp.addField("set_tax.field", getWorthAsString(tax.custom_tax, false));
-				resp.addButton("set_tax.submit", ELM_GENERIC, ICON_OPEN);
+				resp.addButton("set_tax.submit", ELM_GENERIC, OPEN);
 				resp.setFormular();
 			}
 			return;
@@ -277,21 +278,21 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 			resp.setTitle("chunk.access_player.title");
 			boolean bcm = can_manage(container.player);
 			if(bcm){
-				resp.addRow("access_player.info", ELM_GREEN, ICON_BLANK);
+				resp.addRow("access_player.info", ELM_GREEN, BLANK);
 				resp.addField("access_player.field");
-				resp.addButton("access_player.add.submit", ELM_GENERIC, ICON_OPEN);
+				resp.addButton("access_player.add.submit", ELM_GENERIC, OPEN);
 				resp.addBlank();
 				resp.setFormular();
 			}
 			if(access.players.isEmpty()){
-				resp.addRow("access_player.empty", ELM_YELLOW, ICON_BLANK);
+				resp.addRow("access_player.empty", ELM_YELLOW, BLANK);
 			}
 			else{
-				if(bcm) resp.addButton("access_player.rem.submit", ELM_GENERIC, ICON_REM);
+				if(bcm) resp.addButton("access_player.rem.submit", ELM_GENERIC, REM);
 				boolean primo = true;
 				UUID[] keys = access.players.keySet().toArray(new UUID[0]);
 				for(int i = 0; i < access.players.size(); i++){
-					resp.addButton("access_player.id_" + keys[i], ELM_BLUE, bcm ? radio(primo) : ICON_EMPTY, "!!!" + ResManager.getPlayerName(keys[i]));
+					resp.addButton("access_player.id_" + keys[i], ELM_BLUE, bcm ? radio(primo) : EMPTY, "!!!" + ResManager.getPlayerName(keys[i]));
 					primo = false;
 				}
 				if(bcm) resp.setFormular();
