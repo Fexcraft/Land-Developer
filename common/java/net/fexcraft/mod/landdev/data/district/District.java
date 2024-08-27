@@ -3,6 +3,7 @@ package net.fexcraft.mod.landdev.data.district;
 import static net.fexcraft.mod.fsmm.util.Config.getWorthAsString;
 import static net.fexcraft.mod.landdev.data.PermAction.*;
 import static net.fexcraft.mod.landdev.ui.LDKeys.MAILBOX;
+import static net.fexcraft.mod.landdev.ui.LDUIButton.*;
 import static net.fexcraft.mod.landdev.ui.LDUIElmType.*;
 import static net.fexcraft.mod.landdev.util.ResManager.SERVER_ACCOUNT;
 import static net.fexcraft.mod.landdev.util.TranslationUtil.translate;
@@ -241,67 +242,67 @@ public class District implements Saveable, Layer, PermInteractive, LDUIModule {
 			case UI_MAIN:
 				resp.addRow("id", ELM_GENERIC, id);
 				if(canman){
-					resp.addButton("name", ELM_GENERIC, ICON_OPEN, name());
-					resp.addButton("type", ELM_GENERIC, ICON_OPEN, type.name());
+					resp.addButton("name", ELM_GENERIC, OPEN, name());
+					resp.addButton("type", ELM_GENERIC, OPEN, type.name());
 				}
 				else{
-					resp.addRow("name", ELM_GENERIC, ICON_EMPTY, name());
-					resp.addRow("type", ELM_GENERIC, ICON_EMPTY, type.name());
+					resp.addRow("name", ELM_GENERIC, EMPTY, name());
+					resp.addRow("type", ELM_GENERIC, EMPTY, type.name());
 				}
-				resp.addButton("owner", ELM_GENERIC, ICON_OPEN, owner.name());
+				resp.addButton("owner", ELM_GENERIC, OPEN, owner.name());
 				if(canoman || manage.hasManager()){
-					resp.addRow("manager", ELM_GENERIC, canoman ? ICON_OPEN : ICON_EMPTY, canoman, manage.getManagerName());
+					resp.addRow("manager", ELM_GENERIC, canoman ? OPEN : EMPTY, canoman, manage.getManagerName());
 				}
 				resp.addBlank();
 				if(sell.price > 0){
-					resp.addButton("price", ELM_GENERIC, ICON_OPEN, sell.price_formatted());
+					resp.addButton("price", ELM_GENERIC, OPEN, sell.price_formatted());
 				}
 				if(canman){
-					resp.addButton("set_price", ELM_GENERIC, ICON_OPEN);
+					resp.addButton("set_price", ELM_GENERIC, OPEN);
 				}
 				if(sell.price > 0) resp.addBlank();
 				resp.addRow("chunk_tax", ELM_GENERIC, getWorthAsString(tax()));
 				if(id >= 0) resp.addRow("chunks", ELM_GENERIC, chunks);
 				if(canman){
-					resp.addButton("mailbox", ELM_GENERIC, ICON_OPEN, mail.unread());
+					resp.addButton("mailbox", ELM_GENERIC, OPEN, mail.unread());
 				}
-				resp.addButton("norms", ELM_GREEN, ICON_OPEN);
-				resp.addButton("appearance", ELM_YELLOW, ICON_OPEN);
+				resp.addButton("norms", ELM_GREEN, OPEN);
+				resp.addButton("appearance", ELM_YELLOW, OPEN);
 				return;
 			case UI_TYPE:
 				resp.setTitle("district.type.title");
 				for(DistrictType dtp : DistrictType.TYPES.values()){
 					resp.addRadio("type." + dtp.id(), ELM_BLUE, dtp == type, resp.val(dtp.name()));
 				}
-				resp.addButton("type.submit", ELM_GENERIC, ICON_OPEN);
+				resp.addButton("type.submit", ELM_GENERIC, OPEN);
 				resp.setFormular();
 				return;
 			case UI_MANAGER:
 				resp.setTitle("district.manager.title");
-				resp.addRow("manager.current", ELM_GENERIC, ICON_BLANK, manage.getManagerName());
+				resp.addRow("manager.current", ELM_GENERIC, BLANK, manage.getManagerName());
 				resp.addField("manager.field", manage.getManagerName());
-				resp.addButton("manager.submit", ELM_GENERIC, manage.hasManager() ? ICON_OPEN : ICON_ADD);
-				if(manage.hasManager()) resp.addButton("manager.remove", ELM_GENERIC, ICON_REM);
+				resp.addButton("manager.submit", ELM_GENERIC, manage.hasManager() ? OPEN : ADD);
+				if(manage.hasManager()) resp.addButton("manager.remove", ELM_GENERIC, REM);
 				resp.setFormular();
 				return;
 			case UI_PRICE:
 				resp.setTitle("district.buy.title");
-				resp.addRow("id", ELM_GENERIC, ICON_BLANK, id);
-				resp.addRow("buy.info", ELM_YELLOW, ICON_BLANK, null);
-				if(!owner.is_county)  resp.addButton("buy.this_county", ELM_BLUE, ICON_RADIOBOX_UNCHECKED);
+				resp.addRow("id", ELM_GENERIC, BLANK, id);
+				resp.addRow("buy.info", ELM_YELLOW, BLANK, null);
+				if(!owner.is_county)  resp.addButton("buy.this_county", ELM_BLUE, RADIO_UNCHECKED);
 				if(container.player.municipality.id >= 0 && !owner.is_county && owner.municipality.id != container.player.municipality.id){
-					resp.addButton("buy.my_municipality", ELM_BLUE, ICON_RADIOBOX_UNCHECKED);
+					resp.addButton("buy.my_municipality", ELM_BLUE, RADIO_UNCHECKED);
 				}
-				resp.addButton("buy.my_county", county().id == container.player.county.id ? ELM_RED : ELM_BLUE, ICON_RADIOBOX_UNCHECKED);
-				resp.addButton("buy.payer", ELM_GENERIC, ICON_CHECKBOX_UNCHECKED);
-				resp.addButton("buy.submit", ELM_GENERIC, ICON_OPEN);
+				resp.addButton("buy.my_county", county().id == container.player.county.id ? ELM_RED : ELM_BLUE, RADIO_UNCHECKED);
+				resp.addButton("buy.payer", ELM_GENERIC, CHECK_UNCHECKED);
+				resp.addButton("buy.submit", ELM_GENERIC, OPEN);
 				resp.setFormular();
 				return;
 			case UI_SET_PRICE:
 				resp.setTitle("district.set_price.title");
-				resp.addRow("id", ELM_GENERIC, ICON_BLANK, id);
+				resp.addRow("id", ELM_GENERIC, BLANK, id);
 				resp.addField("set_price.field");
-				resp.addButton("set_price.submit", ELM_GENERIC, ICON_OPEN);
+				resp.addButton("set_price.submit", ELM_GENERIC, OPEN);
 				resp.setFormular();
 				return;
 			case UI_APPREARANCE:
@@ -326,7 +327,7 @@ public class District implements Saveable, Layer, PermInteractive, LDUIModule {
 				}
 				resp.addCheck("create.owner_funded", ELM_GREEN, true);
 				resp.addBlank();
-				resp.addButton("create.submit", ELM_BLUE, ICON_OPEN);
+				resp.addButton("create.submit", ELM_BLUE, OPEN);
 				resp.setFormular();
 				resp.setNoBack();
 				return;
