@@ -131,7 +131,7 @@ public class LandDevShader implements HDShader {
 
 		@Override
 		public boolean processBlock(HDPerspectiveState ps){
-			Chunk_ ck = ResManager.getChunk(new Vec3i(mapi.getX(), mapi.getY(), mapi.getZ()));
+			Chunk_ ck = ResManager.getChunkS(mapi.getX(), mapi.getZ());
 			rgb.packed = getLayerColor(ck);
 			byte[] arr = rgb.toByteArray();
 			if(isNotSameLayer(ck, mapi.getX(), mapi.getZ())){
