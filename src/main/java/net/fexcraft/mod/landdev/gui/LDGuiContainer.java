@@ -18,6 +18,7 @@ import net.fexcraft.mod.landdev.data.county.County;
 import net.fexcraft.mod.landdev.data.district.District;
 import net.fexcraft.mod.landdev.data.municipality.Municipality;
 import net.fexcraft.mod.landdev.data.player.Player;
+import net.fexcraft.mod.landdev.ui.LDUIButton;
 import net.fexcraft.mod.landdev.ui.LDUIElmType;
 import net.fexcraft.mod.landdev.ui.modules.MailModule;
 import net.fexcraft.mod.landdev.ui.modules.MainModule;
@@ -260,19 +261,19 @@ public class LDGuiContainer extends GenericContainer {
 			NBTTagList lis = (NBTTagList)base;
 			String index = lis.getStringTagAt(0);
 			LDUIElmType elm = LDUIElmType.valueOf(lis.getStringTagAt(1));
-			LDUIElmType icon = LDUIElmType.valueOf(lis.getStringTagAt(2));
+			LDUIButton icon = LDUIButton.valueOf(lis.getStringTagAt(2));
 			String bools = lis.getStringTagAt(3);
 			String val = lis.tagCount() > 4 ? lis.getStringTagAt(4) : null;
 			if(bools.charAt(2) == '2'){
 				sfields.put(index, val);
 			}
 			else gui.addElm(index, elm, icon, bools.charAt(0) == '1', bools.charAt(1) == '1', bools.charAt(2) == '1', val);
-			if(icon.is_checkbox()){
-				checkboxes.put(index, icon.checkbox());
+			if(icon.isCheck()){
+				checkboxes.put(index, icon.check());
 			}
-			if(icon.is_radiobox()){
+			if(icon.isRadio()){
 				radioboxes.add(index);
-				if(icon.radiobox()) radiobox = index;
+				if(icon.radio()) radiobox = index;
 			}
 		}
 		form = packet.getBoolean("form");
