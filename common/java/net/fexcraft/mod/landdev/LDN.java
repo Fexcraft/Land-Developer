@@ -18,6 +18,7 @@ import net.fexcraft.mod.landdev.util.broad.Broadcaster;
 import net.fexcraft.mod.landdev.util.broad.DiscordTransmitter;
 import net.fexcraft.mod.uni.UniChunk;
 import net.fexcraft.mod.uni.UniReg;
+import net.fexcraft.mod.uni.ui.UIKey;
 
 import java.io.File;
 import java.time.LocalDate;
@@ -25,6 +26,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneOffset;
 import java.util.Date;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -50,8 +52,10 @@ public class LDN {
 	public static void init(LandDev inst){
 		FsmmEventHooks.init();
 		UniReg.registerMod(MODID, inst);
-		UniReg.registerUI(LDKeys.KEY_MAIN, BaseUI.class);
-		UniReg.registerMenu(LDKeys.KEY_MAIN, "assets/landdev/uis/base", BaseCon.class);
+		for(Map.Entry<UIKey, Class<? extends BaseCon>> entry : LDKeys.CONS.entrySet()){
+			UniReg.registerUI(entry.getKey(), BaseUI.class);
+			UniReg.registerMenu(entry.getKey(), "assets/landdev/uis/base", entry.getValue());
+		}
 	}
 
 	public static void postinit(){
