@@ -2,6 +2,7 @@ package net.fexcraft.mod.landdev.ui;
 
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.V3I;
+import net.fexcraft.lib.mc.render.ExternalTextureHelper;
 import net.fexcraft.mod.landdev.data.ColorData;
 import net.fexcraft.mod.landdev.data.IconHolder;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
@@ -14,10 +15,13 @@ import net.fexcraft.mod.landdev.ui.modules.MainModule;
 import net.fexcraft.mod.landdev.ui.modules.ModuleRequest;
 import net.fexcraft.mod.landdev.ui.modules.ModuleResponse;
 import net.fexcraft.mod.landdev.util.ResManager;
+import net.fexcraft.mod.uni.IDLManager;
 import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.tag.TagCW;
+import net.fexcraft.mod.uni.tag.TagLW;
 import net.fexcraft.mod.uni.ui.ContainerInterface;
 import net.fexcraft.mod.uni.ui.UIKey;
+import net.fexcraft.mod.uni.ui.UserInterface;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,6 +40,7 @@ public class BaseCon extends ContainerInterface {
 	protected UIKey type;
 	protected String prefix;
 	protected int backto;
+	protected BaseUI bui;
 	//
 	protected LinkedHashMap<String, String> sfields = new LinkedHashMap<>();
 	protected HashMap<String, Boolean> checkboxes = new HashMap<>();
@@ -52,9 +57,20 @@ public class BaseCon extends ContainerInterface {
 		prefix = "main";
 	}
 
+	public ContainerInterface set(UserInterface ui){
+		bui = (BaseUI)ui;
+		return super.set(ui);
+	}
+
+	@Override
 	public void packet(TagCW com, boolean client){
 		if(client){
-
+			if(com.has("msg")){
+				bui.msg(com.getString("msg"));
+				return;
+			}
+			if(!com.has("elements")) return;
+			process_client_packet(com);
 			return;
 		}
 		if(com.has("sync")){
@@ -118,6 +134,58 @@ public class BaseCon extends ContainerInterface {
 				open(KEY_MAIN, 0, chunk.key.x, chunk.key.z);
 			}
 		}
+	}
+
+	private void process_client_packet(TagCW com){
+		TagLW list = com.getList("elements");
+		sfields.clear();
+		bui.clear();
+		int size = 0;
+		for(int i = 0; i < list.size(); i++){
+			TagLW li = list.getList(i);
+			if(li.getString(3).charAt(2) != '2') size++;
+		}
+		bui.tabs.get("scroll").visible(bui.addscroll = size > 12);
+		bui.texts.get("title").value("landdev.gui." + com.getString("title_lang"));
+		if(com.has("title")) bui.texts.get("title").translate(com.getString("title"));
+		else bui.texts.get("title").translate();
+		//
+		if(type != KEY_MAIN && !com.has("noback")){
+			backto = com.has("backto") ? com.getInteger("backto") : 0;
+			bui.tabs.get("back").visible(true);
+		}
+		else bui.tabs.get("back").visible(false);
+		//
+		bui.elements.clear();
+		for(int li = 0; li < list.size(); li++){
+			TagLW lis = list.getList(li);
+			String index = lis.getString(0);
+			LDUIRow elm = LDUIRow.valueOf(lis.getString(1));
+			LDUIButton icon = LDUIButton.valueOf(lis.getString(2));
+			String bools = lis.getString(3);
+			String val = lis.size() > 4 ? lis.getString(4) : null;
+			if(bools.charAt(2) == '2'){
+				sfields.put(index, val);
+			}
+			else bui.addElm(index, elm, icon, bools.charAt(0) == '1', bools.charAt(1) == '1', bools.charAt(2) == '1', val);
+			if(icon.isCheck()){
+				checkboxes.put(index, icon.check());
+			}
+			if(icon.isRadio()){
+				radioboxes.add(index);
+				if(icon.radio()) radiobox = index;
+			}
+		}
+		bui.tabs.get("bottom").y = bui.elements.size() * 14 + 19;
+		form = com.getBoolean("form");
+		nosubmit = com.getBoolean("nosubmit");
+		if((com.has("gui_icon") && bui.elements.size() > 6)){
+			bui.buttons.get("color").ecolor.packed = com.getInteger("gui_color");
+			bui.tabs.get("icon").texture = IDLManager.getIDLCached(ExternalTextureHelper.get(com.getString("gui_icon")).toString());
+			bui.tabs.get("icon").visible(true);
+		}
+		else bui.tabs.get("icon").visible(false);
+		bui.scroll(0);
 	}
 
 	public void sendResp(){
@@ -188,14 +256,6 @@ public class BaseCon extends ContainerInterface {
 		SEND_TO_CLIENT.accept(resp.build(), player);
 	}
 
-	public static class MainCon extends BaseCon {
-
-		public MainCon(JsonMap map, UniEntity ply, V3I pos){
-			super(map, ply, pos);
-		}
-
-	}
-
 	public void open(int x){
 		player.entity.openUI(type, x, pos.y, pos.z);
 	}
@@ -216,6 +276,108 @@ public class BaseCon extends ContainerInterface {
 
 	public void msg(String string){
 		msg(string, true);
+	}
+
+	//
+
+	public static class PropBaseCon extends BaseCon {
+
+		public PropBaseCon(JsonMap map, UniEntity ply, V3I pos){
+			super(map, ply, pos);
+			type = KEY_PROPERTY;
+			prefix = "property";
+		}
+
+	}
+
+	public static class ChunkBaseCon extends BaseCon {
+
+		public ChunkBaseCon(JsonMap map, UniEntity ply, V3I pos){
+			super(map, ply, pos);
+			type = KEY_CHUNK;
+			prefix = "chunk";
+		}
+
+	}
+
+	public static class DisBaseCon extends BaseCon {
+
+		public DisBaseCon(JsonMap map, UniEntity ply, V3I pos){
+			super(map, ply, pos);
+			type = KEY_DISTRICT;
+			prefix = "district";
+		}
+
+	}
+
+	public static class MunBaseCon extends BaseCon {
+
+		public MunBaseCon(JsonMap map, UniEntity ply, V3I pos){
+			super(map, ply, pos);
+			type = KEY_MUNICIPALITY;
+			prefix = "municipality";
+		}
+
+	}
+
+	public static class CouBaseCon extends BaseCon {
+
+		public CouBaseCon(JsonMap map, UniEntity ply, V3I pos){
+			super(map, ply, pos);
+			type = KEY_COUNTY;
+			prefix = "county";
+		}
+
+	}
+
+	public static class StaBaseCon extends BaseCon {
+
+		public StaBaseCon(JsonMap map, UniEntity ply, V3I pos){
+			super(map, ply, pos);
+			type = KEY_STATE;
+			prefix = "state";
+		}
+
+	}
+
+	public static class PlayerBaseCon extends BaseCon {
+
+		public PlayerBaseCon(JsonMap map, UniEntity ply, V3I pos){
+			super(map, ply, pos);
+			type = KEY_PLAYER;
+			prefix = "player";
+		}
+
+	}
+
+	public static class PollBaseCon extends BaseCon {
+
+		public PollBaseCon(JsonMap map, UniEntity ply, V3I pos){
+			super(map, ply, pos);
+			type = KEY_POLL;
+			prefix = "poll";
+		}
+
+	}
+
+	public static class MBBaseCon extends BaseCon {
+
+		public MBBaseCon(JsonMap map, UniEntity ply, V3I pos){
+			super(map, ply, pos);
+			type = KEY_MAILBOX;
+			prefix = "mailbox";
+		}
+
+	}
+
+	public static class MailBaseCon extends BaseCon {
+
+		public MailBaseCon(JsonMap map, UniEntity ply, V3I pos){
+			super(map, ply, pos);
+			type = KEY_MAIL;
+			prefix = "mail";
+		}
+
 	}
 
 }
