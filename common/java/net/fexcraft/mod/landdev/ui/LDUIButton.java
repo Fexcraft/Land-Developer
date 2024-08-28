@@ -21,7 +21,7 @@ public enum LDUIButton {
 	RADIO_UNCHECKED("radio-"),
 	;
 
-	private String id;
+	public final String id;
 
 	LDUIButton(String id){
 		this.id = id;
@@ -53,6 +53,10 @@ public enum LDUIButton {
 
 	public boolean radio(){
 		return this == RADIO_CHECKED;
+	}
+
+	public String translation(){
+		return "landdev.gui." + name().toLowerCase();
 	}
 	
 }
