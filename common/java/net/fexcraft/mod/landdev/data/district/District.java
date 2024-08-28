@@ -4,7 +4,7 @@ import static net.fexcraft.mod.fsmm.util.Config.getWorthAsString;
 import static net.fexcraft.mod.landdev.data.PermAction.*;
 import static net.fexcraft.mod.landdev.ui.LDKeys.KEY_MAILBOX;
 import static net.fexcraft.mod.landdev.ui.LDUIButton.*;
-import static net.fexcraft.mod.landdev.ui.LDUIElmType.*;
+import static net.fexcraft.mod.landdev.ui.LDUIRow.*;
 import static net.fexcraft.mod.landdev.util.ResManager.SERVER_ACCOUNT;
 import static net.fexcraft.mod.landdev.util.TranslationUtil.translate;
 
