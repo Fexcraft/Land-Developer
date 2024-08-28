@@ -1,8 +1,8 @@
 package net.fexcraft.mod.landdev.ui.modules;
 
 import static net.fexcraft.mod.landdev.ui.LDUIButton.OPEN;
-import static net.fexcraft.mod.landdev.ui.LDUIElmType.ELM_BLUE;
-import static net.fexcraft.mod.landdev.ui.LDUIElmType.ELM_GENERIC;
+import static net.fexcraft.mod.landdev.ui.LDUIRow.ELM_BLUE;
+import static net.fexcraft.mod.landdev.ui.LDUIRow.ELM_GENERIC;
 
 import net.fexcraft.mod.landdev.data.ColorData;
 import net.fexcraft.mod.landdev.data.IconHolder;
