@@ -1,7 +1,7 @@
 {
 	"_info_": "LandDev UI Base",
 	"background": true,
-	"size": [ 225, 136 ],
+	"size": [ 225, 192 ],
 	"tabs": {
 		"top": {
 			"texture": "landdev:textures/ui/base.png",
@@ -88,14 +88,13 @@
 			"uv": [ 240, 0 ],
 			"buttons": [ "back" ]
 		},
-		"tab": {
-			"texture": "landdev:textures/ui/base.png",
-			"size": [ 225, 136 ],
-			"pos": [ 0, 0 ],
+		"note": {
+			"texture": "landdev:textures/ui/notification.png",
+			"size": [ 256, 22 ],
+			"pos": [ -16, -24 ],
 			"visible": false,
-			"buttons": [],
-			"texts": [],
-			"fields": []
+			"buttons": [ "flash", "note_ok" ],
+			"texts": [ "note" ]
 		}
 	},
 	"buttons": {
@@ -188,6 +187,16 @@
 			"size": [ 11, 11 ],
 			"pos": [ -10, 4 ],
 			"uv": [ 243, 3 ]
+		},
+		"flash": {
+			"size": [ 6, 12 ],
+			"pos": [ -10, -19 ],
+			"uv": [ 6, 5 ]
+		},
+		"note_ok": {
+			"size": [ 13, 12 ],
+			"pos": [ 221, -19 ],
+			"uv": [ 237, 5 ]
 		}
 	},
 	"texts": {
@@ -198,13 +207,28 @@
 			"color": "#0e0e0e",
 			"value": "landdev.ui.loading.title",
 			"translate": true
+		},
+		"note": {
+			"size": [ 217, 8 ],
+			"pos": [ 0, -17 ],
+			"autoscale": true,
+			"color": "#0e0e0e",
+			"value": "landdev.ui.loading.title",
+			"translate": true
+		},
+		"temp": {
+			"size": [ 196, 8 ],
+			"pos": [ 8, 22 ],
+			"autoscale": true,
+			"color": "#0e0e0e",
+			"visible": false
 		}
 	},
 	"fields": {
 		"field": {
-			"size": [ 0, 0 ],
-			"pos": [ 0, 0 ],
-			"background": false
+			"size": [ 200, 12 ],
+			"pos": [ 0, 19 ],
+			"background": true
 		}
 	}
 }
