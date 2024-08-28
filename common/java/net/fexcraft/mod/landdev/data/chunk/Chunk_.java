@@ -5,7 +5,7 @@ import static net.fexcraft.mod.fsmm.util.Config.getWorthAsString;
 import static net.fexcraft.mod.landdev.data.PermAction.CHUNK_CUSTOMTAX;
 import static net.fexcraft.mod.landdev.data.PermAction.MANAGE_DISTRICT;
 import static net.fexcraft.mod.landdev.ui.LDUIButton.*;
-import static net.fexcraft.mod.landdev.ui.LDUIElmType.*;
+import static net.fexcraft.mod.landdev.ui.LDUIRow.*;
 
 import java.util.ArrayList;
 import java.util.UUID;
