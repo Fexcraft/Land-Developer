@@ -2,7 +2,7 @@ package net.fexcraft.mod.landdev.data.municipality;
 
 import static net.fexcraft.mod.landdev.data.PermAction.*;
 import static net.fexcraft.mod.landdev.ui.LDUIButton.*;
-import static net.fexcraft.mod.landdev.ui.LDUIElmType.*;
+import static net.fexcraft.mod.landdev.ui.LDUIRow.*;
 import static net.fexcraft.mod.landdev.util.ResManager.SERVER_ACCOUNT;
 import static net.fexcraft.mod.landdev.util.TranslationUtil.translate;
 import static net.fexcraft.mod.landdev.util.TranslationUtil.translateCmd;
