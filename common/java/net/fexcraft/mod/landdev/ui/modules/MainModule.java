@@ -3,7 +3,7 @@ package net.fexcraft.mod.landdev.ui.modules;
 import static net.fexcraft.mod.landdev.ui.LDKeys.*;
 import static net.fexcraft.mod.landdev.ui.LDKeys.KEY_COUNTY;
 import static net.fexcraft.mod.landdev.ui.LDUIButton.OPEN;
-import static net.fexcraft.mod.landdev.ui.LDUIElmType.ELM_GENERIC;
+import static net.fexcraft.mod.landdev.ui.LDUIRow.ELM_GENERIC;
 
 import net.fexcraft.mod.landdev.data.Layers;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
