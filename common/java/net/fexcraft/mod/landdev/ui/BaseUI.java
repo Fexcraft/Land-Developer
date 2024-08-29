@@ -272,7 +272,7 @@ public class BaseUI extends UserInterface {
 						com.set("checkboxes", cbs);
 						if(base.bon.radiobox != null) com.set("radiobox", base.bon.radiobox);
 						TagCW fields = TagCW.create();
-						base.fields.forEach((key, val) -> fields.set(key, val.text()));
+						base.fields.forEach((key, val) -> fields.set(key.substring(4), val.text()));
 						base.bon.sfields.forEach((key, val) -> fields.set(key, val));
 						com.set("fields", fields);
 						base.container.SEND_TO_SERVER.accept(com);
