@@ -227,7 +227,7 @@
 	"fields": {
 		"field": {
 			"size": [ 200, 12 ],
-			"pos": [ 0, 19 ],
+			"pos": [ 6, 19 ],
 			"background": true
 		}
 	}
