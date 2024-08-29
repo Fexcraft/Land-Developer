@@ -29,16 +29,16 @@ public class LDKeys {
 	public static final UIKey KEY_PROPERTY = new UIKey(PROPERTY, "landdev:property");
 	public static final UIKey KEY_CHUNK = new UIKey(CHUNK, "landdev:chunk");
 	public static final UIKey KEY_COMPANY = new UIKey(COMPANY, "landdev:company");
-	public static final UIKey KEY_DISTRICT = new UIKey(MAIN, "landdev:district");
-	public static final UIKey KEY_MUNICIPALITY = new UIKey(MAIN, "landdev:municipality");
-	public static final UIKey KEY_COUNTY = new UIKey(MAIN, "landdev:county");
-	public static final UIKey KEY_STATE = new UIKey(MAIN, "landdev:state");
-	public static final UIKey KEY_PLAYER = new UIKey(MAIN, "landdev:player");
-	public static final UIKey KEY_POLL = new UIKey(MAIN, "landdev:poll");
-	public static final UIKey KEY_MAILBOX = new UIKey(MAIN, "landdev:mailbox");
-	public static final UIKey KEY_MAIL = new UIKey(MAIN, "landdev:mail");
-	public static final UIKey KEY_CLAIM = new UIKey(MAIN, "landdev:claim");
-	public static final UIKey KEY_IMG_VIEW = new UIKey(MAIN, "landdev:img_view");
+	public static final UIKey KEY_DISTRICT = new UIKey(DISTRICT, "landdev:district");
+	public static final UIKey KEY_MUNICIPALITY = new UIKey(MUNICIPALITY, "landdev:municipality");
+	public static final UIKey KEY_COUNTY = new UIKey(COUNTY, "landdev:county");
+	public static final UIKey KEY_STATE = new UIKey(STATE, "landdev:state");
+	public static final UIKey KEY_PLAYER = new UIKey(PLAYER, "landdev:player");
+	public static final UIKey KEY_POLL = new UIKey(POLL, "landdev:poll");
+	public static final UIKey KEY_MAILBOX = new UIKey(MAILBOX, "landdev:mailbox");
+	public static final UIKey KEY_MAIL = new UIKey(MAIL, "landdev:mail");
+	public static final UIKey KEY_CLAIM = new UIKey(CLAIM, "landdev:claim");
+	public static final UIKey KEY_IMG_VIEW = new UIKey(IMG_PREVIEW, "landdev:img_view");
 
 	public static final HashMap<UIKey, Class<? extends BaseCon>> CONS = new LinkedHashMap<>();
 	static{
