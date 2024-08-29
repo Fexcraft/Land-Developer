@@ -127,10 +127,10 @@ landdev.gui.yes=Yes
 landdev.gui.select=Select
 landdev.gui.loading.title=loading...
 landdev.gui.missing.title=Interface not found. Might be WIP?
-landdev.gui.icon_checkbox_checked=Checkbox: &6checked
-landdev.gui.icon_checkbox_unchecked=Checkbox: &cunchecked
-landdev.gui.icon_radiobox_checked=Radiobox: &6checked
-landdev.gui.icon_radiobox_unchecked=Radiobox: &cunchecked
+landdev.gui.check_checked=Checkbox: &6checked
+landdev.gui.check_unchecked=Checkbox: &cunchecked
+landdev.gui.radio_checked=Radiobox: &6checked
+landdev.gui.radio_unchecked=Radiobox: &cunchecked
 //
 landdev.gui.claim.title=Chunk Claiming Interface
 landdev.gui.claim.chunk_coord=&7Chunk: &a%s, %s
