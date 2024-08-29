@@ -183,7 +183,7 @@ public class BaseUI extends UserInterface {
 				button.visible(vis);
 			}
 			if(field != null){
-				field.y = tab.y + 2;
+				field.y = tab.y + 1;
 				field.visible(vis);
 			}
 			tab.visible(vis);
@@ -220,9 +220,9 @@ public class BaseUI extends UserInterface {
 				field = UIElement.create(UIField.IMPLEMENTATION, base, base.container.ui_map.getMap("fields").getMap("field"));
 				base.fields.put(id, field);
 				tab.fields.put(id, field);
-				field.maxlength = 256;
+				field.maxlength(256);
 				field.width = (field.background = wide) ? 212 : 198;
-				if(val != null) field.value = val;
+				if(val != null) field.text(val);
 				field.visible(true);
 			}
 			catch(Exception e){
