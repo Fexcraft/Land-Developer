@@ -4,9 +4,7 @@ import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.Time;
-import net.fexcraft.lib.mc.gui.GenericGui;
-import net.fexcraft.lib.mc.registry.UCResourceLocation;
-import net.fexcraft.mod.landdev.LandDev;
+import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.ui.*;
 
@@ -18,6 +16,7 @@ import java.util.List;
  */
 public class BaseUI extends UserInterface {
 
+	protected IDL imgres;
 	protected ArrayList<BaseElm> elements = new ArrayList<>();
 	protected BaseCon bon;
 	protected boolean addscroll;
@@ -62,11 +61,23 @@ public class BaseUI extends UserInterface {
 			int k = i - scroll;
 			elements.get(i).repos(k, k >= 0 && k < 12);
 		}
+		UITab tab = tabs.remove("scroll");
+		tabs.put("scroll", tab);
+		tab = tabs.remove("icon");
+		tabs.put("icon", tab);
 	}
 
 	@Override
 	public void predraw(float ticks, int mx, int my){
 		buttons.get("flash").ty = Time.getSecond() % 2 == 1 ? 23 : 5;
+	}
+
+	@Override
+	public void drawbackground(float ticks, int mx, int my){
+		if(tabs.get("icon").visible() && imgres != null){
+			drawer.bind(imgres);
+			drawer.drawFull(tabs.get("icon").x + 3 + gLeft, tabs.get("icon").y + 3 + gTop, 28, 28);
+		}
 	}
 
 	@Override
@@ -117,7 +128,7 @@ public class BaseUI extends UserInterface {
 			for(BaseElm elm : elements){
 				if(!elm.icon.isCheck() && !elm.icon.isRadio()) continue;
 				if(elm.button == null || !elm.button.hovered()) continue;
-				list.add(elm.icon.translation());
+				list.add(drawer.translate(elm.icon.translation()));
 			}
 		}
 		if(list.size() == 1 && list.get(0).length() == 0) list.clear();
