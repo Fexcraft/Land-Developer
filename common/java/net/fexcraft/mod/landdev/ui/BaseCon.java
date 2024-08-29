@@ -176,12 +176,12 @@ public class BaseCon extends ContainerInterface {
 				if(icon.radio()) radiobox = index;
 			}
 		}
-		bui.tabs.get("bottom").y = bui.elements.size() * 14 + 19;
+		bui.tabs.get("bottom").y = (bui.elements.size() > 12 ? 12 : bui.elements.size()) * 14 + 19;
 		form = com.getBoolean("form");
 		nosubmit = com.getBoolean("nosubmit");
 		if((com.has("gui_icon") && bui.elements.size() > 6)){
 			bui.buttons.get("color").ecolor.packed = com.getInteger("gui_color");
-			bui.tabs.get("icon").texture = IDLManager.getIDLCached(ExternalTextureHelper.get(com.getString("gui_icon")).toString());
+			bui.imgres = bui.drawer.loadExternal(com.getString("gui_icon"));
 			bui.tabs.get("icon").visible(true);
 		}
 		else bui.tabs.get("icon").visible(false);
