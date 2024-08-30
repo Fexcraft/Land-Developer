@@ -1,15 +1,11 @@
 package net.fexcraft.mod.landdev.data.player;
 
-import static net.fexcraft.mod.landdev.LandDev.CLIENT_RECEIVER_ID;
-
 import java.util.ArrayList;
 import java.util.UUID;
 
 import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.Time;
-import net.fexcraft.lib.mc.network.PacketHandler;
-import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.mod.fsmm.data.Account;
 import net.fexcraft.mod.fsmm.util.DataManager;
 import net.fexcraft.mod.landdev.data.Layer;
@@ -166,7 +162,7 @@ public class LDPlayer implements Saveable, Layer, LDUIModule, Appendable<UniEnti
 
 	public void sendLocationUpdate(boolean moved, boolean label, int time){
 		TagCW com = TagCW.create();
-		com.set("target_listener", CLIENT_RECEIVER_ID);
+		//TODO com.set("target_listener", CLIENT_RECEIVER_ID);
 		com.set("task", "location_update");
 		boolean mun = chunk_current.district.municipality() != null;
 		TagLW icons = TagLW.create();
@@ -185,7 +181,7 @@ public class LDPlayer implements Saveable, Layer, LDUIModule, Appendable<UniEnti
 		if(label) lines.add(chunk_current.label.label);
 		com.set("lines", lines);
 		if(time > 0){ com.set("time", time); }
-		PacketHandler.getInstance().sendTo(new PacketNBTTagCompound(com.local()), entity.local());
+		//TODO PacketHandler.getInstance().sendTo(new PacketNBTTagCompound(com.local()), entity.local());
 	}
 
 	public String name(){
