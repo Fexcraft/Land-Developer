@@ -220,13 +220,14 @@ public class BaseUI extends UserInterface {
 				field = UIElement.create(UIField.IMPLEMENTATION, base, base.container.ui_map.getMap("fields").getMap("field"));
 				base.fields.put(id, field);
 				tab.fields.put(id, field);
+				base.root.initField(field);
 				field.maxlength(256);
 				field.width = (field.background = wide) ? 212 : 198;
 				if(val != null) field.text(val);
 				field.visible(true);
 			}
 			catch(Exception e){
-				throw new RuntimeException(e);
+				e.printStackTrace();
 			}
 		}
 
