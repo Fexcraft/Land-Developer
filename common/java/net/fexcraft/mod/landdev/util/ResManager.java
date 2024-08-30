@@ -3,10 +3,8 @@ package net.fexcraft.mod.landdev.util;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.mojang.authlib.GameProfile;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.V3D;
-import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.fsmm.data.Account;
 import net.fexcraft.mod.fsmm.util.DataManager;
 import net.fexcraft.mod.landdev.data.Saveable;
@@ -18,8 +16,10 @@ import net.fexcraft.mod.landdev.data.district.District;
 import net.fexcraft.mod.landdev.data.municipality.Municipality;
 import net.fexcraft.mod.landdev.data.player.LDPlayer;
 import net.fexcraft.mod.landdev.data.state.State;
+import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.world.EntityW;
+import net.fexcraft.mod.uni.world.WrapperHolder;
 
 import static net.fexcraft.mod.landdev.LDN.DB;
 
@@ -133,16 +133,10 @@ public class ResManager implements Saveable {
 	}
 
 	public static void unloadIfOffline(LDPlayer player){
-		Object entity = Static.getServer().getPlayerList().getPlayerByUUID(player.uuid);
-		if(entity == null){
+		if(!WrapperHolder.getOnlinePlayerIDs().contains(player.uuid)){
 			player.save();
 			PLAYERS.remove(player.uuid);
 		}
-	}
-
-	public static UUID getUUIDof(String string){
-		GameProfile gp = Static.getServer().getPlayerProfileCache().getGameProfileForUsername(string);
-		return gp == null ? null : gp.getId();
 	}
 
 	public static LDPlayer getPlayer(String string, boolean load){
@@ -151,9 +145,8 @@ public class ResManager implements Saveable {
 			uuid = UUID.fromString(string);
 		}
 		catch(Exception e){
-			if(Static.dev()) e.printStackTrace();
-			GameProfile gp = Static.getServer().getPlayerProfileCache().getGameProfileForUsername(string);
-			if(gp != null) uuid = gp.getId();
+			if(EnvInfo.DEV) e.printStackTrace();
+			uuid = WrapperHolder.getUUIDFor(string);
 		}
 		return uuid == null ? null : getPlayer(uuid, load);
 	}
@@ -206,7 +199,7 @@ public class ResManager implements Saveable {
 	}
 
 	public static String getPlayerName(UUID uuid){
-		return Static.getPlayerNameByUUID(uuid);
+		return WrapperHolder.getNameFor(uuid);
 	}
 
 	@Override
