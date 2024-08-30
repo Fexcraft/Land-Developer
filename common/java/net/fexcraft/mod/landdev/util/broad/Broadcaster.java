@@ -8,6 +8,7 @@ import javax.annotation.Nullable;
 
 import net.fexcraft.mod.landdev.data.player.LDPlayer;
 import net.fexcraft.mod.landdev.util.LDConfig;
+import net.fexcraft.mod.landdev.util.broad.broad.InternalTransmitter;
 
 public class Broadcaster {
 	
