@@ -14,12 +14,12 @@ import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonHandler;
 import net.fexcraft.app.json.JsonHandler.PrintOption;
 import net.fexcraft.app.json.JsonMap;
-import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.landdev.LandDev;
 import net.fexcraft.mod.landdev.util.LDConfig;
 import net.fexcraft.mod.landdev.util.broad.Broadcaster.TargetTransmitter;
 import net.fexcraft.mod.landdev.util.broad.Broadcaster.Transmitter;
 import net.fexcraft.mod.landdev.util.broad.Broadcaster.TransmitterType;
+import net.fexcraft.mod.uni.world.WrapperHolder;
 
 /**
  * 
@@ -34,7 +34,7 @@ public class DiscordTransmitter implements Transmitter {
 
 	@Override
 	public void transmit(String channel, String sender, String message, Object[] args){
-		Static.getServer().addScheduledTask(() -> {
+		WrapperHolder.schedule(() -> {
 			if(fut != null && !fut.channel().isActive()) return;
 	        try{
 	        	JsonMap map = new JsonMap();
