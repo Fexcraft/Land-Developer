@@ -217,12 +217,14 @@ public class BaseUI extends UserInterface {
 
 		public void addField(BaseUI base, String val, boolean wide){
 			try{
-				field = UIElement.create(UIField.IMPLEMENTATION, base, base.container.ui_map.getMap("fields").getMap("field"));
+				field = UIElement.create(UIField.IMPLEMENTATION, base, new JsonMap());
+				field.width = (field.background = wide) ? 212 : 198;
+				field.height = 12;
+				field.x = 6;
 				base.fields.put(id, field);
 				tab.fields.put(id, field);
 				base.root.initField(field);
 				field.maxlength(256);
-				field.width = (field.background = wide) ? 212 : 198;
 				if(val != null) field.text(val);
 				field.visible(true);
 			}
