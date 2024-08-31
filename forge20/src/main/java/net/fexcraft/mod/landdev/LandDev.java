@@ -3,6 +3,7 @@ package net.fexcraft.mod.landdev;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.logging.LogUtils;
 import net.fexcraft.lib.common.math.V3I;
+import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.data.player.LDPlayer;
 import net.fexcraft.mod.landdev.ui.LDKeys;
 import net.fexcraft.mod.landdev.util.AliasLoader;
@@ -33,6 +34,7 @@ import java.io.File;
 import java.io.IOException;
 
 import static net.fexcraft.mod.fsmm.local.FsmmCmd.isOp;
+import static net.fexcraft.mod.landdev.util.TranslationUtil.translateCmd;
 import static net.minecraft.commands.Commands.literal;
 
 @Mod(LandDev.MODID)
@@ -103,7 +105,7 @@ public class LandDev {
 
 	@SubscribeEvent
 	public void onCmdReg(RegisterCommandsEvent event){
-		AliasLoader.load();
+		//AliasLoader.load();
 		regCmd(event.getDispatcher());
 	}
 
@@ -127,6 +129,67 @@ public class LandDev {
 			.executes(cmd -> {
 				LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
 				player.entity.openUI(LDKeys.KEY_MAIN, new V3I(0, (int)player.entity.getPos().x >> 4, (int)player.entity.getPos().z >> 4));
+				return 0;
+			})
+		);
+		dispatcher.register(literal("dis")
+			.then(literal("create").executes(cmd -> {
+				LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
+				//
+				return 0;
+			}))
+			.executes(cmd -> {
+				try{
+					LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
+					Chunk_ chunk = ResManager.getChunk(player.entity);
+					player.entity.openUI(LDKeys.KEY_DISTRICT, new V3I(0, chunk.district.id, 0));
+				}
+				catch(Exception e){
+					e.printStackTrace();
+				}
+				return 0;
+			})
+		);
+		dispatcher.register(literal("mun")
+			.then(literal("create").executes(cmd -> {
+				LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
+				//
+				return 0;
+			}))
+			.executes(cmd -> {
+				LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
+				Chunk_ chunk = ResManager.getChunk(player.entity);
+				if(chunk.district.municipality() == null){
+					player.entity.send(translateCmd("mun.not_in_a_municipality"));
+					return 0;
+				}
+				player.entity.openUI(LDKeys.KEY_MUNICIPALITY, new V3I(0, chunk.district.municipality().id, 0));
+				return 0;
+			})
+		);
+		dispatcher.register(literal("ct")
+			.then(literal("create").executes(cmd -> {
+				LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
+				//
+				return 0;
+			}))
+			.executes(cmd -> {
+				LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
+				Chunk_ chunk = ResManager.getChunk(player.entity);
+				player.entity.openUI(LDKeys.KEY_COUNTY, new V3I(0, chunk.district.county().id, 0));
+				return 0;
+			})
+		);
+		dispatcher.register(literal("st")
+			.then(literal("create").executes(cmd -> {
+				LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
+				//
+				return 0;
+			}))
+			.executes(cmd -> {
+				LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
+				Chunk_ chunk = ResManager.getChunk(player.entity);
+				player.entity.openUI(LDKeys.KEY_STATE, new V3I(0, chunk.district.state().id, 0));
 				return 0;
 			})
 		);
