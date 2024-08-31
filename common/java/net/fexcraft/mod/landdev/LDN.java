@@ -18,7 +18,9 @@ import net.fexcraft.mod.landdev.util.broad.Broadcaster;
 import net.fexcraft.mod.landdev.util.broad.DiscordTransmitter;
 import net.fexcraft.mod.uni.UniChunk;
 import net.fexcraft.mod.uni.UniReg;
+import net.fexcraft.mod.uni.ui.ContainerInterface;
 import net.fexcraft.mod.uni.ui.UIKey;
+import net.fexcraft.mod.uni.ui.UserInterface;
 
 import java.io.File;
 import java.time.LocalDate;
@@ -56,6 +58,8 @@ public class LDN {
 			UniReg.registerUI(entry.getKey(), BaseUI.class);
 			UniReg.registerMenu(entry.getKey(), "assets/landdev/uis/base", entry.getValue());
 		}
+		UniReg.registerUI(LDKeys.KEY_MAILBOX, UserInterface.class);
+		UniReg.registerMenu(LDKeys.KEY_MAILBOX, "assets/landdev/uis/mailbox", ContainerInterface.class);
 	}
 
 	public static void postinit(){
