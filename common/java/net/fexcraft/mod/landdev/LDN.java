@@ -6,9 +6,7 @@ import net.fexcraft.mod.landdev.data.chunk.ChunkRegion;
 import net.fexcraft.mod.landdev.db.Database;
 import net.fexcraft.mod.landdev.db.JsonFileDB;
 import net.fexcraft.mod.landdev.events.FsmmEventHooks;
-import net.fexcraft.mod.landdev.ui.BaseCon;
-import net.fexcraft.mod.landdev.ui.BaseUI;
-import net.fexcraft.mod.landdev.ui.LDKeys;
+import net.fexcraft.mod.landdev.ui.*;
 import net.fexcraft.mod.landdev.util.LDConfig;
 import net.fexcraft.mod.landdev.util.Protector;
 import net.fexcraft.mod.landdev.util.TaxSystem;
@@ -58,8 +56,8 @@ public class LDN {
 			UniReg.registerUI(entry.getKey(), BaseUI.class);
 			UniReg.registerMenu(entry.getKey(), "assets/landdev/uis/base", entry.getValue());
 		}
-		UniReg.registerUI(LDKeys.KEY_MAILBOX, UserInterface.class);
-		UniReg.registerMenu(LDKeys.KEY_MAILBOX, "assets/landdev/uis/mailbox", ContainerInterface.class);
+		UniReg.registerUI(LDKeys.KEY_MAILBOX, MailboxUI.class);
+		UniReg.registerMenu(LDKeys.KEY_MAILBOX, "assets/landdev/uis/mailbox", MailboxCon.class);
 	}
 
 	public static void postinit(){
