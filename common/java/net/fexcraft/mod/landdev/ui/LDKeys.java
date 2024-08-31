@@ -51,7 +51,7 @@ public class LDKeys {
 		CONS.put(KEY_STATE, BaseCon.StaBaseCon.class);
 		CONS.put(KEY_PLAYER, BaseCon.PlayerBaseCon.class);
 		CONS.put(KEY_POLL, BaseCon.PollBaseCon.class);
-		CONS.put(KEY_MAILBOX, BaseCon.MBBaseCon.class);
+		//CONS.put(KEY_MAILBOX, BaseCon.MBBaseCon.class);
 		CONS.put(KEY_MAIL, BaseCon.MailBaseCon.class);
 	}
 
