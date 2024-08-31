@@ -358,16 +358,6 @@ public class BaseCon extends ContainerInterface {
 
 	}
 
-	public static class MBBaseCon extends BaseCon {
-
-		public MBBaseCon(JsonMap map, UniEntity ply, V3I pos){
-			super(map, ply, pos);
-			type = KEY_MAILBOX;
-			prefix = "mailbox";
-		}
-
-	}
-
 	public static class MailBaseCon extends BaseCon {
 
 		public MailBaseCon(JsonMap map, UniEntity ply, V3I pos){
