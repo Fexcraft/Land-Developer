@@ -8,7 +8,17 @@
 			"size": [ 245, 164 ],
 			"pos": [ 0, 0 ],
 			"texts": [
-				"title"
+				"title",
+				"mail_0",
+				"mail_1",
+				"mail_2",
+				"mail_3",
+				"mail_4",
+				"mail_5",
+				"mail_6",
+				"mail_7",
+				"mail_8",
+				"mail_9"
 			],
 			"buttons": [
 				"open_0",
@@ -36,7 +46,8 @@
 		"page": {
 			"texture": "landdev:textures/ui/mail.png",
 			"size": [ 30, 13 ],
-			"pos": [ 182, 164 ]
+			"pos": [ 182, 164 ],
+			"buttons": [ "prev", "next" ]
 		}
 	},
 	"buttons": {
@@ -159,6 +170,14 @@
 			"pos": [ 228, 146 ],
 			"uv": [ 228, 164 ],
 			"visible": false
+		},
+		"prev": {
+			"size": [ 11, 11 ],
+			"pos": [ 185, 163 ]
+		},
+		"next": {
+			"size": [ 11, 11 ],
+			"pos": [ 198, 163 ]
 		}
 	},
 	"texts": {
@@ -169,6 +188,66 @@
 			"color": "#0e0e0e",
 			"value": "landdev.ui.loading.title",
 			"translate": true
+		},
+		"mail_0": {
+			"size": [ 184, 8 ],
+			"pos": [ 26, 22 ],
+			"autoscale": true,
+			"color": "#0e0e0e"
+		},
+		"mail_1": {
+			"size": [ 184, 8 ],
+			"pos": [ 26, 36 ],
+			"autoscale": true,
+			"color": "#0e0e0e"
+		},
+		"mail_2": {
+			"size": [ 184, 8 ],
+			"pos": [ 26, 50 ],
+			"autoscale": true,
+			"color": "#0e0e0e"
+		},
+		"mail_3": {
+			"size": [ 184, 8 ],
+			"pos": [ 26, 64 ],
+			"autoscale": true,
+			"color": "#0e0e0e"
+		},
+		"mail_4": {
+			"size": [ 184, 8 ],
+			"pos": [ 26, 78 ],
+			"autoscale": true,
+			"color": "#0e0e0e"
+		},
+		"mail_5": {
+			"size": [ 184, 8 ],
+			"pos": [ 26, 92 ],
+			"autoscale": true,
+			"color": "#0e0e0e"
+		},
+		"mail_6": {
+			"size": [ 184, 8 ],
+			"pos": [ 26, 106 ],
+			"autoscale": true,
+			"color": "#0e0e0e"
+		},
+		"mail_7": {
+			"size": [ 184, 8 ],
+			"pos": [ 26, 120 ],
+			"autoscale": true,
+			"color": "#0e0e0e"
+		},
+		"mail_8": {
+			"size": [ 184, 8 ],
+			"pos": [ 26, 134 ],
+			"autoscale": true,
+			"color": "#0e0e0e"
+		},
+		"mail_9": {
+			"size": [ 184, 8 ],
+			"pos": [ 26, 148 ],
+			"autoscale": true,
+			"color": "#0e0e0e"
 		}
 	}
 }
