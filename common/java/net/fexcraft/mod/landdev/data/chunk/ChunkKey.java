@@ -1,5 +1,7 @@
 package net.fexcraft.mod.landdev.data.chunk;
 
+import net.fexcraft.lib.common.math.V3D;
+
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
@@ -20,6 +22,10 @@ public class ChunkKey implements Comparable<ChunkKey> {
 
 	public ChunkKey(int x, int z, boolean reg){
 		this(reg ? (int)Math.floor(x / 32) : x, reg ? (int)Math.floor(z / 32) : z);
+	}
+
+	public ChunkKey(V3D pos){
+		this((int)pos.x >> 4, (int)pos.z >> 4);
 	}
 
 	@Override
