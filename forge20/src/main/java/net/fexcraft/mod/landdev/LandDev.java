@@ -1,6 +1,7 @@
 package net.fexcraft.mod.landdev;
 
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.logging.LogUtils;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
@@ -35,6 +36,7 @@ import java.io.IOException;
 
 import static net.fexcraft.mod.fsmm.local.FsmmCmd.isOp;
 import static net.fexcraft.mod.landdev.util.TranslationUtil.translateCmd;
+import static net.minecraft.commands.Commands.argument;
 import static net.minecraft.commands.Commands.literal;
 
 @Mod(LandDev.MODID)
@@ -129,6 +131,30 @@ public class LandDev {
 			.executes(cmd -> {
 				LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
 				player.entity.openUI(LDKeys.KEY_MAIN, new V3I(0, (int)player.entity.getPos().x >> 4, (int)player.entity.getPos().z >> 4));
+				return 0;
+			})
+		);
+		dispatcher.register(literal("ck")
+			.then(literal("claim").then(argument("district", IntegerArgumentType.integer(-2)).executes(cmd -> {
+				LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
+				Chunk_ chunk = ResManager.getChunk(player.entity);
+				player.entity.openUI(LDKeys.KEY_CLAIM, new V3I(chunk.key.x, cmd.getArgument("district", Integer.class), chunk.key.z));
+				return 0;
+			})).executes(cmd -> {
+				LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
+				Chunk_ chunk = ResManager.getChunk(player.entity);
+				player.entity.openUI(LDKeys.KEY_CLAIM, new V3I(chunk.key.x, chunk.district.id, chunk.key.z));
+				return 0;
+			}))
+			.executes(cmd -> {
+				try{
+					LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
+					Chunk_ chunk = ResManager.getChunk(player.entity);
+					player.entity.openUI(LDKeys.KEY_CHUNK, new V3I(0, chunk.key.x, chunk.key.z));
+				}
+				catch(Exception e){
+					e.printStackTrace();
+				}
 				return 0;
 			})
 		);
