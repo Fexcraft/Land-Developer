@@ -1,0 +1,174 @@
+{
+	"_info_": "LandDev MailBox UI",
+	"background": true,
+	"size": [ 225, 164 ],
+	"tabs": {
+		"main": {
+			"texture": "landdev:textures/ui/mail.png",
+			"size": [ 245, 164 ],
+			"pos": [ 0, 0 ],
+			"texts": [
+				"title"
+			],
+			"buttons": [
+				"open_0",
+				"open_1",
+				"open_2",
+				"open_3",
+				"open_4",
+				"open_5",
+				"open_6",
+				"open_7",
+				"open_8",
+				"open_9",
+				"del_0",
+				"del_1",
+				"del_2",
+				"del_3",
+				"del_4",
+				"del_5",
+				"del_6",
+				"del_7",
+				"del_8",
+				"del_9"
+			]
+		},
+		"page": {
+			"texture": "landdev:textures/ui/mail.png",
+			"size": [ 30, 13 ],
+			"pos": [ 182, 164 ]
+		}
+	},
+	"buttons": {
+		"open_0": {
+			"size": [ 12, 12 ],
+			"pos": [ 214, 20 ],
+			"uv": [ 214, 164 ],
+			"visible": false
+		},
+		"open_1": {
+			"size": [ 12, 12 ],
+			"pos": [ 214, 34 ],
+			"uv": [ 214, 164 ],
+			"visible": false
+		},
+		"open_2": {
+			"size": [ 12, 12 ],
+			"pos": [ 214, 48 ],
+			"uv": [ 214, 164 ],
+			"visible": false
+		},
+		"open_3": {
+			"size": [ 12, 12 ],
+			"pos": [ 214, 62 ],
+			"uv": [ 214, 164 ],
+			"visible": false
+		},
+		"open_4": {
+			"size": [ 12, 12 ],
+			"pos": [ 214, 76 ],
+			"uv": [ 214, 164 ],
+			"visible": false
+		},
+		"open_5": {
+			"size": [ 12, 12 ],
+			"pos": [ 214, 90 ],
+			"uv": [ 214, 164 ],
+			"visible": false
+		},
+		"open_6": {
+			"size": [ 12, 12 ],
+			"pos": [ 214, 104 ],
+			"uv": [ 214, 164 ],
+			"visible": false
+		},
+		"open_7": {
+			"size": [ 12, 12 ],
+			"pos": [ 214, 118 ],
+			"uv": [ 214, 164 ],
+			"visible": false
+		},
+		"open_8": {
+			"size": [ 12, 12 ],
+			"pos": [ 214, 132 ],
+			"uv": [ 214, 164 ],
+			"visible": false
+		},
+		"open_9": {
+			"size": [ 12, 12 ],
+			"pos": [ 214, 146 ],
+			"uv": [ 214, 164 ],
+			"visible": false
+		},
+		"del_0": {
+			"size": [ 12, 12 ],
+			"pos": [ 228, 20 ],
+			"uv": [ 228, 164 ],
+			"visible": false
+		},
+		"del_1": {
+			"size": [ 12, 12 ],
+			"pos": [ 228, 34 ],
+			"uv": [ 228, 164 ],
+			"visible": false
+		},
+		"del_2": {
+			"size": [ 12, 12 ],
+			"pos": [ 228, 48 ],
+			"uv": [ 228, 164 ],
+			"visible": false
+		},
+		"del_3": {
+			"size": [ 12, 12 ],
+			"pos": [ 228, 62 ],
+			"uv": [ 228, 164 ],
+			"visible": false
+		},
+		"del_4": {
+			"size": [ 12, 12 ],
+			"pos": [ 228, 76 ],
+			"uv": [ 228, 164 ],
+			"visible": false
+		},
+		"del_5": {
+			"size": [ 12, 12 ],
+			"pos": [ 228, 90 ],
+			"uv": [ 228, 164 ],
+			"visible": false
+		},
+		"del_6": {
+			"size": [ 12, 12 ],
+			"pos": [ 228, 104 ],
+			"uv": [ 228, 164 ],
+			"visible": false
+		},
+		"del_7": {
+			"size": [ 12, 12 ],
+			"pos": [ 228, 118 ],
+			"uv": [ 228, 164 ],
+			"visible": false
+		},
+		"del_8": {
+			"size": [ 12, 12 ],
+			"pos": [ 228, 132 ],
+			"uv": [ 228, 164 ],
+			"visible": false
+		},
+		"del_9": {
+			"size": [ 12, 12 ],
+			"pos": [ 228, 146 ],
+			"uv": [ 228, 164 ],
+			"visible": false
+		}
+	},
+	"texts": {
+		"title": {
+			"size": [ 216, 8 ],
+			"pos": [ 8, 8 ],
+			"autoscale": true,
+			"color": "#0e0e0e",
+			"value": "landdev.ui.loading.title",
+			"translate": true
+		}
+	}
+}
