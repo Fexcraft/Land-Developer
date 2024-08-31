@@ -1,4 +1,4 @@
-package net.fexcraft.mod.landdev.util.broad.broad;
+package net.fexcraft.mod.landdev.util.broad;
 
 import net.fexcraft.mod.landdev.util.LDConfig;
 import net.fexcraft.mod.landdev.util.broad.Broadcaster.Transmitter;
