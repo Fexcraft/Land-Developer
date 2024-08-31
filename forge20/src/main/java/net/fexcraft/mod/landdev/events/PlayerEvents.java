@@ -80,11 +80,11 @@ public class PlayerEvents {
 		}
 	}
 	
-	@SubscribeEvent(priority = EventPriority.LOWEST)
+	/*@SubscribeEvent(priority = EventPriority.LOWEST)
 	public static void onMessage(ServerChatEvent event){
 		LDPlayer player = ResManager.getPlayer(event.getPlayer());
 		Broadcaster.send(player, event.getMessage().getString());
 		event.setCanceled(LDConfig.CHAT_OVERRIDE);
-	}
+	}*/
 
 }
