@@ -1,7 +1,6 @@
 package net.fexcraft.mod.landdev.events;
 
 import net.fexcraft.lib.common.math.Time;
-import net.fexcraft.lib.common.utils.Formatter;
 import net.fexcraft.mod.landdev.data.chunk.ChunkType;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.data.player.LDPlayer;
@@ -13,6 +12,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.SignBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.level.BlockEvent;
@@ -29,14 +29,12 @@ import static net.fexcraft.mod.landdev.util.TranslationUtil.translate;
 @Mod.EventBusSubscriber(modid = "landdev", bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class InteractionEvents {
 	
-	private static String erpfx = Formatter.PARAGRAPH_SIGN + "c";
-	
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	public static void onBlockBreak0(BlockEvent.BreakEvent event){
 		if(event.getLevel().isClientSide()) return;
 		if(event.getLevel() != ServerLifecycleHooks.getCurrentServer().overworld()) return;
 		if(!control((Level)event.getLevel(), event.getPos(), event.getState(), event.getPlayer(), false)){
-			UniEntity.getEntity(event.getPlayer()).bar(erpfx + translate("interact.break.noperm"));
+			UniEntity.getEntity(event.getPlayer()).bar(translate("interact.break.noperm"));
 			event.setCanceled(true);
 		}
 		return;
@@ -48,7 +46,19 @@ public class InteractionEvents {
 		if(event.getEntity() instanceof Player == false) return;
 		if(event.getLevel() != ServerLifecycleHooks.getCurrentServer().overworld()) return;
 		if(!control((Level)event.getLevel(), event.getPos(), event.getState(), (Player)event.getEntity(), false)){
-			UniEntity.getEntity(event.getEntity()).bar(erpfx + translate("interact.place.noperm"));
+			UniEntity.getEntity(event.getEntity()).bar(translate("interact.place.noperm"));
+			event.setCanceled(true);
+		}
+		return;
+	}
+
+	@SubscribeEvent(priority = EventPriority.HIGHEST)
+	public static void onBlockPlace(BlockEvent.EntityMultiPlaceEvent event){
+		if(event.getLevel().isClientSide()) return;
+		if(event.getEntity() instanceof Player == false) return;
+		if(event.getLevel() != ServerLifecycleHooks.getCurrentServer().overworld()) return;
+		if(!control((Level)event.getLevel(), event.getPos(), event.getState(), (Player)event.getEntity(), false)){
+			UniEntity.getEntity(event.getEntity()).bar(translate("interact.place.noperm"));
 			event.setCanceled(true);
 		}
 		return;
@@ -60,9 +70,9 @@ public class InteractionEvents {
 		if(event.getLevel() != ServerLifecycleHooks.getCurrentServer().overworld()) return;
 		if(event.getHand() == InteractionHand.OFF_HAND) return;
 		BlockState state = event.getLevel().getBlockState(event.getPos());
-		//boolean check = state.getBlock() instanceof BlockSign == false && Protector.INSTANCE.isProtected(state);
-		if(/*check &&*/ !control(event.getLevel(), event.getPos(), state, event.getEntity(), true)){
-			UniEntity.getEntity(event.getEntity()).bar(erpfx + translate("interact.interact.noperm"));
+		boolean check = state.getBlock() instanceof SignBlock == false && Protector.INSTANCE.isProtected(state);
+		if(check && !control(event.getLevel(), event.getPos(), state, event.getEntity(), true)){
+			UniEntity.getEntity(event.getEntity()).bar(translate("interact.interact.noperm"));
 			event.setCanceled(true);
 		}
 	}
@@ -81,7 +91,7 @@ public class InteractionEvents {
 				return false;
 			}
 			else{
-				player.entity.bar(erpfx + translate("interact.control.unknown_district"));
+				player.entity.bar(translate("interact.control.unknown_district"));
 				return false;
 			}
 		}
@@ -147,7 +157,7 @@ public class InteractionEvents {
 			}
 			break;
 		default:
-			player.entity.bar(erpfx + translate("interact.control.unknown_chunk_type"));
+			player.entity.bar(translate("interact.control.unknown_chunk_type"));
 			return false;
 		
 		}
