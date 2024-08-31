@@ -58,6 +58,8 @@ public class LDN {
 		}
 		UniReg.registerUI(LDKeys.KEY_MAILBOX, MailboxUI.class);
 		UniReg.registerMenu(LDKeys.KEY_MAILBOX, "assets/landdev/uis/mailbox", MailboxCon.class);
+		UniReg.registerUI(LDKeys.KEY_CLAIM, ChunkClaimUI.class);
+		UniReg.registerMenu(LDKeys.KEY_CLAIM, "assets/landdev/uis/chunk_claim", ChunkClaimCon.class);
 	}
 
 	public static void postinit(){
