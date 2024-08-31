@@ -1,15 +1,14 @@
-package net.fexcraft.mod.landdev.gui;
+package net.fexcraft.mod.landdev.util;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
-import net.fexcraft.lib.common.utils.Formatter;
+import net.fexcraft.mod.landdev.ui.ChunkClaimUI;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.SimpleTexture;
 import net.minecraft.client.renderer.texture.TextureUtil;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.ResourceLocation;
@@ -24,12 +23,13 @@ public class ClaimMapTexture {
 
 	protected static ResourceLocation temptexid = new ResourceLocation("landdev:claimtemptex.png");
 
-	public static void bind(Minecraft mc, int x, int z){
+	public static void bind(ChunkClaimUI ui, int x, int z){
 		if(Minecraft.getMinecraft().renderEngine.getTexture(temptexid) == null){
-			LDGuiClaim.title.string = Formatter.format(I18n.format("landdev.gui.claim.loadingmap"));
-			Minecraft.getMinecraft().renderEngine.loadTexture(temptexid, new TempTex(mc.world, temptexid, x, z));
+			ui.texts.get("title").value("landdev.gui.claim.loadingmap");
+			ui.texts.get("title").translate();
+			Minecraft.getMinecraft().renderEngine.loadTexture(temptexid, new TempTex(Minecraft.getMinecraft().world, temptexid, x, z));
 		}
-		mc.getTextureManager().bindTexture(temptexid);
+		Minecraft.getMinecraft().getTextureManager().bindTexture(temptexid);
 	}
 
 	public static class TempTex extends SimpleTexture {
@@ -66,12 +66,16 @@ public class ClaimMapTexture {
 		}
 
 		private final BlockPos checkPos(int x, int z){
-			for(int i = 255; i > 0; i--){
+			for(int i = world.getHeight(); i > 0; i--){
 				if(world.getBlockState(pos.setPos(x, i, z)).getBlock() != Blocks.AIR) return pos;
 			}
 			return new BlockPos(x, 0, z);
 		}
 
+	}
+
+	public static void delete(){
+		Minecraft.getMinecraft().renderEngine.deleteTexture(temptexid);
 	}
 
 }
