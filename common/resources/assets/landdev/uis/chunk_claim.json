@@ -1,0 +1,43 @@
+{
+	"_info_": "LandDev Chunk Claim UI",
+	"background": true,
+	"size": [ 220, 234 ],
+	"tabs": {
+		"main": {
+			"texture": "landdev:textures/ui/claim.png",
+			"size": [ 220, 234 ],
+			"pos": [ 0, 0 ],
+			"texts": [ "title" ]
+		},
+		"side": {
+			"texture": "landdev:textures/ui/claim.png",
+			"size": [ 15, 65 ],
+			"pos": [ 220, 14 ],
+			"buttons": [ "map", "grid", "map_grid" ]
+		}
+	},
+	"buttons": {
+		"map": {
+			"size": [ 12, 12 ],
+			"pos": [ 217, 20 ]
+		},
+		"grid": {
+			"size": [ 12, 12 ],
+			"pos": [ 217, 33 ]
+		},
+		"map_grid": {
+			"size": [ 12, 12 ],
+			"pos": [ 217, 61 ]
+		}
+	},
+	"texts": {
+		"title": {
+			"size": [ 179, 8 ],
+			"pos": [ 8, 8 ],
+			"autoscale": true,
+			"color": "#0e0e0e",
+			"value": "landdev.gui.claim.title",
+			"translate": true
+		}
+	}
+}
