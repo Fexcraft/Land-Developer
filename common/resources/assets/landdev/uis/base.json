@@ -224,12 +224,5 @@
 			"color": "#0e0e0e",
 			"visible": false
 		}
-	},
-	"fields": {
-		"field": {
-			"size": [ 200, 12 ],
-			"pos": [ 6, 19 ],
-			"background": true
-		}
 	}
 }
