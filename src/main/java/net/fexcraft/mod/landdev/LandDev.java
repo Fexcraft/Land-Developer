@@ -2,11 +2,13 @@ package net.fexcraft.mod.landdev;
 
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.PacketHandler.PacketHandlerType;
+import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.mod.landdev.cmd.*;
 import net.fexcraft.mod.landdev.events.LocationUpdate;
 import net.fexcraft.mod.landdev.util.GuiHandler;
 import net.fexcraft.mod.landdev.util.*;
 import net.fexcraft.mod.uni.tag.TagCW;
+import net.fexcraft.mod.uni.world.EntityW;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -100,6 +102,11 @@ public class LandDev {
 
 	public static void write(TagCW compound, File file) throws IOException {
 		CompressedStreamTools.write(compound.local(), file);
+	}
+
+	public static void sendLocationPacket(EntityW entity, TagCW com){
+		com.set("target_listener", CLIENT_RECEIVER_ID);
+		PacketHandler.getInstance().sendTo(new PacketNBTTagCompound(com.local()), entity.local());
 	}
 	
 }
