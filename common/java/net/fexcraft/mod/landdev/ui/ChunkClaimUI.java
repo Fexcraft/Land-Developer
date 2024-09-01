@@ -22,7 +22,7 @@ import static net.fexcraft.mod.uni.ui.ContainerInterface.*;
 public class ChunkClaimUI extends UserInterface {
 
 	protected ChunkClaimCon con;
-	private static final IDL TEXTURE = IDLManager.getIDLCached("landdev:textures/gui/claim.png");
+	private static final IDL TEXTURE = IDLManager.getIDLCached("landdev:textures/ui/claim.png");
 	private static UIButton[][] ckbuttons = new UIButton[15][15];
 	private static Integer lx, lz;
 	private boolean gridview = true;
@@ -97,7 +97,7 @@ public class ChunkClaimUI extends UserInterface {
 				}
 			}
 		}
-		drawer.bind(TEXTURE);
+		//drawer.bind(TEXTURE);
 	}
 
 	@Override
