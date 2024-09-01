@@ -24,7 +24,7 @@ import org.lwjgl.opengl.GL11;
 
 public class LocationUpdate extends GuiScreen {
 
-	public static final ResourceLocation texture = new ResourceLocation("landdev:textures/gui/location.png");
+	public static final ResourceLocation texture = new ResourceLocation("landdev:textures/ui/location.png");
 	private static final LocationUpdate INST = new LocationUpdate();
 	public static ArrayList<String> lines = new ArrayList<>();
 	public static ArrayList<ResourceLocation> icons = new ArrayList<>();
