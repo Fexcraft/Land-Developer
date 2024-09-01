@@ -8,6 +8,7 @@ import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.mod.fsmm.data.Account;
 import net.fexcraft.mod.fsmm.util.DataManager;
+import net.fexcraft.mod.landdev.LandDev;
 import net.fexcraft.mod.landdev.data.Layer;
 import net.fexcraft.mod.landdev.data.Mail;
 import net.fexcraft.mod.landdev.data.MailData;
@@ -162,7 +163,6 @@ public class LDPlayer implements Saveable, Layer, LDUIModule, Appendable<UniEnti
 
 	public void sendLocationUpdate(boolean moved, boolean label, int time){
 		TagCW com = TagCW.create();
-		//TODO com.set("target_listener", CLIENT_RECEIVER_ID);
 		com.set("task", "location_update");
 		boolean mun = chunk_current.district.municipality() != null;
 		TagLW icons = TagLW.create();
@@ -181,7 +181,7 @@ public class LDPlayer implements Saveable, Layer, LDUIModule, Appendable<UniEnti
 		if(label) lines.add(chunk_current.label.label);
 		com.set("lines", lines);
 		if(time > 0){ com.set("time", time); }
-		//TODO PacketHandler.getInstance().sendTo(new PacketNBTTagCompound(com.local()), entity.local());
+		LandDev.sendLocationPacket(entity, com);
 	}
 
 	public String name(){
