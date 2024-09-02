@@ -13,6 +13,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
+import java.io.File;
+
 import static net.fexcraft.mod.landdev.util.broad.Broadcaster.TargetTransmitter.NO_INTERNAL;
 
 /**
@@ -31,9 +33,8 @@ public class ChunkEvents {
 	private static void load(Level level){
 		if(level.isClientSide) return;
 		if(!FSMM.isDataManagerLoaded()) FSMM.loadDataManager();
-		LandDev.updateSaveDirectory(level);
+		LandDev.SAVE_DIR = new File(level.getServer().getServerDirectory(), "landdev/");
 		ResManager.INSTANCE.load();
-		Broadcaster.send(NO_INTERNAL, BroadcastChannel.SERVER, null, TranslationUtil.translate("server.started", LandDev.VERSION));
 	}
 
 	@SubscribeEvent
