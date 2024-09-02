@@ -56,6 +56,7 @@ public class PlayerEvents {
 	
 	@SubscribeEvent
 	public static void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event){
+		if(event.getEntity().level().isClientSide) return;
 		LDPlayer player = ResManager.getPlayer(event.getEntity().getGameProfile().getId(), false);
 		if(player != null) player.entity = UniEntity.getEntity(event.getEntity());
 	}
@@ -80,11 +81,11 @@ public class PlayerEvents {
 		}
 	}
 	
-	/*@SubscribeEvent(priority = EventPriority.LOWEST)
+	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public static void onMessage(ServerChatEvent event){
 		LDPlayer player = ResManager.getPlayer(event.getPlayer());
 		Broadcaster.send(player, event.getMessage().getString());
 		event.setCanceled(LDConfig.CHAT_OVERRIDE);
-	}*/
+	}
 
 }
