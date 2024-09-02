@@ -172,6 +172,8 @@ public class ResManager implements Saveable {
 		clear();
 		JsonMap map = DB.load(saveTable(), saveId());
 		if(map != null) load(map);
+		getDistrict(-1);
+		getDistrict(0);
 		LOADED = true;
 	}
 
