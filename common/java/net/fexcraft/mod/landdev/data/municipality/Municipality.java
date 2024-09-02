@@ -121,15 +121,15 @@ public class Municipality implements Saveable, Layer, LDUIModule {
 	public void gendef(){
 		county = ResManager.getCounty(-1, true);
 		if(id == -1){
-			norms.get("name").set(translate("municipality.wilderness.name"));
-			norms.get("title").set(translate("municipality.wilderness.title"));
+			norms.get("name").set("Wilderness");
+			norms.get("title").set("Wild");
 			districts.clear();
 			if(!county.municipalities.contains(id)) county.municipalities.add(id);
 			color.set(0x009900);
 		}
 		else if(id == 0){
-			norms.get("name").set(translate("municipality.spawnzone.name"));
-			norms.get("title").set(translate("municipality.spawnzone.title"));
+			norms.get("name").set("Spawn Town");
+			norms.get("title").set("Protected");
 			districts.clear();
 			districts.add(0);
 			county = ResManager.getCounty(0, true);
@@ -137,8 +137,8 @@ public class Municipality implements Saveable, Layer, LDUIModule {
 			color.set(0xff9900);
 		}
 		else{
-			norms.get("name").set(translate("municipality.unnamed.name"));
-			norms.get("title").set(translate("municipality.unnamed.title"));
+			norms.get("name").set("Unnamed Place");
+			norms.get("title").set("Untitled");
 		};
 		external.gendef();
 	}
