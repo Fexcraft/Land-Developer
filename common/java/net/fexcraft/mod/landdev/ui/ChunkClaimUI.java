@@ -142,8 +142,8 @@ public class ChunkClaimUI extends UserInterface {
 					if(ck.price > 0) list.add(transformat("landdev.gui.claim.chunk_price", Config.getWorthAsString(ck.price)));
 					ChunkClaimCon.DisData dis = con.dists.get(ck.dis);
 					if(dis == null) return;
-					list.add(transformat("landdev.gui.claim.district", dis.name));
-					list.add(transformat("landdev.gui.claim." + (dis.county ? "county" : "municipality"), dis.cname));
+					list.add(transformat("landdev.gui.claim.district", dis.name + " (" + dis.id + ")"));
+					list.add(transformat("landdev.gui.claim." + (dis.county ? "county" : "municipality"), dis.cname + " (" + dis.cid + ")"));
 				}
 			}
 		}
