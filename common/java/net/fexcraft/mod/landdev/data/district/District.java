@@ -58,7 +58,7 @@ public class District implements Saveable, Layer, PermInteractive, LDUIModule {
 	public District(int id){
 		this.id = id;
 		mail = new MailData(getLayer(), id);
-		norms.add(new StringNorm("name", translate("district.norm.name")));
+		norms.add(new StringNorm("name", "Unnamed District"));
 		norms.add(new BoolNorm("explosions", false));
 		norms.add(new IntegerNorm("chunk-tax", 1000));
 		norms.add(new BoolNorm("municipality-can-form", false));
@@ -104,14 +104,14 @@ public class District implements Saveable, Layer, PermInteractive, LDUIModule {
 	@Override
 	public void gendef(){
 		if(id == -1){
-			norms.get("name").set(translate("district.wilderness.name"));
+			norms.get("name").set("Wilderness");
 			owner.owid = -1;
 			owner.is_county = true;
 			owner.county = ResManager.getCounty(-1, true);
 			color.set(0x009900);
 		}
 		else if(id == 0){
-			norms.get("name").set(translate("district.spawnzone.name"));
+			norms.get("name").set("Spawn District");
 			owner.owid = 0;
 			owner.is_county = false;
 			owner.municipality = ResManager.getMunicipality(0, true);
