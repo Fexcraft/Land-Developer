@@ -5,18 +5,26 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.logging.LogUtils;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.common.math.V3I;
+import net.fexcraft.lib.common.utils.Formatter;
 import net.fexcraft.mod.fcl.util.ClientPacketPlayer;
 import net.fexcraft.mod.fcl.util.UIPacketF;
+import net.fexcraft.mod.fsmm.FSMM;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.data.county.County;
+import net.fexcraft.mod.landdev.data.district.District;
 import net.fexcraft.mod.landdev.data.municipality.Municipality;
 import net.fexcraft.mod.landdev.data.player.LDPlayer;
+import net.fexcraft.mod.landdev.data.state.State;
 import net.fexcraft.mod.landdev.events.LocationUpdate;
 import net.fexcraft.mod.landdev.ui.LDKeys;
-import net.fexcraft.mod.landdev.util.ResManager;
-import net.fexcraft.mod.landdev.util.TranslationUtil;
+import net.fexcraft.mod.landdev.util.*;
+import net.fexcraft.mod.landdev.util.broad.BroadcastChannel;
+import net.fexcraft.mod.landdev.util.broad.Broadcaster;
+import net.fexcraft.mod.landdev.util.broad.DiscordTransmitter;
 import net.fexcraft.mod.uni.tag.TagCW;
+import net.fexcraft.mod.uni.ui.ContainerInterface;
 import net.fexcraft.mod.uni.world.EntityW;
+import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -29,10 +37,7 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
-import net.minecraftforge.event.server.ServerStartedEvent;
-import net.minecraftforge.event.server.ServerStartingEvent;
-import net.minecraftforge.event.server.ServerStoppedEvent;
-import net.minecraftforge.event.server.ServerStoppingEvent;
+import net.minecraftforge.event.server.*;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -48,9 +53,14 @@ import org.slf4j.Logger;
 import java.io.File;
 import java.io.IOException;
 
+import static net.fexcraft.lib.common.utils.Formatter.format;
 import static net.fexcraft.mod.fsmm.local.FsmmCmd.isOp;
+import static net.fexcraft.mod.fsmm.util.Config.getWorthAsString;
+import static net.fexcraft.mod.landdev.data.PermAction.CREATE_COUNTY;
 import static net.fexcraft.mod.landdev.data.PermAction.CREATE_MUNICIPALITY;
 import static net.fexcraft.mod.landdev.util.TranslationUtil.translateCmd;
+import static net.fexcraft.mod.landdev.util.broad.Broadcaster.TargetTransmitter.NO_INTERNAL;
+import static net.fexcraft.mod.uni.ui.ContainerInterface.transformat;
 import static net.minecraft.commands.Commands.argument;
 import static net.minecraft.commands.Commands.literal;
 
@@ -103,21 +113,20 @@ public class LandDev {
 		NbtIo.write(compound.local(), file);
 	}
 
-	public static final File updateSaveDirectory(Level world){
-		return SAVE_DIR = new File(world.getServer().getServerDirectory(), "landdev/");
-	}
-
-	public static void log(String s){
-		LOGGER.info(s);
+	public static void log(Object s){
+		LOGGER.info(s + "");
 	}
 
 	@SubscribeEvent
 	public void onServerStarting(ServerStartingEvent event){
 		LDN.onServerStarting();
+		if(!FSMM.isDataManagerLoaded()) FSMM.loadDataManager();
+		SAVE_DIR = new File(event.getServer().getServerDirectory(), "landdev/");
+		ResManager.INSTANCE.load();
 	}
 
 	@SubscribeEvent
-	public void onServerStarting(ServerStartedEvent event){
+	public void onServerStarted(ServerStartedEvent event){
 		LDN.onServerStarted();
 	}
 
@@ -141,11 +150,29 @@ public class LandDev {
 
 		private static void onClientPacket(Player player, CompoundTag com){
 			switch(com.getString("task")){
-				case "location":{
+				case "location_update":{
 					int time = com.contains("time") ? com.getInt("time") : 10;
 					LocationUpdate.clear(Time.getDate() + (time * 1000));
 					LocationUpdate.loadIcons((ListTag)com.get("icons"));
 					LocationUpdate.loadLines((ListTag)com.get("lines"));
+					return;
+				}
+				case "chat_message":{
+					ListTag list = (ListTag)com.get("msg");
+					String c = list.size() > 3 ? list.getString(3) : "&a";
+					Component text = null;
+					switch(list.getString(0)){
+						case "chat_img":
+							text = Component.literal(list.getString(2));
+							//TODO
+							break;
+						case "chat":
+						default:
+							text = Component.literal(transformat(LDConfig.CHAT_OVERRIDE_LANG, c, list.getString(1), list.getString(2)));
+							break;
+					}
+					Minecraft.getInstance().gui.getChat().addMessage(text);
+					return;
 				}
 			}
 		}
@@ -159,7 +186,11 @@ public class LandDev {
 	}
 
 	public static void sendLocationPacket(EntityW entity, TagCW com){
-		CHANNEL.send(PacketDistributor.PLAYER.with(() -> entity.local()), new UIPacketF(com.local()));
+		CHANNEL.send(PacketDistributor.PLAYER.with(entity::local), new UIPacketF(com.local()));
+	}
+
+	public static void sendToAll(CompoundTag com){
+		CHANNEL.send(PacketDistributor.ALL.noArg(), new UIPacketF(com));
 	}
 
 	private void regCmd(CommandDispatcher<CommandSourceStack> dispatcher){
@@ -177,6 +208,49 @@ public class LandDev {
 			}))
 			.then(literal("uuid").executes(cmd -> {
 				cmd.getSource().sendSystemMessage(Component.literal(cmd.getSource().getPlayerOrException().getGameProfile().getId().toString()));
+				return 0;
+			}))
+			.then(literal("reload").executes(cmd -> {
+				Protector.load();
+				cmd.getSource().sendSystemMessage(Component.translatable("landdev.cmd.reload", "landdev-interaction.json"));
+				DiscordTransmitter.restart();
+				cmd.getSource().sendSystemMessage(Component.translatable("landdev.cmd.reload", "discord-bot-integration"));
+				cmd.getSource().sendSystemMessage(Component.translatable("landdev.cmd.reload.complete"));
+				return 0;
+			}))
+			.then(literal("force-tax").executes(cmd -> {
+				LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
+				if(!player.adm) return -1;
+				TaxSystem.INSTANCE.collect(Time.getDate(), true);
+				return 0;
+			}))
+			.then(literal("fees").executes(cmd -> {
+				LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
+				Chunk_ chunk = ResManager.getChunk(player.entity);
+				player.entity.send(TranslationUtil.translateCmd("fees"));
+				long sf = LDConfig.MUNICIPALITY_CREATION_FEE;
+				long cf = chunk.district.county().norms.get("new-municipality-fee").integer();
+				player.entity.send(TranslationUtil.translateCmd("fees_municipality"));
+				player.entity.send(TranslationUtil.translateCmd("fees_mun_server", getWorthAsString(sf)));
+				player.entity.send(TranslationUtil.translateCmd("fees_mun_county", getWorthAsString(cf)));
+				player.entity.send(TranslationUtil.translateCmd("fees_mun_total", getWorthAsString(sf + cf)));
+				sf = LDConfig.COUNTY_CREATION_FEE;
+				cf = chunk.district.state().norms.get("new-county-fee").integer();
+				player.entity.send(TranslationUtil.translateCmd("fees_county"));
+				player.entity.send(TranslationUtil.translateCmd("fees_ct_server", getWorthAsString(sf)));
+				player.entity.send(TranslationUtil.translateCmd("fees_ct_state", getWorthAsString(cf)));
+				player.entity.send(TranslationUtil.translateCmd("fees_ct_total", getWorthAsString(sf + cf)));
+				return 0;
+			}))
+			.then(literal("help").executes(cmd -> {
+				LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
+				player.entity.send("&0[&bLD&0]&6>>&2===========");
+				player.entity.send("/ld (UI)");
+				player.entity.send("/ld help");
+				player.entity.send("/ld admin");
+				player.entity.send("/ld fees");
+				player.entity.send("/ld reload");
+				player.entity.send("/ld force-tax");
 				return 0;
 			}))
 			.executes(cmd -> {
@@ -197,6 +271,26 @@ public class LandDev {
 				player.entity.openUI(LDKeys.KEY_CLAIM, new V3I(chunk.key.x, chunk.district.id, chunk.key.z));
 				return 0;
 			}))
+			.then(literal("map").executes(cmd -> {
+				LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
+				Chunk_ chunk = ResManager.getChunk(player.entity);
+				String marker = null;
+				Chunk_ ck = null;
+				int r = 9, rm = 4;
+				for(int i = 0; i < r; i++){
+					String str = "&0|";
+					for(int j = 0; j < r; j++){
+						int x = (chunk.key.x - rm) + j;
+						int z = (chunk.key.z - rm) + i;
+						marker = x == chunk.key.x && z == chunk.key.z ? "+" : "#";
+						ck = ResManager.getChunk(x, z);
+						str += (ck == null ? "&4" : ck.district.id >= 0 ? "&9" : "&2") + marker;
+					}
+					player.entity.send(str + "&0|");
+				}
+				player.entity.send(TranslationUtil.translateCmd("chunk.mapdesc"));
+				return 0;
+			}))
 			.executes(cmd -> {
 				try{
 					LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
@@ -212,7 +306,7 @@ public class LandDev {
 		dispatcher.register(literal("dis")
 			.then(literal("create").executes(cmd -> {
 				LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
-				//
+				player.entity.openUI(LDKeys.KEY_DISTRICT, District.UI_CREATE, 0, 0);
 				return 0;
 			}))
 			.executes(cmd -> {
@@ -257,13 +351,28 @@ public class LandDev {
 		dispatcher.register(literal("ct")
 			.then(literal("create").executes(cmd -> {
 				LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
-				//
+				Chunk_ chunk = ResManager.getChunk(player.entity);
+				State state = chunk.district.state();
+				boolean cn = state.norms.get("new-counties").bool();
+				boolean pp = player.hasPermit(CREATE_COUNTY, state.getLayer(), state.id);
+				if(!cn && !pp){
+					player.entity.send(translateCmd("ct.no_new_county"));
+					player.entity.send(translateCmd("ct.no_create_permit"));
+				}
+				else{
+					player.entity.openUI(LDKeys.KEY_COUNTY, County.UI_CREATE, 0, 0);
+				}
 				return 0;
 			}))
 			.executes(cmd -> {
-				LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
-				Chunk_ chunk = ResManager.getChunk(player.entity);
-				player.entity.openUI(LDKeys.KEY_COUNTY, new V3I(0, chunk.district.county().id, 0));
+				try{
+					LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
+					Chunk_ chunk = ResManager.getChunk(player.entity);
+					player.entity.openUI(LDKeys.KEY_COUNTY, new V3I(0, chunk.district.county().id, 0));
+				}
+				catch(Exception e){
+					e.printStackTrace();
+				}
 				return 0;
 			})
 		);
