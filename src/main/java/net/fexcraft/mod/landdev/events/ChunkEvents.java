@@ -28,7 +28,6 @@ public class ChunkEvents {
 		if(!FSMM.isDataManagerLoaded()) FSMM.loadDataManager();
 		LandDev.updateSaveDirectory(world);
 		ResManager.INSTANCE.load();
-		Broadcaster.send(NO_INTERNAL, BroadcastChannel.SERVER, null, TranslationUtil.translate("server.started", LandDev.VERSION));
 	}
 
 	@SubscribeEvent
