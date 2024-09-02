@@ -99,26 +99,6 @@ landdev.chunk_type.normal=Normal
 landdev.chunk_type.restricted=Restricted
 landdev.chunk_type.public=Public
 
-landdev.district.norm.name=Unnamed District
-landdev.district.wilderness.name=Wilderness
-landdev.district.spawnzone.name=Spawn District
-landdev.district.not_part_of_municipality=District not part of a Municipality.
-
-landdev.municipality.unnamed=Unnamed Place
-landdev.municipality.unnamed=Untitled
-landdev.municipality.wilderness.name=Wilderness
-landdev.municipality.wilderness.title=Wild
-landdev.municipality.spawnzone.name=Spawn Town
-landdev.municipality.spawnzone.title=Protected
-
-landdev.county.unnamed=Unnamed County
-landdev.county.wilderness.name=Wilderness
-landdev.county.spawnzone.name=Spawn County
-
-landdev.state.norm.name=Unnamed State
-landdev.state.wilderness.name=Wilderness
-landdev.state.spawnzone.name=Spawn State
-
 landdev.general.no_mailbox=none
 
 
