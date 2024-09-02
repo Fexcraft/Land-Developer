@@ -40,7 +40,7 @@ public class State implements Saveable, Layer, LDUIModule {
 		this.id = id;
 		mail = new MailData(getLayer(), id);
 		account = DataManager.getAccount("state:" + id, false, true);
-		norms.add(new StringNorm("name", translate("state.norm.name")));
+		norms.add(new StringNorm("name", "Unnamed State"));
 		norms.add(new BoolNorm("new-counties", false));
 		norms.add(new IntegerNorm("new-county-fee", 1000000));
 		norms.add(new FloatNorm("county-tax-percent", 10));
@@ -88,14 +88,14 @@ public class State implements Saveable, Layer, LDUIModule {
 	@Override
 	public void gendef(){
 		if(id == -1){
-			norms.get("name").set(translate("state.wilderness.name"));
+			norms.get("name").set("Wilderness");
 			norms.get("new-counties").set(true);
 			counties.clear();
 			counties.add(-1);
 			color.set(0x009900);
 		}
 		else if(id == 0){
-			norms.get("name").set(translate("state.spawnzone.name"));
+			norms.get("name").set("Spawn State");
 			counties.clear();
 			counties.add(0);
 			color.set(0xff9900);
