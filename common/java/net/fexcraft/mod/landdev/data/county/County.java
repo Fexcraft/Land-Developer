@@ -58,7 +58,7 @@ public class County implements Saveable, Layer, LDUIModule {
 		this.id = id;
 		mail = new MailData(getLayer(), id);
 		account = DataManager.getAccount("county:" + id, false, true);
-		norms.add(new StringNorm("name", translate("county.norm.name")));
+		norms.add(new StringNorm("name", "Unnamed County"));
 		norms.add(new BoolNorm("new-municipalities", false));
 		norms.add(new IntegerNorm("new-municipality-fee", 100000));
 		norms.add(new BoolNorm("open-to-join", true));
@@ -122,14 +122,14 @@ public class County implements Saveable, Layer, LDUIModule {
 	public void gendef(){
 		state = ResManager.getState(-1, true);
 		if(id == -1){
-			norms.get("name").set(translate("county.wilderness.name"));
+			norms.get("name").set("Wilderness");
 			norms.get("new-municipalities").set(true);
 			districts.clear();
 			if(!state.counties.contains(id)) state.counties.add(id);
 			color.set(0x009900);
 		}
 		else if(id == 0){
-			norms.get("name").set(translate("county.spawnzone.name"));
+			norms.get("name").set("Spawn County");
 			districts.clear();
 			districts.add(0);
 			state = ResManager.getState(0, true);
