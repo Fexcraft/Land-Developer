@@ -1,6 +1,5 @@
 package net.fexcraft.mod.landdev.events;
 
-import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.common.utils.Formatter;
 import net.fexcraft.mod.fcl.util.ExternalTextures;
@@ -26,14 +25,12 @@ public class LocationUpdate {
 	public static ArrayList<ResourceLocation> icons = new ArrayList<>();
 	public static int[] linelength = new int[4];
 	public static long till = Time.getDate();
-	private static Minecraft client;
 	private static int reswid;
 	private static boolean quadcon;
 
 	@SubscribeEvent
 	public static void onLevelRender(RenderGuiOverlayEvent event){
 		if(!event.getOverlay().id().getPath().equals("hotbar") || !shown()) return;
-		if(client == null) client = Minecraft.getInstance();
 		reswid = event.getWindow().getGuiScaledWidth();
 		if(LDConfig.LOCUP_SIDE){
 			event.getGuiGraphics().blit(texture, 0, 0, 0, 0, 81, 37);
@@ -66,10 +63,10 @@ public class LocationUpdate {
 			}
 		}
 		//
-		RGB.glColorReset();
-		client.textureManager.bindForSetup(texture);
+		event.getGuiGraphics().setColor(1, 1, 1, 1);
+		Minecraft.getInstance().textureManager.bindForSetup(texture);
 		for(int i = 0; i < lines.size(); i++){
-			linelength[i] = client.font.width(lines.get(i));
+			linelength[i] = Minecraft.getInstance().font.width(lines.get(i));
 			if(lines.get(i).length() > 0) event.getGuiGraphics().blit(texture, LDConfig.LOCUP_SIDE ? 0 : reswid - linelength[i] - 4, 40 + (12 * i), 0, 39, linelength[i] + 4, 10);
 		}
 		for(int i = 0; i < lines.size(); i++){
