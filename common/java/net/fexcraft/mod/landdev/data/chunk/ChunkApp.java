@@ -32,7 +32,7 @@ public class ChunkApp implements Appendable<UniChunk> {
 
 	@Override
 	public Appendable<UniChunk> create(UniChunk type){
-		return new ChunkApp(type);
+		return type.chunk.isOnClient() ? null : new ChunkApp(type);
 	}
 
 	@Override
