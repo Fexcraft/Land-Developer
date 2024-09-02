@@ -46,7 +46,6 @@ public class LDN {
 	public static void preinit(File confdir){
 		CONFIG = new LDConfig(new File(confdir, "landdev.json"));
 		UniChunk.register(new ChunkApp(null));
-		
 	}
 
 	public static void init(LandDev inst){
@@ -76,6 +75,7 @@ public class LDN {
 		long mid = midnight.toInstant(ZoneOffset.UTC).toEpochMilli();
 		setupTaxTimer(mid);
 		setupGenericTimer(mid);
+		Broadcaster.send(NO_INTERNAL, BroadcastChannel.SERVER, null, TranslationUtil.translate("server.started", LandDev.VERSION));
 	}
 
 	private static void setupTaxTimer(long mid){
