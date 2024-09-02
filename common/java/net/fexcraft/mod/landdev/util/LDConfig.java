@@ -8,6 +8,7 @@ import net.fexcraft.mod.landdev.data.IconHolder;
 import net.fexcraft.mod.landdev.data.district.DistrictType;
 import net.fexcraft.mod.landdev.util.broad.Broadcaster;
 import net.fexcraft.mod.uni.ConfigBase;
+import net.fexcraft.mod.uni.ui.ContainerInterface;
 
 import java.io.File;
 import java.math.RoundingMode;
@@ -180,7 +181,7 @@ public class LDConfig extends ConfigBase {
 
 	@Override
 	protected void onReload(JsonMap map){
-		CHAT_OVERRIDE_LANG = TranslationUtil.translate("chat.player");
+		CHAT_OVERRIDE_LANG = ContainerInterface.translate("landdev.chat.player");
 		Broadcaster.SENDERS.values().removeIf(s -> !s.type().internal());
 	}
 
