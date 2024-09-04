@@ -5,7 +5,10 @@ import net.fexcraft.mod.fsmm.event.ATMEvent;
 import net.fexcraft.mod.fsmm.event.FsmmEvent;
 import net.fexcraft.mod.landdev.data.PermAction;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
+import net.fexcraft.mod.landdev.data.county.County;
+import net.fexcraft.mod.landdev.data.municipality.Municipality;
 import net.fexcraft.mod.landdev.data.player.LDPlayer;
+import net.fexcraft.mod.landdev.data.state.State;
 import net.fexcraft.mod.landdev.util.ResManager;
 import org.apache.commons.lang3.math.NumberUtils;
 
@@ -52,12 +55,18 @@ public class FsmmEventHooks {
 				&& !event.getSearchedType().equals("county")){
 				return;
 			}
+			LDPlayer player = ResManager.getPlayer(event.getPlayer());
+			boolean man = player.adm;
+			boolean use = player.adm;
 			switch(event.getSearchedType()){
 				case "state":{
 					if(NumberUtils.isCreatable(event.getSearchedId())){
 						int id = Integer.parseInt(event.getSearchedId());
 						if(ResManager.STATES.containsKey(id)){
-							event.getAccountsMap().put("state:" + id, new AccountPermission(ResManager.getState(id, true).account));
+							State state = ResManager.getState(id, true);
+							if(!man) man = state.manage.can(PermAction.FINANCES_MANAGE, player.uuid);
+							if(!use) use = state.manage.can(PermAction.FINANCES_USE, player.uuid);
+							event.getAccountsMap().put("state:" + id, new AccountPermission(state.account, use || man, man, man, man));
 						}
 						else if(DB.exists("states", event.getSearchedId())){
 							event.getAccountsMap().put("state:" + id, new AccountPermission("state:" + id));
@@ -72,7 +81,10 @@ public class FsmmEventHooks {
 					if(NumberUtils.isCreatable(event.getSearchedId())){
 						int id = Integer.parseInt(event.getSearchedId());
 						if(ResManager.COUNTIES.containsKey(id)){
-							event.getAccountsMap().put("county:" + id, new AccountPermission(ResManager.getCounty(id, true).account));
+							County cou = ResManager.getCounty(id, true);
+							if(!man) man = cou.manage.can(PermAction.FINANCES_MANAGE, player.uuid);
+							if(!use) use = cou.manage.can(PermAction.FINANCES_USE, player.uuid);
+							event.getAccountsMap().put("county:" + id, new AccountPermission(cou.account, use || man, man, man, man));
 						}
 						else if(DB.exists("counties", event.getSearchedId())){
 							event.getAccountsMap().put("county:" + id, new AccountPermission("county:" + id));
@@ -87,7 +99,10 @@ public class FsmmEventHooks {
 					if(NumberUtils.isCreatable(event.getSearchedId())){
 						int id = Integer.parseInt(event.getSearchedId());
 						if(ResManager.MUNICIPALITIES.containsKey(id)){
-							event.getAccountsMap().put("municipality:" + id, new AccountPermission(ResManager.getMunicipality(id, true).account));
+							Municipality mun = ResManager.getMunicipality(id, true);
+							if(!man) man = mun.manage.can(PermAction.FINANCES_MANAGE, player.uuid);
+							if(!use) use = mun.manage.can(PermAction.FINANCES_USE, player.uuid);
+							event.getAccountsMap().put("municipality:" + id, new AccountPermission(mun.account, use || man, man, man, man));
 						}
 						else if(DB.exists("municipalities", event.getSearchedId())){
 							event.getAccountsMap().put("municipality:" + id, new AccountPermission("municipality:" + id));
