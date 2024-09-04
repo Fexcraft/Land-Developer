@@ -68,7 +68,7 @@ import static net.minecraft.commands.Commands.literal;
 public class LandDev {
 
 	public static final String MODID = "landdev";
-	public static final String VERSION = "1.2.0";
+	public static final String VERSION = "1.2.1";
 	private static final Logger LOGGER = LogUtils.getLogger();
 	public static File SAVE_DIR;
 	public static final SimpleChannel CHANNEL = NetworkRegistry.ChannelBuilder.named(new ResourceLocation("landdev", "channel"))
@@ -122,6 +122,7 @@ public class LandDev {
 		LDN.onServerStarting();
 		if(!FSMM.isDataManagerLoaded()) FSMM.loadDataManager();
 		SAVE_DIR = new File(event.getServer().getServerDirectory(), "landdev/");
+		if(!SAVE_DIR.exists()) SAVE_DIR.mkdirs();
 		ResManager.INSTANCE.load();
 	}
 
@@ -212,6 +213,7 @@ public class LandDev {
 			}))
 			.then(literal("reload").executes(cmd -> {
 				Protector.load();
+				LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
 				cmd.getSource().sendSystemMessage(Component.translatable("landdev.cmd.reload", "landdev-interaction.json"));
 				DiscordTransmitter.restart();
 				cmd.getSource().sendSystemMessage(Component.translatable("landdev.cmd.reload", "discord-bot-integration"));
