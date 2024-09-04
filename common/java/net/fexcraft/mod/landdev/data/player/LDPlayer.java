@@ -52,7 +52,8 @@ public class LDPlayer implements Saveable, Layer, LDUIModule, Appendable<UniEnti
 	public ArrayList<Permit> permits = new ArrayList<>();
 	public Municipality municipality;
 	public County county;
-	public Chunk_ chunk_current, chunk_last;
+	public Chunk_ chunk_current;
+	public Chunk_ chunk_last;
 	public ExternalData external = new ExternalData(this);
 	
 	public LDPlayer(UUID uuid){
