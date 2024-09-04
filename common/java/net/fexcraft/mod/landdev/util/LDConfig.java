@@ -163,7 +163,7 @@ public class LDConfig extends ConfigBase {
 			.cons((con, map) -> CHAT_DISCORD_COLOR = con.getString(map))
 		);
 		//
-		entries.add(new ConfigEntry(this, DISCORD_CAT, "active", true)
+		entries.add(new ConfigEntry(this, DISCORD_CAT, "active", false)
 			.info("If the discord chat integration should be active.")
 			.cons((con, map) -> DISCORD_BOT_ACTIVE = con.getBoolean(map))
 		);
