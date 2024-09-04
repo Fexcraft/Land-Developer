@@ -72,7 +72,7 @@ public class PlayerEvents {
 		if((time = Time.getDate()) > player.last_pos_update){
 			player.last_pos_update = time;
 			player.chunk_last = player.chunk_current;
-			player.chunk_current = UniChunk.get(event.player.level().getChunk(event.player.blockPosition())).getApp(ChunkApp.class).chunk;
+			player.chunk_current = ResManager.getChunkP(event.player);
 			if(player.chunk_current == null) return;
 			if(player.chunk_last == null) player.chunk_last = player.chunk_current;
 			moved = player.chunk_current.district.id != player.chunk_last.district.id;
