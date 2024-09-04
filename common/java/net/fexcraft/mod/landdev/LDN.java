@@ -75,7 +75,7 @@ public class LDN {
 		long mid = midnight.toInstant(ZoneOffset.UTC).toEpochMilli();
 		setupTaxTimer(mid);
 		setupGenericTimer(mid);
-		Broadcaster.send(NO_INTERNAL, BroadcastChannel.SERVER, null, TranslationUtil.translate("server.started", LandDev.VERSION));
+		Broadcaster.send(NO_INTERNAL, BroadcastChannel.SERVER, null, LDConfig.SERVLANG_STARTED.formatted(LandDev.VERSION));
 	}
 
 	private static void setupTaxTimer(long mid){
@@ -101,7 +101,7 @@ public class LDN {
 	}
 
 	public static void onServerStopping(){
-		Broadcaster.send(NO_INTERNAL, BroadcastChannel.SERVER, null, TranslationUtil.translate("server.stopping"));
+		Broadcaster.send(NO_INTERNAL, BroadcastChannel.SERVER, null, LDConfig.SERVLANG_STOPPING);
 		if(TAX_TIMER != null) TAX_TIMER.cancel();
 		if(GENERIC_TIMER != null) GENERIC_TIMER.cancel();
 	}
