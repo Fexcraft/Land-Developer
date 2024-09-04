@@ -8,6 +8,7 @@ import net.fexcraft.mod.landdev.data.IconHolder;
 import net.fexcraft.mod.landdev.data.district.DistrictType;
 import net.fexcraft.mod.landdev.util.broad.Broadcaster;
 import net.fexcraft.mod.uni.ConfigBase;
+import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.ui.ContainerInterface;
 
 import java.io.File;
@@ -51,12 +52,18 @@ public class LDConfig extends ConfigBase {
 	public static String DISCORD_BOT_ADRESS = "fexcraft.net";
 	public static String DISCORD_BOT_TOKEN = UUID.randomUUID().toString().replace("-", "").substring(0, 8);
 	//
+	public static String SERVLANG_STARTED = "Server has started. Running LandDeveloper v%s";
+	public static String SERVLANG_STOPPING = "Server is closing.";
+	public static String SERVLANG_JOINED = "%s joined the server.";
+	public static String SERVLANG_LEFT = "%s left the server.";
+	//
 	public static final String GENERAL_CAT = "general";
 	public static final String DISCORD_CAT = "discord";
 	public static final String CLIENT_CAT = "client";
 	public static final String TAX_CAT = "tax";
 	public static final String CHAT_CAT = "chat";
 	public static final String PRICES_CAT = "prices";
+	public static final String SERVLANG = "server_lang";
 	//
 	public static File CONFIG_PATH;
 
@@ -177,12 +184,33 @@ public class LDConfig extends ConfigBase {
 			.info("Set to false if the Location Update GUI should be on the right side.")
 			.cons((con, map) -> LOCUP_SIDE = con.getBoolean(map))
 		);
+		//
+		entries.add(new ConfigEntry(this, SERVLANG, "started", SERVLANG_STARTED)
+			.info("Message to be send to discord when the server started.")
+			.cons((con, map) -> SERVLANG_STARTED = con.getString(map))
+		);
+		entries.add(new ConfigEntry(this, SERVLANG, "stopping", SERVLANG_STOPPING)
+			.info("Message to be send to discord when the server is stopping.")
+			.cons((con, map) -> SERVLANG_STOPPING = con.getString(map))
+		);
+		entries.add(new ConfigEntry(this, SERVLANG, "player_joined", SERVLANG_JOINED)
+			.info("Message to be send to discord when a player joins.")
+			.cons((con, map) -> SERVLANG_JOINED = con.getString(map))
+		);
+		entries.add(new ConfigEntry(this, SERVLANG, "player_left", SERVLANG_LEFT)
+			.info("Message to be send to discord when a player left.")
+			.cons((con, map) -> SERVLANG_LEFT = con.getString(map))
+		);
 	}
 
 	@Override
 	protected void onReload(JsonMap map){
-		CHAT_OVERRIDE_LANG = ContainerInterface.translate("landdev.chat.player");
-		Broadcaster.SENDERS.values().removeIf(s -> !s.type().internal());
+		if(EnvInfo.CLIENT){
+			CHAT_OVERRIDE_LANG = ContainerInterface.translate("landdev.chat.player");
+		}
+		else {
+			Broadcaster.SENDERS.values().removeIf(s -> !s.type().internal());
+		}
 	}
 
 	private static final DecimalFormat df = new DecimalFormat("#.000", new DecimalFormatSymbols(Locale.US));
