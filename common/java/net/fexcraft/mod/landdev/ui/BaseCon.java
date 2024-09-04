@@ -49,8 +49,10 @@ public class BaseCon extends ContainerInterface {
 
 	public BaseCon(JsonMap map, UniEntity ply, V3I pos){
 		super(map, ply, pos);
-		ldp = ResManager.getPlayer(ply);
-		chunk = ldp.chunk_current;
+		if(!ply.entity.isOnClient()){
+			ldp = ResManager.getPlayer(ply);
+			chunk = ldp.chunk_current;
+		}
 		type = KEY_MAIN;
 		prefix = "main";
 	}
