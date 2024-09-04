@@ -173,11 +173,8 @@ public class ResManager implements Saveable {
 			SERVER_ACCOUNT.setBalance(1000000000000l);
 			SERVER_ACCOUNT.setName("LandDeveloper Server Account");
 		}
-		clear();
 		JsonMap map = DB.load(saveTable(), saveId());
 		if(map != null) load(map);
-		getDistrict(-1);
-		getDistrict(0);
 		LOADED = true;
 	}
 
