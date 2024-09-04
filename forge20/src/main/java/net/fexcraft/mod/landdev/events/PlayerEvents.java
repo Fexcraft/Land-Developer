@@ -36,7 +36,7 @@ public class PlayerEvents {
 		player.login = Time.getDate();
 		player.chunk_last = ResManager.getChunkP(event.getEntity());
 		TaxSystem.taxPlayer(player, null, false);
-		Broadcaster.send(NO_INTERNAL, BroadcastChannel.SERVER, null, translate("server.player_join", player.name_raw()));
+		Broadcaster.send(NO_INTERNAL, BroadcastChannel.SERVER, null, LDConfig.SERVLANG_JOINED.formatted(player.name_raw()));
     }
     
 	@SubscribeEvent
@@ -44,7 +44,7 @@ public class PlayerEvents {
     	if(event.getEntity().level().isClientSide) return;
 		LDPlayer player = ResManager.getPlayer(event.getEntity().getGameProfile().getId(), false);
 		if(player != null){
-			Broadcaster.send(NO_INTERNAL, BroadcastChannel.SERVER, null, translate("server.player_left", player.name_raw()));
+			Broadcaster.send(NO_INTERNAL, BroadcastChannel.SERVER, null, LDConfig.SERVLANG_LEFT.formatted(player.name_raw()));
 			player.save();
 			player.last_login = player.login;
 			player.last_logout = Time.getDate();
