@@ -48,6 +48,7 @@ import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.simple.SimpleChannel;
+import net.minecraftforge.server.ServerLifecycleHooks;
 import org.slf4j.Logger;
 
 import java.io.File;
@@ -191,7 +192,12 @@ public class LandDev {
 	}
 
 	public static void sendToAll(CompoundTag com){
-		CHANNEL.send(PacketDistributor.ALL.noArg(), new UIPacketF(com));
+		try{
+			CHANNEL.send(PacketDistributor.ALL.noArg(), new UIPacketF(com));
+		}
+		catch(Throwable e){
+			e.printStackTrace();
+		}
 	}
 
 	private void regCmd(CommandDispatcher<CommandSourceStack> dispatcher){
