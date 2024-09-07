@@ -6,6 +6,7 @@ import static net.fexcraft.mod.landdev.util.broad.BroadcastChannel.CHAT;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.mod.landdev.util.LDConfig;
+import net.fexcraft.mod.landdev.util.ResManager;
 import net.fexcraft.mod.landdev.util.broad.Broadcaster.Transmitter;
 import net.fexcraft.mod.landdev.util.broad.Broadcaster.TransmitterType;
 import net.minecraft.nbt.NBTTagCompound;
@@ -40,7 +41,7 @@ public class InternalTransmitter implements Transmitter {
 			if(args != null) list.appendTag(new NBTTagString(args[0].toString()));
 		}
 		com.setTag("msg", list);
-		PacketHandler.getInstance().sendToAll(new PacketNBTTagCompound(com));
+		if(ResManager.INSTANCE.LOADED) PacketHandler.getInstance().sendToAll(new PacketNBTTagCompound(com));
 	}
 	
 	@Override
