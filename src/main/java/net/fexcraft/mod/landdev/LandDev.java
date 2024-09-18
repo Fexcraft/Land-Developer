@@ -96,14 +96,6 @@ public class LandDev {
 		logger.log(Level.INFO, obj);
 	}
 
-	public static TagCW read(File file) throws IOException {
-		return TagCW.wrap(CompressedStreamTools.read(file));
-	}
-
-	public static void write(TagCW compound, File file) throws IOException {
-		CompressedStreamTools.write(compound.local(), file);
-	}
-
 	public static void sendLocationPacket(EntityW entity, TagCW com){
 		com.set("target_listener", CLIENT_RECEIVER_ID);
 		PacketHandler.getInstance().sendTo(new PacketNBTTagCompound(com.local()), entity.local());
