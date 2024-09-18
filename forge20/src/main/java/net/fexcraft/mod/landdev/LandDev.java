@@ -106,14 +106,6 @@ public class LandDev {
 
 	}
 
-	public static TagCW read(File file) throws IOException {
-		return TagCW.wrap(NbtIo.read(file));
-	}
-
-	public static void write(TagCW compound, File file) throws IOException {
-		NbtIo.write(compound.local(), file);
-	}
-
 	public static void log(Object s){
 		LOGGER.info(s + "");
 	}
