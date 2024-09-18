@@ -8,6 +8,7 @@ import net.fexcraft.mod.landdev.util.ResManager;
 import net.fexcraft.mod.landdev.util.LDConfig;
 import net.fexcraft.mod.uni.UniChunk;
 import net.fexcraft.mod.uni.tag.TagCW;
+import net.fexcraft.mod.uni.world.WrapperHolder;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,13 +31,7 @@ public class ChunkRegion {
 		key = rkey;
 		file = new File(LandDev.SAVE_DIR + "/chunks/" + key.toString() + ".nbt");
 		if(!file.getParentFile().exists()) file.getParentFile().mkdirs();
-		try{
-			compound = LandDev.read(file);
-		}
-		catch(IOException e){
-			if(file.exists()) e.printStackTrace();
-		}
-		if(compound == null) compound = TagCW.create();
+		compound = WrapperHolder.read(file);
 		setLastAccess();
 	}
 
@@ -86,12 +81,7 @@ public class ChunkRegion {
 	}
 
 	private void save(){
-		try{
-			LandDev.write(compound, file);
-		}
-		catch(IOException e){
-			e.printStackTrace();
-		}
+		WrapperHolder.write(compound, file);
 	}
 
 	public static void saveRegions(){
