@@ -66,6 +66,7 @@ public class PlayerEvents {
 		if(event.player.level().isClientSide) return;
 		if(event.player.level() != ServerLifecycleHooks.getCurrentServer().overworld()) return;
 		LDPlayer player = ResManager.getPlayer(event.player);
+		if(player == null) return;
 		if((time = Time.getDate()) > player.last_pos_update){
 			player.last_pos_update = time;
 			player.chunk_last = player.chunk_current;
