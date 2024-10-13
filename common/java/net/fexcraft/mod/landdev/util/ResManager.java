@@ -125,7 +125,7 @@ public class ResManager implements Saveable {
 	}
 
 	public static LDPlayer getPlayer(UniEntity player){
-		return PLAYERS.get(player.entity.getUUID());
+		return player == null ? null : PLAYERS.get(player.entity.getUUID());
 	}
 
 	public static LDPlayer getPlayer(EntityW entity){
