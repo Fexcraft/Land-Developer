@@ -63,12 +63,12 @@ public class ChunkRegion {
 		ChunkRegion region = getRegion(key.asRegion());
 		if(region.chunks.containsKey(key)){
 			Chunk_ ck = region.chunks.get(key);
-			ck.uck = UniChunk.get(uck);
+			ck.uck = uck;
 			ck.loaded = Time.getDate();
 			region.setLastAccess();
 			return ck;
 		}
-		Chunk_ ck = new Chunk_(UniChunk.get(uck));
+		Chunk_ ck = new Chunk_(uck);
 		region.loadChunk(ck);
 		region.setLastAccess();
 		return ck;
