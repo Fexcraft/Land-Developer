@@ -27,6 +27,7 @@ public class MailboxCon extends ContainerInterface {
 
 	public MailboxCon(JsonMap map, UniEntity ply, V3I pos){
 		super(map, ply, pos);
+		if(ply.entity.isOnClient()) return;
 		ldp = ResManager.getPlayer(ply);
 		mailbox = MailModule.getMailbox(ldp, pos.x, pos.y);
 	}
