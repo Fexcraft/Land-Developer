@@ -217,6 +217,20 @@ public class County implements Saveable, Layer, LDUIModule {
 				return;
 			}
 			//
+			case UI_DISTRICTS:{
+				resp.setTitle("county.districts.title");
+				for(int id : districts){
+					resp.addButton("district." + id, ELM_GENERIC, OPEN, VALONLY + ResManager.getDistrict(id).name());//TODO name cache
+				}
+				return;
+			}
+			case UI_MUNICIPALITIES:{
+				resp.setTitle("county.municipalities.title");
+				for(int id : municipalities){
+					resp.addButton("municipality." + id, ELM_GENERIC, OPEN, VALONLY + ResManager.getMunicipality(id, true).name());//TODO name cache
+				}
+				return;
+			}
 			case UI_APPREARANCE:
 				AppearModule.resp(container, resp, "county", icon, color, canman);
 				return;
@@ -277,7 +291,16 @@ public class County implements Saveable, Layer, LDUIModule {
 			}
 		}
 		if(NormModule.isNormReq(norms, container, req, UI_NORM_EDIT, id)) return;
-		//
+		if(req.event().startsWith("district.")){
+			int id = Integer.parseInt(req.event().substring("district.".length()));
+			container.open(LDKeys.KEY_DISTRICT, 0, id, 0);
+			return;
+		}
+		if(req.event().startsWith("municipality.")){
+			int id = Integer.parseInt(req.event().substring("municipality.".length()));
+			container.open(LDKeys.KEY_MUNICIPALITY, 0, id, 0);
+			return;
+		}
 		//
 		external.on_interact(container, req);
 	}
