@@ -227,15 +227,15 @@ public class LandDev {
 				long sf = LDConfig.MUNICIPALITY_CREATION_FEE;
 				long cf = chunk.district.county().norms.get("new-municipality-fee").integer();
 				player.entity.send(TranslationUtil.translateCmd("fees_municipality"));
-				player.entity.send(TranslationUtil.translateCmd("fees_mun_server", getWorthAsString(sf)));
-				player.entity.send(TranslationUtil.translateCmd("fees_mun_county", getWorthAsString(cf)));
-				player.entity.send(TranslationUtil.translateCmd("fees_mun_total", getWorthAsString(sf + cf)));
+				player.entity.send(TranslationUtil.translateCmd("fees_mun_server"), getWorthAsString(sf));
+				player.entity.send(TranslationUtil.translateCmd("fees_mun_county"), getWorthAsString(cf));
+				player.entity.send(TranslationUtil.translateCmd("fees_mun_total"), getWorthAsString(sf + cf));
 				sf = LDConfig.COUNTY_CREATION_FEE;
 				cf = chunk.district.state().norms.get("new-county-fee").integer();
 				player.entity.send(TranslationUtil.translateCmd("fees_county"));
-				player.entity.send(TranslationUtil.translateCmd("fees_ct_server", getWorthAsString(sf)));
-				player.entity.send(TranslationUtil.translateCmd("fees_ct_state", getWorthAsString(cf)));
-				player.entity.send(TranslationUtil.translateCmd("fees_ct_total", getWorthAsString(sf + cf)));
+				player.entity.send(TranslationUtil.translateCmd("fees_ct_server"), getWorthAsString(sf));
+				player.entity.send(TranslationUtil.translateCmd("fees_ct_state"), getWorthAsString(cf));
+				player.entity.send(TranslationUtil.translateCmd("fees_ct_total"), getWorthAsString(sf + cf));
 				return 0;
 			}))
 			.then(literal("help").executes(cmd -> {
@@ -250,8 +250,13 @@ public class LandDev {
 				return 0;
 			}))
 			.executes(cmd -> {
-				LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
-				player.entity.openUI(LDKeys.KEY_MAIN, new V3I(0, (int)player.entity.getPos().x >> 4, (int)player.entity.getPos().z >> 4));
+				try{
+					LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
+					player.entity.openUI(LDKeys.KEY_MAIN, new V3I(0, (int)player.entity.getPos().x >> 4, (int)player.entity.getPos().z >> 4));
+				}
+				catch(Exception e){
+					e.printStackTrace();
+				}
 				return 0;
 			})
 		);
