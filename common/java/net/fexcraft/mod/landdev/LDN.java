@@ -10,15 +10,12 @@ import net.fexcraft.mod.landdev.ui.*;
 import net.fexcraft.mod.landdev.util.LDConfig;
 import net.fexcraft.mod.landdev.util.Protector;
 import net.fexcraft.mod.landdev.util.TaxSystem;
-import net.fexcraft.mod.landdev.util.TranslationUtil;
 import net.fexcraft.mod.landdev.util.broad.BroadcastChannel;
 import net.fexcraft.mod.landdev.util.broad.Broadcaster;
 import net.fexcraft.mod.landdev.util.broad.DiscordTransmitter;
 import net.fexcraft.mod.uni.UniChunk;
 import net.fexcraft.mod.uni.UniReg;
-import net.fexcraft.mod.uni.ui.ContainerInterface;
 import net.fexcraft.mod.uni.ui.UIKey;
-import net.fexcraft.mod.uni.ui.UserInterface;
 
 import java.io.File;
 import java.time.LocalDate;
@@ -53,12 +50,12 @@ public class LDN {
 		UniReg.registerMod(MODID, inst);
 		for(Map.Entry<UIKey, Class<? extends BaseCon>> entry : LDKeys.CONS.entrySet()){
 			UniReg.registerUI(entry.getKey(), BaseUI.class);
-			UniReg.registerMenu(entry.getKey(), "assets/landdev/uis/base", entry.getValue());
+			UniReg.registerMenu(entry.getKey(), "landdev:uis/base", entry.getValue());
 		}
 		UniReg.registerUI(LDKeys.KEY_MAILBOX, MailboxUI.class);
-		UniReg.registerMenu(LDKeys.KEY_MAILBOX, "assets/landdev/uis/mailbox", MailboxCon.class);
+		UniReg.registerMenu(LDKeys.KEY_MAILBOX, "landdev:uis/mailbox", MailboxCon.class);
 		UniReg.registerUI(LDKeys.KEY_CLAIM, ChunkClaimUI.class);
-		UniReg.registerMenu(LDKeys.KEY_CLAIM, "assets/landdev/uis/chunk_claim", ChunkClaimCon.class);
+		UniReg.registerMenu(LDKeys.KEY_CLAIM, "landdev:uis/chunk_claim", ChunkClaimCon.class);
 	}
 
 	public static void postinit(){
