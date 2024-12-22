@@ -28,7 +28,7 @@ import java.io.IOException;
 public class LandDev {
 
     public static final String NAME = "LandDev";
-    public static final String VERSION = "1.2.1";
+    public static final String VERSION = "1.x.x";
 	@Mod.Instance(LDN.MODID)
 	public static LandDev INSTANCE;
 	public static File SAVE_DIR;
