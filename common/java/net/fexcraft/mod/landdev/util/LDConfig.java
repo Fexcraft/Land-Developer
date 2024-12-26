@@ -68,7 +68,7 @@ public class LDConfig extends ConfigBase {
 	public static File CONFIG_PATH;
 
 	public LDConfig(File fl){
-		super(fl);
+		super(fl, "Land Developer");
 		CONFIG_PATH = file.getParentFile();
 		DistrictType.loadConfig(CONFIG_PATH);
 	}
