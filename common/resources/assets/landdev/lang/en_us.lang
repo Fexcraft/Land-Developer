@@ -136,7 +136,21 @@ landdev.gui.mailbox.prev=Previous Page
 landdev.gui.mailbox.next=Next Page
 landdev.gui.mailbox.read=Read Mail
 landdev.gui.mailbox.delete=Delete Mail
-
+//
+landdev.gui.player.title=Your Profile
+landdev.gui.player.id=UUID: %s
+landdev.gui.player.name=Name: %s
+landdev.gui.player.nick=Nick: %s
+landdev.gui.player.color=ColorCode: %s
+landdev.gui.player.company=Company: %s
+landdev.gui.player.municipality=Municipality: %s
+landdev.gui.player.county=County: %s
+landdev.gui.player.state=State: %s
+landdev.gui.player.appearance.title=Player Appearance
+landdev.gui.player.appearance.nick=Nickname
+landdev.gui.player.appearance.color=Color Code (0-9, a-f)
+landdev.gui.player.appearance.submit=Confirm Change
+//
 landdev.gui.mail.title=Reading Mail
 landdev.gui.mail.boxnotfound=Mailbox not found.
 landdev.gui.mail.notfound=Mail not found.
