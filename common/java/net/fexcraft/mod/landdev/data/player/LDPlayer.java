@@ -7,6 +7,7 @@ import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.mod.fsmm.data.Account;
+import net.fexcraft.mod.fsmm.util.Config;
 import net.fexcraft.mod.fsmm.util.DataManager;
 import net.fexcraft.mod.landdev.LandDev;
 import net.fexcraft.mod.landdev.data.Layer;
@@ -23,6 +24,7 @@ import net.fexcraft.mod.landdev.event.JoinLayerEvent;
 import net.fexcraft.mod.landdev.event.LDEvent;
 import net.fexcraft.mod.landdev.event.LeaveLayerEvent;
 import net.fexcraft.mod.landdev.ui.BaseCon;
+import net.fexcraft.mod.landdev.ui.LDKeys;
 import net.fexcraft.mod.landdev.ui.LDUIModule;
 import net.fexcraft.mod.landdev.ui.modules.ModuleRequest;
 import net.fexcraft.mod.landdev.ui.modules.ModuleResponse;
@@ -34,6 +36,10 @@ import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.tag.TagLW;
 import net.fexcraft.mod.uni.world.EntityW;
 import net.fexcraft.mod.uni.world.WorldW;
+
+import static net.fexcraft.mod.landdev.ui.LDUIButton.*;
+import static net.fexcraft.mod.landdev.ui.LDUIButton.OPEN;
+import static net.fexcraft.mod.landdev.ui.LDUIRow.*;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -50,7 +56,8 @@ public class LDPlayer implements Saveable, Layer, LDUIModule, Appendable<UniEnti
 	public long last_pos_update;
 	public long last_tax;
 	public MailData mail;
-	public String nickname, colorcode = "2";
+	public String nickname;
+	public String colorcode = "2";
 	public Account account;
 	public ArrayList<Permit> permits = new ArrayList<>();
 	public Municipality municipality;
@@ -202,14 +209,77 @@ public class LDPlayer implements Saveable, Layer, LDUIModule, Appendable<UniEnti
 		return null;
 	}
 
+	public static final int UI_NICKNAME = 1;
+
 	@Override
 	public void sync_packet(BaseCon container, ModuleResponse resp){
-		//
+		resp.setTitle("player.title");
+		switch(container.pos.x){
+			case UI_MAIN:{
+				resp.addRow("id", ELM_GENERIC, uuid);
+				resp.addRow("name", ELM_GENERIC, entity.getName());
+				resp.addButton("nick", ELM_GENERIC, OPEN, nickname == null ? "" : nickname);
+				resp.addButton("color", ELM_GENERIC, OPEN, colorcode == null ? "" : colorcode);
+				resp.addBlank();
+				resp.addButton("company", ELM_GENERIC, EMPTY, "W-I-P");
+				if(municipality.id > -1){
+					resp.addButton("municipality", ELM_GENERIC, OPEN, municipality.name());
+				}
+				resp.addButton("county", ELM_GENERIC, OPEN, county.name());
+				resp.addButton("state", ELM_GENERIC, OPEN, county.state.name());
+				return;
+			}
+			case UI_NICKNAME:{
+				resp.setTitle("player.appearance.title");
+				resp.addRow("appearance.nick", ELM_GENERIC);
+				resp.addField("appearance.nick_field", nickname == null ? "" : nickname);
+				resp.addRow("appearance.color", ELM_GENERIC);
+				resp.addField("appearance.color_field", colorcode == null ? "" : colorcode);
+				resp.addButton("appearance.submit", ELM_BLUE, OPEN);
+				resp.setFormular();
+				return;
+			}
+		}
+		external.sync_packet(container, resp);
 	}
 
 	@Override
 	public void on_interact(BaseCon container, ModuleRequest req){
-		//
+		switch(req.event()){
+			case "nick":
+			case "color":{
+				container.open(UI_NICKNAME);
+				return;
+			}
+			case "company":{
+				//
+				return;
+			}
+			case "municipality":{
+				if(municipality.id > -1){
+					container.open(LDKeys.KEY_MUNICIPALITY, 0, municipality.id, 0);return;
+				}
+				return;
+			}
+			case "county": container.open(LDKeys.KEY_COUNTY, 0, county.id, 0); return;
+			case "state": container.open(LDKeys.KEY_STATE, 0, county.state.id, 0); return;
+			case "appearance.submit":{
+				String nick = req.getField("appearance.nick_field");
+				if(nick.length() == 0 || nick.length() > 16) return;
+				nickname = nick;
+				String color = req.getField("appearance.color_field");
+				if(color.length() > 0){
+					char c = color.charAt(0);
+					if((c >= '0' && c <= '9') || c >= 'a' && c <= 'f'){
+						colorcode = c + "";
+					}
+				}
+				save();
+				container.open(UI_MAIN);
+				return;
+			}
+		}
+		external.on_interact(container, req);
 	}
 
 	public boolean isCurrentlyInDistrict(int id){
