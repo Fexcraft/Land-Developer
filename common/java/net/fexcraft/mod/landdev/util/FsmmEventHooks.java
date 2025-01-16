@@ -1,4 +1,4 @@
-package net.fexcraft.mod.landdev.events;
+package net.fexcraft.mod.landdev.util;
 
 import net.fexcraft.mod.fsmm.data.AccountPermission;
 import net.fexcraft.mod.fsmm.event.ATMEvent;
@@ -9,7 +9,6 @@ import net.fexcraft.mod.landdev.data.county.County;
 import net.fexcraft.mod.landdev.data.municipality.Municipality;
 import net.fexcraft.mod.landdev.data.player.LDPlayer;
 import net.fexcraft.mod.landdev.data.state.State;
-import net.fexcraft.mod.landdev.util.ResManager;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import static net.fexcraft.mod.landdev.LDN.DB;
