@@ -5,7 +5,7 @@ import net.fexcraft.mod.landdev.data.chunk.ChunkApp;
 import net.fexcraft.mod.landdev.data.chunk.ChunkRegion;
 import net.fexcraft.mod.landdev.db.Database;
 import net.fexcraft.mod.landdev.db.JsonFileDB;
-import net.fexcraft.mod.landdev.events.FsmmEventHooks;
+import net.fexcraft.mod.landdev.util.FsmmEventHooks;
 import net.fexcraft.mod.landdev.ui.*;
 import net.fexcraft.mod.landdev.util.LDConfig;
 import net.fexcraft.mod.landdev.util.Protector;
