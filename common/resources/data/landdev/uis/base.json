@@ -102,72 +102,86 @@
 		"add": {
 			"size": [ 12, 12 ],
 			"pos": [ 208, 20 ],
-			"uv": [ 208, 20 ]
+			"uv": [ 208, 20 ],
+			"visible": false
 		},
 		"rem": {
 			"size": [ 12, 12 ],
 			"pos": [ 208, 20 ],
-			"uv": [ 208, 34 ]
+			"uv": [ 208, 34 ],
+			"visible": false
 		},
 		"open": {
 			"size": [ 12, 12 ],
 			"pos": [ 208, 20 ],
-			"uv": [ 208, 48 ]
+			"uv": [ 208, 48 ],
+			"visible": false
 		},
 		"up": {
 			"size": [ 12, 12 ],
 			"pos": [ 208, 20 ],
-			"uv": [ 208, 62 ]
+			"uv": [ 208, 62 ],
+			"visible": false
 		},
 		"down": {
 			"size": [ 12, 12 ],
 			"pos": [ 208, 20 ],
-			"uv": [ 208, 76 ]
+			"uv": [ 208, 76 ],
+			"visible": false
 		},
 		"blank": {
 			"size": [ 12, 12 ],
 			"pos": [ 208, 20 ],
-			"uv": [ 208, 90 ]
+			"uv": [ 208, 90 ],
+			"visible": false
 		},
 		"list": {
 			"size": [ 12, 12 ],
 			"pos": [ 208, 20 ],
-			"uv": [ 208, 104 ]
+			"uv": [ 208, 104 ],
+			"visible": false
 		},
 		"empty": {
 			"size": [ 12, 12 ],
 			"pos": [ 208, 20 ],
-			"uv": [ 208, 118 ]
+			"uv": [ 208, 118 ],
+			"visible": false
 		},
 		"enabled": {
 			"size": [ 12, 12 ],
 			"pos": [ 208, 20 ],
-			"uv": [ 208, 132 ]
+			"uv": [ 208, 132 ],
+			"visible": false
 		},
 		"disabled": {
 			"size": [ 12, 12 ],
 			"pos": [ 208, 20 ],
-			"uv": [ 208, 146 ]
+			"uv": [ 208, 146 ],
+			"visible": false
 		},
 		"check+": {
 			"size": [ 12, 12 ],
 			"pos": [ 208, 20 ],
-			"uv": [ 208, 160 ]
+			"uv": [ 208, 160 ],
+			"visible": false
 		},
 		"check-": {
 			"size": [ 12, 12 ],
 			"pos": [ 208, 20 ],
-			"uv": [ 208, 174 ]
+			"uv": [ 208, 174 ],
+			"visible": false
 		},
 		"radio+": {
 			"size": [ 12, 12 ],
 			"pos": [ 208, 20 ],
-			"uv": [ 208, 188 ]
+			"uv": [ 208, 188 ],
+			"visible": false
 		},
 		"radio-": {
 			"size": [ 12, 12 ],
 			"pos": [ 208, 20 ],
-			"uv": [ 208, 202 ]
+			"uv": [ 208, 202 ],
+			"visible": false
 		},
 		"color": {
 			"size": [ 28, 8 ],
