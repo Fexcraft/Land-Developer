@@ -145,10 +145,6 @@ public class LDPlayer implements Saveable, Layer, LDUIModule, Appendable<UniEnti
 		return entity.getWorld();
 	}
 
-	public void openGui(int ID, int x, int y, int z){
-		//TODO uent.openGui(LandDev.INSTANCE, ID, uent.world, x, y, z);
-	}
-
 	public boolean isInManagement(Layers layer){
 		if(layer == Layers.MUNICIPALITY){
 			return municipality.manage.isStaff(uuid) || municipality.manage.isManager(uuid);
