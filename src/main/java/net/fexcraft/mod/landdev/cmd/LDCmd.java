@@ -95,7 +95,7 @@ public class LDCmd extends CommandBase {
 	    		case "img":{
 	    			int w = args.length > 2 ? Integer.parseInt(args[2]) : 256;
 	    			int h = args.length > 3 ? Integer.parseInt(args[3]) : 256;
-	    			player.openGui(LDKeys.IMG_PREVIEW, w, h, 0);
+	    			player.entity.openUI(LDKeys.KEY_IMG_VIEW, w, h, 0);
 	    			NBTTagCompound com = new NBTTagCompound();
 	    			com.setString("target_listener", CLIENT_RECEIVER_ID);
 	    			com.setString("task", "img_preview_url");
