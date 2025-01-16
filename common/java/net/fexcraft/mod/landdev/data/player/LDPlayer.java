@@ -19,6 +19,8 @@ import net.fexcraft.mod.landdev.data.hooks.ExternalData;
 import net.fexcraft.mod.landdev.data.municipality.Municipality;
 import net.fexcraft.mod.landdev.data.Layers;
 import net.fexcraft.mod.landdev.data.Saveable;
+import net.fexcraft.mod.landdev.event.LDEvent;
+import net.fexcraft.mod.landdev.event.LeaveLayerEvent;
 import net.fexcraft.mod.landdev.ui.BaseCon;
 import net.fexcraft.mod.landdev.ui.LDUIModule;
 import net.fexcraft.mod.landdev.ui.modules.ModuleRequest;
@@ -264,12 +266,14 @@ public class LDPlayer implements Saveable, Layer, LDUIModule, Appendable<UniEnti
 		municipality.manage.removeStaff(uuid);
 		municipality.citizens.remove(this);
 		municipality = ResManager.getMunicipality(-1, true);
+		LDEvent.run(new LeaveLayerEvent(municipality, this));
 	}
 
 	public void leaveCounty(){
 		county.manage.removeStaff(uuid);
 		county.citizens.remove(this);
 		county = ResManager.getCounty(-1, true);
+		LDEvent.run(new LeaveLayerEvent(county, this));
 	}
 
 	@Override
