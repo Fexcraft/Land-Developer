@@ -6,11 +6,14 @@ import static net.fexcraft.mod.landdev.util.broad.Broadcaster.TargetTransmitter.
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.mod.landdev.data.chunk.ChunkApp;
 import net.fexcraft.mod.landdev.data.player.LDPlayer;
+import net.fexcraft.mod.landdev.event.LDEvent;
+import net.fexcraft.mod.landdev.event.PlayerLocationEvent;
 import net.fexcraft.mod.landdev.util.ResManager;
 import net.fexcraft.mod.landdev.util.LDConfig;
 import net.fexcraft.mod.landdev.util.TaxSystem;
 import net.fexcraft.mod.landdev.util.broad.BroadcastChannel;
 import net.fexcraft.mod.landdev.util.broad.Broadcaster;
+import net.fexcraft.mod.uni.ConfigBase;
 import net.fexcraft.mod.uni.UniChunk;
 import net.fexcraft.mod.uni.UniEntity;
 import net.minecraftforge.event.ServerChatEvent;
@@ -73,7 +76,10 @@ public class PlayerEvents {
 			if(player.chunk_last == null) player.chunk_last = player.chunk_current;
 			moved = player.chunk_current.district.id != player.chunk_last.district.id;
 			label = player.chunk_current.label.present && player.chunk_current != player.chunk_last;
-			if(moved || label) player.sendLocationUpdate(moved, label, 0);
+			if(moved || label){
+				if(LDConfig.RUN_LOCATION_EVENT) LDEvent.run(new PlayerLocationEvent(player, !moved && label));
+				player.sendLocationUpdate(moved, label, 0);
+			}
 		}
 	}
 	
