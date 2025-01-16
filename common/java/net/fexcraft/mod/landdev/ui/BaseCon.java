@@ -87,6 +87,10 @@ public class BaseCon extends ContainerInterface {
 					MailModule.INST.on_interact(this, req);
 					break;
 				}
+				case PLAYER:{
+					ldp.on_interact(this, req);
+					break;
+				}
 				case CHUNK:{
 					Chunk_ chunk = ResManager.getChunk(pos.y, pos.z);
 					chunk.on_interact(this, req);
@@ -199,6 +203,10 @@ public class BaseCon extends ContainerInterface {
 			}
 			case MAIL:{
 				MailModule.INST.sync_packet(this, resp);
+				break;
+			}
+			case PLAYER:{
+				ldp.sync_packet(this, resp);
 				break;
 			}
 			case CHUNK:{
