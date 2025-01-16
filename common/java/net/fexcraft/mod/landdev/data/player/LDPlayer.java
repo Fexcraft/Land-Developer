@@ -19,6 +19,7 @@ import net.fexcraft.mod.landdev.data.hooks.ExternalData;
 import net.fexcraft.mod.landdev.data.municipality.Municipality;
 import net.fexcraft.mod.landdev.data.Layers;
 import net.fexcraft.mod.landdev.data.Saveable;
+import net.fexcraft.mod.landdev.event.JoinLayerEvent;
 import net.fexcraft.mod.landdev.event.LDEvent;
 import net.fexcraft.mod.landdev.event.LeaveLayerEvent;
 import net.fexcraft.mod.landdev.ui.BaseCon;
@@ -250,15 +251,19 @@ public class LDPlayer implements Saveable, Layer, LDUIModule, Appendable<UniEnti
 	public void setCitizenOf(Municipality mun){
 		municipality.manage.removeStaff(uuid);
 		municipality.citizens.remove(this);
+		LDEvent.run(new LeaveLayerEvent(municipality, this));
 		if(mun.county.id != county.id){
 			county.manage.removeStaff(uuid);
 			county.citizens.remove(this);
+			LDEvent.run(new LeaveLayerEvent(county, this));
 		}
 		municipality = mun;
 		municipality.citizens.add(this);
+		LDEvent.run(new JoinLayerEvent(municipality, this));
 		if(mun.county.id != county.id){
 			county = mun.county;
 			county.citizens.add(this);
+			LDEvent.run(new JoinLayerEvent(county, this));
 		}
 	}
 
