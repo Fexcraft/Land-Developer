@@ -189,6 +189,10 @@ public class LDConfig extends ConfigBase {
 			.info("Set to false if the Location Update GUI should be on the right side.")
 			.cons((con, map) -> LOCUP_SIDE = con.getBoolean(map))
 		);
+		entries.add(new ConfigEntry(this, CLIENT_CAT, "chat_format", "%s#&0] %s&0: &f%s")
+				.info("Format of chat messages if chat override is enabled.")
+				.cons((con, map) -> CHAT_OVERRIDE_LANG = con.getString(map))
+		);
 		//
 		entries.add(new ConfigEntry(this, SERVLANG, "started", SERVLANG_STARTED)
 			.info("Message to be send to discord when the server started.")
@@ -210,10 +214,7 @@ public class LDConfig extends ConfigBase {
 
 	@Override
 	protected void onReload(JsonMap map){
-		if(EnvInfo.CLIENT){
-			CHAT_OVERRIDE_LANG = ContainerInterface.translate("landdev.chat.player");
-		}
-		else {
+		if(!EnvInfo.CLIENT){
 			Broadcaster.SENDERS.values().removeIf(s -> !s.type().internal());
 		}
 	}
