@@ -61,7 +61,6 @@
 	"landdev.interact.control.unknown_district": "Unknown District",
 	"landdev.interact.control.unknown_chunk_type": "Unknown Chunk Type",
 
-	"landdev.chat.player": "%s#&0] %s&0: &f%s",
 	"landdev.announce.municipality.created": "&9[&2LD&9] &bThe Municipality &6%s &7(%s) &bjust got created!",
 	"landdev.announce.municipality.staff.removed": "&9[&2LD&9] &c%s &bis no longer Staff in &6%s &7(%s)",
 	"landdev.announce.municipality.staff.added": "&9[&2LD&9] &a%s &bis now Staff in &6%s &7(%s)",
