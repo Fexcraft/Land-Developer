@@ -293,9 +293,11 @@ public class TaxSystem extends TimerTask {
 	}
 
 	public TaxSystem load(){
-		JsonMap map = JsonHandler.parse(new File(SAVE_DIR, "tax.json"));
+		File file = new File(SAVE_DIR, "tax.json");
+		JsonMap map = JsonHandler.parse(file);
 		last = map.empty() ? 0 : map.getLong("last-interval", Time.getDate() - 200);
 		INSTANCE = this;
+		if(!file.exists()) save();
 		return this;
 	}
 
