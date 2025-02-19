@@ -82,6 +82,11 @@ public class ChunkClaimCon extends ContainerInterface {
 					SEND_TO_CLIENT.accept(com, player);
 					return;
 				}
+				if(chunk.district.id == district.id){
+					com.set("msg", "landdev.gui.claim.part_of_district");
+					SEND_TO_CLIENT.accept(com, player);
+					return;
+				}
 				if(chunk.district.id >= 0){
 					if(chunk.district.owner.is_county){
 						if(district.owner.is_county){
@@ -123,6 +128,7 @@ public class ChunkClaimCon extends ContainerInterface {
 					if(!district.owner.account().getBank().processAction(Bank.Action.TRANSFER, player.entity, district.account(), price, SERVER_ACCOUNT)) return;
 				}
 				com.set("msg", "landdev.gui.claim.pass");
+				if(chunk.district.id < 0) chunk.created.setClaimer(player.entity.getUUID());
 				if(chunk.district.id > -1) chunk.district.chunks -= 1;
 				chunk.district = district;
 				chunk.district.chunks += 1;
@@ -131,7 +137,6 @@ public class ChunkClaimCon extends ContainerInterface {
 					chunk.owner.set(district.owner.is_county ? Layers.COUNTY : Layers.MUNICIPALITY, null, district.owner.owid);
 				}
 				chunk.type = ChunkType.NORMAL;
-				if(chunk.district.id < 0) chunk.created.setClaimer(player.entity.getUUID());
 				chunk.save();
 				sendSync(com);
 			}
