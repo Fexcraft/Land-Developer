@@ -1,7 +1,6 @@
 package net.fexcraft.mod.landdev.data.region;
 
 import static net.fexcraft.mod.landdev.data.PermAction.REGION_STAFF;
-import static net.fexcraft.mod.landdev.util.TranslationUtil.translate;
 
 import java.util.ArrayList;
 
