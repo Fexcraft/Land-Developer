@@ -670,6 +670,8 @@ public class Municipality implements Saveable, Layer, LDUIModule {
 					ResManager.DISTRICTS.put(dis.id, dis);
 					mnew.districts.add(dis.id);
 					chunk.district = dis;
+					chunk.owner.set(Layers.MUNICIPALITY, null, mnew.id);
+					chunk.sell.price = 0;
 					chunk.save();
 					dis.owner.set(mnew);
 					dis.save();
