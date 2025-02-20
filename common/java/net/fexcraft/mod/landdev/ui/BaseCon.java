@@ -26,7 +26,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 import static net.fexcraft.mod.landdev.ui.LDKeys.*;
-import static net.fexcraft.mod.landdev.ui.LDKeys.COUNTY;
+import static net.fexcraft.mod.landdev.ui.LDKeys.ID_COUNTY;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -53,7 +53,7 @@ public class BaseCon extends ContainerInterface {
 			ldp = ResManager.getPlayer(ply);
 			chunk = ldp.chunk_current;
 		}
-		type = KEY_MAIN;
+		type = MAIN;
 		prefix = "main";
 	}
 
@@ -79,24 +79,24 @@ public class BaseCon extends ContainerInterface {
 		if(com.has("interact")){
 			ModuleRequest req = new ModuleRequest(com);
 			switch(type.id){
-				case MAIN:{
+				case ID_MAIN:{
 					MainModule.INST.on_interact(this, req);
 					break;
 				}
-				case MAIL:{
+				case ID_MAIL:{
 					MailModule.INST.on_interact(this, req);
 					break;
 				}
-				case PLAYER:{
+				case ID_PLAYER:{
 					ldp.on_interact(this, req);
 					break;
 				}
-				case CHUNK:{
+				case ID_CHUNK:{
 					Chunk_ chunk = ResManager.getChunk(pos.y, pos.z);
 					chunk.on_interact(this, req);
 					break;
 				}
-				case DISTRICT:{
+				case ID_DISTRICT:{
 					District dis = ResManager.getDistrict(pos.y);
 					if(dis != null){
 						dis.on_interact(this, req);
@@ -104,7 +104,7 @@ public class BaseCon extends ContainerInterface {
 					}
 					break;
 				}
-				case MUNICIPALITY:{
+				case ID_MUNICIPALITY:{
 					if(pos.x < 0){
 						ResManager.getMunicipality(-1, true).on_interact(this, req);
 						break;
@@ -116,7 +116,7 @@ public class BaseCon extends ContainerInterface {
 					}
 					break;
 				}
-				case COUNTY:{
+				case ID_COUNTY:{
 					if(pos.x < 0){
 						ResManager.getCounty(-1, true).on_interact(this, req);
 						break;
@@ -135,7 +135,7 @@ public class BaseCon extends ContainerInterface {
 			if(pos.x != 0) open(backto);
 			else{
 				Chunk_ chunk = ResManager.getChunk(player.entity);
-				open(KEY_MAIN, 0, chunk.key.x, chunk.key.z);
+				open(MAIN, 0, chunk.key.x, chunk.key.z);
 			}
 		}
 	}
@@ -154,7 +154,7 @@ public class BaseCon extends ContainerInterface {
 		if(com.has("title")) bui.texts.get("title").translate(com.getString("title"));
 		else bui.texts.get("title").translate();
 		//
-		if(type != KEY_MAIN && !com.has("noback")){
+		if(type != MAIN && !com.has("noback")){
 			backto = com.has("backto") ? com.getInteger("backto") : 0;
 			bui.tabs.get("back").visible(true);
 		}
@@ -197,23 +197,23 @@ public class BaseCon extends ContainerInterface {
 		IconHolder holder = null;
 		ColorData color = null;
 		switch(type.id){
-			case MAIN:{
+			case ID_MAIN:{
 				MainModule.INST.sync_packet(this, resp);
 				break;
 			}
-			case MAIL:{
+			case ID_MAIL:{
 				MailModule.INST.sync_packet(this, resp);
 				break;
 			}
-			case PLAYER:{
+			case ID_PLAYER:{
 				ldp.sync_packet(this, resp);
 				break;
 			}
-			case CHUNK:{
+			case ID_CHUNK:{
 				chunk.sync_packet(this, resp);
 				break;
 			}
-			case DISTRICT:{
+			case ID_DISTRICT:{
 				District dis = ResManager.getDistrict(pos.y);
 				if(dis != null){
 					dis.sync_packet(this, resp);
@@ -223,7 +223,7 @@ public class BaseCon extends ContainerInterface {
 				}
 				break;
 			}
-			case MUNICIPALITY:{
+			case ID_MUNICIPALITY:{
 				if(pos.x < 0){
 					ResManager.getMunicipality(-1, true).sync_packet(this, resp);
 					holder = chunk.district.county().icon;
@@ -239,7 +239,7 @@ public class BaseCon extends ContainerInterface {
 				}
 				break;
 			}
-			case COUNTY:{
+			case ID_COUNTY:{
 				if(pos.x < 0){
 					ResManager.getCounty(-1, true).sync_packet(this, resp);
 					holder = chunk.district.county().icon;
@@ -292,7 +292,7 @@ public class BaseCon extends ContainerInterface {
 
 		public PropBaseCon(JsonMap map, UniEntity ply, V3I pos){
 			super(map, ply, pos);
-			type = KEY_PROPERTY;
+			type = PROPERTY;
 			prefix = "property";
 		}
 
@@ -302,7 +302,7 @@ public class BaseCon extends ContainerInterface {
 
 		public ChunkBaseCon(JsonMap map, UniEntity ply, V3I pos){
 			super(map, ply, pos);
-			type = KEY_CHUNK;
+			type = CHUNK;
 			prefix = "chunk";
 		}
 
@@ -312,7 +312,7 @@ public class BaseCon extends ContainerInterface {
 
 		public DisBaseCon(JsonMap map, UniEntity ply, V3I pos){
 			super(map, ply, pos);
-			type = KEY_DISTRICT;
+			type = DISTRICT;
 			prefix = "district";
 		}
 
@@ -322,7 +322,7 @@ public class BaseCon extends ContainerInterface {
 
 		public MunBaseCon(JsonMap map, UniEntity ply, V3I pos){
 			super(map, ply, pos);
-			type = KEY_MUNICIPALITY;
+			type = MUNICIPALITY;
 			prefix = "municipality";
 		}
 
@@ -332,7 +332,7 @@ public class BaseCon extends ContainerInterface {
 
 		public CouBaseCon(JsonMap map, UniEntity ply, V3I pos){
 			super(map, ply, pos);
-			type = KEY_COUNTY;
+			type = COUNTY;
 			prefix = "county";
 		}
 
@@ -342,7 +342,7 @@ public class BaseCon extends ContainerInterface {
 
 		public StaBaseCon(JsonMap map, UniEntity ply, V3I pos){
 			super(map, ply, pos);
-			type = KEY_STATE;
+			type = STATE;
 			prefix = "state";
 		}
 
@@ -352,7 +352,7 @@ public class BaseCon extends ContainerInterface {
 
 		public PlayerBaseCon(JsonMap map, UniEntity ply, V3I pos){
 			super(map, ply, pos);
-			type = KEY_PLAYER;
+			type = PLAYER;
 			prefix = "player";
 		}
 
@@ -362,7 +362,7 @@ public class BaseCon extends ContainerInterface {
 
 		public PollBaseCon(JsonMap map, UniEntity ply, V3I pos){
 			super(map, ply, pos);
-			type = KEY_POLL;
+			type = POLL;
 			prefix = "poll";
 		}
 
@@ -372,7 +372,7 @@ public class BaseCon extends ContainerInterface {
 
 		public MailBaseCon(JsonMap map, UniEntity ply, V3I pos){
 			super(map, ply, pos);
-			type = KEY_MAIL;
+			type = MAIL;
 			prefix = "mail";
 		}
 
