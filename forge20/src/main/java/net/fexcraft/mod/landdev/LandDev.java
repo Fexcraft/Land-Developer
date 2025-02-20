@@ -2,38 +2,32 @@ package net.fexcraft.mod.landdev;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.logging.LogUtils;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.common.math.V3I;
-import net.fexcraft.lib.common.utils.Formatter;
 import net.fexcraft.mod.fcl.util.ClientPacketPlayer;
 import net.fexcraft.mod.fcl.util.UIPacketF;
-import net.fexcraft.mod.fsmm.FSMM;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.data.county.County;
 import net.fexcraft.mod.landdev.data.district.District;
 import net.fexcraft.mod.landdev.data.municipality.Municipality;
 import net.fexcraft.mod.landdev.data.player.LDPlayer;
-import net.fexcraft.mod.landdev.data.region.State;
+import net.fexcraft.mod.landdev.data.region.Region;
 import net.fexcraft.mod.landdev.events.LocationUpdate;
 import net.fexcraft.mod.landdev.ui.LDKeys;
 import net.fexcraft.mod.landdev.util.*;
-import net.fexcraft.mod.landdev.util.broad.BroadcastChannel;
-import net.fexcraft.mod.landdev.util.broad.Broadcaster;
 import net.fexcraft.mod.landdev.util.broad.DiscordTransmitter;
 import net.fexcraft.mod.uni.tag.TagCW;
-import net.fexcraft.mod.uni.ui.ContainerInterface;
 import net.fexcraft.mod.uni.world.EntityW;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.NbtIo;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
@@ -48,19 +42,15 @@ import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.simple.SimpleChannel;
-import net.minecraftforge.server.ServerLifecycleHooks;
 import org.slf4j.Logger;
 
 import java.io.File;
-import java.io.IOException;
 
-import static net.fexcraft.lib.common.utils.Formatter.format;
 import static net.fexcraft.mod.fsmm.local.FsmmCmd.isOp;
 import static net.fexcraft.mod.fsmm.util.Config.getWorthAsString;
 import static net.fexcraft.mod.landdev.data.PermAction.CREATE_COUNTY;
 import static net.fexcraft.mod.landdev.data.PermAction.CREATE_MUNICIPALITY;
 import static net.fexcraft.mod.landdev.util.TranslationUtil.translateCmd;
-import static net.fexcraft.mod.landdev.util.broad.Broadcaster.TargetTransmitter.NO_INTERNAL;
 import static net.fexcraft.mod.uni.ui.ContainerInterface.transformat;
 import static net.minecraft.commands.Commands.argument;
 import static net.minecraft.commands.Commands.literal;
@@ -231,7 +221,7 @@ public class LandDev {
 				player.entity.send(TranslationUtil.translateCmd("fees_mun_county"), getWorthAsString(cf));
 				player.entity.send(TranslationUtil.translateCmd("fees_mun_total"), getWorthAsString(sf + cf));
 				sf = LDConfig.COUNTY_CREATION_FEE;
-				cf = chunk.district.state().norms.get("new-county-fee").integer();
+				cf = chunk.district.region().norms.get("new-county-fee").integer();
 				player.entity.send(TranslationUtil.translateCmd("fees_county"));
 				player.entity.send(TranslationUtil.translateCmd("fees_ct_server"), getWorthAsString(sf));
 				player.entity.send(TranslationUtil.translateCmd("fees_ct_state"), getWorthAsString(cf));
@@ -252,7 +242,7 @@ public class LandDev {
 			.executes(cmd -> {
 				try{
 					LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
-					player.entity.openUI(LDKeys.KEY_MAIN, new V3I(0, (int)player.entity.getPos().x >> 4, (int)player.entity.getPos().z >> 4));
+					player.entity.openUI(LDKeys.MAIN, new V3I(0, (int)player.entity.getPos().x >> 4, (int)player.entity.getPos().z >> 4));
 				}
 				catch(Exception e){
 					e.printStackTrace();
@@ -264,14 +254,62 @@ public class LandDev {
 			.then(literal("claim").then(argument("district", IntegerArgumentType.integer(-2)).executes(cmd -> {
 				LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
 				Chunk_ chunk = ResManager.getChunk(player.entity);
-				player.entity.openUI(LDKeys.KEY_CLAIM, new V3I(chunk.key.x, cmd.getArgument("district", Integer.class), chunk.key.z));
+				player.entity.openUI(LDKeys.CHUNK_CLAIM, new V3I(chunk.key.x, cmd.getArgument("district", Integer.class), chunk.key.z));
 				return 0;
 			})).executes(cmd -> {
 				LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
 				Chunk_ chunk = ResManager.getChunk(player.entity);
-				player.entity.openUI(LDKeys.KEY_CLAIM, new V3I(chunk.key.x, chunk.district.id, chunk.key.z));
+				player.entity.openUI(LDKeys.CHUNK_CLAIM, new V3I(chunk.key.x, chunk.district.id, chunk.key.z));
 				return 0;
 			}))
+			.then(literal("transfer").then(argument("district", IntegerArgumentType.integer(-2)).executes(cmd -> {
+				LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
+				Chunk_ chunk = ResManager.getChunk(player.entity);
+				player.entity.openUI(LDKeys.CHUNK_TRANSFER, new V3I(chunk.key.x, cmd.getArgument("district", Integer.class), chunk.key.z));
+				return 0;
+			})).executes(cmd -> {
+				LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
+				Chunk_ chunk = ResManager.getChunk(player.entity);
+				player.entity.openUI(LDKeys.CHUNK_CLAIM, new V3I(chunk.key.x, chunk.district.id, chunk.key.z));
+				return 0;
+			}))
+			.then(literal("sell").then(argument("price", IntegerArgumentType.integer(-2)).executes(cmd -> {
+				LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
+				Chunk_ chunk = ResManager.getChunk(player.entity);
+				player.entity.openUI(LDKeys.CHUNK_CLAIM, new V3I(chunk.key.x, cmd.getArgument("price", Integer.class), chunk.key.z));
+				return 0;
+			})))
+			.then(literal("buy").then(argument("for", StringArgumentType.greedyString()).executes(cmd -> {
+				LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
+				Chunk_ chunk = ResManager.getChunk(player.entity);
+				String arg = cmd.getArgument("for", String.class);
+				int dis = chunk.district.id;
+				switch(arg){
+					case "self":
+					case "player":
+						dis = -1;
+						break;
+					case "company":
+					case "com":
+						dis = -2;
+						break;
+					case "region":
+					case "reg":
+						dis = -3;
+						break;
+					case "here":
+						dis = chunk.district.id;
+						break;
+				}
+				if(arg.startsWith("municipality:")){
+					dis = Integer.parseInt(arg.replace("municipality:", ""));
+				}
+				if(arg.startsWith("county:")){
+					dis = Integer.parseInt(arg.replace("county:", ""));
+				}
+				player.entity.openUI(LDKeys.CHUNK_TRANSFER, new V3I(chunk.key.x, dis, chunk.key.z));
+				return 0;
+			})))
 			.then(literal("map").executes(cmd -> {
 				LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
 				Chunk_ chunk = ResManager.getChunk(player.entity);
@@ -296,7 +334,7 @@ public class LandDev {
 				try{
 					LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
 					Chunk_ chunk = ResManager.getChunk(player.entity);
-					player.entity.openUI(LDKeys.KEY_CHUNK, new V3I(0, chunk.key.x, chunk.key.z));
+					player.entity.openUI(LDKeys.CHUNK, new V3I(0, chunk.key.x, chunk.key.z));
 				}
 				catch(Exception e){
 					e.printStackTrace();
@@ -307,14 +345,14 @@ public class LandDev {
 		dispatcher.register(literal("dis")
 			.then(literal("create").executes(cmd -> {
 				LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
-				player.entity.openUI(LDKeys.KEY_DISTRICT, District.UI_CREATE, 0, 0);
+				player.entity.openUI(LDKeys.DISTRICT, District.UI_CREATE, 0, 0);
 				return 0;
 			}))
 			.executes(cmd -> {
 				try{
 					LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
 					Chunk_ chunk = ResManager.getChunk(player.entity);
-					player.entity.openUI(LDKeys.KEY_DISTRICT, new V3I(0, chunk.district.id, 0));
+					player.entity.openUI(LDKeys.DISTRICT, new V3I(0, chunk.district.id, 0));
 				}
 				catch(Exception e){
 					e.printStackTrace();
@@ -334,7 +372,7 @@ public class LandDev {
 					player.entity.send(translateCmd("mun.no_create_permit"));
 				}
 				else{
-					player.entity.openUI(LDKeys.KEY_MUNICIPALITY, Municipality.UI_CREATE, 0, 0);
+					player.entity.openUI(LDKeys.MUNICIPALITY, Municipality.UI_CREATE, 0, 0);
 				}
 				return 0;
 			}))
@@ -345,7 +383,7 @@ public class LandDev {
 					player.entity.send(translateCmd("mun.not_in_a_municipality"));
 					return 0;
 				}
-				player.entity.openUI(LDKeys.KEY_MUNICIPALITY, new V3I(0, chunk.district.municipality().id, 0));
+				player.entity.openUI(LDKeys.MUNICIPALITY, new V3I(0, chunk.district.municipality().id, 0));
 				return 0;
 			})
 		);
@@ -353,15 +391,15 @@ public class LandDev {
 			.then(literal("create").executes(cmd -> {
 				LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
 				Chunk_ chunk = ResManager.getChunk(player.entity);
-				State state = chunk.district.state();
-				boolean cn = state.norms.get("new-counties").bool();
-				boolean pp = player.hasPermit(CREATE_COUNTY, state.getLayer(), state.id);
+				Region region = chunk.district.region();
+				boolean cn = region.norms.get("new-counties").bool();
+				boolean pp = player.hasPermit(CREATE_COUNTY, region.getLayer(), region.id);
 				if(!cn && !pp){
 					player.entity.send(translateCmd("ct.no_new_county"));
 					player.entity.send(translateCmd("ct.no_create_permit"));
 				}
 				else{
-					player.entity.openUI(LDKeys.KEY_COUNTY, County.UI_CREATE, 0, 0);
+					player.entity.openUI(LDKeys.COUNTY, County.UI_CREATE, 0, 0);
 				}
 				return 0;
 			}))
@@ -369,7 +407,7 @@ public class LandDev {
 				try{
 					LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
 					Chunk_ chunk = ResManager.getChunk(player.entity);
-					player.entity.openUI(LDKeys.KEY_COUNTY, new V3I(0, chunk.district.county().id, 0));
+					player.entity.openUI(LDKeys.COUNTY, new V3I(0, chunk.district.county().id, 0));
 				}
 				catch(Exception e){
 					e.printStackTrace();
@@ -377,7 +415,7 @@ public class LandDev {
 				return 0;
 			})
 		);
-		dispatcher.register(literal("st")
+		dispatcher.register(literal("reg")
 			.then(literal("create").executes(cmd -> {
 				LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
 				//
@@ -386,7 +424,7 @@ public class LandDev {
 			.executes(cmd -> {
 				LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
 				Chunk_ chunk = ResManager.getChunk(player.entity);
-				player.entity.openUI(LDKeys.KEY_STATE, new V3I(0, chunk.district.state().id, 0));
+				player.entity.openUI(LDKeys.REGION, new V3I(0, chunk.district.region().id, 0));
 				return 0;
 			})
 		);
