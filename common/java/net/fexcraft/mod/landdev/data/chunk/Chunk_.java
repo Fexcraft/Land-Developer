@@ -357,12 +357,12 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 			case "links.submit":{
 				if(!canman) return;
 				ChunkKey key = link.linked.get(req.getRadioInt("links.key"));
-				container.open(LDKeys.KEY_CHUNK, 0, key.x, key.z);
+				container.open(LDKeys.CHUNK, 0, key.x, key.z);
 				return;
 			}
 			case "linked": container.open(UI_LINKED); return;
 			case "linked.key":{
-				container.open(LDKeys.KEY_CHUNK, 0, link.root_key.x, link.root_key.z);
+				container.open(LDKeys.CHUNK, 0, link.root_key.x, link.root_key.z);
 				return;
 			}
 			case "linked.disconnect":{
@@ -377,7 +377,7 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 				return;
 			}
 			case "type": if(canman) container.open(UI_TYPE); return;
-			case "district": container.open(LDKeys.KEY_DISTRICT, 0, district.id, 0);
+			case "district": container.open(LDKeys.DISTRICT, 0, district.id, 0);
 			case "owner": if(canman) container.open(UI_OWNER); return;
 			case "price": if(!canman) container.open(UI_PRICE); return;
 			case "set_price": container.open(UI_SET_PRICE); return;
