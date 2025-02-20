@@ -52,10 +52,16 @@ public class LDN {
 			UniReg.registerUI(entry.getKey(), BaseUI.class);
 			UniReg.registerMenu(entry.getKey(), "landdev:uis/base", entry.getValue());
 		}
-		UniReg.registerUI(LDKeys.KEY_MAILBOX, MailboxUI.class);
-		UniReg.registerMenu(LDKeys.KEY_MAILBOX, "landdev:uis/mailbox", MailboxCon.class);
-		UniReg.registerUI(LDKeys.KEY_CLAIM, ChunkClaimUI.class);
-		UniReg.registerMenu(LDKeys.KEY_CLAIM, "landdev:uis/chunk_claim", ChunkClaimCon.class);
+		UniReg.registerUI(LDKeys.MAILBOX, MailboxUI.class);
+		UniReg.registerMenu(LDKeys.MAILBOX, "landdev:uis/mailbox", MailboxCon.class);
+		UniReg.registerUI(LDKeys.CHUNK_CLAIM, ChunkClaimUI.class);
+		UniReg.registerMenu(LDKeys.CHUNK_CLAIM, "landdev:uis/chunk_claim", ChunkClaimCon.class);
+		UniReg.registerUI(LDKeys.CHUNK_TRANSFER, ChunkClaimUI.class);
+		UniReg.registerMenu(LDKeys.CHUNK_TRANSFER, "landdev:uis/chunk_claim", ChunkClaimCon.class);
+		UniReg.registerUI(LDKeys.CHUNK_SELL, ChunkClaimUI.class);
+		UniReg.registerMenu(LDKeys.CHUNK_SELL, "landdev:uis/chunk_claim", ChunkClaimCon.class);
+		UniReg.registerUI(LDKeys.CHUNK_BUY, ChunkClaimUI.class);
+		UniReg.registerMenu(LDKeys.CHUNK_BUY, "landdev:uis/chunk_claim", ChunkClaimCon.class);
 	}
 
 	public static void postinit(){
