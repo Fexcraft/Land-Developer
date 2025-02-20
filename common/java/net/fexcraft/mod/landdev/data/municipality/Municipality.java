@@ -403,13 +403,13 @@ public class Municipality implements Saveable, Layer, LDUIModule {
 				container.open(UI_NORM_EDIT, id, norms.index(norms.get("title")));
 				return;
 			}
-			case "county": container.open(LDKeys.KEY_COUNTY, 0, county.id, 0);return;
+			case "county": container.open(LDKeys.COUNTY, 0, county.id, 0);return;
 			case "citizen": container.open(UI_CITIZEN_LIST); return;
 			case "districts": container.open(UI_DISTRICTS); return;
 			case "staff": container.open(UI_STAFF_LIST); return;
 			case "price": container.open(UI_PRICE); return;
 			case "set_price": if(canman) container.open(UI_SET_PRICE); return;
-			case "mailbox": if(canman) container.open(LDKeys.KEY_MAILBOX, getLayer().ordinal(), id, 0); return;
+			case "mailbox": if(canman) container.open(LDKeys.MAILBOX, getLayer().ordinal(), id, 0); return;
 			case "norms": container.open(UI_NORMS); return;
 			case "appearance": container.open(UI_APPREARANCE); return;
 			case "buy.submit":{
@@ -691,7 +691,7 @@ public class Municipality implements Saveable, Layer, LDUIModule {
 		if(NormModule.isNormReq(norms, container, req, UI_NORM_EDIT, id)) return;
 		if(req.event().startsWith("district.")){
 			int id = Integer.parseInt(req.event().substring("district.".length()));
-			container.open(LDKeys.KEY_DISTRICT, 0, id, 0);
+			container.open(LDKeys.DISTRICT, 0, id, 0);
 			return;
 		}
 		if(req.event().startsWith("citizen.edit.")){
