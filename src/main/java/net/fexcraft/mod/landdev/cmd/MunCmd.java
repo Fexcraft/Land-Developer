@@ -58,7 +58,7 @@ public class MunCmd extends CommandBase {
 		    			Print.chat(sender, translateCmd("mun.no_create_permit"));
 	    			}
 	    			else{
-	    				ply.entity.openUI(LDKeys.KEY_MUNICIPALITY, Municipality.UI_CREATE, 0, 0);
+	    				ply.entity.openUI(LDKeys.MUNICIPALITY, Municipality.UI_CREATE, 0, 0);
 	    			}
 	    			return;
 	    		}
@@ -73,7 +73,7 @@ public class MunCmd extends CommandBase {
     			Print.chat(sender, translateCmd("mun.not_in_a_municipality"));
     			return;
     		}
-        	ply.entity.openUI(LDKeys.KEY_MUNICIPALITY, 0, chunk.district.municipality().id, 0);
+        	ply.entity.openUI(LDKeys.MUNICIPALITY, 0, chunk.district.municipality().id, 0);
     	}
     }
 
