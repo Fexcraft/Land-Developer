@@ -156,7 +156,7 @@ public class LandDevShader {}/*implements HDShader {
 					else return rgb.packed = ck.district.municipality().color.getInteger();
 				}
 				case COUNTY: return rgb.packed = ck.district.county().color.getInteger();
-				case STATE: return rgb.packed = ck.district.state().color.getInteger();
+				case REGION: return rgb.packed = ck.district.region().color.getInteger();
 				case UNION: return rgb.packed = RGB.RED.packed;
 				case NONE:
 				default: return rgb.packed = RGB.WHITE.packed;
@@ -197,7 +197,7 @@ public class LandDevShader {}/*implements HDShader {
 					return ck.district.municipality().id != ock.district.municipality().id;
 				}
 				case COUNTY: return ck.district.county().id != ock.district.county().id;
-				case STATE: return ck.district.state().id != ock.district.state().id;
+				case REGION: return ck.district.region().id != ock.district.region().id;
 				case UNION:
 				case NONE:
 				default: return false;

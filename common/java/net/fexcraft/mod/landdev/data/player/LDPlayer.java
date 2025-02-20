@@ -161,8 +161,8 @@ public class LDPlayer implements Saveable, Layer, LDUIModule, Appendable<UniEnti
 		else if(layer == Layers.COUNTY){
 			return county.manage.isStaff(uuid) || county.manage.isManager(uuid);
 		}
-		else if(layer == Layers.STATE){
-			return county.state.manage.isStaff(uuid) || county.state.manage.isManager(uuid);
+		else if(layer == Layers.REGION){
+			return county.region.manage.isStaff(uuid) || county.region.manage.isManager(uuid);
 		}
 		return false;
 	}
@@ -175,11 +175,11 @@ public class LDPlayer implements Saveable, Layer, LDUIModule, Appendable<UniEnti
 		icons.add(chunk_current.district.icon.getnn());
 		if(mun) icons.add(chunk_current.district.municipality().icon.getnn());
 		icons.add(chunk_current.district.county().icon.getnn());
-		icons.add(chunk_current.district.state().icon.getnn());
+		icons.add(chunk_current.district.region().icon.getnn());
 		com.set("icons", icons);
 		TagLW lines = TagLW.create();
 		if(moved){
-			lines.add(chunk_current.district.state().name());
+			lines.add(chunk_current.district.region().name());
 			lines.add(chunk_current.district.county().name());
 			if(mun) lines.add(chunk_current.district.municipality().name());
 			lines.add(chunk_current.district.name());
@@ -225,7 +225,7 @@ public class LDPlayer implements Saveable, Layer, LDUIModule, Appendable<UniEnti
 					resp.addButton("municipality", ELM_GENERIC, OPEN, municipality.name());
 				}
 				resp.addButton("county", ELM_GENERIC, OPEN, county.name());
-				resp.addButton("state", ELM_GENERIC, OPEN, county.state.name());
+				resp.addButton("region", ELM_GENERIC, OPEN, county.region.name());
 				return;
 			}
 			case UI_NICKNAME:{
@@ -261,7 +261,7 @@ public class LDPlayer implements Saveable, Layer, LDUIModule, Appendable<UniEnti
 				return;
 			}
 			case "county": container.open(LDKeys.COUNTY, 0, county.id, 0); return;
-			case "state": container.open(LDKeys.STATE, 0, county.state.id, 0); return;
+			case "region": container.open(LDKeys.REGION, 0, county.region.id, 0); return;
 			case "appearance.submit":{
 				String nick = req.getField("appearance.nick_field");
 				if(nick.length() == 0 || nick.length() > 16) return;
@@ -293,8 +293,8 @@ public class LDPlayer implements Saveable, Layer, LDUIModule, Appendable<UniEnti
 		return chunk_current != null && chunk_current.district.county().id == id;
 	}
 
-	public boolean isCurrentlyInState(int id){
-		return chunk_current != null && chunk_current.district.state().id == id;
+	public boolean isCurrentlyInRegion(int id){
+		return chunk_current != null && chunk_current.district.region().id == id;
 	}
 
 	public void addMail(Mail newmail){

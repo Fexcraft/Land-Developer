@@ -4,7 +4,7 @@ import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.data.county.County;
 import net.fexcraft.mod.landdev.data.player.LDPlayer;
-import net.fexcraft.mod.landdev.data.state.State;
+import net.fexcraft.mod.landdev.data.region.Region;
 import net.fexcraft.mod.landdev.ui.LDKeys;
 import net.fexcraft.mod.landdev.util.AliasLoader;
 import net.fexcraft.mod.landdev.util.ResManager;
@@ -51,9 +51,9 @@ public class CntCmd extends CommandBase {
     	if(args.length > 0){
     		switch(args[0]){
 	    		case "create":{
-	    			State state = chunk.district.state();
-	    			boolean cn = state.norms.get("new-counties").bool();
-	    			boolean pp = ply.hasPermit(CREATE_COUNTY, state.getLayer(), state.id);
+	    			Region region = chunk.district.region();
+	    			boolean cn = region.norms.get("new-counties").bool();
+	    			boolean pp = ply.hasPermit(CREATE_COUNTY, region.getLayer(), region.id);
 	    			if(!cn && !pp){
 		    			Print.chat(sender, translateCmd("ct.no_new_county"));
 		    			Print.chat(sender, translateCmd("ct.no_create_permit"));

@@ -28,7 +28,7 @@ public class MainModule implements LDUIModule {
 		resp.addButton("district", ELM_GENERIC, OPEN);
 		resp.addButton("municipality", ELM_GENERIC, OPEN);
 		resp.addButton("county", ELM_GENERIC, OPEN);
-		resp.addButton("state", ELM_GENERIC, OPEN);
+		resp.addButton("region", ELM_GENERIC, OPEN);
 	}
 
 	public void on_interact(BaseCon container, ModuleRequest req){
@@ -54,7 +54,7 @@ public class MainModule implements LDUIModule {
 				container.open(COUNTY, 0, chunk.district.owner.county_id(), 0);
 				return;
 			}
-			case "state": container.open(STATE, 0, chunk.district.state().id, 0); return;
+			case "region": container.open(REGION, 0, chunk.district.region().id, 0); return;
 		}
 	}
 

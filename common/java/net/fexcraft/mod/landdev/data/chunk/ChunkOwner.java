@@ -71,7 +71,7 @@ public class ChunkOwner implements Saveable {
 			case DISTRICT: return chunk.district.account();
 			case MUNICIPALITY: return chunk.district.municipality().account;
 			case COUNTY: return chunk.district.county().account;
-			case STATE: return chunk.district.state().account;
+			case REGION: return chunk.district.region().account;
 			case COMPANY://TODO
 			default: return ResManager.SERVER_ACCOUNT;
 		

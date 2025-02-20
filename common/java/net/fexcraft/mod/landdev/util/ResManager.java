@@ -15,7 +15,7 @@ import net.fexcraft.mod.landdev.data.county.County;
 import net.fexcraft.mod.landdev.data.district.District;
 import net.fexcraft.mod.landdev.data.municipality.Municipality;
 import net.fexcraft.mod.landdev.data.player.LDPlayer;
-import net.fexcraft.mod.landdev.data.state.State;
+import net.fexcraft.mod.landdev.data.region.Region;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.world.EntityW;
@@ -38,7 +38,7 @@ public class ResManager implements Saveable {
 	public static ConcurrentHashMap<Integer, District> DISTRICTS = new ConcurrentHashMap<>();
 	public static ConcurrentHashMap<Integer, Municipality> MUNICIPALITIES = new ConcurrentHashMap<>();
 	public static ConcurrentHashMap<Integer, County> COUNTIES = new ConcurrentHashMap<>();
-	public static ConcurrentHashMap<Integer, State> STATES = new ConcurrentHashMap<>();
+	public static ConcurrentHashMap<Integer, Region> REGIONS = new ConcurrentHashMap<>();
 	public static ConcurrentHashMap<UUID, LDPlayer> PLAYERS = new ConcurrentHashMap<>();
 	//
 	public static ConcurrentHashMap<Integer, ChunkKey> MUN_CENTERS = new ConcurrentHashMap<>();
@@ -110,10 +110,10 @@ public class ResManager implements Saveable {
 		return cty;
 	}
 
-	public static State getState(int idx, boolean load){
-		if(!load) return STATES.get(idx);
-		State stt = STATES.get(idx);
-		if(stt == null) STATES.put(idx, load(stt = new State(idx)));
+	public static Region getRegion(int idx, boolean load){
+		if(!load) return REGIONS.get(idx);
+		Region stt = REGIONS.get(idx);
+		if(stt == null) REGIONS.put(idx, load(stt = new Region(idx)));
 		return stt;
 	}
 
@@ -183,7 +183,7 @@ public class ResManager implements Saveable {
 		DISTRICTS.values().forEach(save -> DB.save(save));
 		MUNICIPALITIES.values().forEach(save -> DB.save(save));
 		COUNTIES.values().forEach(save -> DB.save(save));
-		STATES.values().forEach(save -> DB.save(save));
+		REGIONS.values().forEach(save -> DB.save(save));
 		PLAYERS.values().forEach(save -> DB.save(save));
 		INSTANCE.save();
 		INSTANCE.LOADED = false;
@@ -194,7 +194,7 @@ public class ResManager implements Saveable {
 		DISTRICTS.clear();
 		MUNICIPALITIES.clear();
 		COUNTIES.clear();
-		STATES.clear();
+		REGIONS.clear();
 		PLAYERS.clear();
 		MUN_CENTERS.clear();
 		CT_CENTERS.clear();
@@ -221,7 +221,7 @@ public class ResManager implements Saveable {
 		ST_CENTERS.forEach((key, val) -> {
 			sc.add(key + "", val.toString());
 		});
-		map.add("state-centers", sc);
+		map.add("region-centers", sc);
 	}
 
 	@Override
@@ -246,8 +246,8 @@ public class ResManager implements Saveable {
 				}
 			});
 		}
-		if(map.has("state-centers")){
-			map.get("state-centers").asMap().value.forEach((key, val) -> {
+		if(map.has("region-centers")){
+			map.get("region-centers").asMap().value.forEach((key, val) -> {
 				try{
 					ST_CENTERS.put(Integer.parseInt(key), new ChunkKey(val.string_value()));
 				}

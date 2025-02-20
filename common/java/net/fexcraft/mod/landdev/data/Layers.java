@@ -11,8 +11,8 @@ public enum Layers {
 	DISTRICT,
 	MUNICIPALITY,
 	COUNTY,
-	STATE,
-	UNION,
+	REGION,
+	INTER,
 	
 	PLAYER,
 	NONE;
@@ -41,8 +41,8 @@ public enum Layers {
 			case "district": return DISTRICT;
 			case "municipality": return MUNICIPALITY;
 			case "county": return COUNTY;
-			case "state": return STATE;
-			case "union": return UNION;
+			case "region": return REGION;
+			case "inter": return INTER;
 			case "player": return PLAYER;
 			case "none": return NONE;
 		}

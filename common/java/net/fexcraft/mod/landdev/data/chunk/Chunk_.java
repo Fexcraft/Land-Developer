@@ -228,7 +228,7 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 			resp.addRadio("set_owner.district", ELM_BLUE, owner.owner == Layers.DISTRICT);
 			if(!district.owner.is_county) resp.addRow("set_owner.municipality", ELM_BLUE, owner.owner == Layers.MUNICIPALITY);
 			resp.addRadio("set_owner.county", ELM_BLUE, owner.owner == Layers.COUNTY);
-			resp.addRadio("set_owner.state", ELM_BLUE, owner.owner == Layers.STATE);
+			resp.addRadio("set_owner.region", ELM_BLUE, owner.owner == Layers.REGION);
 			resp.addRadio("set_owner.none", ELM_BLUE, owner.owner == Layers.NONE);
 			resp.addButton("set_owner.submit", ELM_GENERIC, OPEN);
 			resp.setFormular();
@@ -242,7 +242,7 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 			resp.addButton("buy.district", ELM_BLUE, RADIO_UNCHECKED);
 			if(!district.owner.is_county) resp.addButton("buy.municipality", ELM_BLUE, RADIO_UNCHECKED);
 			resp.addButton("buy.county", ELM_BLUE, RADIO_UNCHECKED);
-			resp.addButton("buy.state", ELM_BLUE, RADIO_UNCHECKED);
+			resp.addButton("buy.region", ELM_BLUE, RADIO_UNCHECKED);
 			resp.addButton("buy.payer", ELM_GENERIC, CHECK_UNCHECKED);
 			resp.addButton("buy.submit", ELM_GENERIC, OPEN);
 			resp.setFormular();
@@ -491,7 +491,7 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 			case DISTRICT: return district.id;
 			case MUNICIPALITY: return district.owner.is_county ? -1 : district.municipality().id;
 			case COUNTY: return district.county().id;
-			case STATE: return district.county().state.id;
+			case REGION: return district.county().region.id;
 			default: return -1;
 		}
 	}
@@ -520,9 +520,9 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 				district.county().mail.add(mail);
 				district.county().save();
 				break;
-			case STATE:
-				district.state().mail.add(mail);
-				district.state().save();
+			case REGION:
+				district.region().mail.add(mail);
+				district.region().save();
 				break;
 			case NONE: return;
 		}

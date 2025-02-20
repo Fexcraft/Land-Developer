@@ -1,6 +1,5 @@
 package net.fexcraft.mod.landdev.event;
 
-import net.fexcraft.mod.landdev.data.Layer;
 import net.fexcraft.mod.landdev.data.player.LDPlayer;
 
 /**

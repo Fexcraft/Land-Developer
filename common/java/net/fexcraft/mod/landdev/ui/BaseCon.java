@@ -342,8 +342,8 @@ public class BaseCon extends ContainerInterface {
 
 		public StaBaseCon(JsonMap map, UniEntity ply, V3I pos){
 			super(map, ply, pos);
-			type = STATE;
-			prefix = "state";
+			type = REGION;
+			prefix = "region";
 		}
 
 	}

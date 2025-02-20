@@ -90,7 +90,7 @@ public class LDConfig extends ConfigBase {
 			})
 		);
 		entries.add(new ConfigEntry(this, GENERAL_CAT, "default_icon", DEFAULT_ICON)
-			.info("Default Dis/Mun/Cou/State Icon to be shown in the Location Update GUI.")
+			.info("Default Dis/Mun/Cou/Region Icon to be shown in the Location Update GUI.")
 			.cons((con, map) -> {
 				SERVER_ICON = con.getString(map);
 				SERVER_ICONHOLDER.set(SERVER_ICON);

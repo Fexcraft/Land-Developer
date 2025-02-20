@@ -596,8 +596,8 @@ public class Municipality implements Saveable, Layer, LDUIModule {
 					container.msg("create.leave_county_management");
 					return;
     			}
-    			if(player.isInManagement(Layers.STATE) && player.county.state.id != county.state.id){
-					container.msg("create.leave_state_management");
+    			if(player.isInManagement(Layers.REGION) && player.county.region.id != county.region.id){
+					container.msg("create.leave_region_management");
 					return;
     			}
     			String name = req.getField("create.name_field");

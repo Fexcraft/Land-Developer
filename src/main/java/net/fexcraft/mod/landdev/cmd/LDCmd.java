@@ -67,10 +67,10 @@ public class LDCmd extends CommandBase {
 	        		Print.chat(sender, TranslationUtil.translateCmd("fees_mun_county", getWorthAsString(cf)));
 	        		Print.chat(sender, TranslationUtil.translateCmd("fees_mun_total", getWorthAsString(sf + cf)));
 					sf = LDConfig.COUNTY_CREATION_FEE;
-					cf = chunk.district.state().norms.get("new-county-fee").integer();
+					cf = chunk.district.region().norms.get("new-county-fee").integer();
 					Print.chat(sender, TranslationUtil.translateCmd("fees_county"));
 					Print.chat(sender, TranslationUtil.translateCmd("fees_ct_server", getWorthAsString(sf)));
-					Print.chat(sender, TranslationUtil.translateCmd("fees_ct_state", getWorthAsString(cf)));
+					Print.chat(sender, TranslationUtil.translateCmd("fees_ct_region", getWorthAsString(cf)));
 					Print.chat(sender, TranslationUtil.translateCmd("fees_ct_total", getWorthAsString(sf + cf)));
 	        		return;
 	    		}

@@ -15,7 +15,7 @@ import net.fexcraft.mod.landdev.data.county.County;
 import net.fexcraft.mod.landdev.data.district.District;
 import net.fexcraft.mod.landdev.data.municipality.Municipality;
 import net.fexcraft.mod.landdev.data.player.LDPlayer;
-import net.fexcraft.mod.landdev.data.state.State;
+import net.fexcraft.mod.landdev.data.region.Region;
 import net.fexcraft.mod.landdev.ui.BaseCon;
 import net.fexcraft.mod.landdev.ui.LDUIModule;
 import net.fexcraft.mod.landdev.ui.LDKeys;
@@ -127,7 +127,7 @@ public class MailModule implements LDUIModule {
 
 						return;
 					}
-					case STATE:{
+					case REGION:{
 
 						return;
 					}
@@ -229,8 +229,8 @@ public class MailModule implements LDUIModule {
 				}
 				break;
 			}
-			case STATE:{
-				State st = ResManager.getState(y, false);
+			case REGION:{
+				Region st = ResManager.getRegion(y, false);
 				if(player.adm || st.manage.can(MAIL_READ, player.uuid)){
 					return st.mail;
 				}
@@ -259,8 +259,8 @@ public class MailModule implements LDUIModule {
 				if(player.adm || con.manage.can(MAIL_DELETE, player.uuid)) return true;
 				break;
 			}
-			case STATE:{
-				State st = ResManager.getState(y, false);
+			case REGION:{
+				Region st = ResManager.getRegion(y, false);
 				if(player.adm || st.manage.can(MAIL_DELETE, player.uuid)) return true;
 				break;
 			}

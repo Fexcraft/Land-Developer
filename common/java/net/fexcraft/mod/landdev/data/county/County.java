@@ -4,7 +4,6 @@ import static net.fexcraft.mod.landdev.data.PermAction.*;
 import static net.fexcraft.mod.landdev.ui.LDKeys.MAILBOX;
 import static net.fexcraft.mod.landdev.ui.LDUIButton.*;
 import static net.fexcraft.mod.landdev.ui.LDUIRow.*;
-import static net.fexcraft.mod.landdev.util.TranslationUtil.translate;
 
 import java.util.ArrayList;
 
@@ -21,7 +20,7 @@ import net.fexcraft.mod.landdev.data.norm.FloatNorm;
 import net.fexcraft.mod.landdev.data.norm.IntegerNorm;
 import net.fexcraft.mod.landdev.data.norm.StringNorm;
 import net.fexcraft.mod.landdev.data.player.LDPlayer;
-import net.fexcraft.mod.landdev.data.state.State;
+import net.fexcraft.mod.landdev.data.region.Region;
 import net.fexcraft.mod.landdev.ui.BaseCon;
 import net.fexcraft.mod.landdev.ui.LDUIModule;
 import net.fexcraft.mod.landdev.ui.LDKeys;
@@ -52,7 +51,7 @@ public class County implements Saveable, Layer, LDUIModule {
 	public long tax_collected;
 	public Municipality main;
 	public Account account;
-	public State state;
+	public Region region;
 	
 	public County(int id){
 		this.id = id;
@@ -85,7 +84,7 @@ public class County implements Saveable, Layer, LDUIModule {
 		JsonArray marray = new JsonArray();
 		municipalities.forEach(mun -> marray.add(mun));
 		map.add("municipalities", marray);
-		map.add("state", state.id);
+		map.add("region", region.id);
 		map.add("tax_collected", tax_collected);
 		external.save(map);
 		DataManager.save(account);
@@ -113,27 +112,27 @@ public class County implements Saveable, Layer, LDUIModule {
 			municipalities.clear();
 			array.value.forEach(elm -> municipalities.add(elm.integer_value()));
 		}
-		state = ResManager.getState(map.getInteger("state", -1), true);
+		region = ResManager.getRegion(map.getInteger("region", -1), true);
 		tax_collected = map.getLong("tax_collected", 0);
 		external.load(map);
 	}
 	
 	@Override
 	public void gendef(){
-		state = ResManager.getState(-1, true);
+		region = ResManager.getRegion(-1, true);
 		if(id == -1){
 			norms.get("name").set("Wilderness");
 			norms.get("new-municipalities").set(true);
 			districts.clear();
-			if(!state.counties.contains(id)) state.counties.add(id);
+			if(!region.counties.contains(id)) region.counties.add(id);
 			color.set(0x009900);
 		}
 		else if(id == 0){
 			norms.get("name").set("Spawn County");
 			districts.clear();
 			districts.add(0);
-			state = ResManager.getState(0, true);
-			if(!state.counties.contains(id)) state.counties.add(id);
+			region = ResManager.getRegion(0, true);
+			if(!region.counties.contains(id)) region.counties.add(id);
 			color.set(0xff9900);
 		}
 		external.gendef();
@@ -156,7 +155,7 @@ public class County implements Saveable, Layer, LDUIModule {
 
 	@Override
 	public Layers getParentLayer(){
-		return Layers.STATE;
+		return Layers.REGION;
 	}
 
 	@Override
@@ -192,7 +191,7 @@ public class County implements Saveable, Layer, LDUIModule {
 				resp.addRow("id", ELM_GENERIC, id);
 				resp.addRow("name", ELM_GENERIC, canman ? OPEN : EMPTY, canman, name());
 				if(main != null) resp.addButton("seat", ELM_GENERIC, OPEN, main.name());
-				resp.addButton("state", ELM_GENERIC, OPEN, state.name());
+				resp.addButton("region", ELM_GENERIC, OPEN, region.name());
 				resp.addButton("municipalities", ELM_GENERIC, LIST, municipalities.size());
 				resp.addButton("districts", ELM_GENERIC, LIST, districts.size());
 				resp.addButton("citizen", ELM_GENERIC, LIST, citizens.size());
@@ -258,7 +257,7 @@ public class County implements Saveable, Layer, LDUIModule {
 				return;
 			}
 			case "seat": if(main != null) container.open(LDKeys.MUNICIPALITY, 0, main.id, 0);return;
-			case "state": container.open(LDKeys.STATE, 0, state.id, 0); return;
+			case "region": container.open(LDKeys.REGION, 0, region.id, 0); return;
 			case "citizen": container.open(UI_CITIZEN_LIST); return;
 			case "municipalities": container.open(UI_MUNICIPALITIES); return;
 			case "districts": container.open(UI_DISTRICTS); return;

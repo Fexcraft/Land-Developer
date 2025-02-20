@@ -8,7 +8,7 @@ import net.fexcraft.mod.landdev.data.PermAction;
 import net.fexcraft.mod.landdev.data.county.County;
 import net.fexcraft.mod.landdev.data.district.District;
 import net.fexcraft.mod.landdev.data.municipality.Municipality;
-import net.fexcraft.mod.landdev.data.state.State;
+import net.fexcraft.mod.landdev.data.region.Region;
 import net.fexcraft.mod.landdev.data.Saveable;
 import net.fexcraft.mod.landdev.util.ResManager;
 
@@ -56,12 +56,12 @@ public class Permit implements Saveable {
 				County ct = ResManager.getCounty(origin_id, false);
 				if(ct != null) return ct.account;
 				break;
-			case STATE:
-				State st = ResManager.getState(origin_id, false);
+			case REGION:
+				Region st = ResManager.getRegion(origin_id, false);
 				if(st != null) return st.account;
 				break;
 			case NONE:
-			case UNION:
+			case INTER:
 			case COMPANY:
 			default:
 				return null;

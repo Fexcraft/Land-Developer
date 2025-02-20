@@ -17,7 +17,7 @@ public class LDKeys {
 	public static final int ID_DISTRICT = 3;
 	public static final int ID_MUNICIPALITY = 4;
 	public static final int ID_COUNTY = 5;
-	public static final int ID_STATE = 6;
+	public static final int ID_REGION = 6;
 	public static final int ID_PLAYER = 8;
 	public static final int ID_POLL = 9;
 	public static final int ID_MAILBOX = 10;
@@ -35,7 +35,7 @@ public class LDKeys {
 	public static final UIKey DISTRICT = new UIKey(ID_DISTRICT, "landdev:district");
 	public static final UIKey MUNICIPALITY = new UIKey(ID_MUNICIPALITY, "landdev:municipality");
 	public static final UIKey COUNTY = new UIKey(ID_COUNTY, "landdev:county");
-	public static final UIKey STATE = new UIKey(ID_STATE, "landdev:state");
+	public static final UIKey REGION = new UIKey(ID_REGION, "landdev:region");
 	public static final UIKey PLAYER = new UIKey(ID_PLAYER, "landdev:player");
 	public static final UIKey POLL = new UIKey(ID_POLL, "landdev:poll");
 	public static final UIKey MAILBOX = new UIKey(ID_MAILBOX, "landdev:mailbox");
@@ -54,7 +54,7 @@ public class LDKeys {
 		CONS.put(DISTRICT, BaseCon.DisBaseCon.class);
 		CONS.put(MUNICIPALITY, BaseCon.MunBaseCon.class);
 		CONS.put(COUNTY, BaseCon.CouBaseCon.class);
-		CONS.put(STATE, BaseCon.StaBaseCon.class);
+		CONS.put(REGION, BaseCon.StaBaseCon.class);
 		CONS.put(PLAYER, BaseCon.PlayerBaseCon.class);
 		CONS.put(POLL, BaseCon.PollBaseCon.class);
 		//CONS.put(KEY_MAILBOX, BaseCon.MBBaseCon.class);

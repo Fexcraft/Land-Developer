@@ -22,7 +22,7 @@ import net.fexcraft.mod.landdev.data.norm.BoolNorm;
 import net.fexcraft.mod.landdev.data.norm.IntegerNorm;
 import net.fexcraft.mod.landdev.data.norm.StringNorm;
 import net.fexcraft.mod.landdev.data.player.LDPlayer;
-import net.fexcraft.mod.landdev.data.state.State;
+import net.fexcraft.mod.landdev.data.region.Region;
 import net.fexcraft.mod.landdev.ui.BaseCon;
 import net.fexcraft.mod.landdev.ui.modules.AppearModule;
 import net.fexcraft.mod.landdev.ui.LDUIModule;
@@ -152,8 +152,8 @@ public class District implements Saveable, Layer, PermInteractive, LDUIModule {
 		return norms.get("chunk-tax").integer();
 	}
 
-	public State state(){
-		return owner.is_county ? owner.county.state : owner.municipality.county.state;
+	public Region region(){
+		return owner.is_county ? owner.county.region : owner.municipality.county.region;
 	}
 
 	@Override
@@ -189,7 +189,7 @@ public class District implements Saveable, Layer, PermInteractive, LDUIModule {
 		if(layer == Layers.DISTRICT) return id;
 		if(layer == Layers.MUNICIPALITY) return owner.is_county ? -1 : owner.municipality.id;
 		if(layer == Layers.COUNTY) return owner.county_id();
-		if(layer == Layers.STATE) return county().state.id;
+		if(layer == Layers.REGION) return county().region.id;
 		return -1;
 	}
 
@@ -212,13 +212,13 @@ public class District implements Saveable, Layer, PermInteractive, LDUIModule {
 			}
 			return county().account;
 		}
-		if(layer.is(Layers.STATE)){
-			if(!state().manage.can(container.ldp.uuid, FINANCES_USE, FINANCES_MANAGE)){
-				if(container == null) container.ldp.entity.send(TranslationUtil.translateCmd("account.noperm.state"));
-				else container.msg("landdev.cmd.account.noperm.state", false);
+		if(layer.is(Layers.REGION)){
+			if(!region().manage.can(container.ldp.uuid, FINANCES_USE, FINANCES_MANAGE)){
+				if(container == null) container.ldp.entity.send(TranslationUtil.translateCmd("account.noperm.region"));
+				else container.msg("landdev.cmd.account.noperm.region", false);
 				return null;
 			}
-			return state().account;
+			return region().account;
 		}
 		return null;
 	}

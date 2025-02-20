@@ -31,10 +31,10 @@ public class Announcer {
 					if(ply.county.id == id || ply.isCurrentlyInCounty(id)) announce(ply.entity, string, objs);
 				});*/
 				break;
-			case STATE:
+			case REGION:
 				/*Static.getServer().getPlayerList().getPlayers().forEach(player -> {
 					LDPlayer ply = ResManager.getPlayer(player.getGameProfile().getId(), true);
-					if(ply.county.state.id == id || ply.isCurrentlyInState(id)) announce(ply.entity, string, objs);
+					if(ply.county.region.id == id || ply.isCurrentlyInRegion(id)) announce(ply.entity, string, objs);
 				});*/
 				break;
 			default: return;
@@ -49,7 +49,7 @@ public class Announcer {
 
 	public static enum Target {
 		
-		GLOBAL, LOCAL, DISTRICT, MUNICIPALITY, COUNTY, STATE, COMPANY
+		GLOBAL, LOCAL, DISTRICT, MUNICIPALITY, COUNTY, REGION, COMPANY
 		
 	}
 

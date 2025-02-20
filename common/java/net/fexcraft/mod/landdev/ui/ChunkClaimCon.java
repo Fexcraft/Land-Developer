@@ -141,13 +141,13 @@ public class ChunkClaimCon extends ContainerInterface {
 				else if(mode == Mode.BUY){
 					if(canNotBuy(chunk, district, com)) return;
 					//
-					Layers layer = prix < 0 ? prix == -1 ? Layers.PLAYER : prix < -2 ? Layers.STATE : Layers.COMPANY : district.owner.layer();
+					Layers layer = prix < 0 ? prix == -1 ? Layers.PLAYER : prix < -2 ? Layers.REGION : Layers.COMPANY : district.owner.layer();
 					if(!layer.isValidChunkOwner()) return;
 					if(layer.is(Layers.MUNICIPALITY) && district.owner.is_county){
 						sendMsg(com, "landdev.district.not_part_of_municipality");
 						return;
 					}
-					Account account = prix < 0 ? prix == -1 ? ldp.account : prix < -2 ? district.state().account : null : district.owner.account();
+					Account account = prix < 0 ? prix == -1 ? ldp.account : prix < -2 ? district.region().account : null : district.owner.account();
 					if(account == null) return;
 					if(account.getBalance() < chunk.sell.price){
 						sendMsg(com, "landdev.gui.chunk.buy.notenoughmoney");
@@ -161,7 +161,7 @@ public class ChunkClaimCon extends ContainerInterface {
 					else if(layer.is(Layers.COMPANY)){
 						//TODO
 					}
-					else if(layer.is(Layers.STATE)){
+					else if(layer.is(Layers.REGION)){
 						chunk.owner.set(layer, null, prix);
 					}
 					else{
@@ -212,7 +212,7 @@ public class ChunkClaimCon extends ContainerInterface {
 
 	private boolean isNotTransferable(Chunk_ chunk, District district, TagCW com){
 		if(sameDistrict(chunk, district, com)) return true;
-		if(chunk.district.state().id != district.state().id){
+		if(chunk.district.region().id != district.region().id){
 			sendMsg(com, "landdev.gui.claim.transfer.not_same_region");
 			return true;
 		}

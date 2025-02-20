@@ -16,7 +16,7 @@ import net.fexcraft.mod.landdev.data.county.County;
 import net.fexcraft.mod.landdev.data.district.District;
 import net.fexcraft.mod.landdev.data.municipality.Municipality;
 import net.fexcraft.mod.landdev.data.player.LDPlayer;
-import net.fexcraft.mod.landdev.data.state.State;
+import net.fexcraft.mod.landdev.data.region.Region;
 import net.fexcraft.mod.landdev.util.broad.BroadcastChannel;
 import net.fexcraft.mod.landdev.util.broad.Broadcaster;
 import net.fexcraft.mod.landdev.util.broad.Broadcaster.TargetTransmitter;
@@ -97,23 +97,23 @@ public class TaxSystem extends TimerTask {
 			mun.tax_collected = 0;
 		}
 		for(County ct : ResManager.COUNTIES.values()){
-			float cttax = ct.state.norms.get("county-tax-percent").decimal();
+			float cttax = ct.region.norms.get("county-tax-percent").decimal();
 			if(cttax > 20) cttax = 20;
 			if(cttax < 0) cttax = 0;
 			long tax = (long)((ct.tax_collected / 100) * cttax);
-			ct.account.getBank().processAction(Bank.Action.TRANSFER, null, ct.account, tax, ct.state.account);
-			ct.state.tax_collected += tax;
+			ct.account.getBank().processAction(Bank.Action.TRANSFER, null, ct.account, tax, ct.region.account);
+			ct.region.tax_collected += tax;
 			if(ct.account.getBalance() < tax){
-				Mail mail = new Mail(MailType.SYSTEM, Layers.STATE, ct.state.id);
-				mail.addMessage(translate("tax.state.county_missing_funds0"));
+				Mail mail = new Mail(MailType.SYSTEM, Layers.REGION, ct.region.id);
+				mail.addMessage(translate("tax.region.county_missing_funds0"));
 				mail.addMessage(ct.id + " | " + ct.name());
-				mail.addMessage(translate("tax.state.county_missing_funds1"));
+				mail.addMessage(translate("tax.region.county_missing_funds1"));
 				mail.addMessage(Config.getWorthAsString(ct.account.getBalance()));
-				mail.addMessage(translate("tax.state.county_missing_funds2"));
+				mail.addMessage(translate("tax.region.county_missing_funds2"));
 				mail.addMessage(Config.getWorthAsString(tax));
 				mail.setTitle(translate("tax.warning.mail"));
 				mail.expireInDays(3);
-				ct.state.mail.add(mail);
+				ct.region.mail.add(mail);
 				tax = ct.account.getBalance() > 0 ? ct.account.getBalance() : 0;
 			}
 			//
@@ -128,8 +128,8 @@ public class TaxSystem extends TimerTask {
 			//
 			ct.tax_collected = 0;
 		}
-		for(State st : ResManager.STATES.values()){
-			Mail mail = new Mail(MailType.SYSTEM, Layers.STATE, st.id);
+		for(Region st : ResManager.REGIONS.values()){
+			Mail mail = new Mail(MailType.SYSTEM, Layers.REGION, st.id);
 			mail.addMessage(translate("tax.county.collected"));
 			mail.addMessage(Config.getWorthAsString(st.tax_collected));
 			mail.setTitle(translate("tax.summary.mail"));

@@ -1,4 +1,4 @@
-package net.fexcraft.mod.landdev.data.state;
+package net.fexcraft.mod.landdev.data.region;
 
 import static net.fexcraft.mod.landdev.data.PermAction.REGION_STAFF;
 import static net.fexcraft.mod.landdev.util.TranslationUtil.translate;
@@ -20,7 +20,7 @@ import net.fexcraft.mod.landdev.ui.LDUIModule;
 import net.fexcraft.mod.landdev.ui.modules.ModuleRequest;
 import net.fexcraft.mod.landdev.ui.modules.ModuleResponse;
 
-public class State implements Saveable, Layer, LDUIModule {
+public class Region implements Saveable, Layer, LDUIModule {
 
 	public final int id;
 	public Createable created = new Createable();
@@ -36,11 +36,11 @@ public class State implements Saveable, Layer, LDUIModule {
 	public long tax_collected;
 	public Account account;
 	
-	public State(int id){
+	public Region(int id){
 		this.id = id;
 		mail = new MailData(getLayer(), id);
-		account = DataManager.getAccount("state:" + id, false, true);
-		norms.add(new StringNorm("name", "Unnamed State"));
+		account = DataManager.getAccount("region:" + id, false, true);
+		norms.add(new StringNorm("name", "Unnamed Region"));
 		norms.add(new BoolNorm("new-counties", false));
 		norms.add(new IntegerNorm("new-county-fee", 1000000));
 		norms.add(new FloatNorm("county-tax-percent", 10));
@@ -95,7 +95,7 @@ public class State implements Saveable, Layer, LDUIModule {
 			color.set(0x009900);
 		}
 		else if(id == 0){
-			norms.get("name").set("Spawn State");
+			norms.get("name").set("Spawn Region");
 			counties.clear();
 			counties.add(0);
 			color.set(0xff9900);
@@ -110,17 +110,17 @@ public class State implements Saveable, Layer, LDUIModule {
 	
 	@Override
 	public String saveTable(){
-		return "states";
+		return "regions";
 	}
 
 	@Override
 	public Layers getLayer(){
-		return Layers.STATE;
+		return Layers.REGION;
 	}
 
 	@Override
 	public Layers getParentLayer(){
-		return Layers.UNION;
+		return Layers.INTER;
 	}
 
 	@Override
