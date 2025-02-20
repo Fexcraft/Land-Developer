@@ -7,7 +7,6 @@ import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.mod.fsmm.data.Account;
-import net.fexcraft.mod.fsmm.util.Config;
 import net.fexcraft.mod.fsmm.util.DataManager;
 import net.fexcraft.mod.landdev.LandDev;
 import net.fexcraft.mod.landdev.data.Layer;
@@ -257,12 +256,12 @@ public class LDPlayer implements Saveable, Layer, LDUIModule, Appendable<UniEnti
 			}
 			case "municipality":{
 				if(municipality.id > -1){
-					container.open(LDKeys.KEY_MUNICIPALITY, 0, municipality.id, 0);return;
+					container.open(LDKeys.MUNICIPALITY, 0, municipality.id, 0);return;
 				}
 				return;
 			}
-			case "county": container.open(LDKeys.KEY_COUNTY, 0, county.id, 0); return;
-			case "state": container.open(LDKeys.KEY_STATE, 0, county.state.id, 0); return;
+			case "county": container.open(LDKeys.COUNTY, 0, county.id, 0); return;
+			case "state": container.open(LDKeys.STATE, 0, county.state.id, 0); return;
 			case "appearance.submit":{
 				String nick = req.getField("appearance.nick_field");
 				if(nick.length() == 0 || nick.length() > 16) return;
