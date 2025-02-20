@@ -2,7 +2,7 @@ package net.fexcraft.mod.landdev.data.district;
 
 import static net.fexcraft.mod.fsmm.util.Config.getWorthAsString;
 import static net.fexcraft.mod.landdev.data.PermAction.*;
-import static net.fexcraft.mod.landdev.ui.LDKeys.KEY_MAILBOX;
+import static net.fexcraft.mod.landdev.ui.LDKeys.MAILBOX;
 import static net.fexcraft.mod.landdev.ui.LDUIButton.*;
 import static net.fexcraft.mod.landdev.ui.LDUIRow.*;
 import static net.fexcraft.mod.landdev.util.ResManager.SERVER_ACCOUNT;
@@ -347,13 +347,13 @@ public class District implements Saveable, Layer, PermInteractive, LDUIModule {
 			}
 			case "type": container.open(UI_TYPE); return;
 			case "owner":{
-				container.open(owner.is_county ? LDKeys.KEY_COUNTY : LDKeys.KEY_MUNICIPALITY, 0, owner.owid, 0);
+				container.open(owner.is_county ? LDKeys.COUNTY : LDKeys.MUNICIPALITY, 0, owner.owid, 0);
 				return;
 			}
 			case "manager": if(canoman) container.open(UI_MANAGER); return;
 			case "price": container.open(UI_PRICE); return;
 			case "set_price": if(canman) container.open(UI_SET_PRICE); return;
-			case "mailbox": if(canman) container.open(KEY_MAILBOX, getLayer().ordinal(), id, 0); return;
+			case "mailbox": if(canman) container.open(MAILBOX, getLayer().ordinal(), id, 0); return;
 			case "norms": container.open(UI_NORMS); return;
 			case "appearance": container.open(UI_APPREARANCE); return;
 			case "type.submit":{
