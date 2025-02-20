@@ -124,8 +124,8 @@ public class InteractionEvents {
 				case MUNICIPALITY:
 					pass = chunk.district.owner.manageable().isManager(player.uuid);
 					break;
-				case STATE:
-					pass = chunk.district.state().manage.isManager(player.uuid);
+				case REGION:
+					pass = chunk.district.region().manage.isManager(player.uuid);
 					break;
 				default:
 					break;
@@ -149,8 +149,8 @@ public class InteractionEvents {
 			case MUNICIPALITY:
 				pass = chunk.district.owner.manageable().isStaff(player.uuid);
 				break;
-			case STATE:
-				pass = chunk.district.state().manage.isStaff(player.uuid);
+			case REGION:
+				pass = chunk.district.region().manage.isStaff(player.uuid);
 				break;
 			default:
 				break;
