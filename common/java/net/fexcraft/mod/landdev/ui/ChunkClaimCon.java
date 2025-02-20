@@ -3,6 +3,7 @@ package net.fexcraft.mod.landdev.ui;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.V3I;
+import net.fexcraft.mod.fsmm.data.Account;
 import net.fexcraft.mod.fsmm.data.Bank;
 import net.fexcraft.mod.landdev.data.Layers;
 import net.fexcraft.mod.landdev.data.chunk.ChunkType;
@@ -19,8 +20,9 @@ import net.fexcraft.mod.uni.ui.UIKey;
 import net.fexcraft.mod.uni.ui.UserInterface;
 
 import java.util.HashMap;
+import java.util.UUID;
 
-import static net.fexcraft.mod.landdev.data.PermAction.CHUNK_CLAIM;
+import static net.fexcraft.mod.landdev.data.PermAction.*;
 import static net.fexcraft.mod.landdev.util.ResManager.SERVER_ACCOUNT;
 
 /**
@@ -33,15 +35,15 @@ public class ChunkClaimCon extends ContainerInterface {
 	protected ChunkClaimUI cui;
 	protected District district;
 	protected LDPlayer ldp;
+	protected UUID uuid;
 	protected Mode mode;
+	protected int prix;
 
 	public ChunkClaimCon(JsonMap map, UniEntity ply, V3I pos){
 		super(map, ply, pos);
 		ldp = ResManager.getPlayer(ply);
 		for(int i = 0; i < chunks.length; i++) for(int k = 0; k < chunks[i].length; k++) chunks[i][k] = new ChunkData();
-		if(!ply.entity.isOnClient()){
-			district = ResManager.getDistrict(pos.y);
-		}
+
 	}
 
 	public ContainerInterface set(UserInterface ui){
@@ -52,6 +54,12 @@ public class ChunkClaimCon extends ContainerInterface {
 	@Override
 	public void init(){
 		mode = Mode.fromKey(uiid);
+		uuid = player.entity.getUUID();
+		if(!player.entity.isOnClient()){
+			if(mode != Mode.SELL && !(mode == Mode.BUY && pos.y < 0)) district = ResManager.getDistrict(pos.y);
+			if(mode == Mode.SELL) district = ldp.chunk_current.district;;
+		}
+		prix = pos.y;
 	}
 
 	@Override
@@ -82,68 +90,182 @@ public class ChunkClaimCon extends ContainerInterface {
 				Chunk_ chunk = ResManager.getChunk(key[0] - 7 + pos.x, key[1] - 7 + pos.z);
 				if(chunk == null) return;
 				TagCW com = TagCW.create();
-				if(!ldp.adm && !district.can(CHUNK_CLAIM, player.entity.getUUID())){
-					com.set("msg", "landdev.gui.claim.no_perm_district");
-					SEND_TO_CLIENT.accept(com, player);
-					SEND_TO_CLIENT.accept(com, player);
+				if(!ldp.adm && mode.claimtrans() && !adjacent(chunk, district)){
+					sendMsg(com, "landdev.gui.claim.not_adjacent");
 					return;
 				}
-				if(isOwnedAndNotClaimable(chunk, district, com)) return;
-				long price = chunk.sell.price > 0 ? chunk.sell.price : LDConfig.DEFAULT_CHUNK_PRICE;
-				if(price > 0){
-					if(!district.owner.account().getBank().processAction(Bank.Action.TRANSFER, player.entity, district.account(), price, SERVER_ACCOUNT)) return;
+				if(mode == Mode.CLAIM){
+					if(chunk.district.id > -1){
+						sendMsg(com, "landdev.gui.claim.already_claimed");
+						return;
+					}
+					if(isNotClaimable(chunk, district, com)) return;
+					//
+					long price = chunk.sell.price > 0 ? chunk.sell.price : LDConfig.DEFAULT_CHUNK_PRICE;
+					if(price > 0){
+						if(!district.owner.account().getBank().processAction(Bank.Action.TRANSFER, player.entity, district.account(), price, SERVER_ACCOUNT)) return;
+					}
+					com.set("msg", "landdev.gui.claim.pass");
+					if(chunk.district.id < 0) chunk.created.setClaimer(player.entity.getUUID());
+					if(chunk.district.id > -1) chunk.district.chunks -= 1;
+					chunk.district = district;
+					chunk.district.chunks += 1;
+					chunk.sell.price = 0;
+					if(!chunk.owner.layer().isPlayerBased()){
+						chunk.owner.set(district.owner.is_county ? Layers.COUNTY : Layers.MUNICIPALITY, null, district.owner.owid);
+					}
+					chunk.type = ChunkType.NORMAL;
+					chunk.save();
 				}
-				com.set("msg", "landdev.gui.claim.pass");
-				if(chunk.district.id < 0) chunk.created.setClaimer(player.entity.getUUID());
-				if(chunk.district.id > -1) chunk.district.chunks -= 1;
-				chunk.district = district;
-				chunk.district.chunks += 1;
-				chunk.sell.price = 0;
-				if(!chunk.owner.layer().isPlayerBased()){
+				else if(mode == Mode.TRANSFER){
+					if(chunk.district.id < 0){
+						sendMsg(com, "landdev.gui.claim.not_claimed");
+						return;
+					}
+					if(isNotTransferable(chunk, district, com)) return;
+					//
+					com.set("msg", "landdev.gui.claim.transferred");
+					if(chunk.district.id > -1) chunk.district.chunks -= 1;
+					chunk.district = district;
+					chunk.district.chunks += 1;
 					chunk.owner.set(district.owner.is_county ? Layers.COUNTY : Layers.MUNICIPALITY, null, district.owner.owid);
+					chunk.save();
 				}
-				chunk.type = ChunkType.NORMAL;
-				chunk.save();
+				else if(mode == Mode.SELL){
+					if(isNotOwner(chunk, district, com)) return;
+					//
+					com.set("msg", "landdev.gui.claim.price_set");
+					chunk.sell.price = prix;
+					chunk.save();
+				}
+				else if(mode == Mode.BUY){
+					if(canNotBuy(chunk, district, com)) return;
+					//
+					Layers layer = prix < 0 ? prix == -1 ? Layers.PLAYER : prix < -2 ? Layers.STATE : Layers.COMPANY : district.owner.layer();
+					if(!layer.isValidChunkOwner()) return;
+					if(layer.is(Layers.MUNICIPALITY) && district.owner.is_county){
+						sendMsg(com, "landdev.district.not_part_of_municipality");
+						return;
+					}
+					Account account = prix < 0 ? prix == -1 ? ldp.account : prix < -2 ? district.state().account : null : district.owner.account();
+					if(account == null) return;
+					if(account.getBalance() < chunk.sell.price){
+						sendMsg(com, "landdev.gui.chunk.buy.notenoughmoney");
+						return;
+					}
+					if(!account.getBank().processAction(Bank.Action.TRANSFER, ldp.entity, account, chunk.sell.price, chunk.owner.getAccount(chunk))) return;
+					com.set("msg", "landdev.gui.claim.bought");
+					if(layer.is(Layers.PLAYER)){
+						chunk.owner.set(layer, uuid, 0);
+					}
+					else if(layer.is(Layers.COMPANY)){
+						//TODO
+					}
+					else if(layer.is(Layers.STATE)){
+						chunk.owner.set(layer, null, prix);
+					}
+					else{
+						chunk.owner.set(layer, null, district.getLayerId(layer));
+					}
+					chunk.sell.price = 0;
+					chunk.save();
+				}
 				sendSync(com);
 			}
 		}
 	}
 
-	private boolean isOwnedAndNotClaimable(Chunk_ chunk, District district, TagCW com){
+	private void sendMsg(TagCW com, String str){
+		com.set("msg", str);
+		SEND_TO_CLIENT.accept(com, player);
+	}
+
+	private boolean adjacent(Chunk_ chunk, District district){
+		Chunk_ o = ResManager.getChunk(chunk.key.x - 1, chunk.key.z);
+		if(o.district.id == district.id) return true;
+		o = ResManager.getChunk(chunk.key.x + 1, chunk.key.z);
+		if(o.district.id == district.id) return true;
+		o = ResManager.getChunk(chunk.key.x, chunk.key.z - 1);
+		if(o.district.id == district.id) return true;
+		o = ResManager.getChunk(chunk.key.x, chunk.key.z + 1);
+		if(o.district.id == district.id) return true;
+		return false;
+	}
+
+	private boolean sameDistrict(Chunk_ chunk, District district, TagCW com){
 		if(chunk.district.id == district.id){
 			com.set("msg", "landdev.gui.claim.part_of_district");
 			SEND_TO_CLIENT.accept(com, player);
 			return true;
 		}
-		if(chunk.sell.price == 0 && chunk.district.id >= 0){
-			com.set("msg", "landdev.gui.claim.not_for_sale");
-			SEND_TO_CLIENT.accept(com, player);
+		return false;
+	}
+
+	private boolean isNotClaimable(Chunk_ chunk, District district, TagCW com){
+		if(sameDistrict(chunk, district, com)) return true;
+		if(!ldp.adm && !district.can(CHUNK_CLAIM, uuid)){
+			sendMsg(com, "landdev.gui.claim.no_perm_district");
 			return true;
 		}
-		if(chunk.district.id >= 0){
+		return false;
+	}
+
+	private boolean isNotTransferable(Chunk_ chunk, District district, TagCW com){
+		if(sameDistrict(chunk, district, com)) return true;
+		if(chunk.district.state().id != district.state().id){
+			sendMsg(com, "landdev.gui.claim.transfer.not_same_region");
+			return true;
+		}
+		if(!ldp.adm && !chunk.district.can(MANAGE_DISTRICT, uuid)){
+			sendMsg(com, "landdev.gui.claim.transfer.no_perm_district");
+			return true;
+		}
+		return false;
+	}
+
+	private boolean isNotOwner(Chunk_ chunk, District district, TagCW com){
+		if(chunk.owner.playerchunk && !chunk.owner.player.equals(uuid)){
+			sendMsg(com, "landdev.gui.claim.sell.not_owner");
+			return true;
+		}
+		if(!chunk.owner.playerchunk){
+			if(!chunk.owner.owner.is(district.owner.layer())){
+				sendMsg(com, "landdev.gui.claim.sell.not_owner");
+				return true;
+			}
+			if(!ldp.adm && !chunk.district.can(MANAGE_DISTRICT, uuid)){
+				sendMsg(com, "landdev.gui.claim.sell.no_perm");
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private boolean canNotBuy(Chunk_ chunk, District district, TagCW com){
+		if(chunk.sell.price == 0 && chunk.district.id >= 0){
+			sendMsg(com, "landdev.gui.claim.buy.not_for_sale");
+			return true;
+		}
+		if(prix < 0){//-1 private, -2 company, -3 region
+			if(prix <= -2) return true;
+			//TODO
+		}
+		else{
+			if(chunk.district.county() != district.county()){
+				sendMsg(com, "landdev.gui.claim.buy.other_county");
+				return true;
+			}
 			if(chunk.district.owner.is_county){
-				if(chunk.district.county().id != district.county().id){
-					com.set("msg", "landdev.gui.claim.county_other");
-					SEND_TO_CLIENT.accept(com, player);
+				if(!district.owner.is_county){
+					sendMsg(com, "landdev.gui.claim.buy.in_county");
 					return true;
 				}
 			}
 			else{
-				if(district.owner.is_county){
-					com.set("msg", "landdev.gui.claim.municipality_chunk");
-					SEND_TO_CLIENT.accept(com, player);
+				if(!district.owner.is_county && chunk.district.municipality().id != district.municipality().id){
+					sendMsg(com, "landdev.gui.claim.buy.other_municipality");
 					return true;
 				}
-				else if(chunk.district.municipality().id != district.municipality().id){
-					com.set("msg", "landdev.gui.claim.municipality_other");
-					SEND_TO_CLIENT.accept(com, player);
-					return true;
-				}
-			}
-			if(!district.owner.is_county && !chunk.district.norms.get("municipality-can-claim").bool()){
-				com.set("msg", "landdev.gui.claim.no_municipality_claim");
-				SEND_TO_CLIENT.accept(com, player);
-				return true;
 			}
 		}
 		return false;
@@ -245,6 +367,9 @@ public class ChunkClaimCon extends ContainerInterface {
 			return CLAIM;
 		}
 
+		public boolean claimtrans(){
+			return this == CLAIM || this == TRANSFER;
+		}
 	}
 	
 }
