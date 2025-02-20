@@ -15,6 +15,7 @@ import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.tag.TagLW;
 import net.fexcraft.mod.uni.ui.ContainerInterface;
+import net.fexcraft.mod.uni.ui.UIKey;
 import net.fexcraft.mod.uni.ui.UserInterface;
 
 import java.util.HashMap;
@@ -32,11 +33,11 @@ public class ChunkClaimCon extends ContainerInterface {
 	protected ChunkClaimUI cui;
 	protected District district;
 	protected LDPlayer ldp;
+	protected Mode mode;
 
 	public ChunkClaimCon(JsonMap map, UniEntity ply, V3I pos){
 		super(map, ply, pos);
 		ldp = ResManager.getPlayer(ply);
-		ldp = ResManager.getPlayer(player);
 		for(int i = 0; i < chunks.length; i++) for(int k = 0; k < chunks[i].length; k++) chunks[i][k] = new ChunkData();
 		if(!ply.entity.isOnClient()){
 			district = ResManager.getDistrict(pos.y);
@@ -46,6 +47,11 @@ public class ChunkClaimCon extends ContainerInterface {
 	public ContainerInterface set(UserInterface ui){
 		cui = (ChunkClaimUI)ui;
 		return super.set(ui);
+	}
+
+	@Override
+	public void init(){
+		mode = Mode.fromKey(uiid);
 	}
 
 	@Override
@@ -82,47 +88,7 @@ public class ChunkClaimCon extends ContainerInterface {
 					SEND_TO_CLIENT.accept(com, player);
 					return;
 				}
-				if(chunk.district.id == district.id){
-					com.set("msg", "landdev.gui.claim.part_of_district");
-					SEND_TO_CLIENT.accept(com, player);
-					return;
-				}
-				if(chunk.district.id >= 0){
-					if(chunk.district.owner.is_county){
-						if(district.owner.is_county){
-							com.set("msg", "landdev.gui.claim.county_chunk");
-							SEND_TO_CLIENT.accept(com, player);
-							return;
-						}
-						else if(chunk.district.county().id != district.county().id){
-							com.set("msg", "landdev.gui.claim.county_other");
-							SEND_TO_CLIENT.accept(com, player);
-							return;
-						}
-					}
-					else{
-						if(district.owner.is_county){
-							com.set("msg", "landdev.gui.claim.municipality_chunk");
-							SEND_TO_CLIENT.accept(com, player);
-							return;
-						}
-						else if(chunk.district.municipality().id != district.municipality().id){
-							com.set("msg", "landdev.gui.claim.municipality_other");
-							SEND_TO_CLIENT.accept(com, player);
-							return;
-						}
-					}
-					if(!district.owner.is_county && !chunk.district.norms.get("municipality-can-claim").bool()){
-						com.set("msg", "landdev.gui.claim.no_municipality_claim");
-						SEND_TO_CLIENT.accept(com, player);
-						return;
-					}
-				}
-				else if(chunk.sell.price == 0 && chunk.district.id >= 0){
-					com.set("msg", "landdev.gui.claim.not_for_sale");
-					SEND_TO_CLIENT.accept(com, player);
-					return;
-				}
+				if(isOwnedAndNotClaimable(chunk, district, com)) return;
 				long price = chunk.sell.price > 0 ? chunk.sell.price : LDConfig.DEFAULT_CHUNK_PRICE;
 				if(price > 0){
 					if(!district.owner.account().getBank().processAction(Bank.Action.TRANSFER, player.entity, district.account(), price, SERVER_ACCOUNT)) return;
@@ -141,6 +107,46 @@ public class ChunkClaimCon extends ContainerInterface {
 				sendSync(com);
 			}
 		}
+	}
+
+	private boolean isOwnedAndNotClaimable(Chunk_ chunk, District district, TagCW com){
+		if(chunk.district.id == district.id){
+			com.set("msg", "landdev.gui.claim.part_of_district");
+			SEND_TO_CLIENT.accept(com, player);
+			return true;
+		}
+		if(chunk.sell.price == 0 && chunk.district.id >= 0){
+			com.set("msg", "landdev.gui.claim.not_for_sale");
+			SEND_TO_CLIENT.accept(com, player);
+			return true;
+		}
+		if(chunk.district.id >= 0){
+			if(chunk.district.owner.is_county){
+				if(chunk.district.county().id != district.county().id){
+					com.set("msg", "landdev.gui.claim.county_other");
+					SEND_TO_CLIENT.accept(com, player);
+					return true;
+				}
+			}
+			else{
+				if(district.owner.is_county){
+					com.set("msg", "landdev.gui.claim.municipality_chunk");
+					SEND_TO_CLIENT.accept(com, player);
+					return true;
+				}
+				else if(chunk.district.municipality().id != district.municipality().id){
+					com.set("msg", "landdev.gui.claim.municipality_other");
+					SEND_TO_CLIENT.accept(com, player);
+					return true;
+				}
+			}
+			if(!district.owner.is_county && !chunk.district.norms.get("municipality-can-claim").bool()){
+				com.set("msg", "landdev.gui.claim.no_municipality_claim");
+				SEND_TO_CLIENT.accept(com, player);
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private void sendSync(TagCW compound){
@@ -221,6 +227,22 @@ public class ChunkClaimCon extends ContainerInterface {
 			cid = com.getInteger("o");
 			cname = com.getString("m");
 			county = com.getBoolean("c");
+		}
+
+	}
+
+	public static enum Mode {
+
+		CLAIM, TRANSFER, SELL, BUY;
+
+		public static Mode fromKey(UIKey key){
+			switch(key.id){
+				case LDKeys.ID_CHUNK_CLAIM: return CLAIM;
+				case LDKeys.ID_CHUNK_TRANSFER: return TRANSFER;
+				case LDKeys.ID_CHUNK_SELL: return SELL;
+				case LDKeys.ID_CHUNK_BUY: return BUY;
+			}
+			return CLAIM;
 		}
 
 	}
