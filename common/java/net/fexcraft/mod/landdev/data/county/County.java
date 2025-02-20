@@ -1,7 +1,7 @@
 package net.fexcraft.mod.landdev.data.county;
 
 import static net.fexcraft.mod.landdev.data.PermAction.*;
-import static net.fexcraft.mod.landdev.ui.LDKeys.KEY_MAILBOX;
+import static net.fexcraft.mod.landdev.ui.LDKeys.MAILBOX;
 import static net.fexcraft.mod.landdev.ui.LDUIButton.*;
 import static net.fexcraft.mod.landdev.ui.LDUIRow.*;
 import static net.fexcraft.mod.landdev.util.TranslationUtil.translate;
@@ -257,15 +257,15 @@ public class County implements Saveable, Layer, LDUIModule {
 				container.open(UI_NORM_EDIT, id, norms.index(norms.get("name")));
 				return;
 			}
-			case "seat": if(main != null) container.open(LDKeys.KEY_MUNICIPALITY, 0, main.id, 0);return;
-			case "state": container.open(LDKeys.KEY_STATE, 0, state.id, 0); return;
+			case "seat": if(main != null) container.open(LDKeys.MUNICIPALITY, 0, main.id, 0);return;
+			case "state": container.open(LDKeys.STATE, 0, state.id, 0); return;
 			case "citizen": container.open(UI_CITIZEN_LIST); return;
 			case "municipalities": container.open(UI_MUNICIPALITIES); return;
 			case "districts": container.open(UI_DISTRICTS); return;
 			case "staff": container.open(UI_STAFF_LIST); return;
 			case "price": container.open(UI_PRICE); return;
 			case "set_price": if(canman) container.open(UI_SET_PRICE); return;
-			case "mailbox": if(canman) container.open(KEY_MAILBOX, getLayer().ordinal(), id, 0); return;
+			case "mailbox": if(canman) container.open(MAILBOX, getLayer().ordinal(), id, 0); return;
 			case "norms": container.open(UI_NORMS); return;
 			case "appearance": container.open(UI_APPREARANCE); return;
 			//
@@ -293,12 +293,12 @@ public class County implements Saveable, Layer, LDUIModule {
 		if(NormModule.isNormReq(norms, container, req, UI_NORM_EDIT, id)) return;
 		if(req.event().startsWith("district.")){
 			int id = Integer.parseInt(req.event().substring("district.".length()));
-			container.open(LDKeys.KEY_DISTRICT, 0, id, 0);
+			container.open(LDKeys.DISTRICT, 0, id, 0);
 			return;
 		}
 		if(req.event().startsWith("municipality.")){
 			int id = Integer.parseInt(req.event().substring("municipality.".length()));
-			container.open(LDKeys.KEY_MUNICIPALITY, 0, id, 0);
+			container.open(LDKeys.MUNICIPALITY, 0, id, 0);
 			return;
 		}
 		//
