@@ -3,7 +3,6 @@ package net.fexcraft.mod.landdev.ui;
 import net.fexcraft.app.json.JsonHandler;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.V3I;
-import net.fexcraft.mod.landdev.LandDev;
 import net.fexcraft.mod.landdev.data.Layers;
 import net.fexcraft.mod.landdev.data.MailData;
 import net.fexcraft.mod.landdev.data.player.LDPlayer;
@@ -52,7 +51,7 @@ public class MailboxCon extends ContainerInterface {
 			}
 			else if(com.has("read")){
 				mailbox.mails.get(com.getInteger("read")).unread = false;
-				ldp.entity.openUI(KEY_MAIL, pos.x, pos.y, com.getInteger("read"));
+				ldp.entity.openUI(MAIL, pos.x, pos.y, com.getInteger("read"));
 			}
 			else if(com.has("delete")){
 				if(!MailModule.canDelete(ldp, pos.x, pos.y)) return;
