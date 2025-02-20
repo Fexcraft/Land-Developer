@@ -201,7 +201,7 @@ public class MailModule implements LDUIModule {
 	}
 
 	private void goback(BaseCon container){
-		container.open(LDKeys.KEY_MAILBOX, container.pos.x, container.pos.y, container.pos.z);
+		container.open(LDKeys.MAILBOX, container.pos.x, container.pos.y, container.pos.z);
 	}
 
 	public static MailData getMailbox(LDPlayer player, int x, int y){
