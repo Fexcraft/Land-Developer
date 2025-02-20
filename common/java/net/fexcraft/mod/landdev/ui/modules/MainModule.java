@@ -1,7 +1,7 @@
 package net.fexcraft.mod.landdev.ui.modules;
 
 import static net.fexcraft.mod.landdev.ui.LDKeys.*;
-import static net.fexcraft.mod.landdev.ui.LDKeys.KEY_COUNTY;
+import static net.fexcraft.mod.landdev.ui.LDKeys.COUNTY;
 import static net.fexcraft.mod.landdev.ui.LDUIButton.OPEN;
 import static net.fexcraft.mod.landdev.ui.LDUIRow.ELM_GENERIC;
 
@@ -34,15 +34,15 @@ public class MainModule implements LDUIModule {
 	public void on_interact(BaseCon container, ModuleRequest req){
 		Chunk_ chunk = ResManager.getChunk(container.pos.y, container.pos.z);
 		switch(req.event()){
-			case "player": container.open(KEY_PLAYER, 0, 0, 0); return;
-			case "mail": container.open(KEY_MAILBOX, Layers.PLAYER.ordinal(), 0, 0); return;
-			case "property": container.open(KEY_PROPERTY, 0, 0, 0); return;
-			case "company": container.open(KEY_COMPANY, 0, 0, 0); return;
-			case "chunk": container.open(KEY_CHUNK, 0, chunk.key.x, chunk.key.z); return;
-			case "district": container.open(KEY_DISTRICT, 0, chunk.district.id, 0); return;
+			case "player": container.open(PLAYER, 0, 0, 0); return;
+			case "mail": container.open(MAILBOX, Layers.PLAYER.ordinal(), 0, 0); return;
+			case "property": container.open(PROPERTY, 0, 0, 0); return;
+			case "company": container.open(COMPANY, 0, 0, 0); return;
+			case "chunk": container.open(CHUNK, 0, chunk.key.x, chunk.key.z); return;
+			case "district": container.open(DISTRICT, 0, chunk.district.id, 0); return;
 			case "municipality":{
 				if(!chunk.district.owner.is_county){
-					container.open(KEY_MUNICIPALITY, 0, chunk.district.owner.municipality.id, 0);
+					container.open(MUNICIPALITY, 0, chunk.district.owner.municipality.id, 0);
 				}
 				else{
 					container.player.entity.send(TranslationUtil.translate("district.not_part_of_municipality"));
@@ -51,10 +51,10 @@ public class MainModule implements LDUIModule {
 				return;
 			}
 			case "county":{
-				container.open(KEY_COUNTY, 0, chunk.district.owner.county_id(), 0);
+				container.open(COUNTY, 0, chunk.district.owner.county_id(), 0);
 				return;
 			}
-			case "state": container.open(KEY_STATE, 0, chunk.district.state().id, 0); return;
+			case "state": container.open(STATE, 0, chunk.district.state().id, 0); return;
 		}
 	}
 
