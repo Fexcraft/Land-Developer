@@ -47,7 +47,7 @@ public class CkCmd extends CommandBase {
     	if(args.length > 0){
 			if(args[0].equals("claim")){
 				int dis = args.length > 1 ? Integer.parseInt(args[1]) : chunk.district.id;
-				player.openGui(LandDev.INSTANCE, LDKeys.CLAIM, sender.getEntityWorld(), chunk.key.x, dis, chunk.key.z);
+				player.openGui(LandDev.INSTANCE, LDKeys.ID_CHUNK_CLAIM, sender.getEntityWorld(), chunk.key.x, dis, chunk.key.z);
 			}
 			else if(args[0].equals("map")){
 				String marker = null;
@@ -68,7 +68,7 @@ public class CkCmd extends CommandBase {
 			}
     	}
     	else{
-			UniEntity.getEntity(player).openUI(LDKeys.KEY_CHUNK, 0, chunk.key.x, chunk.key.z);
+			UniEntity.getEntity(player).openUI(LDKeys.CHUNK, 0, chunk.key.x, chunk.key.z);
     	}
     }
 
