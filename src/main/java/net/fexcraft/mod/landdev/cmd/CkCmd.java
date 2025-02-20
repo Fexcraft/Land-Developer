@@ -10,6 +10,7 @@ import net.fexcraft.mod.landdev.util.AliasLoader;
 import net.fexcraft.mod.landdev.util.ResManager;
 import net.fexcraft.mod.landdev.util.TranslationUtil;
 import net.fexcraft.mod.uni.UniEntity;
+import net.fexcraft.mod.uni.world.EntityW;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
@@ -43,11 +44,41 @@ public class CkCmd extends CommandBase {
     public void execute(MinecraftServer server, ICommandSender sender, String[] args){ 
     	if(sender instanceof EntityPlayer == false) return;
     	EntityPlayer player = (EntityPlayer)sender;
+		EntityW ent = UniEntity.getEntity(player);
 		Chunk_ chunk = ResManager.getChunkP(player);
     	if(args.length > 0){
 			if(args[0].equals("claim")){
 				int dis = args.length > 1 ? Integer.parseInt(args[1]) : chunk.district.id;
-				player.openGui(LandDev.INSTANCE, LDKeys.ID_CHUNK_CLAIM, sender.getEntityWorld(), chunk.key.x, dis, chunk.key.z);
+				ent.openUI(LDKeys.CHUNK_CLAIM, chunk.key.x, dis, chunk.key.z);
+			}
+			else if(args[0].equals("transfer")){
+				int dis = args.length > 1 ? Integer.parseInt(args[1]) : chunk.district.id;
+				ent.openUI(LDKeys.CHUNK_TRANSFER, chunk.key.x, dis, chunk.key.z);
+			}
+			else if(args[0].equals("sell")){
+				int dis = args.length > 1 ? Integer.parseInt(args[1]) : chunk.district.id;
+				ent.openUI(LDKeys.CHUNK_SELL, chunk.key.x, dis, chunk.key.z);
+			}
+			else if(args[0].equals("buy")){
+				int dis = chunk.district.id;
+				if(args.length > 1){
+					switch(args[1]){
+						case "self":
+						case "player":
+							dis = -1;
+							break;
+						case "company":
+						case "com":
+							dis = -2;
+							break;
+						case "region":
+						case "reg":
+							dis = -3;
+							break;
+					}
+					if(dis >= 0) dis =Integer.parseInt(args[0]);
+				}
+				ent.openUI(LDKeys.CHUNK_BUY, chunk.key.x, dis, chunk.key.z);
 			}
 			else if(args[0].equals("map")){
 				String marker = null;
@@ -68,7 +99,7 @@ public class CkCmd extends CommandBase {
 			}
     	}
     	else{
-			UniEntity.getEntity(player).openUI(LDKeys.CHUNK, 0, chunk.key.x, chunk.key.z);
+			ent.openUI(LDKeys.CHUNK, 0, chunk.key.x, chunk.key.z);
     	}
     }
 
