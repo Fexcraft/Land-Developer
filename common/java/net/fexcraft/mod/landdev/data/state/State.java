@@ -1,6 +1,6 @@
 package net.fexcraft.mod.landdev.data.state;
 
-import static net.fexcraft.mod.landdev.data.PermAction.STATE_STAFF;
+import static net.fexcraft.mod.landdev.data.PermAction.REGION_STAFF;
 import static net.fexcraft.mod.landdev.util.TranslationUtil.translate;
 
 import java.util.ArrayList;
@@ -29,7 +29,7 @@ public class State implements Saveable, Layer, LDUIModule {
 	public ColorData color = new ColorData();
 	public NeighborData neighbors = new NeighborData();
 	public MailData mail;
-	public Manageable manage = new Manageable(true, STATE_STAFF);
+	public Manageable manage = new Manageable(true, REGION_STAFF);
 	public Norms norms = new Norms();
 	public ArrayList<Integer> counties = new ArrayList<>();
 	public ExternalData external = new ExternalData(this);
