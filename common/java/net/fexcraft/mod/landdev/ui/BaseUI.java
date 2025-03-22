@@ -194,6 +194,7 @@ public class BaseUI extends UserInterface {
 			try{
 				text = UIElement.create(UIText.IMPLEMENTATION, base, base.container.ui_map.getMap("texts").getMap("temp"));
 				text.color.packed = row.lighttext() ? 0xdedede : 0x5d5d5d;
+				text.hover.packed = row.lighttext() ? 0x574a0d : 0xcfb117;
 				text.value("landdev.gui." + base.bon.prefix + "." + str);
 				if(val == null) text.translate();
 				else if(val.startsWith(LDUIModule.VALONLY)) text.value(val.substring(3));
