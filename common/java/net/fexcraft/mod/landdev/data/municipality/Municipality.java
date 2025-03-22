@@ -9,6 +9,7 @@ import static net.fexcraft.mod.landdev.util.TranslationUtil.translateCmd;
 
 import java.util.ArrayList;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.UUID;
 
 import net.fexcraft.app.json.JsonArray;
@@ -18,6 +19,7 @@ import net.fexcraft.mod.fsmm.data.Account;
 import net.fexcraft.mod.fsmm.data.Bank.Action;
 import net.fexcraft.mod.fsmm.util.Config;
 import net.fexcraft.mod.fsmm.util.DataManager;
+import net.fexcraft.mod.landdev.LandDev;
 import net.fexcraft.mod.landdev.data.*;
 import net.fexcraft.mod.landdev.data.Citizens.Citizen;
 import net.fexcraft.mod.landdev.data.Manageable.Staff;
@@ -57,6 +59,7 @@ public class Municipality implements Saveable, Layer, LDUIModule {
 	public Citizens citizens = new Citizens(MUNICIPALITY_CITIZEN);
 	public Joinable requests = new Joinable();
 	public ExternalData external = new ExternalData(this);
+	public boolean abandoned;
 	public long tax_collected;
 	public Account account;
 	public County county;
@@ -91,6 +94,7 @@ public class Municipality implements Saveable, Layer, LDUIModule {
 		map.add("county", county.id);
 		map.add("tax_collected", tax_collected);
 		external.save(map);
+		if(abandoned) map.add("abandoned", abandoned);
 		DataManager.save(account);
 	}
 
@@ -114,6 +118,7 @@ public class Municipality implements Saveable, Layer, LDUIModule {
 		}
 		county = ResManager.getCounty(map.getInteger("county", -1), true);
 		tax_collected = map.getLong("tax_collected", 0);
+		abandoned = map.get("abandoned", false);
 		external.load(map);
 	}
 	
@@ -193,6 +198,9 @@ public class Municipality implements Saveable, Layer, LDUIModule {
 	public static final int UI_NORMS = 10;
 	public static final int UI_NORM_EDIT = 11;
 	public static final int UI_APPREARANCE = 12;
+	public static final int UI_MERGE = 13;
+	public static final int UI_DISBAND = 14;
+	public static final int UI_CLAIM = 15;
 
 
 	@Override
@@ -202,6 +210,9 @@ public class Municipality implements Saveable, Layer, LDUIModule {
 		switch(container.pos.x){
 			case UI_MAIN:{
 				resp.addRow("id", ELM_GENERIC, id);
+				if(abandoned){
+					resp.addButton("abandoned", ELM_RED, OPEN, id);
+				}
 				resp.addRow("name", ELM_GENERIC, canman ? OPEN : EMPTY, canman, name());
 				resp.addRow("muntitle", ELM_GENERIC, canman ? OPEN : EMPTY, canman, title());
 				resp.addButton("county", ELM_GENERIC, OPEN, county.name());
@@ -225,11 +236,14 @@ public class Municipality implements Saveable, Layer, LDUIModule {
 				}
 				resp.addButton("norms", ELM_GREEN, OPEN);
 				resp.addButton("appearance", ELM_YELLOW, OPEN);
+				resp.addBlank();
+				resp.addButton("merge", ELM_YELLOW, OPEN);
+				resp.addButton("disband", ELM_RED, OPEN);
 				return;
 			}
 			case UI_CITIZEN_LIST:{
 				resp.setTitle("municipality.citizen.title");
-				if(opentojoin()){
+				if(opentojoin() || abandoned){
 					resp.addRow("citizen.open", ELM_GREEN);
 				}
 				else{
@@ -311,7 +325,7 @@ public class Municipality implements Saveable, Layer, LDUIModule {
 				Staff staff = manage.staff.get(container.pos.z);
 				resp.addRow("staff.name", ELM_GENERIC, staff.getPlayerName());
 				resp.addRow("staff.uuid", ELM_GENERIC, staff.uuid);
-				if(container.ldp.adm || !manage.isManager(staff)){
+				if(container.ldp.adm || !manage.isManager(staff) || abandoned){
 					resp.addButton("staff.remove", ELM_RED, REM);
 					resp.addButton("staff.setmanager", ELM_BLUE, ADD);
 				}
@@ -366,6 +380,37 @@ public class Municipality implements Saveable, Layer, LDUIModule {
 				NormModule.respNormEdit(norms, container, resp, "municipality", canman);
 				return;
 			}
+			case UI_MERGE:{
+				resp.setTitle("municipality.merge.title");
+				resp.addRow("merge.wip", ELM_GENERIC);
+				return;
+			}
+			case UI_DISBAND:{
+				resp.setTitle("municipality.disband.title");
+				resp.addRow("disband.warning0", ELM_RED);
+				resp.addRow("disband.warning1", ELM_YELLOW);
+				resp.addRow("disband.warning2", ELM_YELLOW);
+				resp.addButton("disband.warning3", ELM_GREEN, OPEN);
+				resp.addBlank();
+				resp.addRow("disband.mode", ELM_YELLOW);
+				resp.addRadio("disband.abandon", ELM_BLUE, true);
+				resp.addRadio("disband.disband", ELM_BLUE, false);
+				resp.addBlank();
+				if(county.id >= 0){
+					resp.addCheck("disband.give_county", ELM_BLUE, false);
+				}
+				resp.addCheck("disband.remove_citizen", ELM_BLUE, false);
+				resp.addBlank();
+				resp.addRow("disband.info", ELM_GENERIC);
+				resp.addField("disband.name");
+				resp.addButton("disband.submit", ELM_YELLOW, canman ? OPEN : EMPTY);
+				resp.setFormular();
+				return;
+			}
+			case UI_CLAIM:{
+
+				return;
+			}
 			case UI_CREATE:
 				resp.setTitle("municipality.create.title");
 				Chunk_ chunk = ResManager.getChunk(container.ldp.entity);
@@ -412,6 +457,9 @@ public class Municipality implements Saveable, Layer, LDUIModule {
 			case "mailbox": if(canman) container.open(LDKeys.MAILBOX, getLayer().ordinal(), id, 0); return;
 			case "norms": container.open(UI_NORMS); return;
 			case "appearance": container.open(UI_APPREARANCE); return;
+			case "merge": container.open(UI_MERGE); return;
+			case "disband": container.open(UI_DISBAND); return;
+			case "abandoned": container.open(UI_CLAIM); return;
 			case "buy.submit":{
 
 				return;
@@ -445,7 +493,7 @@ public class Municipality implements Saveable, Layer, LDUIModule {
 				return;
 			}
 			case "citizen.join":{
-				if(!opentojoin()) return;
+				if(!opentojoin() && !abandoned) return;
 				if(player.isMunicipalityManager()){
 					container.msg("landdev.mail.municipality.citizen.ismanager", false);
 					return;
@@ -518,7 +566,7 @@ public class Municipality implements Saveable, Layer, LDUIModule {
 				return;
 			}
 			case "staff.add.submit":{
-				if(!canman) return;
+				if(!canman && !abandoned) return;
 				LDPlayer ply = req.getPlayerField("staff.add.field");
 				if(ply == null){
 					container.msg("staff.add.notfound");
@@ -557,6 +605,7 @@ public class Municipality implements Saveable, Layer, LDUIModule {
 				return;
 			}
 			case "staff.setmanager":{
+				if(!player.adm && !canman && !abandoned) return;
 				Staff staff = manage.getStaff(req.getUUIDField());
 				if(staff != null){
 					manage.setManager(staff.uuid);
@@ -564,6 +613,7 @@ public class Municipality implements Saveable, Layer, LDUIModule {
 					Mail mail = new Mail(MailType.SYSTEM, Layers.MUNICIPALITY, id, Layers.PLAYER, ply.uuid).expireInDays(7);
 					mail.setTitle(name()).addMessage(translate("mail.municipality.manager_now"));
 					ply.addMailAndSave(mail);
+					abandoned = false;
 					save();
 					for(Staff stf : manage.staff){
 						LDPlayer stp = ResManager.getPlayer(stf.uuid, true);
@@ -573,6 +623,55 @@ public class Municipality implements Saveable, Layer, LDUIModule {
 					}
 					Announcer.announce(Target.MUNICIPALITY, id, "announce.municipality.manager_set", staff.getPlayerName(), name(), id);
 				}
+				container.open(UI_MAIN);
+				return;
+			}
+			case "disband.warning3": container.open(UI_MERGE); return;
+			case "disband.submit":{
+				if(!canman && !player.adm){
+					container.msg("disband.no_perm");
+					return;
+				}
+				boolean disband = req.getRadio().equals("disband.disband");
+				if(disband && county.municipalities.size() < 2 && county.id >= 0){
+					container.msg("disband.last_county");
+					return;
+				}
+				boolean gc = req.getCheck("disband.give_county");
+				boolean rc = req.getCheck("disband.remove_citizen");
+				if(!disband && gc){
+					container.msg("disband.abandon_give_county");
+					return;
+				}
+				String name = req.getField("disband.name");
+				if(!name.equals(name())){
+					container.msg("disband.wrong_name");
+					return;
+				}
+				abandoned = !disband;
+				if(county.id >= 0){
+					county.municipalities.remove((Integer)id);
+					county.save();
+				}
+				manage.staff.clear();
+				manage.setManager((UUID)null);
+				if(rc || disband) citizens.clear(true);
+				if(gc && county.id >= 0){
+					ArrayList<Integer> ids = new ArrayList<>(districts);
+					for(int did : ids){
+						District dis = ResManager.getDistrict(did);
+						dis.owner.set(county);
+						dis.save();
+					}
+				}
+				else if(disband){
+					ArrayList<Integer> ids = new ArrayList<>(districts);
+					for(int did : ids){
+						District dis = ResManager.getDistrict(did);
+						dis.disband();
+					}
+				}
+				save();
 				container.open(UI_MAIN);
 				return;
 			}
