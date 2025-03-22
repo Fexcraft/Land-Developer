@@ -52,6 +52,7 @@ public class District implements Saveable, Layer, PermInteractive, LDUIModule {
 	public Norms norms = new Norms();
 	public DistrictOwner owner = new DistrictOwner();
 	public ExternalData external = new ExternalData(this);
+	public boolean disbanded;
 	public long tax_collected;
 	public long chunks;
 	
@@ -81,6 +82,7 @@ public class District implements Saveable, Layer, PermInteractive, LDUIModule {
 		map.add("tax_collected", tax_collected);
 		external.save(map);
 		map.add("chunks", chunks);
+		if(disbanded) map.add("disbanded", true);
 	}
 
 	@Override
@@ -98,6 +100,7 @@ public class District implements Saveable, Layer, PermInteractive, LDUIModule {
 		tax_collected = map.getLong("tax_collected", 0);
 		external.load(map);
 		chunks = map.getLong("chunks", 0);
+		disbanded = map.get("disbanded", false);
 	}
 	
 	@Override
@@ -231,6 +234,8 @@ public class District implements Saveable, Layer, PermInteractive, LDUIModule {
 	public static final int UI_NORMS = 5;
 	public static final int UI_NORM_EDIT = 6;
 	public static final int UI_APPREARANCE = 7;
+	public static final int UI_MERGE = 8;
+	public static final int UI_DISBAND = 9;
 
 	@Override
 	public void sync_packet(BaseCon container, ModuleResponse resp){
@@ -240,6 +245,9 @@ public class District implements Saveable, Layer, PermInteractive, LDUIModule {
 		switch(container.pos.x){
 			case UI_MAIN:
 				resp.addRow("id", ELM_GENERIC, id);
+				if(disbanded){
+					resp.addRow("disbanded", ELM_RED, id);
+				}
 				if(canman){
 					resp.addButton("name", ELM_GENERIC, OPEN, name());
 					resp.addButton("type", ELM_GENERIC, OPEN, type.name());
@@ -267,6 +275,9 @@ public class District implements Saveable, Layer, PermInteractive, LDUIModule {
 				}
 				resp.addButton("norms", ELM_GREEN, OPEN);
 				resp.addButton("appearance", ELM_YELLOW, OPEN);
+				resp.addBlank();
+				resp.addButton("merge", ELM_YELLOW, OPEN);
+				resp.addButton("disband", ELM_RED, OPEN);
 				return;
 			case UI_TYPE:
 				resp.setTitle("district.type.title");
@@ -314,6 +325,21 @@ public class District implements Saveable, Layer, PermInteractive, LDUIModule {
 				NormModule.respNormEdit(norms, container, resp, "district", canman);
 				return;
 			}
+			case UI_MERGE:{
+				resp.setTitle("district.merge.title");
+				resp.addRow("disband.wip", ELM_GENERIC);
+				return;
+			}
+			case UI_DISBAND:{
+				resp.setTitle("district.disband.title");
+				resp.addRow("disband.warning0", ELM_RED);
+				resp.addButton("disband.warning1", ELM_YELLOW, OPEN);
+				resp.addBlank();
+				resp.addRow("disband.info", ELM_GENERIC);
+				resp.addField("disband.name");
+				resp.addButton("disband.submit", ELM_YELLOW, canoman ? OPEN : EMPTY);
+				return;
+			}
 			case UI_CREATE:{
 				resp.setTitle("district.create.title");
 				resp.addRow("create.name", ELM_GENERIC);
@@ -355,6 +381,9 @@ public class District implements Saveable, Layer, PermInteractive, LDUIModule {
 			case "mailbox": if(canman) container.open(MAILBOX, getLayer().ordinal(), id, 0); return;
 			case "norms": container.open(UI_NORMS); return;
 			case "appearance": container.open(UI_APPREARANCE); return;
+			case "merge": container.open(UI_MERGE); return;
+			case "disband": container.open(UI_DISBAND); return;
+			//
 			case "type.submit":{
 				if(!canman) return;
 				DistrictType type = DistrictType.TYPES.get(req.getRadio("type."));
@@ -463,6 +492,56 @@ public class District implements Saveable, Layer, PermInteractive, LDUIModule {
 			case "norm_bool":{
 				if(!canman) return;
 				NormModule.processBool(norms, container, req, UI_NORM_EDIT);
+				return;
+			}
+			case "disband.warning1":{
+				container.open(UI_MERGE);
+				return;
+			}
+			case "disband.submit":{
+				if(id < 0) return;
+				if(owner.is_county){
+					if(county().districts.size() < 2){
+						container.msg("disband.last_county");
+						return;
+					}
+				}
+				else{
+					if(municipality().districts.size() < 2){
+						container.msg("disband.last_municipality");
+						return;
+					}
+				}
+				if(!canoman){
+					container.msg("disband.no_perm");
+					return;
+				}
+				String name = req.getField("disband.name");
+				if(!name.equals(name())){
+					container.msg("disband.wrong_name");
+					return;
+				}
+				disbanded = true;
+				District wil = ResManager.getDistrict(-1);
+				for(Chunk_ chunk : ResManager.CHUNKS.values()){
+					if(chunk.district.id != id) continue;
+					chunk.district = wil;
+					if(chunk.owner.layer() == owner.layer() && chunk.owner.owid == owner.owid){
+						chunk.owner.set(Layers.NONE, null, 0);
+					}
+					chunk.save();
+				}
+				if(owner.is_county){
+					county().districts.remove(this);
+					county().save();
+				}
+				else{
+					municipality().districts.remove(this);
+					municipality().save();
+				}
+				owner.set(ResManager.getCounty(-1, true));
+				save();
+				container.open(UI_MAIN);
 				return;
 			}
 			case "create.submit":{
