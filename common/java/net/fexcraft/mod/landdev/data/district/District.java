@@ -327,7 +327,7 @@ public class District implements Saveable, Layer, PermInteractive, LDUIModule {
 			}
 			case UI_MERGE:{
 				resp.setTitle("district.merge.title");
-				resp.addRow("disband.wip", ELM_GENERIC);
+				resp.addRow("merge.wip", ELM_GENERIC);
 				return;
 			}
 			case UI_DISBAND:{
@@ -338,6 +338,7 @@ public class District implements Saveable, Layer, PermInteractive, LDUIModule {
 				resp.addRow("disband.info", ELM_GENERIC);
 				resp.addField("disband.name");
 				resp.addButton("disband.submit", ELM_YELLOW, canoman ? OPEN : EMPTY);
+				resp.setFormular();
 				return;
 			}
 			case UI_CREATE:{
@@ -521,26 +522,7 @@ public class District implements Saveable, Layer, PermInteractive, LDUIModule {
 					container.msg("disband.wrong_name");
 					return;
 				}
-				disbanded = true;
-				District wil = ResManager.getDistrict(-1);
-				for(Chunk_ chunk : ResManager.CHUNKS.values()){
-					if(chunk.district.id != id) continue;
-					chunk.district = wil;
-					if(chunk.owner.layer() == owner.layer() && chunk.owner.owid == owner.owid){
-						chunk.owner.set(Layers.NONE, null, 0);
-					}
-					chunk.save();
-				}
-				if(owner.is_county){
-					county().districts.remove(this);
-					county().save();
-				}
-				else{
-					municipality().districts.remove(this);
-					municipality().save();
-				}
-				owner.set(ResManager.getCounty(-1, true));
-				save();
+				disband();
 				container.open(UI_MAIN);
 				return;
 			}
@@ -629,6 +611,29 @@ public class District implements Saveable, Layer, PermInteractive, LDUIModule {
 		}
 		if(NormModule.isNormReq(norms, container, req, UI_NORM_EDIT, id)) return;
 		external.on_interact(container, req);
+	}
+
+	public void disband(){
+		disbanded = true;
+		District wil = ResManager.getDistrict(-1);
+		for(Chunk_ chunk : ResManager.CHUNKS.values()){
+			if(chunk.district.id != id) continue;
+			chunk.district = wil;
+			if(chunk.owner.layer() == owner.layer() && chunk.owner.owid == owner.owid){
+				chunk.owner.set(Layers.NONE, null, 0);
+			}
+			chunk.save();
+		}
+		if(owner.is_county){
+			county().districts.remove((Integer)id);
+			county().save();
+		}
+		else{
+			municipality().districts.remove((Integer)id);
+			municipality().save();
+		}
+		owner.set(ResManager.getCounty(-1, true));
+		save();
 	}
 
 	public void addTaxStat(long tax){
