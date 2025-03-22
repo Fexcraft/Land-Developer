@@ -1,11 +1,10 @@
 package net.fexcraft.mod.landdev.data;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.mod.landdev.data.PermAction.PermActions;
+import net.fexcraft.mod.landdev.data.municipality.Municipality;
 import net.fexcraft.mod.landdev.data.player.LDPlayer;
 import net.fexcraft.mod.landdev.util.ResManager;
 
@@ -74,6 +73,16 @@ public class Citizens implements Saveable, PermInteractive {
 
 	public Citizen get(UUID uuid){
 		return citizens.get(uuid);
+	}
+
+	public void clear(boolean mun){
+		List<UUID> citi = new ArrayList<>(citizens.keySet());
+		for(UUID uuid : citi){
+			LDPlayer player = ResManager.getPlayer(uuid, true);
+			if(mun) player.leaveMunicipality();
+			else player.leaveCounty();
+		}
+		citizens.clear();
 	}
 
 	public static class Citizen implements Saveable {
