@@ -89,6 +89,7 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 		tax.load(map);
 		label.load(map);
 		district = ResManager.getDistrict(map.getInteger("district", -1));
+		if(district.disbanded) district = ResManager.getDistrict(-1);
 		external.load(map);
 		TaxSystem.taxChunk(this, null, false);
 	}
