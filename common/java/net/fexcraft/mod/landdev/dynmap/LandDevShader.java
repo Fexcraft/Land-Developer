@@ -4,7 +4,6 @@ import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.mod.landdev.data.Layers;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.util.ResManager;
-/*import net.minecraft.util.math.Vec3i;
 import org.dynmap.*;
 import org.dynmap.common.DynmapCommandSender;
 import org.dynmap.exporter.OBJExport;
@@ -14,7 +13,7 @@ import org.dynmap.renderer.DynmapBlockState;
 import org.dynmap.utils.BlockStep;
 import org.dynmap.utils.DynLongHashMap;
 import org.dynmap.utils.MapChunkCache;
-import org.dynmap.utils.MapIterator;*/
+import org.dynmap.utils.MapIterator;
 
 import java.io.IOException;
 
@@ -23,7 +22,7 @@ import java.io.IOException;
  *
  * @author Ferdinand Calo' (FEX___96)
  */
-public class LandDevShader {}/*implements HDShader {
+public class LandDevShader implements HDShader {
 
 	private String name;
 	private Layers layer;
@@ -157,7 +156,7 @@ public class LandDevShader {}/*implements HDShader {
 				}
 				case COUNTY: return rgb.packed = ck.district.county().color.getInteger();
 				case REGION: return rgb.packed = ck.district.region().color.getInteger();
-				case UNION: return rgb.packed = RGB.RED.packed;
+				case INTER: return rgb.packed = RGB.RED.packed;
 				case NONE:
 				default: return rgb.packed = RGB.WHITE.packed;
 			}
@@ -198,7 +197,7 @@ public class LandDevShader {}/*implements HDShader {
 				}
 				case COUNTY: return ck.district.county().id != ock.district.county().id;
 				case REGION: return ck.district.region().id != ock.district.region().id;
-				case UNION:
+				case INTER:
 				case NONE:
 				default: return false;
 			}
@@ -236,4 +235,4 @@ public class LandDevShader {}/*implements HDShader {
 
 	}
 
-}*/
+}
