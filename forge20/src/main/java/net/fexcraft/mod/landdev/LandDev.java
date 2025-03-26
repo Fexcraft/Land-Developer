@@ -8,6 +8,7 @@ import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fcl.util.ClientPacketPlayer;
 import net.fexcraft.mod.fcl.util.UIPacketF;
+import net.fexcraft.mod.landdev.data.PermAction;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.data.county.County;
 import net.fexcraft.mod.landdev.data.district.District;
@@ -42,6 +43,7 @@ import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.simple.SimpleChannel;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 
 import java.io.File;
@@ -373,6 +375,30 @@ public class LandDev {
 				}
 				else{
 					player.entity.openUI(LDKeys.MUNICIPALITY, Municipality.UI_CREATE, 0, 0);
+				}
+				return 0;
+			}))
+			.then(literal("center").executes(cmd -> {
+				LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
+				Chunk_ chunk = ResManager.getChunk(player.entity);
+				if(chunk.district.municipality() == null){
+					player.entity.send(translateCmd("mun.not_in_a_municipality"));
+					return 0;
+				}
+				Municipality mun = chunk.district.municipality();
+				if(!mun.manage.can(PermAction.MANAGE_MUNICIPALITY, player.uuid) && !player.adm){
+					player.entity.send("no perm");
+					return 0;
+				}
+				int min = Math.max(LDConfig.MIN_MUN_DIS, mun.county.norms.get("min-municipality-distance").integer());
+				if(min < LDConfig.MIN_MUN_DIS) min = LDConfig.MIN_MUN_DIS;
+				Pair<Integer, Double> dis = ResManager.disToNearestMun(chunk.key, mun.id);
+				if(dis.getLeft() >= 0 && dis.getRight() < min){
+					player.entity.send(translateCmd("mun.center_too_close", ResManager.getMunicipality(dis.getLeft(), true).name(), dis.getLeft()));
+				}
+				else{
+					ResManager.MUN_CENTERS.put(dis.getLeft(), chunk.key);
+					player.entity.openUI(LDKeys.MUNICIPALITY, 0, mun.id, 0);
 				}
 				return 0;
 			}))
