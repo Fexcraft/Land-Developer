@@ -141,7 +141,7 @@ public class LandDev {
 				}
 				case "chat_message":{
 					ListTag list = (ListTag)com.get("msg");
-					String c = list.size() > 3 ? list.getString(3) : "&a";
+					String c = list.size() > 3 ? list.getString(3) : "\u00A7a";
 					Component text = null;
 					switch(list.getString(0)){
 						case "chat_img":
@@ -189,7 +189,7 @@ public class LandDev {
 					player.entity.send(TranslationUtil.translateCmd("adminmode." + player.adm));
 				}
 				else{
-					player.entity.send("&cno.permission");
+					player.entity.send("\u00A7cno.permission");
 				}
 				return 0;
 			}))
@@ -232,7 +232,7 @@ public class LandDev {
 			}))
 			.then(literal("help").executes(cmd -> {
 				LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
-				player.entity.send("&0[&bLD&0]&6>>&2===========");
+				player.entity.send("\u00A70[\u00A7bLD\u00A70]\u00A76>>\u00A72===========");
 				player.entity.send("/ld (UI)");
 				player.entity.send("/ld help");
 				player.entity.send("/ld admin");
@@ -319,15 +319,15 @@ public class LandDev {
 				Chunk_ ck = null;
 				int r = 9, rm = 4;
 				for(int i = 0; i < r; i++){
-					String str = "&0|";
+					String str = "\u00A70|";
 					for(int j = 0; j < r; j++){
 						int x = (chunk.key.x - rm) + j;
 						int z = (chunk.key.z - rm) + i;
 						marker = x == chunk.key.x && z == chunk.key.z ? "+" : "#";
 						ck = ResManager.getChunk(x, z);
-						str += (ck == null ? "&4" : ck.district.id >= 0 ? "&9" : "&2") + marker;
+						str += (ck == null ? "\u00A74" : ck.district.id >= 0 ? "\u00A79" : "\u00A72") + marker;
 					}
-					player.entity.send(str + "&0|");
+					player.entity.send(str + "\u00A70|");
 				}
 				player.entity.send(TranslationUtil.translateCmd("chunk.mapdesc"));
 				return 0;
