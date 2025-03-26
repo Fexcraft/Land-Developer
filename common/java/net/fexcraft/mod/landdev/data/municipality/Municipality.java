@@ -219,7 +219,7 @@ public class Municipality implements Saveable, Layer, LDUIModule {
 				resp.addRow("muntitle", ELM_GENERIC, canman ? OPEN : EMPTY, canman, title());
 				resp.addButton("county", ELM_GENERIC, OPEN, county.name());
 				ChunkKey center = ResManager.MUN_CENTERS.get(id);
-				resp.addButton("center", ELM_GENERIC, OPEN, center == null ? "" : center.x + ", " + center.z);
+				resp.addButton("center", ELM_GENERIC, BLANK, center == null ? "" : center.x + ", " + center.z);
 				resp.addButton("districts", ELM_GENERIC, LIST, districts.size());
 				resp.addButton("citizen", ELM_GENERIC, LIST, citizens.size());
 				resp.addRow("manager", ELM_GENERIC, manage.getManagerName());
