@@ -28,6 +28,7 @@ import net.fexcraft.mod.landdev.ui.modules.AppearModule;
 import net.fexcraft.mod.landdev.ui.modules.ModuleRequest;
 import net.fexcraft.mod.landdev.ui.modules.ModuleResponse;
 import net.fexcraft.mod.landdev.ui.modules.NormModule;
+import net.fexcraft.mod.landdev.util.LDConfig;
 import net.fexcraft.mod.landdev.util.ResManager;
 
 /**
@@ -64,6 +65,7 @@ public class County implements Saveable, Layer, LDUIModule {
 		norms.add(new FloatNorm("municipality-tax-percent", 10));
 		norms.add(new IntegerNorm("citizen-tax", 1000));
 		norms.add(new BoolNorm("kick-bankrupt", false));
+		norms.add(new IntegerNorm("min-municipality-distance", LDConfig.MIN_MUN_DIS));
 	}
 
 	@Override
