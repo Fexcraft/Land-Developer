@@ -5,18 +5,24 @@ import static net.fexcraft.mod.landdev.util.TranslationUtil.translateCmd;
 
 import java.util.List;
 
+import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.lib.mc.utils.Print;
+import net.fexcraft.mod.landdev.data.PermAction;
+import net.fexcraft.mod.landdev.data.chunk.ChunkKey;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.data.county.County;
 import net.fexcraft.mod.landdev.data.municipality.Municipality;
 import net.fexcraft.mod.landdev.data.player.LDPlayer;
 import net.fexcraft.mod.landdev.ui.LDKeys;
 import net.fexcraft.mod.landdev.util.AliasLoader;
+import net.fexcraft.mod.landdev.util.LDConfig;
 import net.fexcraft.mod.landdev.util.ResManager;
+import net.fexcraft.mod.uni.ui.UIKey;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class MunCmd extends CommandBase {
 	
@@ -62,6 +68,28 @@ public class MunCmd extends CommandBase {
 	    			}
 	    			return;
 	    		}
+				case "center":{
+					if(chunk.district.municipality() == null){
+						Print.chat(sender, translateCmd("mun.not_in_a_municipality"));
+						return;
+					}
+					Municipality mun = chunk.district.municipality();
+					if(!mun.manage.can(PermAction.MANAGE_MUNICIPALITY, ply.uuid) && !ply.adm){
+						Print.chat(sender, "no perm");
+						return;
+					}
+					int min = Math.max(LDConfig.MIN_MUN_DIS, mun.county.norms.get("min-municipality-distance").integer());
+					if(min < LDConfig.MIN_MUN_DIS) min = LDConfig.MIN_MUN_DIS;
+					Pair<Integer, Double> dis = ResManager.disToNearestMun(chunk.key, mun.id);
+					if(dis.getLeft() >= 0 && dis.getRight() < min){
+						Print.chat(sender, translateCmd("mun.center_too_close", ResManager.getMunicipality(dis.getLeft(), true).name(), dis.getLeft()));
+					}
+					else{
+						ResManager.MUN_CENTERS.put(mun.id, chunk.key);
+						ply.entity.openUI(LDKeys.MUNICIPALITY, 0, mun.id, 0);
+					}
+					return;
+				}
 	    		default:{
 	    			Print.chat(sender, translateCmd("unknown_argument"));
 	    			return;
