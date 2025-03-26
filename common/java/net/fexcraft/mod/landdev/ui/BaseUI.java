@@ -10,14 +10,17 @@ import net.fexcraft.mod.uni.ui.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
 public class BaseUI extends UserInterface {
 
-	protected IDL imgres;
+	protected static ConcurrentHashMap<UIText, String> texttips = new ConcurrentHashMap<>();
 	protected ArrayList<BaseElm> elements = new ArrayList<>();
+	protected String hint;
+	protected IDL imgres;
 	protected BaseCon bon;
 	protected boolean addscroll;
 	protected int scroll;
@@ -122,7 +125,10 @@ public class BaseUI extends UserInterface {
 	@Override
 	public void getTooltip(int mx, int my, List<String> list){
 		for(UIText text : texts.values()){
-			if(text.hovered()) list.add(text.value());
+			if(text.hovered()){
+				hint = texttips.get(text);
+				list.add(hint == null ? text.value() : hint);
+			}
 		}
 		if(bon.checkboxes.size() > 0 || bon.radioboxes.size() > 0){
 			for(BaseElm elm : elements){
@@ -196,6 +202,9 @@ public class BaseUI extends UserInterface {
 				text.color.packed = row.lighttext() ? 0xdedede : 0x5d5d5d;
 				text.hover.packed = row.lighttext() ? 0x574a0d : 0xcfb117;
 				text.value("landdev.gui." + base.bon.prefix + "." + str);
+				String tip = "landdev.gui." + base.bon.prefix + "." + str + ".hint";
+				String hin = ContainerInterface.TRANSLATOR.apply(tip);
+				if(!hin.equals(tip)) texttips.put(text, hin);
 				if(val == null) text.translate();
 				else if(val.startsWith(LDUIModule.VALONLY)) text.value(val.substring(3));
 				else{
