@@ -160,6 +160,7 @@ public class BaseCon extends ContainerInterface {
 		}
 		else bui.tabs.get("back").visible(false);
 		//
+		bui.texttips.clear();
 		bui.elements.clear();
 		for(int li = 0; li < list.size(); li++){
 			TagLW lis = list.getList(li);
