@@ -7,7 +7,7 @@ import net.fexcraft.lib.common.math.V3D;
  */
 public class ChunkKey implements Comparable<ChunkKey> {
 	
-	public int x, z;
+	public final int x, z;
 	
 	public ChunkKey(int x, int z){
 		this.x = x;
