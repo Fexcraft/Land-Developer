@@ -23,6 +23,7 @@ import net.fexcraft.mod.landdev.LandDev;
 import net.fexcraft.mod.landdev.data.*;
 import net.fexcraft.mod.landdev.data.Citizens.Citizen;
 import net.fexcraft.mod.landdev.data.Manageable.Staff;
+import net.fexcraft.mod.landdev.data.chunk.ChunkKey;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.data.county.County;
 import net.fexcraft.mod.landdev.data.district.District;
@@ -43,6 +44,7 @@ import net.fexcraft.mod.landdev.util.Announcer;
 import net.fexcraft.mod.landdev.util.Announcer.Target;
 import net.fexcraft.mod.landdev.util.ResManager;
 import net.fexcraft.mod.landdev.util.LDConfig;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class Municipality implements Saveable, Layer, LDUIModule {
 
@@ -216,6 +218,8 @@ public class Municipality implements Saveable, Layer, LDUIModule {
 				resp.addRow("name", ELM_GENERIC, canman ? OPEN : EMPTY, canman, name());
 				resp.addRow("muntitle", ELM_GENERIC, canman ? OPEN : EMPTY, canman, title());
 				resp.addButton("county", ELM_GENERIC, OPEN, county.name());
+				ChunkKey center = ResManager.MUN_CENTERS.get(id);
+				resp.addButton("center", ELM_GENERIC, OPEN, center == null ? "" : center.x + ", " + center.z);
 				resp.addButton("districts", ELM_GENERIC, LIST, districts.size());
 				resp.addButton("citizen", ELM_GENERIC, LIST, citizens.size());
 				resp.addRow("manager", ELM_GENERIC, manage.getManagerName());
@@ -699,6 +703,14 @@ public class Municipality implements Saveable, Layer, LDUIModule {
 					container.msg("create.leave_region_management");
 					return;
     			}
+				int min_dis = Math.max(LDConfig.MIN_MUN_DIS, county.norms.get("min-municipality-distance").integer());
+				if(min_dis < LDConfig.MIN_MUN_DIS) min_dis = LDConfig.MIN_MUN_DIS;
+				Pair<Integer, Double> mdis = ResManager.disToNearestMun(chunk.key, -1);
+				if(mdis.getLeft() >= 0 && mdis.getRight() < min_dis){
+					container.msg("create.too_close");
+					player.entity.send(translateCmd("mun.center_too_close", ResManager.getMunicipality(mdis.getLeft(), true).name(), mdis.getLeft()));
+					return;
+				}
     			String name = req.getField("create.name_field");
     			if(!validateName(container, name)) return;
 				boolean uca = req.getCheck("create.county_funded");
@@ -745,6 +757,7 @@ public class Municipality implements Saveable, Layer, LDUIModule {
 				//cold.citizens.remove(player);
 				Municipality mnew = new Municipality(newid);
 				mnew.created.create(player.uuid);
+				ResManager.MUN_CENTERS.put(id, chunk.key);
 				mnew.gendef();
 				ResManager.MUNICIPALITIES.put(mnew.id, mnew);
 				mnew.norms.get("name").set(name);
