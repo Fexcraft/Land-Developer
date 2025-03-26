@@ -38,6 +38,7 @@ public class LDConfig extends ConfigBase {
 	public static long DISTRICT_CREATION_FEE;
 	public static int CHUNK_LINK_LIMIT;
 	public static int REQUEST_TIMEOUT_DAYS;
+	public static int MIN_MUN_DIS;
 	//
 	public static boolean TAX_ENABLED;
 	public static boolean TAX_OFFLINE;
@@ -117,8 +118,12 @@ public class LDConfig extends ConfigBase {
 			.cons((con, map) -> SAVE_CHUNKS_IN_REGIONS = con.getBoolean(map))
 		);
 		entries.add(new ConfigEntry(this, GENERAL_CAT, "run_location_event", false)
-				.info("Should the 'PlayerLocationEvent' be run every time the player enters another district/named-chunk? Use this if you have an LD Addon requiring it.")
-				.cons((con, map) -> RUN_LOCATION_EVENT = con.getBoolean(map))
+			.info("Should the 'PlayerLocationEvent' be run every time the player enters another district/named-chunk? Use this if you have an LD Addon requiring it.")
+			.cons((con, map) -> RUN_LOCATION_EVENT = con.getBoolean(map))
+		);
+		entries.add(new ConfigEntry(this, GENERAL_CAT, "min_municipality_distance", 16).rang(4, 40960)
+			.info("Minimum chunk distance between Municipality centers.")
+			.cons((con, map) -> MIN_MUN_DIS = con.getInteger(map))
 		);
 		//
 		entries.add(new ConfigEntry(this, PRICES_CAT, "default_chunk", 100000).rang(0, 1000000000)
