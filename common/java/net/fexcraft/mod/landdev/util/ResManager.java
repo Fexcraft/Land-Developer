@@ -1,10 +1,12 @@
 package net.fexcraft.mod.landdev.util;
 
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.V3D;
+import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fsmm.data.Account;
 import net.fexcraft.mod.fsmm.util.DataManager;
 import net.fexcraft.mod.landdev.data.Saveable;
@@ -20,6 +22,8 @@ import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.world.EntityW;
 import net.fexcraft.mod.uni.world.WrapperHolder;
+import net.minecraft.util.math.Vec2f;
+import org.apache.commons.lang3.tuple.Pair;
 
 import static net.fexcraft.mod.landdev.LDN.DB;
 
@@ -164,6 +168,22 @@ public class ResManager implements Saveable {
 		if(map != null) save.load(map);
 		else save.gendef();
 		return (S)save;
+	}
+
+	public static Pair<Integer, Double> disToNearestMun(ChunkKey key, int except){
+		double ds, nr = Integer.MAX_VALUE;
+		int id = -1;
+		for(Map.Entry<Integer, ChunkKey> entry : MUN_CENTERS.entrySet()){
+			if(except == entry.getKey()) continue;
+			int x = Math.abs(entry.getValue().x - key.x);
+			int z = Math.abs(entry.getValue().z - key.z);
+			ds = Math.sqrt(x * x + z * z);
+			if(ds < nr){
+				nr = ds;
+				id = entry.getKey();
+			}
+		}
+		return Pair.of(id, nr);
 	}
 
 	public void load(){
