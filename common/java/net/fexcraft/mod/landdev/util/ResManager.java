@@ -22,7 +22,6 @@ import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.world.EntityW;
 import net.fexcraft.mod.uni.world.WrapperHolder;
-import net.minecraft.util.math.Vec2f;
 import org.apache.commons.lang3.tuple.Pair;
 
 import static net.fexcraft.mod.landdev.LDN.DB;
