@@ -9,6 +9,7 @@ import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.ui.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -17,9 +18,9 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class BaseUI extends UserInterface {
 
-	protected static ConcurrentHashMap<UIText, String> texttips = new ConcurrentHashMap<>();
+	protected static ConcurrentHashMap<UIText, List<String>> texttips = new ConcurrentHashMap<>();
 	protected ArrayList<BaseElm> elements = new ArrayList<>();
-	protected String hint;
+	protected List<String> hint;
 	protected IDL imgres;
 	protected BaseCon bon;
 	protected boolean addscroll;
@@ -127,7 +128,8 @@ public class BaseUI extends UserInterface {
 		for(UIText text : texts.values()){
 			if(text.hovered()){
 				hint = texttips.get(text);
-				list.add(hint == null ? text.value() : hint);
+				if(hint == null) list.add(text.value());
+				else list.addAll(hint);
 			}
 		}
 		if(bon.checkboxes.size() > 0 || bon.radioboxes.size() > 0){
@@ -204,7 +206,9 @@ public class BaseUI extends UserInterface {
 				text.value("landdev.gui." + base.bon.prefix + "." + str);
 				String tip = "landdev.gui." + base.bon.prefix + "." + str + ".hint";
 				String hin = ContainerInterface.TRANSLATOR.apply(tip);
-				if(!hin.equals(tip)) texttips.put(text, hin);
+				if(!hin.equals(tip)){
+					texttips.put(text, Arrays.asList(hin.split("\\\\n")));
+				}
 				if(val == null) text.translate();
 				else if(val.startsWith(LDUIModule.VALONLY)) text.value(val.substring(3));
 				else{
