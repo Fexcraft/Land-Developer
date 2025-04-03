@@ -1,4 +1,0 @@
-include ':FCL'
-project(':FCL').projectDir = new File(settingsDir, '../FCL/forge12')
-include ':FSMM'
-project(':FSMM').projectDir = new File(settingsDir, '../FSMM/forge12')
