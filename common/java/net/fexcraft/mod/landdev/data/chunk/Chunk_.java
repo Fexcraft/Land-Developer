@@ -216,6 +216,9 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 			resp.addRadio("type.private", ELM_BLUE, type == ChunkType.PRIVATE);
 			resp.addRadio("type.restricted", ELM_BLUE, type == ChunkType.RESTRICTED);
 			resp.addRadio("type.public", ELM_BLUE, type == ChunkType.PUBLIC);
+			if(container.ldp.adm){
+				resp.addRadio("type.locked", ELM_YELLOW, type == ChunkType.LOCKED);
+			}
 			resp.addButton("select_type.submit", ELM_GENERIC, OPEN);
 			resp.setFormular();
 			return;
@@ -390,7 +393,8 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 				if(!canman) return;
 				ChunkType type = ChunkType.get(req.getRadio("type."));
 				if(type == null) return;
-				if(owner.playerchunk && type == ChunkType.RESTRICTED){
+				if(!container.ldp.adm && (type == ChunkType.LOCKED || this.type == ChunkType.LOCKED)) return;
+				if(owner.playerchunk && (type == ChunkType.RESTRICTED || type == ChunkType.LOCKED)){
 					container.msg("select_type.notforplayerchunks");
 					return;
 				}
