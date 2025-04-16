@@ -533,4 +533,8 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 		}
 	}
 
+	public boolean locked(){
+		return type == ChunkType.LOCKED;
+	}
+
 }
