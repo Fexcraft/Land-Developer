@@ -63,6 +63,7 @@ public class District implements Saveable, Layer, PermInteractive, LDUIModule {
 		norms.add(new BoolNorm("explosions", false));
 		norms.add(new IntegerNorm("chunk-tax", 1000));
 		norms.add(new BoolNorm("municipality-can-form", false));
+		norms.add(new BoolNorm("county-can-form", false));
 		norms.add(new BoolNorm("unclaim-bankrupt", false));
 	}
 
