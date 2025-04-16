@@ -4,7 +4,6 @@ import java.util.*;
 
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.mod.landdev.data.PermAction.PermActions;
-import net.fexcraft.mod.landdev.data.municipality.Municipality;
 import net.fexcraft.mod.landdev.data.player.LDPlayer;
 import net.fexcraft.mod.landdev.util.ResManager;
 
@@ -85,6 +84,10 @@ public class Citizens implements Saveable, PermInteractive {
 		citizens.clear();
 	}
 
+	public LinkedHashMap<UUID, Citizen> get(){
+		return citizens;
+	}
+
 	public static class Citizen implements Saveable {
 		
 		public LinkedHashMap<PermAction, Boolean> actions = new LinkedHashMap<>();
@@ -139,8 +142,16 @@ public class Citizens implements Saveable, PermInteractive {
 		citizens.remove(player.uuid);
 	}
 
+	public void remove(UUID uuid){
+		citizens.remove(uuid);
+	}
+
 	public void add(LDPlayer player){
 		citizens.put(player.uuid, new Citizen(player.uuid, actions));
+	}
+
+	public void add(UUID uuid){
+		citizens.put(uuid, new Citizen(uuid, actions));
 	}
 
 }
