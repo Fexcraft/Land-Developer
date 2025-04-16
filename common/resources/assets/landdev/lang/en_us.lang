@@ -98,6 +98,7 @@ landdev.chunk_type.private=Private
 landdev.chunk_type.normal=Normal
 landdev.chunk_type.restricted=Restricted
 landdev.chunk_type.public=Public
+landdev.chunk_type.locked=Locked/Server
 
 landdev.general.no_mailbox=none
 
@@ -220,9 +221,15 @@ landdev.gui.chunk.select_type.title=Chunk Protection Type
 landdev.gui.chunk.select_type.submit=Confirm Change
 landdev.gui.chunk.select_type.notforplayerchunks=This Type is not available for Player owned chunks.
 landdev.gui.chunk.type.private=Private
+landdev.gui.chunk.type.private.hint=Private, only accessible by the owner.
 landdev.gui.chunk.type.normal=Normal
+landdev.gui.chunk.type.normal.hint=Accessible for all Citizens of owning Municipality/County.
 landdev.gui.chunk.type.restricted=Restricted
+landdev.gui.chunk.type.restricted.hint=Restricted to Staff Members.
 landdev.gui.chunk.type.public=Public
+landdev.gui.chunk.type.public.hint=Public, accessible by anyone.
+landdev.gui.chunk.type.locked=Locked
+landdev.gui.chunk.type.locked.hint=Locked, accessible only via Admin Mode.
 landdev.gui.chunk.set_price.title=Chunk Price
 landdev.gui.chunk.set_price.submit=Apply new Price
 landdev.gui.chunk.set_owner.title=Set Chunk Owner
