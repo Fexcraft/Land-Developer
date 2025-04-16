@@ -428,7 +428,9 @@ public class Municipality implements Saveable, Layer, LDUIModule {
 				resp.addRow("create.name", ELM_GENERIC);
 				resp.addField("create.name_field");
 				resp.addCheck("create.county_funded", ELM_GENERIC, pp);
-				resp.addCheck("create.claim_district", ELM_GENERIC, pp);
+				if(chunk.district.id >= 0){
+					resp.addCheck("create.claim_district", ELM_GENERIC, pp);
+				}
 				resp.addButton("create.submit", ELM_BLUE, OPEN);
 				resp.setFormular();
 				resp.setNoBack();
@@ -463,7 +465,7 @@ public class Municipality implements Saveable, Layer, LDUIModule {
 			case "appearance": container.open(UI_APPREARANCE); return;
 			case "merge": container.open(UI_MERGE); return;
 			case "disband": container.open(UI_DISBAND); return;
-			case "abandoned": container.open(UI_CLAIM); return;
+			case "abandoned": container.open(UI_STAFF_LIST); return;
 			case "buy.submit":{
 
 				return;
@@ -715,7 +717,7 @@ public class Municipality implements Saveable, Layer, LDUIModule {
     			if(!validateName(container, name)) return;
 				boolean uca = req.getCheck("create.county_funded");
 				if(!pp && !uca) sum += county.norms.get("new-municipality-fee").integer(); 
-				Permit perm = pp ? player.getPermit(CREATE_MUNICIPALITY, county.getLayer(), county.id) : null;
+				Permit perm = pp ? player.getPermit(CREATE_MUNICIPALITY_FUND, county.getLayer(), county.id) : null;
 				if(!pp && uca){
 					container.msg("create.no_fund_permit");
 					return;
@@ -757,7 +759,7 @@ public class Municipality implements Saveable, Layer, LDUIModule {
 				//cold.citizens.remove(player);
 				Municipality mnew = new Municipality(newid);
 				mnew.created.create(player.uuid);
-				ResManager.MUN_CENTERS.put(id, chunk.key);
+				ResManager.MUN_CENTERS.put(mnew.id, chunk.key);
 				mnew.gendef();
 				ResManager.MUNICIPALITIES.put(mnew.id, mnew);
 				mnew.norms.get("name").set(name);
