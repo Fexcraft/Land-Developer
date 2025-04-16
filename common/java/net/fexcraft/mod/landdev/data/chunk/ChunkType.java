@@ -8,7 +8,9 @@ public enum ChunkType {
 	PRIVATE,
 	NORMAL,
 	RESTRICTED,
-	PUBLIC;
+	PUBLIC,
+	LOCKED,
+	;
 
 	public String l1(){
 		switch(this){
@@ -16,6 +18,7 @@ public enum ChunkType {
 			case NORMAL: return "N";
 			case RESTRICTED: return "R";
 			case PUBLIC: return "P";
+			case LOCKED: return "L";
 		}
 		return "N";
 	}
@@ -26,6 +29,7 @@ public enum ChunkType {
 			case "N": return NORMAL;
 			case "R": return RESTRICTED;
 			case "P": return PUBLIC;
+			case "L": return LOCKED;
 		}
 		return NORMAL;
 	}
@@ -40,6 +44,7 @@ public enum ChunkType {
 			case "normal": return NORMAL;
 			case "restricted": return RESTRICTED;
 			case "public": return PUBLIC;
+			case "locked": return LOCKED;
 		}
 		return null;
 	}
