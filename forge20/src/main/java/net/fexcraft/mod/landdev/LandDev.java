@@ -7,7 +7,7 @@ import com.mojang.logging.LogUtils;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fcl.util.ClientPacketPlayer;
-import net.fexcraft.mod.fcl.util.UIPacketF;
+import net.fexcraft.mod.fcl.util.UIPacket;
 import net.fexcraft.mod.landdev.data.PermAction;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.data.county.County;
@@ -80,7 +80,7 @@ public class LandDev {
 	private void commonSetup(final FMLCommonSetupEvent event){
 		LDN.init(this);
 		LDN.postinit();
-		CHANNEL.registerMessage(1, UIPacketF.class, (packet, buffer) -> buffer.writeNbt(packet.com()), buffer -> new UIPacketF(buffer.readNbt()), (packet, context) -> {
+		CHANNEL.registerMessage(1, UIPacket.class, (packet, buffer) -> buffer.writeNbt(packet.com()), buffer -> new UIPacket(buffer.readNbt()), (packet, context) -> {
 			context.get().enqueueWork(() -> {
 				if(context.get().getDirection().getOriginationSide().isClient()){
 					ServerPlayer player = context.get().getSender();
@@ -168,12 +168,12 @@ public class LandDev {
 	}
 
 	public static void sendLocationPacket(EntityW entity, TagCW com){
-		CHANNEL.send(PacketDistributor.PLAYER.with(entity::local), new UIPacketF(com.local()));
+		CHANNEL.send(PacketDistributor.PLAYER.with(entity::local), new UIPacket(com.local()));
 	}
 
 	public static void sendToAll(CompoundTag com){
 		try{
-			CHANNEL.send(PacketDistributor.ALL.noArg(), new UIPacketF(com));
+			CHANNEL.send(PacketDistributor.ALL.noArg(), new UIPacket(com));
 		}
 		catch(Throwable e){
 			e.printStackTrace();
