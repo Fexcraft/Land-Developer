@@ -6,7 +6,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.V3D;
-import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fsmm.data.Account;
 import net.fexcraft.mod.fsmm.util.DataManager;
 import net.fexcraft.mod.landdev.data.Saveable;
@@ -46,7 +45,7 @@ public class ResManager implements Saveable {
 	//
 	public static ConcurrentHashMap<Integer, ChunkKey> MUN_CENTERS = new ConcurrentHashMap<>();
 	public static ConcurrentHashMap<Integer, ChunkKey> CT_CENTERS = new ConcurrentHashMap<>();
-	public static ConcurrentHashMap<Integer, ChunkKey> ST_CENTERS = new ConcurrentHashMap<>();
+	public static ConcurrentHashMap<Integer, ChunkKey> RG_CENTERS = new ConcurrentHashMap<>();
 	public static Account SERVER_ACCOUNT;
 
 	public static Chunk_ getChunk(int x, int z){
@@ -217,7 +216,7 @@ public class ResManager implements Saveable {
 		PLAYERS.clear();
 		MUN_CENTERS.clear();
 		CT_CENTERS.clear();
-		ST_CENTERS.clear();
+		RG_CENTERS.clear();
 	}
 
 	public static String getPlayerName(UUID uuid){
@@ -237,7 +236,7 @@ public class ResManager implements Saveable {
 		});
 		map.add("county-centers", cc);
 		JsonMap sc = new JsonMap();
-		ST_CENTERS.forEach((key, val) -> {
+		RG_CENTERS.forEach((key, val) -> {
 			sc.add(key + "", val.toString());
 		});
 		map.add("region-centers", sc);
@@ -268,7 +267,7 @@ public class ResManager implements Saveable {
 		if(map.has("region-centers")){
 			map.get("region-centers").asMap().value.forEach((key, val) -> {
 				try{
-					ST_CENTERS.put(Integer.parseInt(key), new ChunkKey(val.string_value()));
+					RG_CENTERS.put(Integer.parseInt(key), new ChunkKey(val.string_value()));
 				}
 				catch(Exception e){
 					e.printStackTrace();
