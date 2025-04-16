@@ -47,7 +47,7 @@ public class District implements Saveable, Layer, PermInteractive, LDUIModule {
 	public ColorData color = new ColorData();
 	public NeighborData neighbors = new NeighborData();
 	public MailData mail;
-	public DistrictType type = DistrictType.getDefault();;
+	public DistrictType type = DistrictType.getDefault();
 	public Manageable manage = new Manageable(false, DISTRICT_ACTIONS);
 	public Norms norms = new Norms();
 	public DistrictOwner owner = new DistrictOwner();
