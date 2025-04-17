@@ -4,7 +4,7 @@ import static net.fexcraft.mod.landdev.data.PermAction.*;
 import static net.fexcraft.mod.landdev.ui.LDKeys.MAILBOX;
 import static net.fexcraft.mod.landdev.ui.LDUIButton.*;
 import static net.fexcraft.mod.landdev.ui.LDUIRow.*;
-import static net.fexcraft.mod.landdev.util.ResManager.SERVER_ACCOUNT;
+import static net.fexcraft.mod.landdev.util.ResManager.*;
 import static net.fexcraft.mod.landdev.util.TranslationUtil.translate;
 import static net.fexcraft.mod.landdev.util.TranslationUtil.translateCmd;
 
@@ -206,7 +206,8 @@ public class County implements Saveable, Layer, LDUIModule {
 	@Override
 	public void sync_packet(BaseCon container, ModuleResponse resp){
 		resp.setTitle("county.title");
-		boolean canman = manage.can(MANAGE_COUNTY, container.ldp.uuid) || container.ldp.adm;
+		LDPlayer player = container.ldp;
+		boolean canman = manage.can(MANAGE_COUNTY, container.ldp.uuid) || player.adm;
 		switch(container.pos.x){
 			case UI_MAIN:{
 				resp.addRow("id", ELM_GENERIC, id);
@@ -240,15 +241,35 @@ public class County implements Saveable, Layer, LDUIModule {
 			case UI_DISTRICTS:{
 				resp.setTitle("county.districts.title");
 				for(int id : districts){
-					resp.addButton("district." + id, ELM_GENERIC, OPEN, VALONLY + ResManager.getDistrict(id).name());//TODO name cache
+					resp.addButton("district." + id, ELM_GENERIC, OPEN, VALONLY + ResManager.getDistrictName(id));
 				}
 				return;
 			}
 			case UI_MUNICIPALITY_LIST:{
-				resp.setTitle("county.municipalities.title");
+				resp.setTitle("county.municipality.title");
+				resp.addRow("id", ELM_GENERIC, id);
+				resp.addRow("seat", ELM_GENERIC, seat >= 0 ? ResManager.getMunicipalityName(seat) : "");
+				resp.addBlank();
+				resp.addRow("municipality.list", ELM_YELLOW);
 				for(int id : municipalities){
-					resp.addButton("municipality." + id, ELM_GENERIC, OPEN, VALONLY + ResManager.getMunicipality(id, true).name());//TODO name cache
+					resp.addButton("municipality.edit." + id, ELM_GENERIC, OPEN, VALONLY + getMunicipalityName(id));
 				}
+				return;
+			}
+			case UI_MUNICIPALITY_EDIT:{
+				resp.setTitle("county.municipality.edit.title");
+				Municipality mun = getMunicipality(municipalities.get(container.pos.z), true);
+				resp.addRow("municipality.name", ELM_GENERIC, mun.name());
+				resp.addRow("municipality.id", ELM_GENERIC, mun.id);
+				resp.addButton("municipality.goto", ELM_GENERIC, OPEN, mun.id);
+				resp.addHiddenField("mun-id", mun.id);
+				if(canman){
+					resp.addBlank();
+					resp.addButton("municipality.setmain", ELM_GREEN, OPEN);
+					resp.addBlank();
+					resp.addButton("municipality.remove", ELM_RED, REM);
+				}
+				resp.setNoSubmit();
 				return;
 			}
 			case UI_CITIZEN_LIST:{
@@ -259,7 +280,7 @@ public class County implements Saveable, Layer, LDUIModule {
 				else{
 					resp.addRow("citizen.closed", ELM_RED);
 				}
-				if(manage.can(PermAction.PLAYER_INVITE, container.ldp.uuid) || container.ldp.adm){
+				if(manage.can(PermAction.PLAYER_INVITE, container.ldp.uuid) || player.adm){
 					resp.addButton("citizen.invite", ELM_BLUE, ADD);
 				}
 				if(container.ldp.county.id != id){
@@ -297,7 +318,7 @@ public class County implements Saveable, Layer, LDUIModule {
 				Citizens.Citizen cit = citizens.get(container.pos.z);
 				resp.addRow("citizen.name", ELM_GENERIC, cit.getPlayerName());
 				resp.addRow("citizen.uuid", ELM_GENERIC, cit.uuid);
-				if(container.ldp.adm){
+				if(player.adm){
 					resp.addButton("citizen.remove", ELM_RED, REM);
 				}
 				resp.addHiddenField("uuid", cit.uuid);
@@ -323,7 +344,7 @@ public class County implements Saveable, Layer, LDUIModule {
 				Manageable.Staff staff = manage.staff.get(container.pos.z);
 				resp.addRow("staff.name", ELM_GENERIC, staff.getPlayerName());
 				resp.addRow("staff.uuid", ELM_GENERIC, staff.uuid);
-				if(container.ldp.adm || !manage.isManager(staff)){
+				if(player.adm || !manage.isManager(staff)){
 					resp.addButton("staff.remove", ELM_RED, REM);
 					resp.addButton("staff.setmanager", ELM_BLUE, ADD);
 				}
@@ -398,7 +419,7 @@ public class County implements Saveable, Layer, LDUIModule {
 	@Override
 	public void on_interact(BaseCon container, ModuleRequest req){
 		LDPlayer player = container.ldp;
-		boolean canman = manage.can(MANAGE_MUNICIPALITY, container.ldp.uuid) || container.ldp.adm;
+		boolean canman = manage.can(MANAGE_MUNICIPALITY, container.ldp.uuid) || player.adm;
 		switch(req.event()){
 			case "name":{
 				if(!canman) return;
@@ -417,6 +438,46 @@ public class County implements Saveable, Layer, LDUIModule {
 			case "norms": container.open(UI_NORMS); return;
 			case "appearance": container.open(UI_APPREARANCE); return;
 			//
+			case "municipality.goto":{
+				int mun = req.getFieldInt("mun-id");
+				if(!municipalities.contains(mun)) return;
+				container.open(LDKeys.MUNICIPALITY, 0, mun, 0);
+				return;
+			}
+			case "municipality.setmain":{
+				if(!canman) return;
+				int mun = req.getFieldInt("mun-id");
+				if(!municipalities.contains(mun)) return;
+				Municipality muni = ResManager.getMunicipality(mun, true);
+				if(muni.county.id != id) return;
+				seat = muni.id;
+				container.open(UI_MUNICIPALITY_LIST);
+				return;
+			}
+			case "municipality.remove":{
+				if(!canman) return;
+				int mun = req.getFieldInt("mun-id");
+				if(!municipalities.contains(mun)) return;
+				if(municipalities.size() < 2){
+					container.msg("municipality.only_one");
+					return;
+				}
+				if(seat == mun){
+					container.msg("municipality.setnew");
+					return;
+				}
+				Municipality muni = ResManager.getMunicipality(mun, true);
+				muni.county = ResManager.getCounty(-1, true);
+				for(UUID uuid : muni.citizens.map().keySet()){
+					manage.removeStaff(uuid);
+					citizens.remove(uuid);
+				}
+				muni.save();
+				save();
+				Announcer.announce(Announcer.Target.MUNICIPALITY, id, "announce.county.municipality.removed", muni.name(), name(), id);
+				container.open(UI_MUNICIPALITY_LIST);
+				return;
+			}
 			case "citizen.invite":{
 				container.open(UI_CITIZEN_INVITE);
 				return;
@@ -479,6 +540,7 @@ public class County implements Saveable, Layer, LDUIModule {
 				return;
 			}
 			case "citizen.remove":{
+				if(!canman) return;
 				Citizens.Citizen cit = citizens.get(req.getUUIDField());
 				if(cit != null && !manage.isManager(cit.uuid)){
 					LDPlayer ply = ResManager.getPlayer(cit.uuid, true);
@@ -523,6 +585,7 @@ public class County implements Saveable, Layer, LDUIModule {
 				return;
 			}
 			case "staff.remove":{
+				if(!canman) return;
 				Manageable.Staff staff = manage.getStaff(req.getUUIDField());
 				if(staff != null && !manage.isManager(staff)){
 					manage.removeStaff(staff.uuid);
@@ -710,11 +773,6 @@ public class County implements Saveable, Layer, LDUIModule {
 			container.open(LDKeys.DISTRICT, 0, id, 0);
 			return;
 		}
-		if(req.event().startsWith("municipality.")){
-			int id = Integer.parseInt(req.event().substring("municipality.".length()));
-			container.open(LDKeys.MUNICIPALITY, 0, id, 0);
-			return;
-		}
 		if(req.event().startsWith("staff.edit.")){
 			Manageable.Staff staff = manage.getStaff(UUID.fromString(req.event().substring("staff.edit.".length())));
 			if(staff == null) return;
@@ -734,6 +792,12 @@ public class County implements Saveable, Layer, LDUIModule {
 			container.open(UI_STAFF_EDIT);
 			return;
 		}
+		if(req.event().startsWith("citizen.edit.")){
+			UUID uuid = UUID.fromString(req.event().substring("citizen.edit.".length()));
+			if(!citizens.isCitizen(uuid)) return;
+			container.open(UI_CITIZEN_EDIT, id, citizens.indexOf(uuid));
+			return;
+		}
 		if(req.event().startsWith("citizen.permission.")){
 			if(!canman) return;
 			Citizens.Citizen cit = citizens.get(req.getUUIDField());
@@ -741,6 +805,12 @@ public class County implements Saveable, Layer, LDUIModule {
 			if(action == null) return;
 			cit.actions.put(action, !cit.actions.get(action));
 			container.open(UI_CITIZEN_EDIT);
+			return;
+		}
+		if(req.event().startsWith("municipality.edit.")){
+			int mun = Integer.parseInt(req.event().substring("municipality.edit.".length()));
+			if(!municipalities.contains(mun)) return;
+			container.open(UI_MUNICIPALITY_EDIT, id, municipalities.indexOf(mun));
 			return;
 		}
 		//
