@@ -9,6 +9,7 @@ import static net.fexcraft.mod.landdev.util.TranslationUtil.translate;
 import static net.fexcraft.mod.landdev.util.TranslationUtil.translateCmd;
 
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.UUID;
 
 import net.fexcraft.app.json.JsonArray;
@@ -59,9 +60,9 @@ public class County implements Saveable, Layer, LDUIModule {
 	public Citizens citizens = new Citizens(COUNTY_CITIZEN);
 	public ExternalData external = new ExternalData(this);
 	public long tax_collected;
-	public Municipality main;
 	public Account account;
 	public Region region;
+	public int seat = -1;
 	
 	public County(int id){
 		this.id = id;
@@ -97,6 +98,7 @@ public class County implements Saveable, Layer, LDUIModule {
 		map.add("municipalities", marray);
 		map.add("region", region.id);
 		map.add("tax_collected", tax_collected);
+		if(seat >= 0) map.add("seat", seat);
 		external.save(map);
 		DataManager.save(account);
 	}
@@ -125,6 +127,7 @@ public class County implements Saveable, Layer, LDUIModule {
 		}
 		region = ResManager.getRegion(map.getInteger("region", -1), true);
 		tax_collected = map.getLong("tax_collected", 0);
+		seat = map.getInteger("seat", seat);
 		external.load(map);
 	}
 	
@@ -145,6 +148,7 @@ public class County implements Saveable, Layer, LDUIModule {
 			region = ResManager.getRegion(0, true);
 			if(!region.counties.contains(id)) region.counties.add(id);
 			color.set(0xff9900);
+			seat = 0;
 		}
 		external.gendef();
 	}
@@ -186,12 +190,14 @@ public class County implements Saveable, Layer, LDUIModule {
 	public static final int UI_CITIZEN_EDIT = 5;
 	public static final int UI_CITIZEN_INVITE = 6;
 	public static final int UI_DISTRICTS = 7;
-	public static final int UI_MUNICIPALITIES = 8;
-	public static final int UI_PRICE = 9;
-	public static final int UI_SET_PRICE = 10;
-	public static final int UI_NORMS = 11;
-	public static final int UI_NORM_EDIT = 12;
-	public static final int UI_APPREARANCE = 13;
+	public static final int UI_MUNICIPALITY_LIST = 8;
+	public static final int UI_MUNICIPALITY_EDIT = 9;
+	public static final int UI_MUNICIPALITY_INVITE = 10;
+	public static final int UI_PRICE = 11;
+	public static final int UI_SET_PRICE = 12;
+	public static final int UI_NORMS = 13;
+	public static final int UI_NORM_EDIT = 14;
+	public static final int UI_APPREARANCE = 15;
 
 	@Override
 	public void sync_packet(BaseCon container, ModuleResponse resp){
@@ -201,7 +207,7 @@ public class County implements Saveable, Layer, LDUIModule {
 			case UI_MAIN:{
 				resp.addRow("id", ELM_GENERIC, id);
 				resp.addRow("name", ELM_GENERIC, canman ? OPEN : EMPTY, canman, name());
-				if(main != null) resp.addButton("seat", ELM_GENERIC, OPEN, main.name());
+				if(seat >= 0) resp.addButton("seat", ELM_GENERIC, OPEN, ResManager.getMunicipalityName(seat));
 				resp.addButton("region", ELM_GENERIC, OPEN, region.name());
 				resp.addButton("municipalities", ELM_GENERIC, LIST, municipalities.size());
 				resp.addButton("districts", ELM_GENERIC, LIST, districts.size());
@@ -234,11 +240,50 @@ public class County implements Saveable, Layer, LDUIModule {
 				}
 				return;
 			}
-			case UI_MUNICIPALITIES:{
+			case UI_MUNICIPALITY_LIST:{
 				resp.setTitle("county.municipalities.title");
 				for(int id : municipalities){
 					resp.addButton("municipality." + id, ELM_GENERIC, OPEN, VALONLY + ResManager.getMunicipality(id, true).name());//TODO name cache
 				}
+				return;
+			}
+			case UI_STAFF_EDIT:{
+				resp.setTitle("county.staff.edit.title");
+				Manageable.Staff staff = manage.staff.get(container.pos.z);
+				resp.addRow("staff.name", ELM_GENERIC, staff.getPlayerName());
+				resp.addRow("staff.uuid", ELM_GENERIC, staff.uuid);
+				if(container.ldp.adm || !manage.isManager(staff)){
+					resp.addButton("staff.remove", ELM_RED, REM);
+					resp.addButton("staff.setmanager", ELM_BLUE, ADD);
+				}
+				resp.addHiddenField("uuid", staff.uuid);
+				resp.addBlank();
+				resp.addRow("staff.permissions", ELM_YELLOW);
+				for(Map.Entry<PermAction, Boolean> entry : staff.actions.entrySet()){
+					resp.addButton("staff.permission." + entry.getKey().name().toLowerCase(), ELM_GENERIC, enabled(entry.getValue()));
+				}
+				resp.setNoSubmit();
+				return;
+			}
+			case UI_STAFF_LIST:{
+				resp.setTitle("county.staff.title");
+				resp.addRow("id", ELM_GENERIC, id);
+				resp.addRow("manager", ELM_GENERIC, manage.getManagerName());
+				resp.addButton("staff.add", ELM_BLUE, ADD);
+				resp.addBlank();
+				resp.addRow("staff.list", ELM_YELLOW);
+				for(Manageable.Staff staff : manage.staff){
+					resp.addButton("staff.edit." + staff.uuid, ELM_GENERIC, OPEN, VALONLY + "- " + staff.getPlayerName());
+				}
+				return;
+			}
+			case UI_STAFF_ADD:{
+				resp.setTitle("county.staff.add.title");
+				resp.addRow("id", ELM_GENERIC, id);
+				resp.addRow("staff.add.info", ELM_YELLOW);
+				resp.addField("staff.add.field");
+				resp.addButton("staff.add.submit", ELM_GENERIC, OPEN);
+				resp.setFormular();
 				return;
 			}
 			case UI_APPREARANCE:
@@ -289,10 +334,10 @@ public class County implements Saveable, Layer, LDUIModule {
 				container.open(UI_NORM_EDIT, id, norms.index(norms.get("name")));
 				return;
 			}
-			case "seat": if(main != null) container.open(LDKeys.MUNICIPALITY, 0, main.id, 0);return;
+			case "seat": if(seat >= 0) container.open(LDKeys.MUNICIPALITY, 0, seat, 0);return;
 			case "region": container.open(LDKeys.REGION, 0, region.id, 0); return;
 			case "citizen": container.open(UI_CITIZEN_LIST); return;
-			case "municipalities": container.open(UI_MUNICIPALITIES); return;
+			case "municipalities": container.open(UI_MUNICIPALITY_LIST); return;
 			case "districts": container.open(UI_DISTRICTS); return;
 			case "staff": container.open(UI_STAFF_LIST); return;
 			case "price": container.open(UI_PRICE); return;
@@ -300,6 +345,71 @@ public class County implements Saveable, Layer, LDUIModule {
 			case "mailbox": if(canman) container.open(MAILBOX, getLayer().ordinal(), id, 0); return;
 			case "norms": container.open(UI_NORMS); return;
 			case "appearance": container.open(UI_APPREARANCE); return;
+			//
+			case "staff.add":{
+				container.open(UI_STAFF_ADD);
+				return;
+			}
+			case "staff.add.submit":{
+				if(!canman) return;
+				LDPlayer ply = req.getPlayerField("staff.add.field");
+				if(ply == null){
+					container.msg("staff.add.notfound");
+					return;
+				}
+				if(!citizens.isCitizen(ply.uuid)){
+					container.msg("staff.add.notmember");
+					return;
+				}
+				Mail mail = new Mail(MailType.INVITE, Layers.MUNICIPALITY, id, Layers.PLAYER, ply.uuid).expireInDays(7);
+				mail.setTitle(name()).setStaffInvite();
+				mail.addMessage(translate("mail.county.staff.invite0"));
+				mail.addMessage(translate("mail.county.staff.invite1"));
+				ply.addMailAndSave(mail);
+				player.entity.send(translate("gui.county.staff.add.success"));
+				player.entity.closeUI();
+				return;
+			}
+			case "staff.remove":{
+				Manageable.Staff staff = manage.getStaff(req.getUUIDField());
+				if(staff != null && !manage.isManager(staff)){
+					manage.removeStaff(staff.uuid);
+					LDPlayer ply = ResManager.getPlayer(staff.uuid, true);
+					Mail mail = new Mail(MailType.SYSTEM, Layers.MUNICIPALITY, id, Layers.PLAYER, ply.uuid).expireInDays(7);
+					mail.setTitle(name()).addMessage(translate("mail.county.staff.nolonger"));
+					ply.addMailAndSave(mail);
+					for(Manageable.Staff stf : manage.staff){
+						LDPlayer stp = ResManager.getPlayer(stf.uuid, true);
+						mail = new Mail(MailType.SYSTEM, Layers.MUNICIPALITY, id, Layers.PLAYER, stp.uuid).expireInDays(7);
+						mail.setTitle(name()).addMessage(translate("mail.county.staff.removed", staff.getPlayerName()));
+						stp.addMailAndSave(mail);
+					}
+					Announcer.announce(Announcer.Target.MUNICIPALITY, id, "announce.county.staff.removed", staff.getPlayerName(), name(), id);
+				}
+				container.open(UI_STAFF_LIST);
+				return;
+			}
+			case "staff.setmanager":{
+				if(!player.adm && !canman) return;
+				Manageable.Staff staff = manage.getStaff(req.getUUIDField());
+				if(staff != null){
+					manage.setManager(staff.uuid);
+					LDPlayer ply = ResManager.getPlayer(staff.uuid, true);
+					Mail mail = new Mail(MailType.SYSTEM, Layers.MUNICIPALITY, id, Layers.PLAYER, ply.uuid).expireInDays(7);
+					mail.setTitle(name()).addMessage(translate("mail.county.manager_now"));
+					ply.addMailAndSave(mail);
+					save();
+					for(Manageable.Staff stf : manage.staff){
+						LDPlayer stp = ResManager.getPlayer(stf.uuid, true);
+						mail = new Mail(MailType.SYSTEM, Layers.MUNICIPALITY, id, Layers.PLAYER, stp.uuid).expireInDays(7);
+						mail.setTitle(name()).addMessage(translate("mail.county.manager_set", staff.getPlayerName()));
+						stp.addMailAndSave(mail);
+					}
+					Announcer.announce(Announcer.Target.MUNICIPALITY, id, "announce.county.manager_set", staff.getPlayerName(), name(), id);
+				}
+				container.open(UI_MAIN);
+				return;
+			}
 			//
 			case "norm_submit":{
 				if(!canman) return;
@@ -425,6 +535,7 @@ public class County implements Saveable, Layer, LDUIModule {
 					}
 					mun.county = nct;
 					nct.municipalities.add(mun.id);
+					nct.seat = mun.id;
 					mun.save();
 				}
 				SERVER_ACCOUNT.getBank().processAction(Bank.Action.TRANSFER, null, SERVER_ACCOUNT, LDConfig.COUNTY_CREATION_FEE / 2, nct.account);
@@ -450,6 +561,25 @@ public class County implements Saveable, Layer, LDUIModule {
 		if(req.event().startsWith("municipality.")){
 			int id = Integer.parseInt(req.event().substring("municipality.".length()));
 			container.open(LDKeys.MUNICIPALITY, 0, id, 0);
+			return;
+		}
+		if(req.event().startsWith("staff.edit.")){
+			Manageable.Staff staff = manage.getStaff(UUID.fromString(req.event().substring("staff.edit.".length())));
+			if(staff == null) return;
+			container.open(UI_STAFF_EDIT, id, manage.staff.indexOf(staff));
+			return;
+		}
+		if(req.event().startsWith("staff.permission.")){
+			if(!canman) return;
+			Manageable.Staff staff = manage.getStaff(req.getUUIDField());
+			if(manage.isManager(staff)){
+				container.msg("staff.permissions.ismanager");
+				return;
+			}
+			PermAction action = PermAction.get(req.event().substring("staff.permission.".length()).toUpperCase());
+			if(action == null) return;
+			staff.actions.put(action, !staff.actions.get(action));
+			container.open(UI_STAFF_EDIT);
 			return;
 		}
 		//
