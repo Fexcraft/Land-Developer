@@ -734,6 +734,15 @@ public class County implements Saveable, Layer, LDUIModule {
 			container.open(UI_STAFF_EDIT);
 			return;
 		}
+		if(req.event().startsWith("citizen.permission.")){
+			if(!canman) return;
+			Citizens.Citizen cit = citizens.get(req.getUUIDField());
+			PermAction action = PermAction.get(req.event().substring("citizen.permission.".length()).toUpperCase());
+			if(action == null) return;
+			cit.actions.put(action, !cit.actions.get(action));
+			container.open(UI_CITIZEN_EDIT);
+			return;
+		}
 		//
 		external.on_interact(container, req);
 	}
