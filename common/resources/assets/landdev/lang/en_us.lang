@@ -70,16 +70,23 @@ landdev.announce.county.created=&9[&2LD&9] &bThe County &6%s &7(%s) &bjust got c
 landdev.announce.county.staff.removed=&9[&2LD&9] &c%s &bis no longer Staff in &6%s &7(%s)
 landdev.announce.county.staff.added=&9[&2LD&9] &a%s &bis now Staff in &6%s &7(%s)
 landdev.announce.county.manager_set=&9[&2LD&9] &a%s &bis now Manager in &6%s &7(%s)
+landdev.announce.county.citizen.removed=&9[&2LD&9] &c%s &bis no longer Citizen in &6%s &7(%s)
 
 landdev.announce.municipality.created=&9[&2LD&9] &bThe Municipality &6%s &7(%s) &bjust got created!
 landdev.announce.municipality.staff.removed=&9[&2LD&9] &c%s &bis no longer Staff in &6%s &7(%s)
 landdev.announce.municipality.staff.added=&9[&2LD&9] &a%s &bis now Staff in &6%s &7(%s)
 landdev.announce.municipality.manager_set=&9[&2LD&9] &a%s &bis now Manager in &6%s &7(%s)
 landdev.announce.municipality.citizen.removed=&9[&2LD&9] &c%s &bis no longer Citizen in &6%s &7(%s)
+
 landdev.announce.district.created=&9[&2LD&9] &bThe District &6%s &7(%s) &bjust got created!
 
 landdev.mail.player.new=&6You have new mail!
 landdev.mail.player.unread=&6You have &3%s &eunread &6mails.
+landdev.mail.player.municipality.join_request0=%s requests to join
+landdev.mail.player.municipality.join_request1=your Municipality.
+landdev.mail.player.county.join_request0=%s requests to join
+landdev.mail.player.county.join_request1=your County.
+
 landdev.mail.municipality.staff.nolonger=You are no longer Municipality Staff.
 landdev.mail.municipality.staff.removed=%s is no longer Municipality Staff.
 landdev.mail.municipality.staff.added=%s is now Municipality Staff.
@@ -94,11 +101,10 @@ landdev.mail.municipality.manager_now=You are now Municipality Mayor.
 landdev.mail.municipality.manager_set=%s is now Municipality Mayor.
 landdev.mail.municipality.citizen.ismanager=Please appoint a new Mayor before leaving your current Municipality.
 landdev.mail.municipality.request.ismanager=The request sender is Mayor of a Municipality.
-landdev.mail.player.municipality.join_request0=%s requests to join
-landdev.mail.player.municipality.join_request1=your Municipality.
 
 landdev.mail.county.citizen.ismanager=Please appoint a new County Manager before moving to another County.
 landdev.mail.county.request.ismanager=The request sender is a County Manager.
+landdev.mail.county.request.isinsame=You can't leave your Municipality's County.
 landdev.mail.county.staff.nolonger=You are no longer County Staff.
 landdev.mail.county.staff.removed=%s is no longer County Staff.
 landdev.mail.county.staff.added=%s is now County Staff.
@@ -107,6 +113,10 @@ landdev.mail.county.staff.invite1=County Staff Member.
 landdev.mail.county.staff.notmember=You are not a citizen of the Municipality.
 landdev.mail.county.manager_now=You are now County Manager.
 landdev.mail.county.manager_set=%s is now County Manager.
+landdev.mail.county.citizen.nolonger=You are no longer a County Citizen.
+landdev.mail.county.citizen.removed=%s is no longer a County Citizen.
+landdev.mail.county.citizen.invite0=You are invited to join
+landdev.mail.county.citizen.invite1=the County.
 
 landdev.chunk_type.private=Private
 landdev.chunk_type.normal=Normal
@@ -575,4 +585,28 @@ landdev.gui.county.staff.permission.mail_delete=Delete Mail
 landdev.gui.county.staff.permission.create_district=Create Districts
 landdev.gui.county.staff.permission.manage_district=Manage Districts
 landdev.gui.county.staff.permission.manage_county=Manage County
+landdev.gui.county.citizen.title=County Citizens
+landdev.gui.county.citizen.open=This County is Open to join.
+landdev.gui.county.citizen.closed=This County is not Open to join.
+landdev.gui.county.citizen.list=Citizens:
+landdev.gui.county.citizen.invite=Invite a Player.
+landdev.gui.county.citizen.join=Join this County.
+landdev.gui.county.citizen.leave=Leave this County.
+landdev.gui.county.citizen.request=Request to join this County.
+landdev.gui.county.citizen.pending=Request response is pending.
+landdev.gui.county.citizen.rejected=Your join request got rejected.
+landdev.gui.county.citizen.timeout=You can ask again after %s
+landdev.gui.county.citizen.invite.title=Invite a Player to join
+landdev.gui.county.citizen.invite.info=Enter the Name of a Player
+landdev.gui.county.citizen.invite.submit=Send Invite
+landdev.gui.county.citizen.invite.notfound=Player not found.
+landdev.gui.county.citizen.invite.success=&eInvite sent!
+landdev.gui.county.citizen.edit.title=Manage County Citizen
+landdev.gui.county.citizen.name=Name: %s
+landdev.gui.county.citizen.uuid=%s
+landdev.gui.county.citizen.remove=Remove Citizen
+landdev.gui.county.citizen.remove.isinsame=Can't remove Municipality Citizen!
+landdev.gui.county.citizen.permissions=Permissions:
+landdev.gui.county.citizen.permission.chunk_claim=Chunk Claiming
+landdev.gui.county.citizen.permission.create_municipality=Create Municipality
 
