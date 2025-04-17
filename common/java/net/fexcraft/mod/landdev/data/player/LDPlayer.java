@@ -336,6 +336,23 @@ public class LDPlayer implements Saveable, Layer, LDUIModule, Appendable<UniEnti
 		}
 	}
 
+	public void setCitizenOf(County ncounty){
+		if(municipality.id >= 0 && municipality.county.id != ncounty.id){
+			municipality.manage.removeStaff(uuid);
+			municipality.citizens.remove(this);
+			LDEvent.run(new LeaveLayerEvent(municipality, this));
+			municipality = ResManager.getMunicipality(-1, true);
+		}
+		if(ncounty.id != county.id){
+			county.manage.removeStaff(uuid);
+			county.citizens.remove(this);
+			LDEvent.run(new LeaveLayerEvent(county, this));
+		}
+		county = ncounty;
+		county.citizens.add(this);
+		LDEvent.run(new JoinLayerEvent(county, this));
+	}
+
 	public void leaveMunicipality(){
 		municipality.manage.removeStaff(uuid);
 		municipality.citizens.remove(this);
