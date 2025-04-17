@@ -184,6 +184,10 @@ public class ResManager implements Saveable {
 		return Pair.of(id, nr);
 	}
 
+	public static String getMunicipalityName(int id){//TODO name cache
+		return getMunicipality(id, true).name();
+	}
+
 	public void load(){
 		SERVER_ACCOUNT = DataManager.getAccount("server:landdev", false, false);
 		if(SERVER_ACCOUNT == null){
