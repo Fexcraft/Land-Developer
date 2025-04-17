@@ -14,6 +14,7 @@ import java.util.UUID;
 
 import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonMap;
+import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.mod.fsmm.data.Account;
 import net.fexcraft.mod.fsmm.data.Bank;
 import net.fexcraft.mod.fsmm.util.Config;
@@ -58,6 +59,7 @@ public class County implements Saveable, Layer, LDUIModule {
 	public ArrayList<Integer> districts = new ArrayList<>();
 	public ArrayList<Integer> municipalities = new ArrayList<>();
 	public Citizens citizens = new Citizens(COUNTY_CITIZEN);
+	public Joinable requests = new Joinable();
 	public ExternalData external = new ExternalData(this);
 	public long tax_collected;
 	public Account account;
@@ -89,6 +91,7 @@ public class County implements Saveable, Layer, LDUIModule {
 		mail.save(map);
 		manage.save(map);
 		citizens.save(map);
+		requests.save(map);
 		norms.save(map);
 		JsonArray darray = new JsonArray();
 		districts.forEach(dis -> darray.add(dis));
@@ -113,6 +116,7 @@ public class County implements Saveable, Layer, LDUIModule {
 		mail.load(map);
 		manage.load(map);
 		citizens.load(map);
+		requests.load(map);
 		norms.load(map);
 		account.setName(name());
 		if(map.has("districts")){
@@ -247,6 +251,73 @@ public class County implements Saveable, Layer, LDUIModule {
 				}
 				return;
 			}
+			case UI_CITIZEN_LIST:{
+				resp.setTitle("county.citizen.title");
+				if(opentojoin()){
+					resp.addRow("citizen.open", ELM_GREEN);
+				}
+				else{
+					resp.addRow("citizen.closed", ELM_RED);
+				}
+				if(manage.can(PermAction.PLAYER_INVITE, container.ldp.uuid) || container.ldp.adm){
+					resp.addButton("citizen.invite", ELM_BLUE, ADD);
+				}
+				if(container.ldp.county.id != id){
+					long to = requests.get(container.ldp);
+					if(to > -1){
+						if(to > 0){
+							resp.addRow("citizen.rejected", ELM_RED);
+							resp.addRow("citizen.timeout", ELM_GREEN, Time.getAsString(to));
+						}
+						else{
+							resp.addRow("citizen.pending", ELM_GREEN);
+						}
+					}
+					else{
+						if(opentojoin()){
+							resp.addButton("citizen.join", ELM_BLUE, ADD);
+						}
+						else{
+							resp.addButton("citizen.request", ELM_BLUE, ADD);
+						}
+					}
+				}
+				else{
+					resp.addButton("citizen.leave", ELM_RED, REM);
+				}
+				resp.addBlank();
+				resp.addRow("citizen.list", ELM_YELLOW);
+				for(UUID uuid : citizens.map().keySet()){
+					resp.addButton("citizen.edit." + uuid, ELM_GENERIC, OPEN, VALONLY + "- " + ResManager.getPlayerName(uuid));
+				}
+				return;
+			}
+			case UI_CITIZEN_EDIT:{
+				resp.setTitle("county.citizen.edit.title");
+				Citizens.Citizen cit = citizens.get(container.pos.z);
+				resp.addRow("citizen.name", ELM_GENERIC, cit.getPlayerName());
+				resp.addRow("citizen.uuid", ELM_GENERIC, cit.uuid);
+				if(container.ldp.adm){
+					resp.addButton("citizen.remove", ELM_RED, REM);
+				}
+				resp.addHiddenField("uuid", cit.uuid);
+				resp.addBlank();
+				resp.addRow("citizen.permissions", ELM_YELLOW);
+				for(Map.Entry<PermAction, Boolean> entry : cit.actions.entrySet()){
+					resp.addButton("citizen.permission." + entry.getKey().name().toLowerCase(), ELM_GENERIC, enabled(entry.getValue()));
+				}
+				resp.setNoSubmit();
+				return;
+			}
+			case UI_CITIZEN_INVITE:{
+				resp.setTitle("county.citizen.invite.title");
+				resp.addRow("id", ELM_GENERIC, id);
+				resp.addRow("citizen.invite.info", ELM_YELLOW);
+				resp.addField("citizen.invite.field");
+				resp.addButton("citizen.invite.submit", ELM_GENERIC, OPEN);
+				resp.setFormular();
+				return;
+			}
 			case UI_STAFF_EDIT:{
 				resp.setTitle("county.staff.edit.title");
 				Manageable.Staff staff = manage.staff.get(container.pos.z);
@@ -346,6 +417,87 @@ public class County implements Saveable, Layer, LDUIModule {
 			case "norms": container.open(UI_NORMS); return;
 			case "appearance": container.open(UI_APPREARANCE); return;
 			//
+			case "citizen.invite":{
+				container.open(UI_CITIZEN_INVITE);
+				return;
+			}
+			case "citizen.join":{
+				if(!opentojoin()) return;
+				if(player.isMunicipalityManager() && player.municipality.county.id != id){
+					container.msg("landdev.mail.municipality.citizen.ismanager", false);
+					return;
+				}
+				if(player.isCountyManager() && id != player.county.id){
+					container.msg("landdev.mail.county.citizen.ismanager", false);
+					return;
+				}
+				player.setCitizenOf(this);
+				container.open(UI_MAIN);
+				return;
+			}
+			case "citizen.leave":{
+				if(player.isCountyManager() && !player.adm){
+					container.msg("landdev.mail.county.citizen.ismanager", false);
+					return;
+				}
+				if(player.municipality.county.id == id){
+					container.msg("landdev.mail.county.citizen.isinsame", false);
+					return;
+				}
+				if(player.isCountyManager()){
+					manage.setManager((UUID)null);
+				}
+				player.leaveCounty();
+				container.open(UI_MAIN);
+				return;
+			}
+			case "citizen.request":{
+				if(opentojoin()) return;
+				Mail mail = new Mail(MailType.REQUEST, Layers.PLAYER, player.uuid, Layers.MUNICIPALITY, id);
+				mail.setTitle(player.name_raw()).expireInDays(7);
+				mail.addMessage(translate("mail.player.county.join_request0", player.name_raw()));
+				mail.addMessage(translate("mail.player.county.join_request1"));
+				this.mail.mails.add(mail);
+				requests.timeouts.put(player.uuid, 0l);
+				container.open(UI_CITIZEN_LIST);
+				return;
+			}
+			case "citizen.invite.submit":{
+				if(!manage.can(PermAction.PLAYER_INVITE, player.uuid) && !player.adm) return;
+				LDPlayer ply = req.getPlayerField("citizen.invite.field");
+				if(ply == null){
+					container.msg("citizen.invite.notfound");
+					return;
+				}
+				Mail mail = new Mail(MailType.INVITE, Layers.MUNICIPALITY, id, Layers.PLAYER, ply.uuid);
+				mail.setTitle(name()).expireInDays(7);
+				mail.addMessage(translate("mail.county.citizen.invite0"));
+				mail.addMessage(translate("mail.county.citizen.invite1", name()));
+				ply.addMailAndSave(mail);
+				player.entity.send(translate("gui.county.citizen.invite.success"));
+				player.entity.closeUI();
+				return;
+			}
+			case "citizen.remove":{
+				Citizens.Citizen cit = citizens.get(req.getUUIDField());
+				if(cit != null && !manage.isManager(cit.uuid)){
+					LDPlayer ply = ResManager.getPlayer(cit.uuid, true);
+					if(ply.municipality.county.id == id){
+						container.msg("citizen.remove.isinsame");
+						return;
+					}
+					ply.setCitizenOf(ResManager.getCounty(-1, true));
+					Mail mail = new Mail(MailType.SYSTEM, Layers.MUNICIPALITY, id, Layers.PLAYER, ply.uuid).expireInDays(7);
+					mail.setTitle(name()).addMessage(translate("mail.county.citizen.nolonger"));
+					ply.addMailAndSave(mail);
+					mail = new Mail(MailType.SYSTEM, Layers.MUNICIPALITY, id, Layers.MUNICIPALITY, id).expireInDays(7);
+					mail.setTitle(name()).addMessage(translate("mail.county.citizen.removed", cit.getPlayerName()));
+					this.mail.mails.add(mail);
+					Announcer.announce(Announcer.Target.MUNICIPALITY, id, "announce.county.citizen.removed", cit.getPlayerName(), name(), id);
+				}
+				container.open(UI_CITIZEN_LIST);
+				return;
+			}
 			case "staff.add":{
 				container.open(UI_STAFF_ADD);
 				return;
@@ -584,6 +736,10 @@ public class County implements Saveable, Layer, LDUIModule {
 		}
 		//
 		external.on_interact(container, req);
+	}
+
+	public boolean opentojoin(){
+		return norms.get("open-to-join").bool();
 	}
 
 }
