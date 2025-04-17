@@ -552,6 +552,7 @@ public class Municipality implements Saveable, Layer, LDUIModule {
 				return;
 			}
 			case "citizen.remove":{
+				if(!canman) return;
 				Citizen cit = citizens.get(req.getUUIDField());
 				if(cit != null && !manage.isManager(cit.uuid)){
 					LDPlayer ply = ResManager.getPlayer(cit.uuid, true);
@@ -592,6 +593,7 @@ public class Municipality implements Saveable, Layer, LDUIModule {
 				return;
 			}
 			case "staff.remove":{
+				if(!canman) return;
 				Staff staff = manage.getStaff(req.getUUIDField());
 				if(staff != null && !manage.isManager(staff)){
 					manage.removeStaff(staff.uuid);
