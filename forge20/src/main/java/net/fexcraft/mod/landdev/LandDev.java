@@ -226,7 +226,7 @@ public class LandDev {
 				cf = chunk.district.region().norms.get("new-county-fee").integer();
 				player.entity.send(TranslationUtil.translateCmd("fees_county"));
 				player.entity.send(TranslationUtil.translateCmd("fees_ct_server"), getWorthAsString(sf));
-				player.entity.send(TranslationUtil.translateCmd("fees_ct_state"), getWorthAsString(cf));
+				player.entity.send(TranslationUtil.translateCmd("fees_ct_region"), getWorthAsString(cf));
 				player.entity.send(TranslationUtil.translateCmd("fees_ct_total"), getWorthAsString(sf + cf));
 				return 0;
 			}))
