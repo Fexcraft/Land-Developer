@@ -184,6 +184,10 @@ public class ResManager implements Saveable {
 		return Pair.of(id, nr);
 	}
 
+	public static String getDistrictName(int id){//TODO name cache
+		return getDistrict(id).name();
+	}
+
 	public static String getMunicipalityName(int id){//TODO name cache
 		return getMunicipality(id, true).name();
 	}
