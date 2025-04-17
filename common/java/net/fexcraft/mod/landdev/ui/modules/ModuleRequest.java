@@ -31,6 +31,10 @@ public class ModuleRequest {
 		return compound.getCompound("fields").getString(key);
 	}
 
+	public int getFieldInt(String key){
+		return Integer.parseInt(compound.getCompound("fields").getString(key));
+	}
+
 	public UUID getUUIDField(){
 		return UUID.fromString(compound.getCompound("fields").getString("uuid"));
 	}
