@@ -67,6 +67,10 @@ landdev.server.started=Server has started. Running LandDeveloper v%s
 landdev.server.stopping=Server is closing.
 
 landdev.announce.county.created=&9[&2LD&9] &bThe County &6%s &7(%s) &bjust got created!
+landdev.announce.county.staff.removed=&9[&2LD&9] &c%s &bis no longer Staff in &6%s &7(%s)
+landdev.announce.county.staff.added=&9[&2LD&9] &a%s &bis now Staff in &6%s &7(%s)
+landdev.announce.county.manager_set=&9[&2LD&9] &a%s &bis now Manager in &6%s &7(%s)
+
 landdev.announce.municipality.created=&9[&2LD&9] &bThe Municipality &6%s &7(%s) &bjust got created!
 landdev.announce.municipality.staff.removed=&9[&2LD&9] &c%s &bis no longer Staff in &6%s &7(%s)
 landdev.announce.municipality.staff.added=&9[&2LD&9] &a%s &bis now Staff in &6%s &7(%s)
@@ -90,10 +94,19 @@ landdev.mail.municipality.manager_now=You are now Municipality Mayor.
 landdev.mail.municipality.manager_set=%s is now Municipality Mayor.
 landdev.mail.municipality.citizen.ismanager=Please appoint a new Mayor before leaving your current Municipality.
 landdev.mail.municipality.request.ismanager=The request sender is Mayor of a Municipality.
-landdev.mail.county.citizen.ismanager=Please appoint a new County Manager before moving to another County.
-landdev.mail.county.request.ismanager=The request sender is a County Manager.
 landdev.mail.player.municipality.join_request0=%s requests to join
 landdev.mail.player.municipality.join_request1=your Municipality.
+
+landdev.mail.county.citizen.ismanager=Please appoint a new County Manager before moving to another County.
+landdev.mail.county.request.ismanager=The request sender is a County Manager.
+landdev.mail.county.staff.nolonger=You are no longer County Staff.
+landdev.mail.county.staff.removed=%s is no longer County Staff.
+landdev.mail.county.staff.added=%s is now County Staff.
+landdev.mail.county.staff.invite0=You are invited to become
+landdev.mail.county.staff.invite1=County Staff Member.
+landdev.mail.county.staff.notmember=You are not a citizen of the Municipality.
+landdev.mail.county.manager_now=You are now County Manager.
+landdev.mail.county.manager_set=%s is now County Manager.
 
 landdev.chunk_type.private=Private
 landdev.chunk_type.normal=Normal
@@ -113,7 +126,7 @@ landdev.gui.check_checked=Checkbox: &6checked
 landdev.gui.check_unchecked=Checkbox: &cunchecked
 landdev.gui.radio_checked=Radiobox: &6checked
 landdev.gui.radio_unchecked=Radiobox: &cunchecked
-//
+
 landdev.gui.claim.title=Chunk Claiming Interface
 landdev.gui.claim.chunk_coord=&7Chunk: &a%s, %s
 landdev.gui.claim.chunk_price=&7Price/Fee: &b%s
@@ -142,13 +155,13 @@ landdev.gui.claim.gridmode=Switch to GridMode
 landdev.gui.claim.mapmode=Switch to MapMode
 landdev.gui.claim.mapgrid=Toggle Grid in MapMode
 landdev.gui.claim.loadingmap=Generating Map...
-//
+
 landdev.gui.mailbox.title=Mailbox Interface [Page %s]
 landdev.gui.mailbox.prev=Previous Page
 landdev.gui.mailbox.next=Next Page
 landdev.gui.mailbox.read=Read Mail
 landdev.gui.mailbox.delete=Delete Mail
-//
+
 landdev.gui.player.title=Your Profile
 landdev.gui.player.id=UUID: %s
 landdev.gui.player.name=Name: %s
@@ -162,7 +175,7 @@ landdev.gui.player.appearance.title=Player Appearance
 landdev.gui.player.appearance.nick=Nickname
 landdev.gui.player.appearance.color=Color Code (0-9, a-f)
 landdev.gui.player.appearance.submit=Confirm Change
-//
+
 landdev.gui.mail.title=Reading Mail
 landdev.gui.mail.boxnotfound=Mailbox not found.
 landdev.gui.mail.notfound=Mail not found.
@@ -177,7 +190,7 @@ landdev.gui.mail.invite.reject=Reject Invite
 landdev.gui.mail.request.accept=Accept Request
 landdev.gui.mail.request.reject=Reject Request
 landdev.gui.mail.request.timeout=Reject and long Timeout (%s days)
-//
+
 landdev.gui.main.title=Land Developer
 landdev.gui.main.player=My Profile
 landdev.gui.main.mail=My Mail
@@ -188,7 +201,7 @@ landdev.gui.main.district=District
 landdev.gui.main.municipality=Municipality
 landdev.gui.main.county=County
 landdev.gui.main.region=Region
-//
+
 landdev.gui.chunk.title=Chunk Overview
 landdev.gui.chunk.key=Key: %s
 landdev.gui.chunk.link=Not linked to other chunks.
@@ -262,7 +275,6 @@ landdev.gui.chunk.tax.info1=On grouped chunks only the main one is taxed.
 landdev.gui.chunk.tax.info2=Custom Tax is useful for grouped chunks.
 landdev.gui.chunk.tax.custom=Custom Tax: %s
 landdev.gui.chunk.tax.default=District Tax Rate: %s
-landdev.gui.chunk.tax.custom=Custom Tax: %s
 landdev.gui.chunk.tax.last_amount=Last Tax: %s
 landdev.gui.chunk.tax.last_time=Collected at: %s
 landdev.gui.chunk.set_tax.title=Set a new custom Tax?
@@ -273,7 +285,7 @@ landdev.gui.chunk.access_player.add.submit=Confirm adding new Player to List
 landdev.gui.chunk.access_player.rem.submit=Confirm removing Selected Player
 landdev.gui.chunk.access_player.empty=This list is currently empty.
 landdev.gui.chunk.access_player.notfound=Player not found.
-//
+
 landdev.gui.district.title=District Overview
 landdev.gui.district.id=ID: %s
 landdev.gui.district.name=Name: %s
@@ -352,7 +364,7 @@ landdev.gui.district.disband.no_perm=No District Manage/Disband Permission.
 landdev.gui.district.disband.wrong_name=Name does not match!
 landdev.gui.district.merge.title=District Merging
 landdev.gui.district.merge.wip=Work in Progress...
-//
+
 landdev.gui.municipality.create.title=Municipality Creation UI
 landdev.gui.municipality.create.no_perm=No permission or permit to create.
 landdev.gui.municipality.create.name=New Municipality's Name:
@@ -479,7 +491,7 @@ landdev.gui.municipality.disband.no_perm=No Permission to execute Action
 landdev.gui.municipality.disband.last_county=This is this County's only Municipality!
 landdev.gui.municipality.disband.abandon_give_county=Can't give all Districts to County if only abandoning.
 landdev.gui.municipality.disband.wrong_name=Name does not match!
-//
+
 landdev.gui.county.create.title=County Creation UI
 landdev.gui.county.create.no_perm=No permission or permit to create.
 landdev.gui.county.create.name=New County's Name:
@@ -509,7 +521,6 @@ landdev.gui.county.citizen=Citizen: %s
 landdev.gui.county.manager=Manager: %s
 landdev.gui.county.staff=Staff: %s
 landdev.gui.county.balance=Balance: %s
-landdev.gui.county.citizen=Citizen: %s
 landdev.gui.county.price=Price: %s
 landdev.gui.county.set_price=Set Price for Sale
 landdev.gui.county.mailbox=Unread Mail: %s
@@ -537,3 +548,31 @@ landdev.gui.county.norm.kick-bankrupt=Kick if tax not paid? %s
 landdev.gui.county.norm.municipality-tax-percent=Percent of Municipality Tax: %s
 landdev.gui.county.norm.min-municipality-distance=Min. Municipality Distance: %s
 landdev.gui.county.norm.min-municipality-distance.hint=Minimum distance for Municipalities in this County.\n\nNorm will be ignored if lower than Server Config.
+landdev.gui.county.staff.title=County Staff
+landdev.gui.county.staff.list=Current Members:
+landdev.gui.county.staff.add=Add Staff
+landdev.gui.county.staff.add.title=Add County Staff
+landdev.gui.county.staff.add.info=Enter the name of a Citizen
+landdev.gui.county.staff.add.submit=Send Invite
+landdev.gui.county.staff.add.notfound=Citizen not found.
+landdev.gui.county.staff.add.notmember=Player is not a Citizen.
+landdev.gui.county.staff.add.success=Invite sent!
+landdev.gui.county.staff.edit.title=Manage Staff Member
+landdev.gui.county.staff.name=Name: %s
+landdev.gui.county.staff.uuid=UUID: %s
+landdev.gui.county.staff.remove=Remove Staff Member
+landdev.gui.county.staff.setmanager=Set as County Manager
+landdev.gui.county.staff.permissions=Staff Permissions:
+landdev.gui.county.staff.permissions.ismanager=Manager permissions can not be edited.
+landdev.gui.county.staff.permission.chunk_claim=Chunk Claiming
+landdev.gui.county.staff.permission.chunk_tax=Set Chunk Tax
+landdev.gui.county.staff.permission.chunk_customtax=Set Custom Chunk Tax
+landdev.gui.county.staff.permission.player_tax=Set Player Tax
+landdev.gui.county.staff.permission.finances_use=Use Finances
+landdev.gui.county.staff.permission.finances_manage=Manage Finances
+landdev.gui.county.staff.permission.mail_read=Read Mail
+landdev.gui.county.staff.permission.mail_delete=Delete Mail
+landdev.gui.county.staff.permission.create_district=Create Districts
+landdev.gui.county.staff.permission.manage_district=Manage Districts
+landdev.gui.county.staff.permission.manage_county=Manage County
+
