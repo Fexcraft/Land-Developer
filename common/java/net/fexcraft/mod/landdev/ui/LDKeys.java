@@ -54,7 +54,7 @@ public class LDKeys {
 		CONS.put(DISTRICT, BaseCon.DisBaseCon.class);
 		CONS.put(MUNICIPALITY, BaseCon.MunBaseCon.class);
 		CONS.put(COUNTY, BaseCon.CouBaseCon.class);
-		CONS.put(REGION, BaseCon.StaBaseCon.class);
+		CONS.put(REGION, BaseCon.RegBaseCon.class);
 		CONS.put(PLAYER, BaseCon.PlayerBaseCon.class);
 		CONS.put(POLL, BaseCon.PollBaseCon.class);
 		//CONS.put(KEY_MAILBOX, BaseCon.MBBaseCon.class);
