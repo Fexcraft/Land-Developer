@@ -192,6 +192,14 @@ public class ResManager implements Saveable {
 		return getMunicipality(id, true).name();
 	}
 
+	public static String getCountyName(int id){//TODO name cache
+		return getCounty(id, true).name();
+	}
+
+	public static String getRegionName(int id){//TODO name cache
+		return getRegion(id, true).name();
+	}
+
 	public void load(){
 		SERVER_ACCOUNT = DataManager.getAccount("server:landdev", false, false);
 		if(SERVER_ACCOUNT == null){
