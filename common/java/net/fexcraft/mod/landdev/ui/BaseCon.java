@@ -9,6 +9,7 @@ import net.fexcraft.mod.landdev.data.county.County;
 import net.fexcraft.mod.landdev.data.district.District;
 import net.fexcraft.mod.landdev.data.municipality.Municipality;
 import net.fexcraft.mod.landdev.data.player.LDPlayer;
+import net.fexcraft.mod.landdev.data.region.Region;
 import net.fexcraft.mod.landdev.ui.modules.MailModule;
 import net.fexcraft.mod.landdev.ui.modules.MainModule;
 import net.fexcraft.mod.landdev.ui.modules.ModuleRequest;
@@ -124,6 +125,18 @@ public class BaseCon extends ContainerInterface {
 					County ct = ResManager.getCounty(pos.y, pos.y > -1);
 					if(ct != null){
 						ct.on_interact(this, req);
+						break;
+					}
+					break;
+				}
+				case ID_REGION:{
+					if(pos.x < 0){
+						ResManager.getRegion(-1, true).on_interact(this, req);
+						break;
+					}
+					Region rg = ResManager.getRegion(pos.y, pos.y > -1);
+					if(rg != null){
+						rg.on_interact(this, req);
 						break;
 					}
 					break;
@@ -256,6 +269,22 @@ public class BaseCon extends ContainerInterface {
 				}
 				break;
 			}
+			case ID_REGION:{
+				if(pos.x < 0){
+					ResManager.getRegion(-1, true).sync_packet(this, resp);
+					holder = chunk.district.region().icon;
+					color = chunk.district.region().color;
+					break;
+				}
+				Region rg = ResManager.getRegion(pos.y, pos.y > -1);
+				if(rg != null){
+					rg.sync_packet(this, resp);
+					holder = rg.icon;
+					color = rg.color;
+					break;
+				}
+				break;
+			}
 			default: LDUIModule.Missing.INST.sync_packet(this, resp); break;
 		}
 		if(holder != null){
@@ -339,9 +368,9 @@ public class BaseCon extends ContainerInterface {
 
 	}
 
-	public static class StaBaseCon extends BaseCon {
+	public static class RegBaseCon extends BaseCon {
 
-		public StaBaseCon(JsonMap map, UniEntity ply, V3I pos){
+		public RegBaseCon(JsonMap map, UniEntity ply, V3I pos){
 			super(map, ply, pos);
 			type = REGION;
 			prefix = "region";
