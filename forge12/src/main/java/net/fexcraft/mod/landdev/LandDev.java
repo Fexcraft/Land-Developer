@@ -67,6 +67,7 @@ public class LandDev {
 		event.registerServerCommand(new DisCmd());
 		event.registerServerCommand(new MunCmd());
 		event.registerServerCommand(new CntCmd());
+		event.registerServerCommand(new RgCmd());
 	}
 
     @Mod.EventHandler
