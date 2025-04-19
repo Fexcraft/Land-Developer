@@ -15,6 +15,9 @@ landdev.cmd.fees_county=&3County Creation: &7(/ct create)
 landdev.cmd.fees_ct_server=- %s server fee (50%% return)
 landdev.cmd.fees_ct_region=- %s region fee
 landdev.cmd.fees_ct_total== %s total
+landdev.cmd.fees_region=&3Region Creation: &7(/reg create)
+landdev.cmd.fees_rg_server=- %s server fee (50%% return)
+landdev.cmd.fees_rg_total== %s total
 landdev.cmd.adminmode.true=&eAdmin &6mode is now &cactive&6.
 landdev.cmd.adminmode.false=&eAdmin &6mode is now &ainactive&6.
 landdev.cmd.mun.no_new_municipalities=County does not allow creation of new Municipalities.
@@ -23,6 +26,8 @@ landdev.cmd.mun.not_in_a_municipality=You are not currently in a Municipality.
 landdev.cmd.mun.center_too_close=This is too close to &6%s (%s)
 landdev.cmd.ct.no_new_counties=Region does not allow creation of new Counties.
 landdev.cmd.ct.no_create_permit=You do not have a County creation permit.
+landdev.cmd.rg.no_new_region=New Region creation is disabled on this Server.
+landdev.cmd.rg.no_create_permit=You do not have a Region creation permit.
 landdev.cmd.chunk.mapdesc=&4#&7 - unloaded &8| &9#&7 - claimed &8| &2#&7 - not claimed &8| &7+ your position.
 landdev.cmd.name_too_short=&cName is too short!
 landdev.cmd.name_too_long=&bName is too long!
@@ -695,4 +700,14 @@ landdev.gui.region.county.remove=Remove County
 landdev.gui.region.county.setmain=Set as Region Seat/Main
 landdev.gui.region.county.only_one=Can't remove the only County!
 landdev.gui.region.county.setnew=Set a new Region Seat first!
+landdev.gui.region.create.title=Region Creation UI
+landdev.gui.region.create.no_perm=No permit to create a new Region.
+landdev.gui.region.create.name=New Regions's Name:
+landdev.gui.region.create.submit=Submit County Creation
+landdev.gui.region.create.not_enough_money=Not enough money to pay the creation fees.
+landdev.gui.region.create.already_in_region=Your County is already part of a Region.
+landdev.gui.region.create.new_regions_disabled=Region creation is disabled on this Server.
+landdev.gui.region.create.not_county_manager=You must be County Manager to create a new Region
+landdev.gui.region.create.not_in_county=Please be within the County for this process.
+landdev.gui.region.create.complete=&bNew Region created! Try &7/ct&b!
 
