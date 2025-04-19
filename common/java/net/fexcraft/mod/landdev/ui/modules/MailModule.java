@@ -124,11 +124,69 @@ public class MailModule implements LDUIModule {
 						return;
 					}
 					case COUNTY:{
-
+						if(mail.receiver.is(Layers.PLAYER)){
+							player = ResManager.getPlayer(mail.recUUID(), true);
+							County ct = ResManager.getCounty(mail.fromInt(), true);
+							if(mail.staff){
+								if(!ct.citizens.isCitizen(player.uuid)){
+									player.entity.send(translate("mail.county.staff.notmember"));
+									return;
+								}
+								ct.manage.staff.add(new Staff(player.uuid, COUNTY_STAFF));
+								ct.save();
+								String pln = ResManager.getPlayerName(player.uuid);
+								for(Staff stf : ct.manage.staff){
+									LDPlayer stp = ResManager.getPlayer(stf.uuid, true);
+									mail = new Mail(MailType.SYSTEM, Layers.COUNTY, ct.id, Layers.PLAYER, stp.uuid).expireInDays(7);
+									mail.setTitle(ct.name()).addMessage(translate("mail.county.staff.added", pln));
+									stp.addMailAndSave(mail);
+								}
+								mail.expire();
+							}
+							else{
+								if(player.isMunicipalityManager() && ct.id != player.municipality.county.id){
+									player.entity.send(translate("mail.municipality.citizen.ismanager"));
+									return;
+								}
+								if(player.isCountyManager() && ct.id != player.county.id){
+									player.entity.send(translate("mail.county.citizen.ismanager"));
+									return;
+								}
+								player.setCitizenOf(ct);
+								mail.expire();
+								//TODO announce
+							}
+						}
+						else if(mail.receiver.is(Layers.COUNTY)){
+							//invites into a region
+						}
+						goback(container);
 						return;
 					}
 					case REGION:{
-
+						if(mail.receiver.is(Layers.PLAYER)){
+							player = ResManager.getPlayer(mail.recUUID(), true);
+							Region rg = ResManager.getRegion(mail.fromInt(), true);
+							if(mail.staff){
+								if(!rg.isCitizen(player.uuid)){
+									player.entity.send(translate("mail.region.staff.notmember"));
+									return;
+								}
+								rg.manage.staff.add(new Staff(player.uuid, COUNTY_STAFF));
+								rg.save();
+								String pln = ResManager.getPlayerName(player.uuid);
+								for(Staff stf : rg.manage.staff){
+									LDPlayer stp = ResManager.getPlayer(stf.uuid, true);
+									mail = new Mail(MailType.SYSTEM, Layers.REGION, rg.id, Layers.PLAYER, stp.uuid).expireInDays(7);
+									mail.setTitle(rg.name()).addMessage(translate("mail.region.staff.added", pln));
+									stp.addMailAndSave(mail);
+								}
+								mail.expire();
+							}
+						}
+						else if(mail.receiver.is(Layers.REGION)){
+							//
+						}
 						return;
 					}
 					case COMPANY:{
