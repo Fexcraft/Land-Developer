@@ -435,7 +435,7 @@ public class Region implements Saveable, Layer, LDUIModule {
 		external.on_interact(container, req);
 	}
 
-	private boolean isCitizen(UUID uuid){
+	public boolean isCitizen(UUID uuid){
 		County ct;
 		for(int i = 0; i < counties.size(); i++){
 			ct = ResManager.getCounty(i, true);
