@@ -228,6 +228,10 @@ public class LandDev {
 				player.entity.send(TranslationUtil.translateCmd("fees_ct_server"), getWorthAsString(sf));
 				player.entity.send(TranslationUtil.translateCmd("fees_ct_region"), getWorthAsString(cf));
 				player.entity.send(TranslationUtil.translateCmd("fees_ct_total"), getWorthAsString(sf + cf));
+				sf = LDConfig.REGION_CREATION_FEE;
+				player.entity.send(TranslationUtil.translateCmd("fees_region"));
+				player.entity.send(TranslationUtil.translateCmd("fees_rg_server"), getWorthAsString(sf));
+				player.entity.send(TranslationUtil.translateCmd("fees_rg_total"), getWorthAsString(sf));
 				return 0;
 			}))
 			.then(literal("help").executes(cmd -> {
@@ -444,7 +448,14 @@ public class LandDev {
 		dispatcher.register(literal("reg")
 			.then(literal("create").executes(cmd -> {
 				LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
-				//
+				Chunk_ chunk = ResManager.getChunk(player.entity);
+				if(!LDConfig.NEW_REGIONS && !player.adm){
+					player.entity.send(translateCmd("rg.no_new_region"));
+					player.entity.send(translateCmd("rg.no_create_permit"));
+				}
+				else{
+					player.entity.openUI(LDKeys.REGION, County.UI_CREATE, 0, 0);
+				}
 				return 0;
 			}))
 			.executes(cmd -> {
