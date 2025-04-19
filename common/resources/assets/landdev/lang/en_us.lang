@@ -685,3 +685,14 @@ landdev.gui.region.staff.permission.finances_manage=Manage Finances
 landdev.gui.region.staff.permission.mail_read=Read Mail
 landdev.gui.region.staff.permission.mail_delete=Delete Mail
 landdev.gui.region.staff.permission.manage_region=Manage Region
+landdev.gui.region.county.title=Region Counties
+landdev.gui.region.county.list=Counties:
+landdev.gui.region.county.edit.title=Edit Region County
+landdev.gui.region.county.name=Name: %s
+landdev.gui.region.county.id=ID: %s
+landdev.gui.region.county.goto=Go to County UI
+landdev.gui.region.county.remove=Remove County
+landdev.gui.region.county.setmain=Set as Region Seat/Main
+landdev.gui.region.county.only_one=Can't remove the only County!
+landdev.gui.region.county.setnew=Set a new Region Seat first!
+
