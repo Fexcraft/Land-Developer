@@ -2,9 +2,11 @@ package net.fexcraft.mod.landdev.cmd;
 
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
+import net.fexcraft.mod.landdev.data.county.County;
 import net.fexcraft.mod.landdev.data.player.LDPlayer;
 import net.fexcraft.mod.landdev.ui.LDKeys;
 import net.fexcraft.mod.landdev.util.AliasLoader;
+import net.fexcraft.mod.landdev.util.LDConfig;
 import net.fexcraft.mod.landdev.util.ResManager;
 import net.fexcraft.mod.uni.UniEntity;
 import net.minecraft.command.CommandBase;
@@ -22,7 +24,7 @@ public class RgCmd extends CommandBase {
     
 	@Override
 	public String getName(){
-		return AliasLoader.getOverride("rg");
+		return AliasLoader.getOverride("reg");
 	}
 
 	@Override
@@ -32,7 +34,7 @@ public class RgCmd extends CommandBase {
 	
 	@Override
 	public List<String> getAliases(){
-		return AliasLoader.getAlias("rg");
+		return AliasLoader.getAlias("reg");
 	}
     
     @Override
@@ -48,7 +50,13 @@ public class RgCmd extends CommandBase {
     	if(args.length > 0){
     		switch(args[0]){
 	    		case "create":{
-	    			//TODO
+					if(!LDConfig.NEW_REGIONS && !ply.adm){
+						Print.chat(sender, translateCmd("rg.no_new_region"));
+						Print.chat(sender, translateCmd("rg.no_create_permit"));
+					}
+					else{
+						ply.entity.openUI(LDKeys.REGION, County.UI_CREATE, 0, 0);
+					}
 	    			return;
 	    		}
 	    		default:{
