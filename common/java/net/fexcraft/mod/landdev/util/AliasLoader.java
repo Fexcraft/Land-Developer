@@ -50,7 +50,7 @@ public class AliasLoader {
 		als.add("dis", new JsonArray());
 		als.add("mun", new JsonArray());
 		als.add("ct", new JsonArray());
-		als.add("rg", new JsonArray());
+		als.add("reg", new JsonArray());
 		map.add("aliases", als);
 		map.add("___comment", "Bellow you can even override the default command prefix (with example included).");
 		JsonMap ovr = new JsonMap();
