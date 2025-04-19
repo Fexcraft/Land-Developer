@@ -5,8 +5,11 @@ import static net.fexcraft.mod.landdev.ui.LDKeys.MAILBOX;
 import static net.fexcraft.mod.landdev.ui.LDUIButton.*;
 import static net.fexcraft.mod.landdev.ui.LDUIButton.OPEN;
 import static net.fexcraft.mod.landdev.ui.LDUIRow.*;
+import static net.fexcraft.mod.landdev.util.TranslationUtil.translate;
 
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.UUID;
 
 import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonMap;
@@ -14,6 +17,7 @@ import net.fexcraft.mod.fsmm.data.Account;
 import net.fexcraft.mod.fsmm.util.Config;
 import net.fexcraft.mod.fsmm.util.DataManager;
 import net.fexcraft.mod.landdev.data.*;
+import net.fexcraft.mod.landdev.data.county.County;
 import net.fexcraft.mod.landdev.data.hooks.ExternalData;
 import net.fexcraft.mod.landdev.data.norm.BoolNorm;
 import net.fexcraft.mod.landdev.data.norm.FloatNorm;
@@ -27,6 +31,7 @@ import net.fexcraft.mod.landdev.ui.modules.AppearModule;
 import net.fexcraft.mod.landdev.ui.modules.ModuleRequest;
 import net.fexcraft.mod.landdev.ui.modules.ModuleResponse;
 import net.fexcraft.mod.landdev.ui.modules.NormModule;
+import net.fexcraft.mod.landdev.util.Announcer;
 import net.fexcraft.mod.landdev.util.ResManager;
 
 public class Region implements Saveable, Layer, LDUIModule {
@@ -190,6 +195,45 @@ public class Region implements Saveable, Layer, LDUIModule {
 				resp.addButton("appearance", ELM_YELLOW, OPEN);
 				return;
 			}
+			case UI_STAFF_EDIT:{
+				resp.setTitle("region.staff.edit.title");
+				Manageable.Staff staff = manage.staff.get(container.pos.z);
+				resp.addRow("staff.name", ELM_GENERIC, staff.getPlayerName());
+				resp.addRow("staff.uuid", ELM_GENERIC, staff.uuid);
+				if(player.adm || !manage.isManager(staff)){
+					resp.addButton("staff.remove", ELM_RED, REM);
+					resp.addButton("staff.setmanager", ELM_BLUE, ADD);
+				}
+				resp.addHiddenField("uuid", staff.uuid);
+				resp.addBlank();
+				resp.addRow("staff.permissions", ELM_YELLOW);
+				for(Map.Entry<PermAction, Boolean> entry : staff.actions.entrySet()){
+					resp.addButton("staff.permission." + entry.getKey().name().toLowerCase(), ELM_GENERIC, enabled(entry.getValue()));
+				}
+				resp.setNoSubmit();
+				return;
+			}
+			case UI_STAFF_LIST:{
+				resp.setTitle("region.staff.title");
+				resp.addRow("id", ELM_GENERIC, id);
+				resp.addRow("manager", ELM_GENERIC, manage.getManagerName());
+				resp.addButton("staff.add", ELM_BLUE, ADD);
+				resp.addBlank();
+				resp.addRow("staff.list", ELM_YELLOW);
+				for(Manageable.Staff staff : manage.staff){
+					resp.addButton("staff.edit." + staff.uuid, ELM_GENERIC, OPEN, VALONLY + "- " + staff.getPlayerName());
+				}
+				return;
+			}
+			case UI_STAFF_ADD:{
+				resp.setTitle("region.staff.add.title");
+				resp.addRow("id", ELM_GENERIC, id);
+				resp.addRow("staff.add.info", ELM_YELLOW);
+				resp.addField("staff.add.field");
+				resp.addButton("staff.add.submit", ELM_GENERIC, OPEN);
+				resp.setFormular();
+				return;
+			}
 			case UI_APPREARANCE:
 				AppearModule.resp(container, resp, "region", icon, color, canman);
 				return;
@@ -223,6 +267,72 @@ public class Region implements Saveable, Layer, LDUIModule {
 			case "norms": container.open(UI_NORMS); return;
 			case "appearance": container.open(UI_APPREARANCE); return;
 			//
+			case "staff.add":{
+				container.open(UI_STAFF_ADD);
+				return;
+			}
+			case "staff.add.submit":{
+				if(!canman) return;
+				LDPlayer ply = req.getPlayerField("staff.add.field");
+				if(ply == null){
+					container.msg("staff.add.notfound");
+					return;
+				}
+				if(!isCitizen(ply.uuid)){
+					container.msg("staff.add.notmember");
+					return;
+				}
+				Mail mail = new Mail(MailType.INVITE, Layers.REGION, id, Layers.PLAYER, ply.uuid).expireInDays(7);
+				mail.setTitle(name()).setStaffInvite();
+				mail.addMessage(translate("mail.region.staff.invite0"));
+				mail.addMessage(translate("mail.region.staff.invite1"));
+				ply.addMailAndSave(mail);
+				player.entity.send(translate("gui.region.staff.add.success"));
+				player.entity.closeUI();
+				return;
+			}
+			case "staff.remove":{
+				if(!canman) return;
+				Manageable.Staff staff = manage.getStaff(req.getUUIDField());
+				if(staff != null && !manage.isManager(staff)){
+					manage.removeStaff(staff.uuid);
+					LDPlayer ply = ResManager.getPlayer(staff.uuid, true);
+					Mail mail = new Mail(MailType.SYSTEM, Layers.REGION, id, Layers.PLAYER, ply.uuid).expireInDays(7);
+					mail.setTitle(name()).addMessage(translate("mail.region.staff.nolonger"));
+					ply.addMailAndSave(mail);
+					for(Manageable.Staff stf : manage.staff){
+						LDPlayer stp = ResManager.getPlayer(stf.uuid, true);
+						mail = new Mail(MailType.SYSTEM, Layers.REGION, id, Layers.PLAYER, stp.uuid).expireInDays(7);
+						mail.setTitle(name()).addMessage(translate("mail.region.staff.removed", staff.getPlayerName()));
+						stp.addMailAndSave(mail);
+					}
+					Announcer.announce(Announcer.Target.REGION, id, "announce.region.staff.removed", staff.getPlayerName(), name(), id);
+				}
+				container.open(UI_STAFF_LIST);
+				return;
+			}
+			case "staff.setmanager":{
+				if(!player.adm && !canman) return;
+				Manageable.Staff staff = manage.getStaff(req.getUUIDField());
+				if(staff != null){
+					manage.setManager(staff.uuid);
+					LDPlayer ply = ResManager.getPlayer(staff.uuid, true);
+					Mail mail = new Mail(MailType.SYSTEM, Layers.REGION, id, Layers.PLAYER, ply.uuid).expireInDays(7);
+					mail.setTitle(name()).addMessage(translate("mail.region.manager_now"));
+					ply.addMailAndSave(mail);
+					save();
+					for(Manageable.Staff stf : manage.staff){
+						LDPlayer stp = ResManager.getPlayer(stf.uuid, true);
+						mail = new Mail(MailType.SYSTEM, Layers.REGION, id, Layers.PLAYER, stp.uuid).expireInDays(7);
+						mail.setTitle(name()).addMessage(translate("mail.region.manager_set", staff.getPlayerName()));
+						stp.addMailAndSave(mail);
+					}
+					Announcer.announce(Announcer.Target.REGION, id, "announce.region.manager_set", staff.getPlayerName(), name(), id);
+				}
+				container.open(UI_MAIN);
+				return;
+			}
+			//
 			case "norm_submit":{
 				if(!canman) return;
 				NormModule.processNorm(norms, container, req, UI_NORM_EDIT);
@@ -235,7 +345,35 @@ public class Region implements Saveable, Layer, LDUIModule {
 			}
 		}
 		if(NormModule.isNormReq(norms, container, req, UI_NORM_EDIT, id)) return;
+		if(req.event().startsWith("staff.edit.")){
+			Manageable.Staff staff = manage.getStaff(UUID.fromString(req.event().substring("staff.edit.".length())));
+			if(staff == null) return;
+			container.open(UI_STAFF_EDIT, id, manage.staff.indexOf(staff));
+			return;
+		}
+		if(req.event().startsWith("staff.permission.")){
+			if(!canman) return;
+			Manageable.Staff staff = manage.getStaff(req.getUUIDField());
+			if(manage.isManager(staff)){
+				container.msg("staff.permissions.ismanager");
+				return;
+			}
+			PermAction action = PermAction.get(req.event().substring("staff.permission.".length()).toUpperCase());
+			if(action == null) return;
+			staff.actions.put(action, !staff.actions.get(action));
+			container.open(UI_STAFF_EDIT);
+			return;
+		}
 		external.on_interact(container, req);
+	}
+
+	private boolean isCitizen(UUID uuid){
+		County ct;
+		for(int i = 0; i < counties.size(); i++){
+			ct = ResManager.getCounty(i, true);
+			if(ct.citizens.isCitizen(uuid)) return true;
+		}
+		return false;
 	}
 
 }
