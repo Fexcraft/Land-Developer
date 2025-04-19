@@ -72,6 +72,10 @@ public class LDCmd extends CommandBase {
 					Print.chat(sender, TranslationUtil.translateCmd("fees_ct_server", getWorthAsString(sf)));
 					Print.chat(sender, TranslationUtil.translateCmd("fees_ct_region", getWorthAsString(cf)));
 					Print.chat(sender, TranslationUtil.translateCmd("fees_ct_total", getWorthAsString(sf + cf)));
+					sf = LDConfig.REGION_CREATION_FEE;
+					Print.chat(sender, TranslationUtil.translateCmd("fees_region"));
+					Print.chat(sender, TranslationUtil.translateCmd("fees_rg_server", getWorthAsString(sf)));
+					Print.chat(sender, TranslationUtil.translateCmd("fees_rg_total", getWorthAsString(sf)));
 	        		return;
 	    		}
 	    		case "admin":{
