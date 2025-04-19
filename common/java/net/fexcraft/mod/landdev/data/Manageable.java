@@ -139,6 +139,11 @@ public class Manageable implements Saveable, PermInteractive {
 		staff.add(new Staff(player.uuid, actions));
 	}
 
+	public void add(UUID uuid){
+		if(staff == null) return;
+		staff.add(new Staff(uuid, actions));
+	}
+
 	public void setManager(LDPlayer player){
 		manager = player.uuid;
 	}
