@@ -626,16 +626,6 @@ public class County implements Saveable, Layer, LDUIModule {
 				return;
 			}
 			//
-			case "norm_submit":{
-				if(!canman) return;
-				NormModule.processNorm(norms, container, req, UI_NORM_EDIT);
-				return;
-			}
-			case "norm_bool":{
-				if(!canman) return;
-				NormModule.processBool(norms, container, req, UI_NORM_EDIT);
-				return;
-			}
 			case "create.submit":{
 				Chunk_ chunk = ResManager.getChunk(container.ldp.entity);
 				Region region = chunk.district.region();
@@ -758,6 +748,17 @@ public class County implements Saveable, Layer, LDUIModule {
 				player.entity.closeUI();
 				player.entity.send(translate("gui.county.create.complete"));
 				Announcer.announce(Announcer.Target.GLOBAL, 0, "announce.county.created", name, newid);
+				return;
+			}
+			//
+			case "norm_submit":{
+				if(!canman) return;
+				NormModule.processNorm(norms, container, req, UI_NORM_EDIT);
+				return;
+			}
+			case "norm_bool":{
+				if(!canman) return;
+				NormModule.processBool(norms, container, req, UI_NORM_EDIT);
 				return;
 			}
 			case "appearance.submit":{
