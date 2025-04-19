@@ -1,6 +1,7 @@
 package net.fexcraft.mod.landdev.util;
 
 import net.fexcraft.app.json.JsonMap;
+import net.fexcraft.app.json.JsonValue;
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.mod.fsmm.util.Config;
@@ -29,10 +30,12 @@ public class LDConfig extends ConfigBase {
 	public static boolean SAVE_SPACED_JSON;
 	public static boolean PROTECT_WILDERNESS;
 	public static boolean EDIT_WILDERNESS;
+	public static boolean NEW_REGIONS;
 	public static boolean LOCUP_SIDE;
 	public static boolean SAVE_CHUNKS_IN_REGIONS;
 	public static boolean RUN_LOCATION_EVENT;
 	public static long DEFAULT_CHUNK_PRICE;
+	public static long REGION_CREATION_FEE;
 	public static long COUNTY_CREATION_FEE;
 	public static long MUNICIPALITY_CREATION_FEE;
 	public static long DISTRICT_CREATION_FEE;
@@ -125,22 +128,31 @@ public class LDConfig extends ConfigBase {
 			.info("Minimum chunk distance between Municipality centers.")
 			.cons((con, map) -> MIN_MUN_DIS = con.getInteger(map))
 		);
+		entries.add(new ConfigEntry(this, GENERAL_CAT, "allow_new_regions", true)
+			.info("If new LD Region Layers can be created (/rg create).")
+			.cons((con, map) -> NEW_REGIONS = con.getBoolean(map))
+			.req(false, false)
+		);
 		//
-		entries.add(new ConfigEntry(this, PRICES_CAT, "default_chunk", 100000).rang(0, 1000000000)
+		entries.add(new ConfigEntry(this, PRICES_CAT, "default_chunk", 100000)
 			.info("Default price for unclaimed chunks. (1000 = 1$)")
-			.cons((con, map) -> DEFAULT_CHUNK_PRICE = con.getInteger(map))
+			.cons((con, map) -> DEFAULT_CHUNK_PRICE = Math.max(0, ((JsonValue)con.getJson(map)).long_value()))
 		);
-		entries.add(new ConfigEntry(this, PRICES_CAT, "create_district", 5000000).rang(0, Integer.MAX_VALUE)
+		entries.add(new ConfigEntry(this, PRICES_CAT, "create_district", 5000000)
 			.info("Server fee for creating a district.")
-			.cons((con, map) -> DISTRICT_CREATION_FEE = con.getInteger(map))
+			.cons((con, map) -> DISTRICT_CREATION_FEE = Math.max(0, ((JsonValue)con.getJson(map)).long_value()))
 		);
-		entries.add(new ConfigEntry(this, PRICES_CAT, "create_municipality", 25000000).rang(0, Integer.MAX_VALUE)
+		entries.add(new ConfigEntry(this, PRICES_CAT, "create_municipality", 25000000)
 			.info("Server fee for creating a municipality, half of it goes to the new Municipality.")
-			.cons((con, map) -> MUNICIPALITY_CREATION_FEE = con.getInteger(map))
+			.cons((con, map) -> MUNICIPALITY_CREATION_FEE = Math.max(0, ((JsonValue)con.getJson(map)).long_value()))
 		);
-		entries.add(new ConfigEntry(this, PRICES_CAT, "create_county", 250000000).rang(0, Integer.MAX_VALUE)
+		entries.add(new ConfigEntry(this, PRICES_CAT, "create_county", 250000000)
 			.info("Server fee for creating a county, half of it goes to the new County.")
-			.cons((con, map) -> COUNTY_CREATION_FEE = con.getInteger(map))
+			.cons((con, map) -> COUNTY_CREATION_FEE = Math.max(0, ((JsonValue)con.getJson(map)).long_value()))
+		);
+		entries.add(new ConfigEntry(this, PRICES_CAT, "create_region", 2500000000l)
+			.info("Server fee for creating a region, half of it goes to the new Region.")
+			.cons((con, map) -> REGION_CREATION_FEE = Math.max(0, ((JsonValue)con.getJson(map)).long_value()))
 		);
 		//
 		entries.add(new ConfigEntry(this, TAX_CAT, "enabled", true)
