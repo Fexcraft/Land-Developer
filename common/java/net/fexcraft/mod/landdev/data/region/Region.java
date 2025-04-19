@@ -5,6 +5,7 @@ import static net.fexcraft.mod.landdev.ui.LDKeys.MAILBOX;
 import static net.fexcraft.mod.landdev.ui.LDUIButton.*;
 import static net.fexcraft.mod.landdev.ui.LDUIButton.OPEN;
 import static net.fexcraft.mod.landdev.ui.LDUIRow.*;
+import static net.fexcraft.mod.landdev.util.ResManager.*;
 import static net.fexcraft.mod.landdev.util.TranslationUtil.translate;
 
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ import net.fexcraft.mod.fsmm.util.DataManager;
 import net.fexcraft.mod.landdev.data.*;
 import net.fexcraft.mod.landdev.data.county.County;
 import net.fexcraft.mod.landdev.data.hooks.ExternalData;
+import net.fexcraft.mod.landdev.data.municipality.Municipality;
 import net.fexcraft.mod.landdev.data.norm.BoolNorm;
 import net.fexcraft.mod.landdev.data.norm.FloatNorm;
 import net.fexcraft.mod.landdev.data.norm.IntegerNorm;
@@ -195,6 +197,35 @@ public class Region implements Saveable, Layer, LDUIModule {
 				resp.addButton("appearance", ELM_YELLOW, OPEN);
 				return;
 			}
+			//
+			case UI_COUNTY_LIST:{
+				resp.setTitle("region.county.title");
+				resp.addRow("id", ELM_GENERIC, id);
+				resp.addRow("seat", ELM_GENERIC, seat >= 0 ? ResManager.getMunicipalityName(seat) : "");
+				resp.addBlank();
+				resp.addRow("county.list", ELM_YELLOW);
+				for(int id : counties){
+					resp.addButton("county.edit." + id, ELM_GENERIC, OPEN, VALONLY + getCountyName(id));
+				}
+				return;
+			}
+			case UI_COUNTY_EDIT:{
+				resp.setTitle("region.county.edit.title");
+				County ct = getCounty(counties.get(container.pos.z), true);
+				resp.addRow("county.name", ELM_GENERIC, ct.name());
+				resp.addRow("county.id", ELM_GENERIC, ct.id);
+				resp.addButton("county.goto", ELM_GENERIC, OPEN, ct.id);
+				resp.addHiddenField("ct-id", ct.id);
+				if(canman){
+					resp.addBlank();
+					resp.addButton("county.setmain", ELM_GREEN, OPEN);
+					resp.addBlank();
+					resp.addButton("county.remove", ELM_RED, REM);
+				}
+				resp.setNoSubmit();
+				return;
+			}
+			//
 			case UI_STAFF_EDIT:{
 				resp.setTitle("region.staff.edit.title");
 				Manageable.Staff staff = manage.staff.get(container.pos.z);
@@ -266,6 +297,43 @@ public class Region implements Saveable, Layer, LDUIModule {
 			case "mailbox": if(canman) container.open(MAILBOX, getLayer().ordinal(), id, 0); return;
 			case "norms": container.open(UI_NORMS); return;
 			case "appearance": container.open(UI_APPREARANCE); return;
+			//
+			case "county.goto":{
+				int mun = req.getFieldInt("ct-id");
+				if(!counties.contains(mun)) return;
+				container.open(LDKeys.MUNICIPALITY, 0, mun, 0);
+				return;
+			}
+			case "county.setmain":{
+				if(!canman) return;
+				int ct = req.getFieldInt("ct-id");
+				if(!counties.contains(ct)) return;
+				County cty = ResManager.getCounty(ct, true);
+				if(cty.region.id != id) return;
+				seat = cty.id;
+				container.open(UI_COUNTY_LIST);
+				return;
+			}
+			case "county.remove":{
+				if(!canman) return;
+				int ct = req.getFieldInt("ct-id");
+				if(!counties.contains(ct)) return;
+				if(counties.size() < 2){
+					container.msg("county.only_one");
+					return;
+				}
+				if(seat == ct){
+					container.msg("county.setnew");
+					return;
+				}
+				County cty = ResManager.getCounty(ct, true);
+				cty.region = ResManager.getRegion(-1, true);
+				cty.save();
+				save();
+				Announcer.announce(Announcer.Target.MUNICIPALITY, id, "announce.region.county.removed", cty.name(), name(), id);
+				container.open(UI_COUNTY_LIST);
+				return;
+			}
 			//
 			case "staff.add":{
 				container.open(UI_STAFF_ADD);
