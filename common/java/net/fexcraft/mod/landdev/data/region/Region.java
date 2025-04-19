@@ -15,12 +15,13 @@ import java.util.UUID;
 import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.mod.fsmm.data.Account;
+import net.fexcraft.mod.fsmm.data.Bank;
 import net.fexcraft.mod.fsmm.util.Config;
 import net.fexcraft.mod.fsmm.util.DataManager;
 import net.fexcraft.mod.landdev.data.*;
+import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.data.county.County;
 import net.fexcraft.mod.landdev.data.hooks.ExternalData;
-import net.fexcraft.mod.landdev.data.municipality.Municipality;
 import net.fexcraft.mod.landdev.data.norm.BoolNorm;
 import net.fexcraft.mod.landdev.data.norm.FloatNorm;
 import net.fexcraft.mod.landdev.data.norm.IntegerNorm;
@@ -34,6 +35,7 @@ import net.fexcraft.mod.landdev.ui.modules.ModuleRequest;
 import net.fexcraft.mod.landdev.ui.modules.ModuleResponse;
 import net.fexcraft.mod.landdev.ui.modules.NormModule;
 import net.fexcraft.mod.landdev.util.Announcer;
+import net.fexcraft.mod.landdev.util.LDConfig;
 import net.fexcraft.mod.landdev.util.ResManager;
 
 public class Region implements Saveable, Layer, LDUIModule {
@@ -275,6 +277,22 @@ public class Region implements Saveable, Layer, LDUIModule {
 				NormModule.respNormEdit(norms, container, resp, "region", canman);
 				return;
 			}
+			case UI_CREATE:
+				resp.setTitle("region.create.title");
+				Chunk_ chunk = ResManager.getChunk(container.ldp.entity);
+				Region region = chunk.district.region();
+				boolean rn = LDConfig.NEW_REGIONS;
+				boolean pp = container.ldp.hasPermit(CREATE_COUNTY, region.getLayer(), region.id);
+				if(!rn && !pp){
+					resp.addRow("create.no_perm", ELM_GENERIC, BLANK);
+					return;
+				}
+				resp.addRow("create.name", ELM_GENERIC);
+				resp.addField("create.name_field");
+				resp.addButton("create.submit", ELM_BLUE, OPEN);
+				resp.setFormular();
+				resp.setNoBack();
+				return;
 		}
 		external.sync_packet(container, resp);
 	}
@@ -398,6 +416,75 @@ public class Region implements Saveable, Layer, LDUIModule {
 					Announcer.announce(Announcer.Target.REGION, id, "announce.region.manager_set", staff.getPlayerName(), name(), id);
 				}
 				container.open(UI_MAIN);
+				return;
+			}
+			//
+			case "create.submit":{
+				Chunk_ chunk = ResManager.getChunk(container.ldp.entity);
+				Region region = chunk.district.region();
+				County ct = chunk.district.county();
+				boolean pp = player.hasPermit(CREATE_REGION, region.getLayer(), region.id);
+				if(!player.adm){
+					if(ct.region.id >= 0){
+						container.msg("create.already_in_region");
+						return;
+					}
+					if(!player.isCountyManager()){
+						container.msg("create.not_county_manager");
+						return;
+					}
+					if(ct.id != player.county.id){
+						container.msg("create.not_in_county");
+						return;
+					}
+					if(!LDConfig.NEW_REGIONS && !pp){
+						container.msg("create.new_regions_disabled");
+						container.msg("create.no_perm");
+						return;
+					}
+				}
+				if(ct.id < 0){
+					container.msg("create.invalid_county");
+					return;
+				}
+				long sum = LDConfig.REGION_CREATION_FEE;
+				String name = req.getField("create.name_field");
+				if(!validateName(container, name)) return;
+				if(!player.adm && ct.account.getBalance() < sum){
+					container.msg("create.not_enough_money");
+					return;
+				}
+				//todo notifications
+				int newid = ResManager.getNewIdFor(saveTable()), ndid = -2;
+				if(newid < 0){
+					player.entity.send("DB ERROR, INVALID NEW ID '" + newid + "'!");
+					return;
+				}
+				if(!player.adm && !ct.account.getBank().processAction(Bank.Action.TRANSFER, player.entity, ct.account, sum, SERVER_ACCOUNT)){
+					return;
+				}
+				Region reg = new Region(newid);
+				reg.created.create(player.uuid);
+				ResManager.RG_CENTERS.put(reg.id, chunk.key);
+				reg.gendef();
+				ResManager.REGIONS.put(reg.id, reg);
+				reg.norms.get("name").set(name);
+				reg.counties.add(ct.id);
+				ct.region = reg;
+				UUID uuid = ct.manage.getManager();
+				if(player.adm && uuid != null){
+					reg.manage.add(uuid);
+					reg.manage.setManager(uuid);
+				}
+				else{
+					reg.manage.add(player);
+					reg.manage.setManager(player);
+				}
+				if(!player.adm) SERVER_ACCOUNT.getBank().processAction(Bank.Action.TRANSFER, null, SERVER_ACCOUNT, LDConfig.COUNTY_CREATION_FEE / 2, reg.account);
+				ResManager.bulkSave(reg, ct, player);
+				player.entity.closeUI();
+				player.entity.send(translate("gui.region.create.complete"));
+				Announcer.announce(Announcer.Target.GLOBAL, 0, "announce.region.created", name, newid);
 				return;
 			}
 			//
