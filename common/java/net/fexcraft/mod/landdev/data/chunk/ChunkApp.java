@@ -33,8 +33,9 @@ public class ChunkApp implements Appendable<UniChunk> {
 
 	@Override
 	public Appendable<UniChunk> create(UniChunk type){
+		if(type.chunk.isOnClient()) return null;
 		if(!FSMM.isDataManagerLoaded()) FSMM.loadDataManager();
-		return type.chunk.isOnClient() ? null : new ChunkApp(type);
+		return new ChunkApp(type);
 	}
 
 	@Override
