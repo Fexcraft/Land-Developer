@@ -1,0 +1,36 @@
+{
+	"schemaVersion": 1,
+	"id": "landdev",
+	"version": "${version}",
+	"name": "Land Developer",
+	"description": "Multi-Layer Terrain Protection Mod with some economy relevant functionality.",
+	"authors": [
+		"FEX___96"
+	],
+	"contact": {
+		"homepage": "https://fexcraft.net/",
+		"sources": "https://github.com/Fexcraft/land-developer"
+	},
+	"license": "https://fexcraft.net/license?id=mods",
+	"icon": "assets/landdev/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"net.fexcraft.mod.landdev.LandDev"
+		]
+	},
+	"mixins": [
+		"landdev.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.16.14",
+		"minecraft": "~1.21.5",
+		"java": ">=21",
+		"fabric-api": "*",
+		"fcl": "*",
+		"fsmm": "*"
+	},
+	"suggests": {
+		"fvtm": "*"
+	}
+}

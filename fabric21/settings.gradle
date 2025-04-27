@@ -1,0 +1,15 @@
+pluginManagement {
+	repositories {
+		maven {
+			name = 'Fabric'
+			url = 'https://maven.fabricmc.net/'
+		}
+		mavenCentral()
+		gradlePluginPortal()
+	}
+}
+
+include ':FCL'
+project(':FCL').projectDir = new File('../../GitHub/FCL/fabric21')
+include ':FSMM'
+project(':FSMM').projectDir = new File('../../GitHub/FSMM/fabric21')
