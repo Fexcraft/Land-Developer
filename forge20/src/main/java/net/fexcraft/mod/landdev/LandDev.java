@@ -171,9 +171,9 @@ public class LandDev {
 		CHANNEL.send(PacketDistributor.PLAYER.with(entity::local), new UIPacket(com.local()));
 	}
 
-	public static void sendToAll(CompoundTag com){
+	public static void sendToAll(TagCW com){
 		try{
-			CHANNEL.send(PacketDistributor.ALL.noArg(), new UIPacket(com));
+			CHANNEL.send(PacketDistributor.ALL.noArg(), new UIPacket(com.local()));
 		}
 		catch(Throwable e){
 			e.printStackTrace();
