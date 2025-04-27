@@ -2,7 +2,9 @@
 	"required": true,
 	"package": "net.fexcraft.mod.landdev.mixin",
 	"compatibilityLevel": "JAVA_21",
-	"mixins": [],
+	"mixins": [
+		"BlockItemMixin"
+	],
 	"injectors": {
 		"defaultRequire": 1
 	}
