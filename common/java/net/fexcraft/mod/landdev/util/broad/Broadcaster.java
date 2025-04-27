@@ -4,8 +4,6 @@ import static net.fexcraft.mod.landdev.util.broad.BroadcastChannel.CHAT;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.annotation.Nullable;
-
 import net.fexcraft.mod.landdev.data.player.LDPlayer;
 import net.fexcraft.mod.landdev.util.LDConfig;
 
@@ -35,7 +33,7 @@ public class Broadcaster {
 
 	public static interface Transmitter {
 		
-		public void transmit(String channel, String sender, String msg, @Nullable Object[] args);
+		public void transmit(String channel, String sender, String msg, Object[] args);
 
 		public default boolean internal(){ return false; }
 		
