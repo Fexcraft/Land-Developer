@@ -17,6 +17,9 @@
 	"entrypoints": {
 		"main": [
 			"net.fexcraft.mod.landdev.LandDev"
+		],
+		"client": [
+			"net.fexcraft.mod.landdev.LandDevCl"
 		]
 	},
 	"mixins": [
