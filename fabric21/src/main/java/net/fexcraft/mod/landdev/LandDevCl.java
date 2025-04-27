@@ -1,12 +1,14 @@
 package net.fexcraft.mod.landdev;
 
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.mod.fcl.FCL;
 import net.fexcraft.mod.landdev.util.LDConfig;
+import net.fexcraft.mod.landdev.util.LocationUpdate;
 import net.fexcraft.mod.uni.tag.TagLW;
 import net.minecraft.client.Minecraft;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 
 import static net.fexcraft.mod.uni.ui.ContainerInterface.transformat;
@@ -22,9 +24,9 @@ public class LandDevCl implements ClientModInitializer {
 			switch(com.getString("task")){
 				case "location_update":{
 					int time = com.has("time") ? com.getInteger("time") : 10;
-					/*LocationUpdate.clear(Time.getDate() + (time * 1000));
+					LocationUpdate.clear(Time.getDate() + (time * 1000));
 					LocationUpdate.loadIcons(com.getList("icons").local());
-					LocationUpdate.loadLines(com.getList("lines").local());*/
+					LocationUpdate.loadLines(com.getList("lines").local());
 					return;
 				}
 				case "chat_message":{
@@ -45,6 +47,9 @@ public class LandDevCl implements ClientModInitializer {
 					return;
 				}
 			}
+		});
+		HudLayerRegistrationCallback.EVENT.register(reg -> {
+			reg.attachLayerAfter(IdentifiedLayer.HOTBAR_AND_BARS, new LocationUpdate());
 		});
 	}
 
