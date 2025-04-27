@@ -5,18 +5,12 @@ import net.fexcraft.mod.landdev.ui.ChunkClaimUI;
 import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.IDLManager;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.texture.SimpleTexture;
-import net.minecraft.client.renderer.texture.TextureContents;
-import net.minecraft.client.resources.metadata.texture.TextureMetadataSection;
+import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.MapColor;
-
-import java.io.IOException;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -33,46 +27,33 @@ public class ClaimMapTexture {
 		ui.drawer.bind(temptexid);
 	}
 
-	public static class TempTex extends SimpleTexture {
+	public static class TempTex extends DynamicTexture {
 
 		private static MutableBlockPos pos = new MutableBlockPos();
 		private static final int grid = 15 * 16;
-		private NativeImage image = new NativeImage(256, 256, true);
-		private Level world;
 		private int sx, sz;
 
 		public TempTex(ResourceLocation rs, int x, int z){
-			super(rs);
-			world = Minecraft.getInstance().level;
+			super(rs::toString, new NativeImage(256, 256, true));
 			sx = (x - 7) * 16;
 			sz = (z - 7) * 16;
 		}
 
 		@Override
-		public TextureContents loadContents(ResourceManager resman) throws IOException {
+		public void upload(){
 			for(int i = 0; i < grid; i++){
 				for(int j = 0; j < grid; j++){
 					checkPos(i + sx, j + sz);
-					BlockState state = world.getBlockState(pos);
-					image.setPixelABGR(i, j, state.getMapColor(world, pos).calculateARGBColor(MapColor.Brightness.NORMAL));
+					BlockState state = Minecraft.getInstance().level.getBlockState(pos);
+					getPixels().setPixelABGR(i, j, state.getMapColor(Minecraft.getInstance().level, pos).calculateARGBColor(MapColor.Brightness.NORMAL));
 				}
 			}
-			/*if(!RenderSystem.isOnRenderThread()){
-				RenderSystem.recordRenderCall(() -> {
-					TextureUtil.prepareImage(getId(), 0, image.getWidth(), image.getHeight());
-					image.upload(0, 0, 0, true);
-				});
-			}
-			else{
-				TextureUtil.prepareImage(getId(), 0, image.getWidth(), image.getHeight());
-				image.upload(0, 0, 0, true);
-			}*/
-			return new TextureContents(image,  new TextureMetadataSection(false, false));
+			super.upload();
 		}
 
 		private BlockPos checkPos(int x, int z){
-			for(int i = world.getHeight(); i > 0; i--){
-				if(!world.getBlockState(pos.set(x, i, z)).canBeReplaced()) return pos;
+			for(int i = Minecraft.getInstance().level.getHeight(); i > 0; i--){
+				if(!Minecraft.getInstance().level.getBlockState(pos.set(x, i, z)).canBeReplaced()) return pos;
 			}
 			return new BlockPos(x, 0, z);
 		}
