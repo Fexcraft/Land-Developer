@@ -84,12 +84,12 @@ public class LandDev implements ModInitializer {
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> LDN.onServerStop());
 
 		ServerChunkEvents.CHUNK_LOAD.register((level, chunk) -> {
-			if(level != level.getServer().overworld()) return;
+			if(level != FCL.SERVER.get().overworld()) return;
 			if(!ResManager.INSTANCE.LOADED) load(level);
 			UniChunk.get(chunk);
 		});
 		ServerChunkEvents.CHUNK_UNLOAD.register((level, lvlck) -> {
-			if(level != level.getServer().overworld()) return;
+			if(level != FCL.SERVER.get().overworld()) return;
 			Chunk_ chunk = ResManager.getChunk(lvlck.getPos().x, lvlck.getPos().z);
 			if(chunk != null) ResManager.remChunk(lvlck.getPos().x, lvlck.getPos().z);
 		});
@@ -149,30 +149,30 @@ public class LandDev implements ModInitializer {
 			}
 		});
 		PlayerBlockBreakEvents.BEFORE.register((level, player, pos, state, ent) -> {
-			if(level != level.getServer().overworld()) return false;
+			if(level != FCL.SERVER.get().overworld()) return false;
 			if(!control(pos.getX(), pos.getY(), pos.getZ(), player, false)){
 				UniEntity.getEntity(player).bar("interact.break.noperm");
-				return true;
+				return false;
 			}
-			return false;
+			return true;
 		});
-		UseBlockCallback.EVENT.register((player, level, hand, hit) -> {
-			if(level != level.getServer().overworld()) return InteractionResult.PASS;
+		/*UseBlockCallback.EVENT.register((player, level, hand, hit) -> {
+			if(level != FCL.SERVER.get().overworld()) return InteractionResult.PASS;
 			if(hand == InteractionHand.OFF_HAND) return InteractionResult.PASS;
 			BlockState state = level.getBlockState(hit.getBlockPos());
 			boolean check = state.getBlock() instanceof SignBlock == false && Protector.INSTANCE.isProtected(state);
 			if(check && !control(hit.getBlockPos().getX(), hit.getBlockPos().getY(), hit.getBlockPos().getZ(), player, true)){
 				UniEntity.getEntity(player).bar("interact.interact.noperm");
-				return InteractionResult.PASS;
+				return InteractionResult.FAIL;
 			}
 			return InteractionResult.SUCCESS;
-		});
+		});*/
 		CommandRegistrationCallback.EVENT.register((dis, ctx, sel) -> regCmd(dis));
 	}
 
 	private static void load(Level level){
 		if(!FSMM.isDataManagerLoaded()) FSMM.loadDataManager();
-		SAVE_DIR = new File(level.getServer().getServerDirectory().toFile(), "landdev/");
+		SAVE_DIR = new File(FCL.SERVER.get().getServerDirectory().toFile(), "landdev/");
 		ResManager.INSTANCE.load();
 	}
 
