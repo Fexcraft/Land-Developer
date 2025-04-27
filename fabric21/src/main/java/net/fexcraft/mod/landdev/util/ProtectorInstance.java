@@ -2,12 +2,14 @@ package net.fexcraft.mod.landdev.util;
 
 import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonMap;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 public abstract class ProtectorInstance {
 
@@ -31,8 +33,13 @@ public abstract class ProtectorInstance {
 
 		public Default(JsonArray array){
 			array.value.forEach(elm -> {
-				Block block = BuiltInRegistries.BLOCK.get(ResourceLocation.parse(elm.string_value())).get().value();
-				if(block != null) blocks.add(block);
+				try{
+					Optional<Holder.Reference<Block>> block = BuiltInRegistries.BLOCK.get(ResourceLocation.parse(elm.string_value()));
+					if(block.isPresent()) blocks.add(block.get().value());
+				}
+				catch(Exception e){
+					e.printStackTrace();
+				}
 			});
 		}
 
