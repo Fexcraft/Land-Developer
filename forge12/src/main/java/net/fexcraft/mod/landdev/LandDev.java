@@ -101,5 +101,10 @@ public class LandDev {
 		com.set("target_listener", CLIENT_RECEIVER_ID);
 		PacketHandler.getInstance().sendTo(new PacketNBTTagCompound(com.local()), entity.local());
 	}
+
+	public static void sendToAll(TagCW com){
+		com.set("target_listener", CLIENT_RECEIVER_ID);
+		if(ResManager.INSTANCE.LOADED) PacketHandler.getInstance().sendToAll(new PacketNBTTagCompound(com.local()));
+	}
 	
 }
