@@ -36,6 +36,17 @@ landdev.cmd.player_not_staff=Selected player is not part of the Council.
 landdev.cmd.reload=&eReloaded: &7%s
 landdev.cmd.reload.complete=&eReloaded all reloadable configs.
 
+landdev.cmd.polyclaim.no_perm=No permission for PolyClaiming.
+landdev.cmd.polyclaim.district=District set to: %s (%s)
+landdev.cmd.polyclaim.selected=Chunk Coordinate added to list. Total: %s
+landdev.cmd.polyclaim.starting=Starting PolyClaim... this may take a while.
+landdev.cmd.polyclaim.finished=PolyClaiming complete, %s of %s chunks updated.
+landdev.cmd.polyclaim.cleared=PolyClaiming Cache cleared.
+landdev.cmd.polyclaim.status.title=PolyClaiming Cache Status
+landdev.cmd.polyclaim.status.district=District: %s (%s)
+landdev.cmd.polyclaim.status.chunks=Chunk Coordinates:
+landdev.cmd.polyclaim.status.mode=Mode: %s
+
 landdev.tax.summary.mail=Tax Interval Summary
 landdev.tax.warning.mail=Tax System Warning
 landdev.tax.unpaid_notice.mail=Tax Unpaid Notice
