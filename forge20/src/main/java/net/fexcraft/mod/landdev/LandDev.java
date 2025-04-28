@@ -9,6 +9,7 @@ import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fcl.util.ClientPacketPlayer;
 import net.fexcraft.mod.fcl.util.UIPacket;
 import net.fexcraft.mod.landdev.data.PermAction;
+import net.fexcraft.mod.landdev.data.chunk.ChunkKey;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.data.county.County;
 import net.fexcraft.mod.landdev.data.district.District;
@@ -243,8 +244,68 @@ public class LandDev {
 				player.entity.send("/ld fees");
 				player.entity.send("/ld reload");
 				player.entity.send("/ld force-tax");
+				player.entity.send("PolyClaim (Admin)");
+				player.entity.send("/ld polyclaim district <dis-id>");
+				player.entity.send("/ld polyclaim select");
+				player.entity.send("/ld polyclaim status");
+				player.entity.send("/ld polyclaim clear");
+				player.entity.send("/ld polyclaim start");
 				return 0;
 			}))
+			.then(literal("polyclaim")
+				.then(literal("district").then(argument("district", IntegerArgumentType.integer(0)).executes(cmd -> {
+					LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
+					if(!player.adm || !LDConfig.SAVE_CHUNKS_IN_REGIONS) return 0;
+					int did = IntegerArgumentType.getInteger(cmd, "district");
+					PolyClaim.setDis(player.uuid, did);
+					District dis = ResManager.getDistrict(did);
+					player.entity.send("landdev.cmd.polyclaim.district", dis.name(), dis.id);
+					return 0;
+				})))
+				.then(literal("select").executes(cmd -> {
+					LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
+					if(!player.adm || !LDConfig.SAVE_CHUNKS_IN_REGIONS) return 0;
+					int am = PolyClaim.selCnk(player.uuid, ResManager.getChunk(player.entity.getPos()));
+					player.entity.send("landdev.cmd.polyclaim.selected", am);
+					return 0;
+				}))
+				.then(literal("start").executes(cmd -> {
+					LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
+					if(!player.adm || !LDConfig.SAVE_CHUNKS_IN_REGIONS) return 0;
+					player.entity.send("landdev.cmd.polyclaim.starting");
+					int[] res = PolyClaim.process(player.uuid);
+					player.entity.send("landdev.cmd.polyclaim.finished", res[0], res[1]);
+					PolyClaim.clear(player.uuid);
+					return 0;
+				}))
+				.then(literal("status").executes(cmd -> {
+					LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
+					if(!player.adm || !LDConfig.SAVE_CHUNKS_IN_REGIONS) return 0;
+					player.entity.send("[LD] === === ===");
+					player.entity.send("landdev.cmd.polyclaim.status.title");
+					PolyClaim.PolyClaimObj obj = PolyClaim.get(player.uuid);
+					District dis = ResManager.getDistrict(obj.district);
+					if(dis.id < 0){
+						player.entity.send("landdev.cmd.polyclaim.status.district", "AUTO", -1);
+					}
+					else{
+						player.entity.send("landdev.cmd.polyclaim.status.district", dis.name(), dis.id);
+					}
+					player.entity.send("landdev.cmd.polyclaim.status.chunks");
+					for(ChunkKey key : obj.chunks){
+						player.entity.send("- " + key.comma());
+					}
+					player.entity.send("landdev.cmd.polyclaim.status.mode", obj.chunks.size() < 2 ? "PASS" : obj.chunks.size() == 2 ? "QUAD" : "POLYGON");
+					return 0;
+				}))
+				.then(literal("clear").executes(cmd -> {
+					LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
+					if(!player.adm || !LDConfig.SAVE_CHUNKS_IN_REGIONS) return 0;
+					PolyClaim.clear(player.uuid);
+					player.entity.send("landdev.cmd.polyclaim.cleared");
+					return 0;
+				}))
+			)
 			.executes(cmd -> {
 				try{
 					LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
