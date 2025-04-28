@@ -21,6 +21,7 @@ import net.fexcraft.mod.fcl.FCL;
 import net.fexcraft.mod.fcl.util.TagPacket;
 import net.fexcraft.mod.fsmm.FSMM;
 import net.fexcraft.mod.landdev.data.PermAction;
+import net.fexcraft.mod.landdev.data.chunk.ChunkKey;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.data.county.County;
 import net.fexcraft.mod.landdev.data.district.District;
@@ -37,6 +38,7 @@ import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.EntityW;
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import org.apache.commons.lang3.tuple.Pair;
@@ -96,6 +98,7 @@ public class LandDev implements ModInitializer {
 			LandDev.log("Unloading LandDev World Data...");
 			ResManager.unload();
 			ResManager.clear();
+			LandDev.log("Unloaded LandDev World Data.");
 		}));
 		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
 			LDPlayer player = ResManager.getPlayer(handler.player.getGameProfile().getId(), true);
@@ -181,7 +184,7 @@ public class LandDev implements ModInitializer {
 				LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
 				if(cmd.getSource().getServer().isSingleplayer() || isOp(cmd.getSource())){
 					player.adm = !player.adm;
-					player.entity.send(TranslationUtil.translateCmd("adminmode." + player.adm));
+					player.entity.send(translateCmd("adminmode." + player.adm));
 				}
 				else{
 					player.entity.send("\u00A7cno.permission");
@@ -210,23 +213,23 @@ public class LandDev implements ModInitializer {
 			.then(literal("fees").executes(cmd -> {
 				LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
 				Chunk_ chunk = ResManager.getChunk(player.entity);
-				player.entity.send(TranslationUtil.translateCmd("fees"));
+				player.entity.send(translateCmd("fees"));
 				long sf = LDConfig.MUNICIPALITY_CREATION_FEE;
 				long cf = chunk.district.county().norms.get("new-municipality-fee").integer();
-				player.entity.send(TranslationUtil.translateCmd("fees_municipality"));
-				player.entity.send(TranslationUtil.translateCmd("fees_mun_server"), getWorthAsString(sf));
-				player.entity.send(TranslationUtil.translateCmd("fees_mun_county"), getWorthAsString(cf));
-				player.entity.send(TranslationUtil.translateCmd("fees_mun_total"), getWorthAsString(sf + cf));
+				player.entity.send(translateCmd("fees_municipality"));
+				player.entity.send(translateCmd("fees_mun_server"), getWorthAsString(sf));
+				player.entity.send(translateCmd("fees_mun_county"), getWorthAsString(cf));
+				player.entity.send(translateCmd("fees_mun_total"), getWorthAsString(sf + cf));
 				sf = LDConfig.COUNTY_CREATION_FEE;
 				cf = chunk.district.region().norms.get("new-county-fee").integer();
-				player.entity.send(TranslationUtil.translateCmd("fees_county"));
-				player.entity.send(TranslationUtil.translateCmd("fees_ct_server"), getWorthAsString(sf));
-				player.entity.send(TranslationUtil.translateCmd("fees_ct_region"), getWorthAsString(cf));
-				player.entity.send(TranslationUtil.translateCmd("fees_ct_total"), getWorthAsString(sf + cf));
+				player.entity.send(translateCmd("fees_county"));
+				player.entity.send(translateCmd("fees_ct_server"), getWorthAsString(sf));
+				player.entity.send(translateCmd("fees_ct_region"), getWorthAsString(cf));
+				player.entity.send(translateCmd("fees_ct_total"), getWorthAsString(sf + cf));
 				sf = LDConfig.REGION_CREATION_FEE;
-				player.entity.send(TranslationUtil.translateCmd("fees_region"));
-				player.entity.send(TranslationUtil.translateCmd("fees_rg_server"), getWorthAsString(sf));
-				player.entity.send(TranslationUtil.translateCmd("fees_rg_total"), getWorthAsString(sf));
+				player.entity.send(translateCmd("fees_region"));
+				player.entity.send(translateCmd("fees_rg_server"), getWorthAsString(sf));
+				player.entity.send(translateCmd("fees_rg_total"), getWorthAsString(sf));
 				return 0;
 			}))
 			.then(literal("help").executes(cmd -> {
@@ -238,8 +241,68 @@ public class LandDev implements ModInitializer {
 				player.entity.send("/ld fees");
 				player.entity.send("/ld reload");
 				player.entity.send("/ld force-tax");
+				player.entity.send("PolyClaim (Admin)");
+				player.entity.send("/ld polyclaim district <dis-id>");
+				player.entity.send("/ld polyclaim select");
+				player.entity.send("/ld polyclaim status");
+				player.entity.send("/ld polyclaim clear");
+				player.entity.send("/ld polyclaim start");
 				return 0;
 			}))
+			.then(literal("polyclaim")
+				.then(literal("district").then(argument("district", IntegerArgumentType.integer(0)).executes(cmd -> {
+					LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
+					if(!player.adm || !LDConfig.SAVE_CHUNKS_IN_REGIONS) return 0;
+					int did = IntegerArgumentType.getInteger(cmd, "district");
+					PolyClaim.setDis(player.uuid, did);
+					District dis = ResManager.getDistrict(did);
+					player.entity.send("landdev.cmd.polyclaim.district", dis.name(), dis.id);
+					return 0;
+				})))
+				.then(literal("select").executes(cmd -> {
+					LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
+					if(!player.adm || !LDConfig.SAVE_CHUNKS_IN_REGIONS) return 0;
+					int am = PolyClaim.selCnk(player.uuid, ResManager.getChunk(player.entity.getPos()));
+					player.entity.send("landdev.cmd.polyclaim.selected", am);
+					return 0;
+				}))
+				.then(literal("start").executes(cmd -> {
+					LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
+					if(!player.adm || !LDConfig.SAVE_CHUNKS_IN_REGIONS) return 0;
+					player.entity.send("landdev.cmd.polyclaim.starting");
+					int[] res = PolyClaim.process(player.uuid);
+					player.entity.send("landdev.cmd.polyclaim.finished", res[0], res[1]);
+					PolyClaim.clear(player.uuid);
+					return 0;
+				}))
+				.then(literal("status").executes(cmd -> {
+					LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
+					if(!player.adm || !LDConfig.SAVE_CHUNKS_IN_REGIONS) return 0;
+					player.entity.send("[LD] === === ===");
+					player.entity.send("landdev.cmd.polyclaim.status.title");
+					PolyClaim.PolyClaimObj obj = PolyClaim.get(player.uuid);
+					District dis = ResManager.getDistrict(obj.district);
+					if(dis.id < 0){
+						player.entity.send("landdev.cmd.polyclaim.status.district", "AUTO", -1);
+					}
+					else{
+						player.entity.send("landdev.cmd.polyclaim.status.district", dis.name(), dis.id);
+					}
+					player.entity.send("landdev.cmd.polyclaim.status.chunks");
+					for(ChunkKey key : obj.chunks){
+						player.entity.send("- " + key.comma());
+					}
+					player.entity.send("landdev.cmd.polyclaim.status.mode", obj.chunks.size() < 2 ? "PASS" : obj.chunks.size() == 2 ? "QUAD" : "POLYGON");
+					return 0;
+				}))
+				.then(literal("clear").executes(cmd -> {
+					LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
+					if(!player.adm || !LDConfig.SAVE_CHUNKS_IN_REGIONS) return 0;
+					PolyClaim.clear(player.uuid);
+					player.entity.send("landdev.cmd.polyclaim.cleared");
+					return 0;
+				}))
+			)
 			.executes(cmd -> {
 				try{
 					LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
