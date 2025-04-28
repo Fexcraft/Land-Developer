@@ -39,7 +39,6 @@ import net.fexcraft.mod.uni.world.EntityW;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.level.Level;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,24 +62,28 @@ public class LandDev implements ModInitializer {
 
 	public static final Logger LOGGER = LoggerFactory.getLogger("landdev");
 	public static final Object VERSION = "1.4.2";
-	public static File SAVE_DIR = new File("./landdev/");
+	public static File SAVE_DIR;
 
 	@Override
 	public void onInitialize(){
-		LDN.preinit(FabricLoader.getInstance().getConfigDir().toFile());
+		LDN.preinit(FabricLoader.getInstance().getConfigDir().toAbsolutePath().toFile());
 		LDN.init(this);
 		LDN.postinit();
 
+		LDConfig.SAVE_CHUNKS_IN_REGIONS = true;
 		FCL.addListener("landdev", false, (com, player) -> {});
 
-		ServerLifecycleEvents.SERVER_STARTING.register(server -> LDN.onServerStarting());
+		ServerLifecycleEvents.SERVER_STARTING.register(server -> {
+			LDN.onServerStarting();
+			loadResManager();
+		});
 		ServerLifecycleEvents.SERVER_STARTED.register(server -> LDN.onServerStarted());
 		ServerLifecycleEvents.SERVER_STOPPING.register(server -> LDN.onServerStopping());
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> LDN.onServerStop());
 
 		ServerChunkEvents.CHUNK_LOAD.register((level, chunk) -> {
 			if(level != FCL.SERVER.get().overworld()) return;
-			if(!ResManager.INSTANCE.LOADED) load(level);
+			loadResManager();
 			UniChunk.get(chunk);
 		});
 		ServerChunkEvents.CHUNK_UNLOAD.register((level, lvlck) -> {
@@ -165,9 +168,10 @@ public class LandDev implements ModInitializer {
 		CommandRegistrationCallback.EVENT.register((dis, ctx, sel) -> regCmd(dis));
 	}
 
-	private static void load(Level level){
+	private void loadResManager(){
+		if(ResManager.INSTANCE.LOADED) return;
 		if(!FSMM.isDataManagerLoaded()) FSMM.loadDataManager();
-		SAVE_DIR = new File(FCL.SERVER.get().getServerDirectory().toFile(), "landdev/");
+		SAVE_DIR = new File(FCL.SERVER.get().getServerDirectory().toAbsolutePath().toFile(), "landdev/");
 		ResManager.INSTANCE.load();
 	}
 
