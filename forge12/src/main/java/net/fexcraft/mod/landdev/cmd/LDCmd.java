@@ -15,7 +15,9 @@ import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.landdev.data.Layers;
 import net.fexcraft.mod.landdev.data.Mail;
 import net.fexcraft.mod.landdev.data.MailType;
+import net.fexcraft.mod.landdev.data.chunk.ChunkKey;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
+import net.fexcraft.mod.landdev.data.district.District;
 import net.fexcraft.mod.landdev.data.player.LDPlayer;
 import net.fexcraft.mod.landdev.ui.LDKeys;
 import net.fexcraft.mod.landdev.util.*;
@@ -150,15 +152,68 @@ public class LDCmd extends CommandBase {
 					TaxSystem.INSTANCE.collect(Time.getDate(), true);
 					return;
 				}
+				case "polyclaim":{
+					if(!player.adm || !LDConfig.SAVE_CHUNKS_IN_REGIONS) return;
+					switch(args[1]){
+						case "district":{
+							int did = Integer.parseInt(args[2]);
+							PolyClaim.setDis(player.uuid, did);
+							District dis = ResManager.getDistrict(did);
+							player.entity.send("landdev.cmd.polyclaim.district", dis.name(), dis.id);
+							break;
+						}
+						case "select":{
+							int am = PolyClaim.selCnk(player.uuid, ResManager.getChunk(player.entity.getPos()));
+							player.entity.send("landdev.cmd.polyclaim.selected", am);
+							break;
+						}
+						case "status":{
+							player.entity.send("[LD] === === ===");
+							player.entity.send("landdev.cmd.polyclaim.status.title");
+							PolyClaim.PolyClaimObj obj = PolyClaim.get(player.uuid);
+							District dis = ResManager.getDistrict(obj.district);
+							if(dis.id < 0){
+								player.entity.send("landdev.cmd.polyclaim.status.district", "AUTO", -1);
+							}
+							else{
+								player.entity.send("landdev.cmd.polyclaim.status.district", dis.name(), dis.id);
+							}
+							player.entity.send("landdev.cmd.polyclaim.status.chunks");
+							for(ChunkKey key : obj.chunks){
+								player.entity.send("- " + key.comma());
+							}
+							player.entity.send("landdev.cmd.polyclaim.status.mode", obj.chunks.size() < 2 ? "PASS" : obj.chunks.size() == 2 ? "QUAD" : "POLYGON");
+							break;
+						}
+						case "clear":{
+							PolyClaim.clear(player.uuid);
+							player.entity.send("landdev.cmd.polyclaim.cleared");
+							break;
+						}
+						case "start":{
+							player.entity.send("landdev.cmd.polyclaim.starting");
+							int[] res = PolyClaim.process(player.uuid);
+							player.entity.send("landdev.cmd.polyclaim.finished", res[0], res[1]);
+							PolyClaim.clear(player.uuid);
+							break;
+						}
+					}
+				}
     			case "help":
     			default:{
-	        		Print.chat(sender, "&0[&bLD&0]&6>>&2===========");
-	        		Print.chat(sender, "/ld (UI)");
-	        		Print.chat(sender, "/ld help");
-	        		Print.chat(sender, "/ld admin");
-	        		Print.chat(sender, "/ld fees");
-	        		Print.chat(sender, "/ld reload");
-	        		Print.chat(sender, "/ld force-tax");
+					player.entity.send("\u00A70[\u00A7bLD\u00A70]\u00A76>>\u00A72===========");
+					player.entity.send("/ld (UI)");
+					player.entity.send("/ld help");
+					player.entity.send("/ld admin");
+					player.entity.send("/ld fees");
+					player.entity.send("/ld reload");
+					player.entity.send("/ld force-tax");
+					player.entity.send("PolyClaim (Admin)");
+					player.entity.send("/ld polyclaim district <dis-id>");
+					player.entity.send("/ld polyclaim select");
+					player.entity.send("/ld polyclaim status");
+					player.entity.send("/ld polyclaim clear");
+					player.entity.send("/ld polyclaim start");
     				return;
     			}
     		}
