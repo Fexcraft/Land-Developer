@@ -518,7 +518,7 @@ public class Municipality implements Saveable, Layer, LDUIModule {
 					return;
 				}
 				if(player.isMunicipalityManager()){
-					manage.setManager(UUID.fromString(ResManager.CONSOLE_UUID));
+					manage.setManager(ResManager.CONSOLE_UUID);
 				}
 				player.leaveMunicipality();
 				container.open(UI_MAIN);
