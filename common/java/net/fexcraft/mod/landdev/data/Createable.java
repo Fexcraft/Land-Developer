@@ -12,19 +12,37 @@ import net.fexcraft.mod.landdev.util.ResManager;
 public class Createable implements Saveable {
 	
 	private long created, updated;
-	private UUID creator = UUID.fromString(ResManager.CONSOLE_UUID);
+	private UUID creator = ResManager.CONSOLE_UUID;
+	private boolean chunk = false;
+
+	public Createable(){}
+
+	public Createable(boolean bool){
+		chunk = bool;
+	}
 
 	@Override
 	public void load(JsonMap map){
 		created = map.getLongTime("created");
-		creator = UUID.fromString(map.getString("creator", ResManager.CONSOLE_UUID));
+		if(map.has("creator")){
+			creator = UUID.fromString(map.get("creator").string_value());
+		}
+		else if(map.has("creator0")){
+			creator = new UUID(map.getLong("creator0", 0), map.getLong("creator1", 0));
+		}
 		updated = map.getLongTime("updated");
 	}
 
 	@Override
 	public void save(JsonMap map){
 		map.add("created", created);
-		map.add("creator", creator.toString());
+		if(!creator.equals(ResManager.CONSOLE_UUID)){
+			if(chunk){
+				map.add("creator0", creator.getMostSignificantBits());
+				map.add("creator1", creator.getLeastSignificantBits());
+			}
+			else map.add("creator", creator.toString());
+		}
 		map.add("updated", updated);
 	}
 	
