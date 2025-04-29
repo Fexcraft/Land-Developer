@@ -157,43 +157,23 @@ public class LDCmd extends CommandBase {
 					switch(args[1]){
 						case "district":{
 							int did = Integer.parseInt(args[2]);
-							PolyClaim.setDis(player.uuid, did);
-							District dis = ResManager.getDistrict(did);
-							player.entity.send("landdev.cmd.polyclaim.district", dis.name(), dis.id);
+							PolyClaim.setDis(player, did);
 							break;
 						}
 						case "select":{
-							int am = PolyClaim.selCnk(player.uuid, ResManager.getChunk(player.entity.getPos()));
-							player.entity.send("landdev.cmd.polyclaim.selected", am);
+							PolyClaim.selCnk(player, ResManager.getChunk(player.entity.getPos()));
 							break;
 						}
 						case "status":{
-							player.entity.send("[LD] === === ===");
-							player.entity.send("landdev.cmd.polyclaim.status.title");
-							PolyClaim.PolyClaimObj obj = PolyClaim.get(player.uuid);
-							District dis = ResManager.getDistrict(obj.district);
-							if(dis.id < 0){
-								player.entity.send("landdev.cmd.polyclaim.status.district", "AUTO", "-1/" + player.chunk_current.district.id);
-							}
-							else{
-								player.entity.send("landdev.cmd.polyclaim.status.district", dis.name(), dis.id);
-							}
-							player.entity.send("landdev.cmd.polyclaim.status.chunks");
-							for(ChunkKey key : obj.chunks){
-								player.entity.send("- " + key.comma());
-							}
-							player.entity.send("landdev.cmd.polyclaim.status.mode", obj.chunks.size() < 2 ? "PASS" : obj.chunks.size() == 2 ? "QUAD" : "POLYGON");
+							PolyClaim.status(player);
 							break;
 						}
 						case "clear":{
-							PolyClaim.clear(player.uuid);
-							player.entity.send("landdev.cmd.polyclaim.cleared");
+							PolyClaim.clear(player);
 							break;
 						}
 						case "start":{
-							player.entity.send("landdev.cmd.polyclaim.starting");
-							int[] res = PolyClaim.process(player.uuid, player.chunk_current.district);
-							player.entity.send("landdev.cmd.polyclaim.finished", res[0], res[1]);
+							PolyClaim.process(player);
 							break;
 						}
 					}
