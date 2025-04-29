@@ -153,7 +153,7 @@ public class LDCmd extends CommandBase {
 					return;
 				}
 				case "polyclaim":{
-					if(!player.adm || !LDConfig.SAVE_CHUNKS_IN_REGIONS) return;
+					if(!player.adm) return;
 					switch(args[1]){
 						case "district":{
 							int did = Integer.parseInt(args[2]);
@@ -173,7 +173,7 @@ public class LDCmd extends CommandBase {
 							PolyClaim.PolyClaimObj obj = PolyClaim.get(player.uuid);
 							District dis = ResManager.getDistrict(obj.district);
 							if(dis.id < 0){
-								player.entity.send("landdev.cmd.polyclaim.status.district", "AUTO", -1);
+								player.entity.send("landdev.cmd.polyclaim.status.district", "AUTO", "-1/" + player.chunk_current.district.id);
 							}
 							else{
 								player.entity.send("landdev.cmd.polyclaim.status.district", dis.name(), dis.id);
@@ -192,9 +192,8 @@ public class LDCmd extends CommandBase {
 						}
 						case "start":{
 							player.entity.send("landdev.cmd.polyclaim.starting");
-							int[] res = PolyClaim.process(player.uuid);
+							int[] res = PolyClaim.process(player.uuid, player.chunk_current.district);
 							player.entity.send("landdev.cmd.polyclaim.finished", res[0], res[1]);
-							PolyClaim.clear(player.uuid);
 							break;
 						}
 					}
