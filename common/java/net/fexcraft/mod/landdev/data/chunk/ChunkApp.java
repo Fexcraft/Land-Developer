@@ -53,7 +53,7 @@ public class ChunkApp implements Appendable<UniChunk> {
 	@Override
 	public void load(UniChunk type, TagCW com){
 		if(com.empty()){
-			chunk.gendef();
+			//chunk.gendef();
 			return;
 		}
 		JsonMap map = JsonTagConverter.demap(com);
