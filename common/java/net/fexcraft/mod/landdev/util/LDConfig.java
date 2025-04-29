@@ -32,7 +32,6 @@ public class LDConfig extends ConfigBase {
 	public static boolean EDIT_WILDERNESS;
 	public static boolean NEW_REGIONS;
 	public static boolean LOCUP_SIDE;
-	public static boolean SAVE_CHUNKS_IN_REGIONS;
 	public static boolean RUN_LOCATION_EVENT;
 	public static long DEFAULT_CHUNK_PRICE;
 	public static long REGION_CREATION_FEE;
@@ -116,10 +115,10 @@ public class LDConfig extends ConfigBase {
 			.info("Default days value for request timeouts.")
 			.cons((con, map) -> REQUEST_TIMEOUT_DAYS = con.getInteger(map))
 		);
-		entries.add(new ConfigEntry(this, GENERAL_CAT, "save_chunks_in_regions", false)
+		/*entries.add(new ConfigEntry(this, GENERAL_CAT, "save_chunks_in_regions", false)
 			.info("Should chunk data be saved in custom/separate region files rather than the chunks themselves? WARNING: Existing chunk data may not port over when changing this setting.")
 			.cons((con, map) -> SAVE_CHUNKS_IN_REGIONS = con.getBoolean(map))
-		);
+		);*/
 		entries.add(new ConfigEntry(this, GENERAL_CAT, "run_location_event", false)
 			.info("Should the 'PlayerLocationEvent' be run every time the player enters another district/named-chunk? Use this if you have an LD Addon requiring it.")
 			.cons((con, map) -> RUN_LOCATION_EVENT = con.getBoolean(map))
