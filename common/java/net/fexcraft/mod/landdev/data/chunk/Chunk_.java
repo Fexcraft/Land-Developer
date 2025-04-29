@@ -35,7 +35,7 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 	
 	public final ChunkKey key;
 	public final ChunkKey region;
-	public Createable created = new Createable();
+	public Createable created = new Createable(true);
 	public ChunkType type = ChunkType.NORMAL;
 	public Sellable sell = new Sellable(this);
 	public ChunkLink link = null;
