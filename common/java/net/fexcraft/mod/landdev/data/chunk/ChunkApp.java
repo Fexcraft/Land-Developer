@@ -59,6 +59,7 @@ public class ChunkApp implements Appendable<UniChunk> {
 		JsonMap map = JsonTagConverter.demap(com);
 		if(map.empty()) chunk.gendef();
 		else chunk.load(map);
+		chunk.save();//to region
 	}
 
 }
