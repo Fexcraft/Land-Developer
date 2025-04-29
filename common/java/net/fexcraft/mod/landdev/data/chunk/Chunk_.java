@@ -112,7 +112,7 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 
 	@Override
 	public void save(){
-		if(LDConfig.SAVE_CHUNKS_IN_REGIONS) ChunkRegion.save(this);
+		ChunkRegion.save(this);
 		if(uck != null) uck.chunk.markChanged();
 	}
 
