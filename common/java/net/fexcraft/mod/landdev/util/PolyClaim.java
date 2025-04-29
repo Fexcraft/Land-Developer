@@ -107,7 +107,6 @@ public class PolyClaim {
 		Chunk_ ck = ResManager.getChunk(x, z);
 		if(ck.district.id < 0){
 			ck.created.setClaimer(uuid);
-			ck.owner.set(dis.owner.layer(), null, dis.owner.owid);
 			ck.sell.price = 0;
 			ck.type = ChunkType.NORMAL;
 			ck.district = dis;
