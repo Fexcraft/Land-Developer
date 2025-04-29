@@ -62,7 +62,7 @@ import static net.minecraft.commands.Commands.literal;
 public class LandDev {
 
 	public static final String MODID = "landdev";
-	public static final String VERSION = "1.4.2";
+	public static final String VERSION = "1.5.0";
 	private static final Logger LOGGER = LogUtils.getLogger();
 	public static File SAVE_DIR = new File("./landdev/");
 	public static final SimpleChannel CHANNEL = NetworkRegistry.ChannelBuilder.named(new ResourceLocation("landdev", "channel"))
@@ -255,7 +255,7 @@ public class LandDev {
 			.then(literal("polyclaim")
 				.then(literal("district").then(argument("district", IntegerArgumentType.integer(0)).executes(cmd -> {
 					LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
-					if(!player.adm || !LDConfig.SAVE_CHUNKS_IN_REGIONS) return 0;
+					if(!player.adm) return 0;
 					int did = IntegerArgumentType.getInteger(cmd, "district");
 					PolyClaim.setDis(player.uuid, did);
 					District dis = ResManager.getDistrict(did);
@@ -264,29 +264,28 @@ public class LandDev {
 				})))
 				.then(literal("select").executes(cmd -> {
 					LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
-					if(!player.adm || !LDConfig.SAVE_CHUNKS_IN_REGIONS) return 0;
+					if(!player.adm) return 0;
 					int am = PolyClaim.selCnk(player.uuid, ResManager.getChunk(player.entity.getPos()));
 					player.entity.send("landdev.cmd.polyclaim.selected", am);
 					return 0;
 				}))
 				.then(literal("start").executes(cmd -> {
 					LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
-					if(!player.adm || !LDConfig.SAVE_CHUNKS_IN_REGIONS) return 0;
+					if(!player.adm) return 0;
 					player.entity.send("landdev.cmd.polyclaim.starting");
-					int[] res = PolyClaim.process(player.uuid);
+					int[] res = PolyClaim.process(player.uuid, player.chunk_current.district);
 					player.entity.send("landdev.cmd.polyclaim.finished", res[0], res[1]);
-					PolyClaim.clear(player.uuid);
 					return 0;
 				}))
 				.then(literal("status").executes(cmd -> {
 					LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
-					if(!player.adm || !LDConfig.SAVE_CHUNKS_IN_REGIONS) return 0;
+					if(!player.adm) return 0;
 					player.entity.send("[LD] === === ===");
 					player.entity.send("landdev.cmd.polyclaim.status.title");
 					PolyClaim.PolyClaimObj obj = PolyClaim.get(player.uuid);
 					District dis = ResManager.getDistrict(obj.district);
 					if(dis.id < 0){
-						player.entity.send("landdev.cmd.polyclaim.status.district", "AUTO", -1);
+						player.entity.send("landdev.cmd.polyclaim.status.district", "AUTO", "-1/" + player.chunk_current.district.id);
 					}
 					else{
 						player.entity.send("landdev.cmd.polyclaim.status.district", dis.name(), dis.id);
@@ -300,7 +299,7 @@ public class LandDev {
 				}))
 				.then(literal("clear").executes(cmd -> {
 					LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
-					if(!player.adm || !LDConfig.SAVE_CHUNKS_IN_REGIONS) return 0;
+					if(!player.adm) return 0;
 					PolyClaim.clear(player.uuid);
 					player.entity.send("landdev.cmd.polyclaim.cleared");
 					return 0;
