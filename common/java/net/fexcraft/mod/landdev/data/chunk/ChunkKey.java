@@ -64,4 +64,9 @@ public class ChunkKey implements Comparable<ChunkKey> {
 		return new ChunkKey(x, z, true);
 	}
 
+	@Override
+	public int hashCode(){
+		return x * 31 + z;
+	}
+
 }
