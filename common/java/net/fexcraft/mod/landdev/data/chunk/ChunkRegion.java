@@ -114,12 +114,10 @@ public class ChunkRegion {
 	}
 
 	public static Chunk_ get(int x, int z){
-		if(!LDConfig.SAVE_CHUNKS_IN_REGIONS) return null;
 		return get(new ChunkKey(x, z));
 	}
 
 	public static Chunk_ get(ChunkKey key){
-		if(!LDConfig.SAVE_CHUNKS_IN_REGIONS) return null;
 		ChunkRegion region = getRegion(key.asRegion());
 		if(region.chunks.containsKey(key)){
 			region.setLastAccess();
