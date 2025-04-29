@@ -49,7 +49,9 @@ public class ChunkRegion {
 
 	private void loadChunk(Chunk_ ck){
 		chunks.put(ck.key, ck);
-		ck.load(JsonTagConverter.demap(TagCW.wrap(compound.getCompound(ck.key.toString()))));
+		TagCW tag = compound.getCompound(ck.key.toString());
+		if(tag.empty()) ck.gendef();
+		ck.load(JsonTagConverter.demap(tag));
 		ResManager.CHUNKS.put(ck.key, ck);
 		setLastAccess();
 	}
