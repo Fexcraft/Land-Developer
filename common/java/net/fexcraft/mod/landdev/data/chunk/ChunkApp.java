@@ -21,14 +21,14 @@ public class ChunkApp implements Appendable<UniChunk> {
 			chunk = null;
 			return;
 		}
-		if(LDConfig.SAVE_CHUNKS_IN_REGIONS){
+		//if(LDConfig.SAVE_CHUNKS_IN_REGIONS){
 			chunk = ChunkRegion.getFor(type);
-		}
-		else{
+		//}
+		/*else{
 			chunk = new Chunk_(type);
 			chunk.load(new JsonMap());
 			ResManager.CHUNKS.put(chunk.key, chunk);
-		}
+		}*/
 	}
 
 	@Override
@@ -45,9 +45,9 @@ public class ChunkApp implements Appendable<UniChunk> {
 
 	@Override
 	public void save(UniChunk type, TagCW com){
-		JsonMap map = new JsonMap();
+		/*JsonMap map = new JsonMap();
 		chunk.save(map);
-		JsonTagConverter.map(com, map);
+		JsonTagConverter.map(com, map);*/
 	}
 
 	@Override
