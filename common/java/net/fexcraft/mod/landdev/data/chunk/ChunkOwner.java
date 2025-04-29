@@ -26,7 +26,9 @@ public class ChunkOwner implements Saveable {
 		if(unowned) return;
 		map.add("owner_type", owner.toString());
 		if(owner.is(Layers.PLAYER)){
-			map.add("owner", player.toString());
+			//map.add("owner", player.toString());
+			map.add("owner0", player.getMostSignificantBits());
+			map.add("owner1", player.getLeastSignificantBits());
 		}
 		else{
 			map.add("owner", owid);
@@ -42,7 +44,10 @@ public class ChunkOwner implements Saveable {
 			unowned = true;
 			return;
 		}
-		if(playerchunk = owner.is(Layers.PLAYER)) player = UUID.fromString(map.getString("owner", ResManager.CONSOLE_UUID));
+		if(playerchunk = owner.is(Layers.PLAYER)){
+			if(map.has("owner")) player = UUID.fromString(map.getString("owner", ResManager.CONSOLE_UUID));
+			else player = new UUID(map.getLong("owner0", 0), map.getLong("owner1", 0));
+		}
 		else owid = map.getInteger("owner", -1);
 	}
 	
