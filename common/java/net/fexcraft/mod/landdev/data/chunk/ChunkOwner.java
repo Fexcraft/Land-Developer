@@ -37,7 +37,7 @@ public class ChunkOwner implements Saveable {
 
 	@Override
 	public void load(JsonMap map){
-		if(unowned = !map.has("owner")) return;
+		if(unowned = !map.has("owner") && !map.has("owner0")) return;
 		owner = Layers.valueOf(map.getString("owner_type", "NONE"));
 		if(!owner.isValidChunkOwner()){
 			owner = Layers.NONE;
@@ -45,7 +45,7 @@ public class ChunkOwner implements Saveable {
 			return;
 		}
 		if(playerchunk = owner.is(Layers.PLAYER)){
-			if(map.has("owner")) player = UUID.fromString(map.getString("owner", ResManager.CONSOLE_UUID));
+			if(map.has("owner")) player = UUID.fromString(map.get("owner").string_value());
 			else player = new UUID(map.getLong("owner0", 0), map.getLong("owner1", 0));
 		}
 		else owid = map.getInteger("owner", -1);
