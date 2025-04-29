@@ -257,51 +257,31 @@ public class LandDev {
 					LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
 					if(!player.adm) return 0;
 					int did = IntegerArgumentType.getInteger(cmd, "district");
-					PolyClaim.setDis(player.uuid, did);
-					District dis = ResManager.getDistrict(did);
-					player.entity.send("landdev.cmd.polyclaim.district", dis.name(), dis.id);
+					PolyClaim.setDis(player, did);
 					return 0;
 				})))
 				.then(literal("select").executes(cmd -> {
 					LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
 					if(!player.adm) return 0;
-					int am = PolyClaim.selCnk(player.uuid, ResManager.getChunk(player.entity.getPos()));
-					player.entity.send("landdev.cmd.polyclaim.selected", am);
+					PolyClaim.selCnk(player, ResManager.getChunk(player.entity.getPos()));
 					return 0;
 				}))
 				.then(literal("start").executes(cmd -> {
 					LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
 					if(!player.adm) return 0;
-					player.entity.send("landdev.cmd.polyclaim.starting");
-					int[] res = PolyClaim.process(player.uuid, player.chunk_current.district);
-					player.entity.send("landdev.cmd.polyclaim.finished", res[0], res[1]);
+					PolyClaim.process(player);
 					return 0;
 				}))
 				.then(literal("status").executes(cmd -> {
 					LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
 					if(!player.adm) return 0;
-					player.entity.send("[LD] === === ===");
-					player.entity.send("landdev.cmd.polyclaim.status.title");
-					PolyClaim.PolyClaimObj obj = PolyClaim.get(player.uuid);
-					District dis = ResManager.getDistrict(obj.district);
-					if(dis.id < 0){
-						player.entity.send("landdev.cmd.polyclaim.status.district", "AUTO", "-1/" + player.chunk_current.district.id);
-					}
-					else{
-						player.entity.send("landdev.cmd.polyclaim.status.district", dis.name(), dis.id);
-					}
-					player.entity.send("landdev.cmd.polyclaim.status.chunks");
-					for(ChunkKey key : obj.chunks){
-						player.entity.send("- " + key.comma());
-					}
-					player.entity.send("landdev.cmd.polyclaim.status.mode", obj.chunks.size() < 2 ? "PASS" : obj.chunks.size() == 2 ? "QUAD" : "POLYGON");
+					PolyClaim.status(player);
 					return 0;
 				}))
 				.then(literal("clear").executes(cmd -> {
 					LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
 					if(!player.adm) return 0;
-					PolyClaim.clear(player.uuid);
-					player.entity.send("landdev.cmd.polyclaim.cleared");
+					PolyClaim.clear(player);
 					return 0;
 				}))
 			)
