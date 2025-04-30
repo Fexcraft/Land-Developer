@@ -153,157 +153,157 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 	public void sync_packet(BaseCon container, ModuleResponse resp){
 		resp.setTitle("chunk.title");
 		switch(container.pos.x){
-		case UI_MAIN:
-			boolean canman = can_manage(container.ldp);// || container.ldp.adm;
-			resp.addRow("key", ELM_GENERIC, key.comma());
-			if(LDConfig.CHUNK_LINK_LIMIT > 0){
-				if(link == null){
-					if(canman) resp.addButton("link", ELM_GENERIC, ADD);
-					else resp.addRow("link", ELM_GENERIC, EMPTY);
+			case UI_MAIN:
+				boolean canman = can_manage(container.ldp);// || container.ldp.adm;
+				resp.addRow("key", ELM_GENERIC, key.comma());
+				if(LDConfig.CHUNK_LINK_LIMIT > 0){
+					if(link == null){
+						if(canman) resp.addButton("link", ELM_GENERIC, ADD);
+						else resp.addRow("link", ELM_GENERIC, EMPTY);
+					}
+					else if(link.linked != null){
+						resp.addButton("links", ELM_GENERIC, LIST, link.linked.size());
+					}
+					else if(link.root_key != null){
+						resp.addButton("linked", ELM_GENERIC, canman ? OPEN : EMPTY, link.root_key.comma());
+					}
 				}
-				else if(link.linked != null){
-					resp.addButton("links", ELM_GENERIC, LIST, link.linked.size());
-				}
-				else if(link.root_key != null){
-					resp.addButton("linked", ELM_GENERIC, canman ? OPEN : EMPTY, link.root_key.comma());
-				}
-			}
-			resp.addRow("type", ELM_GENERIC, canman ? OPEN : EMPTY, canman, type.lang());
-			resp.addButton("district", ELM_GENERIC, OPEN, district.name());
-			resp.addBlank();
-			resp.addButton("owner", ELM_GENERIC, OPEN, owner.name());
-			if(sell.price > 0){
-				resp.addRow("price", ELM_GENERIC, canman ? EMPTY : OPEN, !canman, sell.price_formatted());
-			}
-			if(canman){
-				resp.addButton("set_price", ELM_GENERIC, OPEN);
-			}
-			resp.addButton("tax", ELM_GENERIC, OPEN, getWorthAsString(tax.custom_tax == 0 ? district.tax() : tax.custom_tax));
-			resp.addBlank();
-			resp.addRow("access_interact", ELM_GENERIC, canman ? access.interact ? ENABLED : DISABLED : EMPTY, canman, access.interact ? LANG_YES : LANG_NO);
-			resp.addButton("access_player", ELM_GENERIC, LIST, access.players.size());
-			resp.addButton("access_company", ELM_GENERIC, LIST, access.companies.size());
-			return;
-		case UI_LINK:
-			resp.setTitle("chunk.link.title");
-			resp.addRow("link.info0", ELM_YELLOW, BLANK);
-			resp.addRow("link.info1", ELM_YELLOW, BLANK);
-			resp.addRow("link.key", ELM_GENERIC, BLANK);
-			resp.addField("link.field");
-			resp.addButton("link.submit", ELM_BLUE, OPEN);
-			resp.setFormular();
-			return;
-		case UI_LINKS:
-			resp.setTitle("chunk.links.title");
-			if(link.linked == null) return;
-			resp.addButton("links.submit", ELM_BLUE, OPEN, key.comma());
-			boolean first = true;
-			for(int i = 0; i < link.linked.size(); i++){
-				resp.addButton("links.key" + i, ELM_BLUE, radio(first), "!!!" + link.linked.get(i).comma());
-				first = false;
-			}
-			resp.setFormular();
-			return;
-		case UI_LINKED:
-			resp.setTitle("chunk.linked.title");
-			resp.addButton("linked.key", ELM_GENERIC, OPEN, "!!!" + link.root_key.comma());
-			resp.addButton("linked.disconnect", ELM_RED, REM, key.comma());
-			return;
-		case UI_TYPE:
-			resp.setTitle("chunk.select_type.title");
-			resp.addRow("key", ELM_GENERIC, BLANK, key.comma());
-			resp.addRadio("type.normal", ELM_BLUE, type == ChunkType.NORMAL);
-			resp.addRadio("type.private", ELM_BLUE, type == ChunkType.PRIVATE);
-			resp.addRadio("type.restricted", ELM_BLUE, type == ChunkType.RESTRICTED);
-			resp.addRadio("type.public", ELM_BLUE, type == ChunkType.PUBLIC);
-			if(container.ldp.adm){
-				resp.addRadio("type.locked", ELM_YELLOW, type == ChunkType.LOCKED);
-			}
-			resp.addButton("select_type.submit", ELM_GENERIC, OPEN);
-			resp.setFormular();
-			return;
-		case UI_OWNER:
-			resp.setTitle("chunk.set_owner.title");
-			resp.addRow("key", ELM_GENERIC, BLANK, key.comma());
-			resp.addRow("set_owner.warning0", ELM_RED);
-			resp.addRow("set_owner.warning1", ELM_RED);
-			resp.addRow("set_owner.warning2", ELM_RED);
-			resp.addRow("set_owner.warning3", ELM_RED);
-			resp.addRadio("set_owner.district", ELM_BLUE, owner.owner == Layers.DISTRICT);
-			if(!district.owner.is_county) resp.addRow("set_owner.municipality", ELM_BLUE, owner.owner == Layers.MUNICIPALITY);
-			resp.addRadio("set_owner.county", ELM_BLUE, owner.owner == Layers.COUNTY);
-			resp.addRadio("set_owner.region", ELM_BLUE, owner.owner == Layers.REGION);
-			resp.addRadio("set_owner.none", ELM_BLUE, owner.owner == Layers.NONE);
-			resp.addButton("set_owner.submit", ELM_GENERIC, OPEN);
-			resp.setFormular();
-			return;
-		case UI_PRICE:
-			resp.setTitle("chunk.buy.title");
-			resp.addRow("key", ELM_GENERIC, BLANK, key.comma());
-			resp.addRow("buy.info", ELM_YELLOW, BLANK);
-			resp.addButton("buy.self", ELM_BLUE, RADIO_CHECKED);
-			resp.addButton("buy.company", ELM_BLUE, RADIO_UNCHECKED);
-			resp.addButton("buy.district", ELM_BLUE, RADIO_UNCHECKED);
-			if(!district.owner.is_county) resp.addButton("buy.municipality", ELM_BLUE, RADIO_UNCHECKED);
-			resp.addButton("buy.county", ELM_BLUE, RADIO_UNCHECKED);
-			resp.addButton("buy.region", ELM_BLUE, RADIO_UNCHECKED);
-			resp.addButton("buy.payer", ELM_GENERIC, CHECK_UNCHECKED);
-			resp.addButton("buy.submit", ELM_GENERIC, OPEN);
-			resp.setFormular();
-			return;
-		case UI_SET_PRICE:
-			resp.setTitle("chunk.set_price.title");
-			resp.addRow("key", ELM_GENERIC, BLANK, key.comma());
-			resp.addField("set_price.field");
-			resp.addButton("set_price.submit", ELM_GENERIC, OPEN);
-			resp.setFormular();
-			return;
-		case UI_TAX:
-			boolean bool = district.can(CHUNK_CUSTOMTAX, container.ldp.uuid) || container.ldp.adm;
-			resp.setTitle("chunk.tax.title");
-			resp.addRow("tax.info0", ELM_YELLOW, BLANK);
-			resp.addRow("tax.info1", ELM_YELLOW, BLANK);
-			resp.addRow("tax.info2", ELM_YELLOW, BLANK);
-			resp.addRow("tax.default", ELM_GENERIC, BLANK, getWorthAsString(district.tax()));
-			if(bool || tax.custom_tax > 0){
-				resp.addRow("tax.custom", ELM_GENERIC, BLANK, getWorthAsString(tax.custom_tax));
-			}
-			resp.addRow("tax.last_amount", ELM_GENERIC, BLANK, getWorthAsString(tax.last_tax));
-			resp.addRow("tax.last_time", ELM_GENERIC, BLANK, getAsString(tax.last_interval));
-			if(bool){
+				resp.addRow("type", ELM_GENERIC, canman ? OPEN : EMPTY, canman, type.lang());
+				resp.addButton("district", ELM_GENERIC, OPEN, district.name());
 				resp.addBlank();
-				resp.addRow("set_tax.title", ELM_GENERIC, BLANK);
-				resp.addField("set_tax.field", getWorthAsString(tax.custom_tax, false));
-				resp.addButton("set_tax.submit", ELM_GENERIC, OPEN);
-				resp.setFormular();
-			}
-			return;
-		case UI_ACC_PLAYER:
-			resp.setTitle("chunk.access_player.title");
-			boolean bcm = can_manage(container.ldp);
-			if(bcm){
-				resp.addRow("access_player.info", ELM_GREEN, BLANK);
-				resp.addField("access_player.field");
-				resp.addButton("access_player.add.submit", ELM_GENERIC, OPEN);
-				resp.addBlank();
-				resp.setFormular();
-			}
-			if(access.players.isEmpty()){
-				resp.addRow("access_player.empty", ELM_YELLOW, BLANK);
-			}
-			else{
-				if(bcm) resp.addButton("access_player.rem.submit", ELM_GENERIC, REM);
-				boolean primo = true;
-				UUID[] keys = access.players.keySet().toArray(new UUID[0]);
-				for(int i = 0; i < access.players.size(); i++){
-					resp.addButton("access_player.id_" + keys[i], ELM_BLUE, bcm ? radio(primo) : EMPTY, "!!!" + ResManager.getPlayerName(keys[i]));
-					primo = false;
+				resp.addButton("owner", ELM_GENERIC, OPEN, owner.name());
+				if(sell.price > 0){
+					resp.addRow("price", ELM_GENERIC, /*canman ? EMPTY :*/ OPEN, true/*!canman*/, sell.price_formatted());
 				}
-				if(bcm) resp.setFormular();
-			}
-			return;
-		case UI_ACC_COMPANY:
-			return;
+				if(canman){
+					resp.addButton("set_price", ELM_GENERIC, OPEN);
+				}
+				resp.addButton("tax", ELM_GENERIC, OPEN, getWorthAsString(tax.custom_tax == 0 ? district.tax() : tax.custom_tax));
+				resp.addBlank();
+				resp.addRow("access_interact", ELM_GENERIC, canman ? access.interact ? ENABLED : DISABLED : EMPTY, canman, access.interact ? LANG_YES : LANG_NO);
+				resp.addButton("access_player", ELM_GENERIC, LIST, access.players.size());
+				resp.addButton("access_company", ELM_GENERIC, LIST, access.companies.size());
+				return;
+			case UI_LINK:
+				resp.setTitle("chunk.link.title");
+				resp.addRow("link.info0", ELM_YELLOW, BLANK);
+				resp.addRow("link.info1", ELM_YELLOW, BLANK);
+				resp.addRow("link.key", ELM_GENERIC, BLANK);
+				resp.addField("link.field");
+				resp.addButton("link.submit", ELM_BLUE, OPEN);
+				resp.setFormular();
+				return;
+			case UI_LINKS:
+				resp.setTitle("chunk.links.title");
+				if(link.linked == null) return;
+				resp.addButton("links.submit", ELM_BLUE, OPEN, key.comma());
+				boolean first = true;
+				for(int i = 0; i < link.linked.size(); i++){
+					resp.addButton("links.key" + i, ELM_BLUE, radio(first), "!!!" + link.linked.get(i).comma());
+					first = false;
+				}
+				resp.setFormular();
+				return;
+			case UI_LINKED:
+				resp.setTitle("chunk.linked.title");
+				resp.addButton("linked.key", ELM_GENERIC, OPEN, "!!!" + link.root_key.comma());
+				resp.addButton("linked.disconnect", ELM_RED, REM, key.comma());
+				return;
+			case UI_TYPE:
+				resp.setTitle("chunk.select_type.title");
+				resp.addRow("key", ELM_GENERIC, BLANK, key.comma());
+				resp.addRadio("type.normal", ELM_BLUE, type == ChunkType.NORMAL);
+				resp.addRadio("type.private", ELM_BLUE, type == ChunkType.PRIVATE);
+				resp.addRadio("type.restricted", ELM_BLUE, type == ChunkType.RESTRICTED);
+				resp.addRadio("type.public", ELM_BLUE, type == ChunkType.PUBLIC);
+				if(container.ldp.adm){
+					resp.addRadio("type.locked", ELM_YELLOW, type == ChunkType.LOCKED);
+				}
+				resp.addButton("select_type.submit", ELM_GENERIC, OPEN);
+				resp.setFormular();
+				return;
+			case UI_OWNER:
+				resp.setTitle("chunk.set_owner.title");
+				resp.addRow("key", ELM_GENERIC, BLANK, key.comma());
+				resp.addRow("set_owner.warning0", ELM_RED);
+				resp.addRow("set_owner.warning1", ELM_RED);
+				resp.addRow("set_owner.warning2", ELM_RED);
+				resp.addRow("set_owner.warning3", ELM_RED);
+				resp.addRadio("set_owner.district", ELM_BLUE, owner.owner == Layers.DISTRICT);
+				if(!district.owner.is_county) resp.addRow("set_owner.municipality", ELM_BLUE, owner.owner == Layers.MUNICIPALITY);
+				resp.addRadio("set_owner.county", ELM_BLUE, owner.owner == Layers.COUNTY);
+				resp.addRadio("set_owner.region", ELM_BLUE, owner.owner == Layers.REGION);
+				resp.addRadio("set_owner.none", ELM_BLUE, owner.owner == Layers.NONE);
+				resp.addButton("set_owner.submit", ELM_GENERIC, OPEN);
+				resp.setFormular();
+				return;
+			case UI_PRICE:
+				resp.setTitle("chunk.buy.title");
+				resp.addRow("key", ELM_GENERIC, BLANK, key.comma());
+				resp.addRow("buy.info", ELM_YELLOW, BLANK);
+				resp.addButton("buy.self", ELM_BLUE, RADIO_CHECKED);
+				resp.addButton("buy.company", ELM_BLUE, RADIO_UNCHECKED);
+				resp.addButton("buy.district", ELM_BLUE, RADIO_UNCHECKED);
+				if(!district.owner.is_county) resp.addButton("buy.municipality", ELM_BLUE, RADIO_UNCHECKED);
+				resp.addButton("buy.county", ELM_BLUE, RADIO_UNCHECKED);
+				resp.addButton("buy.region", ELM_BLUE, RADIO_UNCHECKED);
+				resp.addButton("buy.payer", ELM_GENERIC, CHECK_UNCHECKED);
+				resp.addButton("buy.submit", ELM_GENERIC, OPEN);
+				resp.setFormular();
+				return;
+			case UI_SET_PRICE:
+				resp.setTitle("chunk.set_price.title");
+				resp.addRow("key", ELM_GENERIC, BLANK, key.comma());
+				resp.addField("set_price.field");
+				resp.addButton("set_price.submit", ELM_GENERIC, OPEN);
+				resp.setFormular();
+				return;
+			case UI_TAX:
+				boolean bool = district.can(CHUNK_CUSTOMTAX, container.ldp.uuid) || container.ldp.adm;
+				resp.setTitle("chunk.tax.title");
+				resp.addRow("tax.info0", ELM_YELLOW, BLANK);
+				resp.addRow("tax.info1", ELM_YELLOW, BLANK);
+				resp.addRow("tax.info2", ELM_YELLOW, BLANK);
+				resp.addRow("tax.default", ELM_GENERIC, BLANK, getWorthAsString(district.tax()));
+				if(bool || tax.custom_tax > 0){
+					resp.addRow("tax.custom", ELM_GENERIC, BLANK, getWorthAsString(tax.custom_tax));
+				}
+				resp.addRow("tax.last_amount", ELM_GENERIC, BLANK, getWorthAsString(tax.last_tax));
+				resp.addRow("tax.last_time", ELM_GENERIC, BLANK, getAsString(tax.last_interval));
+				if(bool){
+					resp.addBlank();
+					resp.addRow("set_tax.title", ELM_GENERIC, BLANK);
+					resp.addField("set_tax.field", getWorthAsString(tax.custom_tax, false));
+					resp.addButton("set_tax.submit", ELM_GENERIC, OPEN);
+					resp.setFormular();
+				}
+				return;
+			case UI_ACC_PLAYER:
+				resp.setTitle("chunk.access_player.title");
+				boolean bcm = can_manage(container.ldp);
+				if(bcm){
+					resp.addRow("access_player.info", ELM_GREEN, BLANK);
+					resp.addField("access_player.field");
+					resp.addButton("access_player.add.submit", ELM_GENERIC, OPEN);
+					resp.addBlank();
+					resp.setFormular();
+				}
+				if(access.players.isEmpty()){
+					resp.addRow("access_player.empty", ELM_YELLOW, BLANK);
+				}
+				else{
+					if(bcm) resp.addButton("access_player.rem.submit", ELM_GENERIC, REM);
+					boolean primo = true;
+					UUID[] keys = access.players.keySet().toArray(new UUID[0]);
+					for(int i = 0; i < access.players.size(); i++){
+						resp.addButton("access_player.id_" + keys[i], ELM_BLUE, bcm ? radio(primo) : EMPTY, "!!!" + ResManager.getPlayerName(keys[i]));
+						primo = false;
+					}
+					if(bcm) resp.setFormular();
+				}
+				return;
+			case UI_ACC_COMPANY:
+				return;
 		}
 		external.sync_packet(container, resp);
 	}
@@ -381,9 +381,9 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 				return;
 			}
 			case "type": if(canman) container.open(UI_TYPE); return;
-			case "district": container.open(LDKeys.DISTRICT, 0, district.id, 0);
+			case "district": container.open(LDKeys.DISTRICT, 0, district.id, 0); return;
 			case "owner": if(canman) container.open(UI_OWNER); return;
-			case "price": if(!canman) container.open(UI_PRICE); return;
+			case "price": /*if(!canman)*/ container.open(UI_PRICE); return;
 			case "set_price": container.open(UI_SET_PRICE); return;
 			case "tax": container.open(UI_TAX); return;
 			case "access_player": container.open(UI_ACC_PLAYER); return;
