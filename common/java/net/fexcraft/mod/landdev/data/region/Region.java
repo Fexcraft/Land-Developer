@@ -53,7 +53,7 @@ public class Region implements Saveable, Layer, LDUIModule {
 	public ExternalData external = new ExternalData(this);
 	public long tax_collected;
 	public Account account;
-	public int seat;
+	public int seat = -1;
 	
 	public Region(int id){
 		this.id = id;
@@ -317,9 +317,9 @@ public class Region implements Saveable, Layer, LDUIModule {
 			case "appearance": container.open(UI_APPREARANCE); return;
 			//
 			case "county.goto":{
-				int mun = req.getFieldInt("ct-id");
-				if(!counties.contains(mun)) return;
-				container.open(LDKeys.MUNICIPALITY, 0, mun, 0);
+				int ct = req.getFieldInt("ct-id");
+				if(!counties.contains(ct)) return;
+				container.open(LDKeys.COUNTY, 0, ct, 0);
 				return;
 			}
 			case "county.setmain":{
@@ -470,6 +470,7 @@ public class Region implements Saveable, Layer, LDUIModule {
 				ResManager.REGIONS.put(reg.id, reg);
 				reg.norms.get("name").set(name);
 				reg.counties.add(ct.id);
+				reg.seat = ct.id;
 				ct.region = reg;
 				UUID uuid = ct.manage.getManager();
 				if(player.adm && uuid != null){
@@ -498,6 +499,12 @@ public class Region implements Saveable, Layer, LDUIModule {
 				NormModule.processBool(norms, container, req, UI_NORM_EDIT);
 				return;
 			}
+			case "appearance.submit":{
+				if(!canman) return;
+				AppearModule.req(container, req, icon, color);
+				container.open(UI_MAIN);
+				return;
+			}
 		}
 		if(NormModule.isNormReq(norms, container, req, UI_NORM_EDIT, id)) return;
 		if(req.event().startsWith("staff.edit.")){
@@ -517,6 +524,12 @@ public class Region implements Saveable, Layer, LDUIModule {
 			if(action == null) return;
 			staff.actions.put(action, !staff.actions.get(action));
 			container.open(UI_STAFF_EDIT);
+			return;
+		}
+		if(req.event().startsWith("county.edit.")){
+			int ct = Integer.parseInt(req.event().substring("county.edit.".length()));
+			if(!counties.contains(ct)) return;
+			container.open(UI_COUNTY_EDIT, id, counties.indexOf(ct));
 			return;
 		}
 		external.on_interact(container, req);
