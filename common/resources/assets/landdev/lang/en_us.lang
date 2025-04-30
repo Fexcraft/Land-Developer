@@ -720,5 +720,5 @@ landdev.gui.region.create.already_in_region=Your County is already part of a Reg
 landdev.gui.region.create.new_regions_disabled=Region creation is disabled on this Server.
 landdev.gui.region.create.not_county_manager=You must be County Manager to create a new Region
 landdev.gui.region.create.not_in_county=Please be within the County for this process.
-landdev.gui.region.create.complete=&bNew Region created! Try &7/ct&b!
+landdev.gui.region.create.complete=&bNew Region created! Try &7/reg&b!
 
