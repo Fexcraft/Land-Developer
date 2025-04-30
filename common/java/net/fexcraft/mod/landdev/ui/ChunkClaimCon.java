@@ -115,9 +115,9 @@ public class ChunkClaimCon extends ContainerInterface {
 					chunk.district = district;
 					chunk.district.chunks += 1;
 					chunk.sell.price = 0;
-					if(!chunk.owner.layer().isPlayerBased()){
+					/*if(!chunk.owner.layer().isPlayerBased()){
 						chunk.owner.set(district.owner.is_county ? Layers.COUNTY : Layers.MUNICIPALITY, null, district.owner.owid);
-					}
+					}*/
 					chunk.type = ChunkType.NORMAL;
 					chunk.save();
 				}
