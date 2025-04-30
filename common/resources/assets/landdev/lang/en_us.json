@@ -363,7 +363,7 @@
     "landdev.gui.district.create.name": "New District's Name:", 
     "landdev.gui.district.create.owner": "Who will be the Owner?", 
     "landdev.gui.district.create.owner_county": "The County", 
-    "landdev.gui.district.create.owner_municipality": "My Municipality", 
+    "landdev.gui.district.create.owner_municipality": "My Municipality",
     "landdev.gui.district.create.owner_funded": "Creation funded by new Owner?", 
     "landdev.gui.district.create.submit": "Submit District Creation", 
     "landdev.gui.district.create.exists": "Can't create on the last chunk of another District.",
@@ -693,5 +693,5 @@
     "landdev.gui.region.create.new_regions_disabled": "Region creation is disabled on this Server.", 
     "landdev.gui.region.create.not_county_manager": "You must be County Manager to create a new Region", 
     "landdev.gui.region.create.not_in_county": "Please be within the County for this process.", 
-    "landdev.gui.region.create.complete": "§bNew Region created! Try §7/ct§b!"
+    "landdev.gui.region.create.complete": "§bNew Region created! Try §7/reg§b!"
 }
