@@ -535,7 +535,7 @@ public class District implements Saveable, Layer, PermInteractive, LDUIModule {
 				boolean opay = req.getCheck("create.owner_funded");
 				String name = req.getField("create.name_field");
 				Account account = null;
-				if(chunk.district.id > -1){
+				if(chunk.district.id > -1 && chunk.district.chunks < 2){
 					container.msg("create.exists");
 					return;
 				}
