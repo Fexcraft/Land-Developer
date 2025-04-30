@@ -133,25 +133,25 @@ public class LDConfig extends ConfigBase {
 			.req(false, false)
 		);
 		//
-		entries.add(new ConfigEntry(this, PRICES_CAT, "default_chunk", 100000)
+		entries.add(new ConfigEntry(this, PRICES_CAT, "default.chunk", "100000")
 			.info("Default price for unclaimed chunks. (1000 = 1$)")
-			.cons((con, map) -> DEFAULT_CHUNK_PRICE = Math.max(0, ((JsonValue)con.getJson(map)).long_value()))
+			.cons((con, map) -> DEFAULT_CHUNK_PRICE = parse(con.getString(map), 100000))
 		);
-		entries.add(new ConfigEntry(this, PRICES_CAT, "create_district", 5000000)
+		entries.add(new ConfigEntry(this, PRICES_CAT, "create.district", "5000000")
 			.info("Server fee for creating a district.")
-			.cons((con, map) -> DISTRICT_CREATION_FEE = Math.max(0, ((JsonValue)con.getJson(map)).long_value()))
+			.cons((con, map) -> DISTRICT_CREATION_FEE = parse(con.getString(map), 5000000))
 		);
-		entries.add(new ConfigEntry(this, PRICES_CAT, "create_municipality", 25000000)
+		entries.add(new ConfigEntry(this, PRICES_CAT, "create.municipality", "25000000")
 			.info("Server fee for creating a municipality, half of it goes to the new Municipality.")
-			.cons((con, map) -> MUNICIPALITY_CREATION_FEE = Math.max(0, ((JsonValue)con.getJson(map)).long_value()))
+			.cons((con, map) -> MUNICIPALITY_CREATION_FEE = parse(con.getString(map), 25000000))
 		);
-		entries.add(new ConfigEntry(this, PRICES_CAT, "create_county", 250000000)
+		entries.add(new ConfigEntry(this, PRICES_CAT, "create.county", "50000000")
 			.info("Server fee for creating a county, half of it goes to the new County.")
-			.cons((con, map) -> COUNTY_CREATION_FEE = Math.max(0, ((JsonValue)con.getJson(map)).long_value()))
+			.cons((con, map) -> COUNTY_CREATION_FEE = parse(con.getString(map), 50000000))
 		);
-		entries.add(new ConfigEntry(this, PRICES_CAT, "create_region", 2500000000l)
+		entries.add(new ConfigEntry(this, PRICES_CAT, "create.region", "100000000")
 			.info("Server fee for creating a region, half of it goes to the new Region.")
-			.cons((con, map) -> REGION_CREATION_FEE = Math.max(0, ((JsonValue)con.getJson(map)).long_value()))
+			.cons((con, map) -> REGION_CREATION_FEE = parse(con.getString(map), 100000000))
 		);
 		//
 		entries.add(new ConfigEntry(this, TAX_CAT, "enabled", true)
@@ -226,6 +226,17 @@ public class LDConfig extends ConfigBase {
 			.info("Message to be send to discord when a player left.")
 			.cons((con, map) -> SERVLANG_LEFT = con.getString(map))
 		);
+	}
+
+	private long parse(String string, long def){
+		try{
+			long l = Long.parseLong(string);
+			return l < 0 ? 0 : l;
+		}
+		catch(Exception e){
+			e.printStackTrace();
+			return def;
+		}
 	}
 
 	@Override
