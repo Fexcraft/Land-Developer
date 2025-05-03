@@ -1,27 +1,24 @@
 package net.fexcraft.mod.landdev;
 
 import net.fexcraft.lib.mc.network.PacketHandler;
-import net.fexcraft.lib.mc.network.PacketHandler.PacketHandlerType;
 import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
+import net.fexcraft.mod.fcl.UniFCL;
 import net.fexcraft.mod.landdev.cmd.*;
 import net.fexcraft.mod.landdev.events.LocationUpdate;
 import net.fexcraft.mod.landdev.util.GuiHandler;
 import net.fexcraft.mod.landdev.util.*;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.EntityW;
-import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.relauncher.Side;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
-import java.io.IOException;
 
 @Mod(modid = LDN.MODID, name = LandDev.NAME, version = LandDev.VERSION,
 	dependencies = "required-after:fcl", acceptedMinecraftVersions = "*", acceptableRemoteVersions = "*")
@@ -33,7 +30,7 @@ public class LandDev {
 	public static LandDev INSTANCE;
 	public static File SAVE_DIR;
 
-	public static final String CLIENT_RECEIVER_ID = "landdev:util";
+	public static final String PKT_RECEIVER_ID = "landdev:util";
     private static Logger logger;
 
 	@EventHandler
@@ -46,7 +43,7 @@ public class LandDev {
     public void init(FMLInitializationEvent event){
         NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
         if(event.getSide().isClient()){
-        	PacketHandler.registerListener(PacketHandlerType.NBT, Side.CLIENT, new PacketReceiver());
+			UniFCL.regTagPacketListener(PKT_RECEIVER_ID, true, new PacketReceiver());
         	MinecraftForge.EVENT_BUS.register(new LocationUpdate());
         }
 		LDN.init(this);
@@ -98,12 +95,12 @@ public class LandDev {
 	}
 
 	public static void sendLocationPacket(EntityW entity, TagCW com){
-		com.set("target_listener", CLIENT_RECEIVER_ID);
+		com.set("target_listener", PKT_RECEIVER_ID);
 		PacketHandler.getInstance().sendTo(new PacketNBTTagCompound(com.local()), entity.local());
 	}
 
 	public static void sendToAll(TagCW com){
-		com.set("target_listener", CLIENT_RECEIVER_ID);
+		com.set("target_listener", PKT_RECEIVER_ID);
 		if(ResManager.INSTANCE.LOADED) PacketHandler.getInstance().sendToAll(new PacketNBTTagCompound(com.local()));
 	}
 	
