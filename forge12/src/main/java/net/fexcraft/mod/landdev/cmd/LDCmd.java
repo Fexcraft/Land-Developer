@@ -1,7 +1,7 @@
 package net.fexcraft.mod.landdev.cmd;
 
 import static net.fexcraft.mod.fsmm.util.Config.getWorthAsString;
-import static net.fexcraft.mod.landdev.LandDev.CLIENT_RECEIVER_ID;
+import static net.fexcraft.mod.landdev.LandDev.PKT_RECEIVER_ID;
 import static net.fexcraft.mod.landdev.util.TranslationUtil.translate;
 
 import java.util.List;
@@ -15,9 +15,7 @@ import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.landdev.data.Layers;
 import net.fexcraft.mod.landdev.data.Mail;
 import net.fexcraft.mod.landdev.data.MailType;
-import net.fexcraft.mod.landdev.data.chunk.ChunkKey;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
-import net.fexcraft.mod.landdev.data.district.District;
 import net.fexcraft.mod.landdev.data.player.LDPlayer;
 import net.fexcraft.mod.landdev.ui.LDKeys;
 import net.fexcraft.mod.landdev.util.*;
@@ -103,7 +101,7 @@ public class LDCmd extends CommandBase {
 	    			int h = args.length > 3 ? Integer.parseInt(args[3]) : 256;
 	    			player.entity.openUI(LDKeys.IMG_VIEW, w, h, 0);
 	    			NBTTagCompound com = new NBTTagCompound();
-	    			com.setString("target_listener", CLIENT_RECEIVER_ID);
+	    			com.setString("target_listener", PKT_RECEIVER_ID);
 	    			com.setString("task", "img_preview_url");
 	    			com.setString("url", args[1]);
 	    			PacketHandler.getInstance().sendTo(new PacketNBTTagCompound(com), (EntityPlayerMP)player.entity);
