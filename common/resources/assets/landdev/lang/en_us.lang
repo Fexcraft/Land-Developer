@@ -170,6 +170,7 @@ landdev.gui.check_checked=Checkbox: &6checked
 landdev.gui.check_unchecked=Checkbox: &cunchecked
 landdev.gui.radio_checked=Radiobox: &6checked
 landdev.gui.radio_unchecked=Radiobox: &cunchecked
+landdev.gui.no_url_tex=URL textures are disabled; Server textures start with `server:`!
 
 landdev.gui.claim.title=Chunk Claiming Interface
 landdev.gui.claim.chunk_coord=&7Chunk: &a%s, %s
