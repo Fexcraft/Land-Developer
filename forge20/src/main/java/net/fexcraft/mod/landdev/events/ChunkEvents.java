@@ -5,6 +5,7 @@ import net.fexcraft.mod.fsmm.FSMM;
 import net.fexcraft.mod.landdev.LandDev;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.util.ResManager;
+import net.fexcraft.mod.uni.UniChunk;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.event.level.ChunkEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -23,6 +24,7 @@ public class ChunkEvents {
 		if(event.getLevel().isClientSide()) return;
 		if(event.getLevel() != FCL.SERVER.get().overworld()) return;
 		if(!ResManager.INSTANCE.LOADED) load((Level)event.getLevel());
+		UniChunk.get(event.getChunk());
 	}
 
 	private static void load(Level level){
