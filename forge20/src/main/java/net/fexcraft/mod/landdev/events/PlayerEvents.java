@@ -1,6 +1,7 @@
 package net.fexcraft.mod.landdev.events;
 
 import net.fexcraft.lib.common.math.Time;
+import net.fexcraft.mod.fcl.FCL;
 import net.fexcraft.mod.landdev.data.player.LDPlayer;
 import net.fexcraft.mod.landdev.util.LDConfig;
 import net.fexcraft.mod.landdev.util.ResManager;
@@ -14,7 +15,6 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.server.ServerLifecycleHooks;
 
 import static net.fexcraft.mod.landdev.util.broad.Broadcaster.TargetTransmitter.NO_INTERNAL;
 
@@ -64,7 +64,7 @@ public class PlayerEvents {
 	@SubscribeEvent
 	public static void onTick(TickEvent.PlayerTickEvent event){
 		if(event.player.level().isClientSide) return;
-		if(event.player.level() != ServerLifecycleHooks.getCurrentServer().overworld()) return;
+		if(event.player.level() != FCL.SERVER.get().overworld()) return;
 		LDPlayer player = ResManager.getPlayer(event.player);
 		if(player == null) return;
 		if((time = Time.getDate()) > player.last_pos_update){
