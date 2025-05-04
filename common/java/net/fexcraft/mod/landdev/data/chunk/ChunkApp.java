@@ -7,8 +7,10 @@ import net.fexcraft.mod.landdev.db.JsonTagConverter;
 import net.fexcraft.mod.landdev.util.ResManager;
 import net.fexcraft.mod.landdev.util.LDConfig;
 import net.fexcraft.mod.uni.Appendable;
+import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.UniChunk;
 import net.fexcraft.mod.uni.tag.TagCW;
+import net.fexcraft.mod.uni.world.WrapperHolder;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -34,7 +36,7 @@ public class ChunkApp implements Appendable<UniChunk> {
 
 	@Override
 	public Appendable<UniChunk> create(UniChunk type){
-		if(type.chunk.isOnClient() || FCL.SERVER.isEmpty()) return null;
+		if(type.chunk.isOnClient() || (!EnvInfo.is112() && WrapperHolder.getServer() == null)) return null;
 		if(!FSMM.isDataManagerLoaded()) FSMM.loadDataManager();
 		return new ChunkApp(type);
 	}
