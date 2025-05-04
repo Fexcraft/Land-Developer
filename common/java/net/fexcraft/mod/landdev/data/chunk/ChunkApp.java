@@ -1,6 +1,7 @@
 package net.fexcraft.mod.landdev.data.chunk;
 
 import net.fexcraft.app.json.JsonMap;
+import net.fexcraft.mod.fcl.FCL;
 import net.fexcraft.mod.fsmm.FSMM;
 import net.fexcraft.mod.landdev.db.JsonTagConverter;
 import net.fexcraft.mod.landdev.util.ResManager;
@@ -33,7 +34,7 @@ public class ChunkApp implements Appendable<UniChunk> {
 
 	@Override
 	public Appendable<UniChunk> create(UniChunk type){
-		if(type.chunk.isOnClient()) return null;
+		if(type.chunk.isOnClient() || FCL.SERVER.isEmpty()) return null;
 		if(!FSMM.isDataManagerLoaded()) FSMM.loadDataManager();
 		return new ChunkApp(type);
 	}
