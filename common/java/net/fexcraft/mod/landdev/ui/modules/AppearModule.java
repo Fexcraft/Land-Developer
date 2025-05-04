@@ -4,6 +4,7 @@ import static net.fexcraft.mod.landdev.ui.LDUIButton.OPEN;
 import static net.fexcraft.mod.landdev.ui.LDUIRow.ELM_BLUE;
 import static net.fexcraft.mod.landdev.ui.LDUIRow.ELM_GENERIC;
 
+import net.fexcraft.mod.fcl.UniFCL;
 import net.fexcraft.mod.landdev.data.ColorData;
 import net.fexcraft.mod.landdev.data.IconHolder;
 import net.fexcraft.mod.landdev.ui.BaseCon;
@@ -26,8 +27,13 @@ public class AppearModule {
 		}
 	}
 
-	public static void req(BaseCon container, ModuleRequest req, IconHolder icon, ColorData color){
-		icon.set(req.getField("appearance.icon_field"));
+	public static boolean req(BaseCon container, ModuleRequest req, IconHolder icon, ColorData color){
+		String tex = req.getField("appearance.icon_field");
+		if(!UniFCL.URL_TEXTURES && (tex.startsWith("http") || tex.contains("://"))){
+			container.msg("landdev.gui.no_url_tex", false);
+			if(!container.ldp.adm) return false;
+		}
+		icon.set(tex);
 		try{
 			color.set(req.getField("appearance.color_field"));
 		}
@@ -35,6 +41,7 @@ public class AppearModule {
 			container.player.entity.send("&cerror parsing color");
 			e.printStackTrace();
 		}
+		return true;
 	}
 
 }
