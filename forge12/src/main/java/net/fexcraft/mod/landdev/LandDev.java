@@ -1,12 +1,12 @@
 package net.fexcraft.mod.landdev;
 
 import net.fexcraft.lib.mc.network.PacketHandler;
-import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.mod.fcl.UniFCL;
 import net.fexcraft.mod.landdev.cmd.*;
 import net.fexcraft.mod.landdev.events.LocationUpdate;
 import net.fexcraft.mod.landdev.util.GuiHandler;
 import net.fexcraft.mod.landdev.util.*;
+import net.fexcraft.mod.uni.impl.PacketTagHandler.I12_PacketTag;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.EntityW;
 import net.minecraft.world.World;
@@ -95,13 +95,11 @@ public class LandDev {
 	}
 
 	public static void sendLocationPacket(EntityW entity, TagCW com){
-		com.set("target_listener", PKT_RECEIVER_ID);
-		PacketHandler.getInstance().sendTo(new PacketNBTTagCompound(com.local()), entity.local());
+		PacketHandler.getInstance().sendTo(new I12_PacketTag(PKT_RECEIVER_ID, com), entity.local());
 	}
 
 	public static void sendToAll(TagCW com){
-		com.set("target_listener", PKT_RECEIVER_ID);
-		if(ResManager.INSTANCE.LOADED) PacketHandler.getInstance().sendToAll(new PacketNBTTagCompound(com.local()));
+		if(ResManager.INSTANCE.LOADED) PacketHandler.getInstance().sendToAll(new I12_PacketTag(PKT_RECEIVER_ID, com));
 	}
 	
 }
