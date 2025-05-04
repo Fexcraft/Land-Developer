@@ -605,8 +605,7 @@ public class District implements Saveable, Layer, PermInteractive, LDUIModule {
 			}
 			case "appearance.submit":{
 				if(!canman) return;
-				AppearModule.req(container, req, icon, color);
-				container.open(UI_MAIN);
+				if(AppearModule.req(container, req, icon, color)) container.open(UI_MAIN);
 				return;
 			}
 		}
