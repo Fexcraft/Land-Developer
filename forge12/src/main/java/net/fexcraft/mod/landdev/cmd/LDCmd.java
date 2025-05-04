@@ -9,7 +9,6 @@ import java.util.List;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.lib.mc.network.PacketHandler;
-import net.fexcraft.lib.mc.network.packet.PacketNBTTagCompound;
 import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.landdev.data.Layers;
@@ -20,11 +19,12 @@ import net.fexcraft.mod.landdev.data.player.LDPlayer;
 import net.fexcraft.mod.landdev.ui.LDKeys;
 import net.fexcraft.mod.landdev.util.*;
 import net.fexcraft.mod.landdev.util.broad.DiscordTransmitter;
+import net.fexcraft.mod.uni.impl.PacketTagHandler;
+import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 
 public class LDCmd extends CommandBase {
@@ -100,11 +100,10 @@ public class LDCmd extends CommandBase {
 	    			int w = args.length > 2 ? Integer.parseInt(args[2]) : 256;
 	    			int h = args.length > 3 ? Integer.parseInt(args[3]) : 256;
 	    			player.entity.openUI(LDKeys.IMG_VIEW, w, h, 0);
-	    			NBTTagCompound com = new NBTTagCompound();
-	    			com.setString("target_listener", PKT_RECEIVER_ID);
-	    			com.setString("task", "img_preview_url");
-	    			com.setString("url", args[1]);
-	    			PacketHandler.getInstance().sendTo(new PacketNBTTagCompound(com), (EntityPlayerMP)player.entity);
+	    			TagCW com = TagCW.create();
+	    			com.set("task", "img_preview_url");
+	    			com.set("url", args[1]);
+	    			PacketHandler.getInstance().sendTo(new PacketTagHandler.I12_PacketTag(PKT_RECEIVER_ID, com), (EntityPlayerMP)player.entity);
 	    			return;
 	    		}
 				case "bulkmail":{
