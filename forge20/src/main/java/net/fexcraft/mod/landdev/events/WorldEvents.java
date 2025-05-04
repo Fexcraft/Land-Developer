@@ -1,5 +1,6 @@
 package net.fexcraft.mod.landdev.events;
 
+import net.fexcraft.mod.fcl.FCL;
 import net.fexcraft.mod.fsmm.FSMM;
 import net.fexcraft.mod.landdev.LandDev;
 import net.fexcraft.mod.landdev.util.ResManager;
@@ -18,13 +19,13 @@ public class WorldEvents {
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	public static void onWorldLoad(LevelEvent.Load event){
 		if(event.getLevel().isClientSide()) return;
-		if(event.getLevel() != ServerLifecycleHooks.getCurrentServer().overworld()) return;
+		if(event.getLevel() != FCL.SERVER.get().overworld()) return;
 	}
 	
 	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public static void onWorldUnload(LevelEvent.Unload event){
 		if(event.getLevel().isClientSide()) return;
-		if(event.getLevel() != ServerLifecycleHooks.getCurrentServer().overworld()) return;
+		if(event.getLevel() != FCL.SERVER.get().overworld()) return;
 		LandDev.log("Unloading LandDev World Data...");
 		ResManager.unload();
 		ResManager.clear();
