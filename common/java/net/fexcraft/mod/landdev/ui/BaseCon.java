@@ -2,6 +2,7 @@ package net.fexcraft.mod.landdev.ui;
 
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.V3I;
+import net.fexcraft.mod.fcl.UniFCL;
 import net.fexcraft.mod.landdev.data.ColorData;
 import net.fexcraft.mod.landdev.data.IconHolder;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
@@ -15,6 +16,7 @@ import net.fexcraft.mod.landdev.ui.modules.MainModule;
 import net.fexcraft.mod.landdev.ui.modules.ModuleRequest;
 import net.fexcraft.mod.landdev.ui.modules.ModuleResponse;
 import net.fexcraft.mod.landdev.util.ResManager;
+import net.fexcraft.mod.uni.IDLManager;
 import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.tag.TagLW;
@@ -199,7 +201,14 @@ public class BaseCon extends ContainerInterface {
 		nosubmit = com.getBoolean("nosubmit");
 		if((com.has("gui_icon") && bui.elements.size() > 6)){
 			bui.buttons.get("color").ecolor.packed = com.getInteger("gui_color");
-			bui.imgres = bui.drawer.loadExternal(com.getString("gui_icon"));
+			String icon = com.getString("gui_icon");
+			if(icon.startsWith("server:")){
+				bui.imgres = UniFCL.requestServerFile(null, icon);
+			}
+			else if(icon.startsWith("http") || icon.contains("://")){
+				bui.imgres = bui.drawer.loadExternal(icon);
+			}
+			else bui.imgres = IDLManager.getIDLCached(icon);
 			bui.tabs.get("icon").visible(true);
 		}
 		else bui.tabs.get("icon").visible(false);
