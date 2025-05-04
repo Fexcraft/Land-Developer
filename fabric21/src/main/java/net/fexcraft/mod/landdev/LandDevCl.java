@@ -4,7 +4,7 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
 import net.fexcraft.lib.common.math.Time;
-import net.fexcraft.mod.fcl.FCL;
+import net.fexcraft.mod.fcl.UniFCL;
 import net.fexcraft.mod.landdev.util.LDConfig;
 import net.fexcraft.mod.landdev.util.LocationUpdate;
 import net.fexcraft.mod.uni.tag.TagLW;
@@ -20,7 +20,7 @@ public class LandDevCl implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient(){
-		FCL.addListener("landdev", true, (com, player) -> {
+		UniFCL.regTagPacketListener("landdev", true, (com, player) -> {
 			switch(com.getString("task")){
 				case "location_update":{
 					int time = com.has("time") ? com.getInteger("time") : 10;
