@@ -447,6 +447,7 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 				if(!account.getBank().processAction(Action.TRANSFER, container.ldp.entity, account, sell.price, owner.getAccount(this))) return;
 				owner.set(layer, layer.is(Layers.PLAYER) ? container.ldp.uuid : null, district.getLayerId(layer));
 				sell.price = 0;
+				save();
 				container.open(UI_MAIN);
 				return;
 			}
