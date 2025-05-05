@@ -73,23 +73,23 @@ public class LandDev implements ModInitializer {
 
 		UniFCL.regTagPacketListener("landdev", false, (com, player) -> {});
 
-		ServerLifecycleEvents.SERVER_STARTING.register(server -> {
-			LDN.onServerStarting();
-			loadResManager();
-		});
+		ServerLifecycleEvents.SERVER_STARTING.register(server -> LDN.onServerStarting());
 		ServerLifecycleEvents.SERVER_STARTED.register(server -> LDN.onServerStarted());
 		ServerLifecycleEvents.SERVER_STOPPING.register(server -> LDN.onServerStopping());
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> LDN.onServerStop());
 
-		ServerChunkEvents.CHUNK_LOAD.register((level, chunk) -> {
+		/*ServerChunkEvents.CHUNK_LOAD.register((level, chunk) -> {
 			if(level != FCL.SERVER.get().overworld()) return;
 			loadResManager();
 			UniChunk.get(chunk);
-		});
+		});*/
 		ServerChunkEvents.CHUNK_UNLOAD.register((level, lvlck) -> {
 			if(level != FCL.SERVER.get().overworld()) return;
 			Chunk_ chunk = ResManager.getChunk(lvlck.getPos().x, lvlck.getPos().z);
 			if(chunk != null) ResManager.remChunk(lvlck.getPos().x, lvlck.getPos().z);
+		});
+		ServerWorldEvents.LOAD.register((server, world) -> {
+			loadResManager();
 		});
 		ServerWorldEvents.UNLOAD.register(((server, world) -> {
 			if(world != server.overworld()) return;
