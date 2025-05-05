@@ -306,5 +306,9 @@ public class TaxSystem extends TimerTask {
 		map.add("last-interval", last);
 		JsonHandler.print(new File(SAVE_DIR, "tax.json"), map, JsonHandler.PrintOption.FLAT_SPACED);
 	}
+	
+	public static void stop(){
+		INSTANCE.cancel();
+	}
 
 }
