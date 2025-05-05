@@ -221,6 +221,7 @@ public class ResManager implements Saveable {
 		PLAYERS.values().forEach(save -> DB.save(save));
 		INSTANCE.save();
 		INSTANCE.LOADED = false;
+		TaxSystem.stop();
 	}
 
 	public static void clear(){
