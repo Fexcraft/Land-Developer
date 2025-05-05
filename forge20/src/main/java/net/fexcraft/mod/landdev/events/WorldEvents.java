@@ -4,6 +4,7 @@ import net.fexcraft.mod.fcl.FCL;
 import net.fexcraft.mod.fsmm.FSMM;
 import net.fexcraft.mod.landdev.LandDev;
 import net.fexcraft.mod.landdev.util.ResManager;
+import net.fexcraft.mod.landdev.util.TaxSystem;
 import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -20,6 +21,7 @@ public class WorldEvents {
 	public static void onWorldLoad(LevelEvent.Load event){
 		if(event.getLevel().isClientSide()) return;
 		if(event.getLevel() != FCL.SERVER.get().overworld()) return;
+		ChunkEvents.load(event.getLevel());
 	}
 	
 	@SubscribeEvent(priority = EventPriority.LOWEST)
