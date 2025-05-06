@@ -21,8 +21,9 @@ public class WorldEvents {
 	public static void onWorldUnload(WorldEvent.Unload event){
 		if(event.getWorld().provider.getDimension() != 0 || event.getWorld().isRemote) return;
 		Print.log("Unloading LandDev World Data...");
-		ResManager.unload();
+		ResManager.saveAll();
 		ResManager.clear();
+		Print.log("Unloaded LandDev World Data.");
 	}
 	
 	@SubscribeEvent
