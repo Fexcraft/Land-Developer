@@ -94,7 +94,7 @@ public class LandDev implements ModInitializer {
 		ServerWorldEvents.UNLOAD.register(((server, world) -> {
 			if(world != server.overworld()) return;
 			LandDev.log("Unloading LandDev World Data...");
-			ResManager.unload();
+			ResManager.saveAll();
 			ResManager.clear();
 			LandDev.log("Unloaded LandDev World Data.");
 		}));
