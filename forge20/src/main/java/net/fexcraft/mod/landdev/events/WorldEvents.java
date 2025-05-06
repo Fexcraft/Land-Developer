@@ -29,8 +29,9 @@ public class WorldEvents {
 		if(event.getLevel().isClientSide()) return;
 		if(event.getLevel() != FCL.SERVER.get().overworld()) return;
 		LandDev.log("Unloading LandDev World Data...");
-		ResManager.unload();
+		ResManager.saveAll();
 		ResManager.clear();
+		LandDev.log("Unloaded LandDev World Data.");
 	}
 	
 }
