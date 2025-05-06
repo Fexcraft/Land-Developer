@@ -1,10 +1,13 @@
 package net.fexcraft.mod.landdev.util;
 
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.fexcraft.app.json.JsonMap;
+import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.mod.fsmm.data.Account;
 import net.fexcraft.mod.fsmm.util.DataManager;
@@ -35,6 +38,7 @@ public class ResManager implements Saveable {
 	
 	public boolean LOADED = false;
 	public static ResManager INSTANCE = new ResManager();
+	public static Timer SAVER = new Timer();
 	public static final UUID CONSOLE_UUID = UUID.fromString("f78a4d8d-d51b-4b39-98a3-230f2de0c670");
 	public static ConcurrentHashMap<ChunkKey, Chunk_> CHUNKS = new ConcurrentHashMap<>();
 	public static ConcurrentHashMap<Integer, District> DISTRICTS = new ConcurrentHashMap<>();
@@ -209,10 +213,16 @@ public class ResManager implements Saveable {
 		}
 		JsonMap map = DB.load(saveTable(), saveId());
 		if(map != null) load(map);
+		SAVER.schedule(new TimerTask() {
+			@Override
+			public void run(){
+				saveAll();
+			}
+		}, Time.MIN_MS * 5, Time.MIN_MS * 5);
 		LOADED = true;
 	}
 
-	public static void unload(){
+	public static void saveAll(){
 		ChunkRegion.saveAll();
 		DISTRICTS.values().forEach(save -> DB.save(save));
 		MUNICIPALITIES.values().forEach(save -> DB.save(save));
@@ -221,7 +231,6 @@ public class ResManager implements Saveable {
 		PLAYERS.values().forEach(save -> DB.save(save));
 		INSTANCE.save();
 		INSTANCE.LOADED = false;
-		TaxSystem.stop();
 	}
 
 	public static void clear(){
@@ -234,6 +243,7 @@ public class ResManager implements Saveable {
 		MUN_CENTERS.clear();
 		CT_CENTERS.clear();
 		RG_CENTERS.clear();
+		TaxSystem.stop();
 	}
 
 	public static String getPlayerName(UUID uuid){
