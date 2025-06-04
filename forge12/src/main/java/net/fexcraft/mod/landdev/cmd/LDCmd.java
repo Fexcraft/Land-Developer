@@ -21,6 +21,7 @@ import net.fexcraft.mod.landdev.util.*;
 import net.fexcraft.mod.landdev.util.broad.DiscordTransmitter;
 import net.fexcraft.mod.uni.impl.PacketTagHandler;
 import net.fexcraft.mod.uni.tag.TagCW;
+import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
@@ -79,7 +80,7 @@ public class LDCmd extends CommandBase {
 	        		return;
 	    		}
 	    		case "admin":{
-	    			if(server.isSinglePlayer() || Static.isOp((EntityPlayer)player.entity.direct())){
+	    			if(server.isSinglePlayer() || WrapperHolder.isOp(player.entity)){
 	    				player.adm = !player.adm;
 		        		Print.chat(sender, TranslationUtil.translateCmd("adminmode." + player.adm));
 	    			}
