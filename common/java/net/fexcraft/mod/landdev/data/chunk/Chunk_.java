@@ -430,6 +430,10 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 				return;
 			}
 			case "buy.submit":{
+				if(link != null && link.root_key != null){
+					container.msg("buy.islinked");
+					return;
+				}
 				String radio = req.getRadio();
 				Layers layer = radio.endsWith(".self") ? Layers.PLAYER : Layers.get(radio.replace("buy.", ""));
 				if(!layer.isValidChunkOwner()) return;
@@ -448,6 +452,15 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 				owner.set(layer, layer.is(Layers.PLAYER) ? container.ldp.uuid : null, district.getLayerId(layer));
 				sell.price = 0;
 				save();
+				if(link != null && link.linked != null){
+					for(ChunkKey lk : link.linked){
+						Chunk_ ck = ResManager.getChunk(lk);
+						if(ck.link == null || !key.equals(ck.link.root_key)) continue;
+						ck.sell.price = 0;
+						ck.owner.set(layer, layer.is(Layers.PLAYER) ? container.ldp.uuid : null, district.getLayerId(layer));
+						ck.save();
+					}
+				}
 				container.open(UI_MAIN);
 				return;
 			}
