@@ -230,7 +230,7 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 				resp.addRow("set_owner.warning2", ELM_RED);
 				resp.addRow("set_owner.warning3", ELM_RED);
 				resp.addRadio("set_owner.district", ELM_BLUE, owner.owner == Layers.DISTRICT);
-				if(!district.owner.is_county) resp.addRow("set_owner.municipality", ELM_BLUE, owner.owner == Layers.MUNICIPALITY);
+				if(!district.owner.is_county) resp.addRadio("set_owner.municipality", ELM_BLUE, owner.owner == Layers.MUNICIPALITY);
 				resp.addRadio("set_owner.county", ELM_BLUE, owner.owner == Layers.COUNTY);
 				resp.addRadio("set_owner.region", ELM_BLUE, owner.owner == Layers.REGION);
 				resp.addRadio("set_owner.none", ELM_BLUE, owner.owner == Layers.NONE);
