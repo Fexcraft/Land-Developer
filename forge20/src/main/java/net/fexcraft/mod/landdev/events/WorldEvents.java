@@ -3,8 +3,10 @@ package net.fexcraft.mod.landdev.events;
 import net.fexcraft.mod.fcl.FCL;
 import net.fexcraft.mod.fsmm.FSMM;
 import net.fexcraft.mod.landdev.LandDev;
+import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.util.ResManager;
 import net.fexcraft.mod.landdev.util.TaxSystem;
+import net.minecraftforge.event.level.ExplosionEvent;
 import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -32,6 +34,14 @@ public class WorldEvents {
 		ResManager.saveAll();
 		ResManager.clear();
 		LandDev.log("Unloaded LandDev World Data.");
+	}
+
+	@SubscribeEvent
+	public static void onExplosion(ExplosionEvent event){
+		if(event.getLevel().isClientSide()) return;
+		if(event.getLevel() != FCL.SERVER.get().overworld()) return;
+		Chunk_ chunk = ResManager.getChunkS(event.getExplosion().getPosition().x, event.getExplosion().getPosition().z);
+		event.setCanceled(!chunk.district.norms.get("explosions").bool());
 	}
 	
 }
