@@ -712,7 +712,7 @@ public class Municipality implements Saveable, Layer, LDUIModule {
 				Pair<Integer, Double> mdis = ResManager.disToNearestMun(chunk.key, -1);
 				if(mdis.getLeft() >= 0 && mdis.getRight() < min_dis){
 					container.msg("create.too_close");
-					player.entity.send(translateCmd("mun.center_too_close", ResManager.getMunicipality(mdis.getLeft(), true).name(), mdis.getLeft()));
+					player.entity.send("landdev.cmd.mun.center_too_close", ResManager.getMunicipality(mdis.getLeft(), true).name(), mdis.getLeft());
 					return;
 				}
     			String name = req.getField("create.name_field");
@@ -726,6 +726,10 @@ public class Municipality implements Saveable, Layer, LDUIModule {
 				}
 				Account acc = pp && uca ? perm.getAccount() : player.account;
 				if(acc.getBalance() < sum){
+					LandDev.log("Municipality creation failed due to missing funds.");
+					LandDev.log("Expected: " + sum + "; Available: " + acc.getBalance());
+					LandDev.log("Account: " + player.account.getId() + "; Bank: " + player.account.getBank());
+					LandDev.log("Chunk: " + chunk.key);
 					container.msg("create.not_enough_money");
 					return;
 				}
