@@ -728,7 +728,7 @@ public class Municipality implements Saveable, Layer, LDUIModule {
 				if(acc.getBalance() < sum){
 					LandDev.log("Municipality creation failed due to missing funds.");
 					LandDev.log("Expected: " + sum + "; Available: " + acc.getBalance());
-					LandDev.log("Account: " + player.account.getId() + "; Bank: " + player.account.getBank());
+					LandDev.log("Account: " + player.account.getTypeAndId() + "; Bank: " + player.account.getBank().id);
 					LandDev.log("Chunk: " + chunk.key);
 					container.msg("create.not_enough_money");
 					return;
