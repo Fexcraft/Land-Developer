@@ -1,8 +1,8 @@
 package net.fexcraft.mod.landdev;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback;
-import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.mod.fcl.UniFCL;
 import net.fexcraft.mod.landdev.util.LDConfig;
@@ -10,6 +10,7 @@ import net.fexcraft.mod.landdev.util.LocationUpdate;
 import net.fexcraft.mod.uni.tag.TagLW;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 
 import static net.fexcraft.mod.uni.ui.ContainerInterface.transformat;
 
@@ -48,9 +49,7 @@ public class LandDevCl implements ClientModInitializer {
 				}
 			}
 		});
-		HudLayerRegistrationCallback.EVENT.register(reg -> {
-			reg.attachLayerAfter(IdentifiedLayer.HOTBAR_AND_BARS, new LocationUpdate());
-		});
+		HudElementRegistry.attachElementAfter(VanillaHudElements.HOTBAR, LocationUpdate.ID, new LocationUpdate());
 	}
 
 }
