@@ -66,10 +66,10 @@ public class LocationUpdate implements HudElement {
 		for(int i = 0; i < lines.size(); i++){
 			if(lines.get(i).length() > 0){
 				if(LDConfig.LOCUP_SIDE){
-					gg.drawString(Minecraft.getInstance().font, lines.get(i), 2, 41 + (12 * i), 0xffffff);
+					gg.drawString(Minecraft.getInstance().font, lines.get(i), 2, 41 + (12 * i), 0xffffffff);
 				}
 				else{
-					gg.drawString(Minecraft.getInstance().font, lines.get(i), reswid - linelength[i] - 2, 41 + (12 * i), 0xffffff);
+					gg.drawString(Minecraft.getInstance().font, lines.get(i), reswid - linelength[i] - 2, 41 + (12 * i), 0xffffffff);
 				}
 			}
 		}
