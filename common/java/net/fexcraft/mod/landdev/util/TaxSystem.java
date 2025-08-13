@@ -17,6 +17,8 @@ import net.fexcraft.mod.landdev.data.district.District;
 import net.fexcraft.mod.landdev.data.municipality.Municipality;
 import net.fexcraft.mod.landdev.data.player.LDPlayer;
 import net.fexcraft.mod.landdev.data.region.Region;
+import net.fexcraft.mod.landdev.event.LDEvent;
+import net.fexcraft.mod.landdev.event.CollectTaxEvent;
 import net.fexcraft.mod.landdev.util.broad.BroadcastChannel;
 import net.fexcraft.mod.landdev.util.broad.Broadcaster;
 import net.fexcraft.mod.landdev.util.broad.Broadcaster.TargetTransmitter;
@@ -63,6 +65,7 @@ public class TaxSystem extends TimerTask {
 			mail.expireInDays(3);
 			dis.mail.add(mail);
 			dis.tax_collected = 0;
+			LDEvent.run(new CollectTaxEvent(dis));
 		}
 		for(Municipality mun : ResManager.MUNICIPALITIES.values()){
 			float muntax = mun.county.norms.get("municipality-tax-percent").decimal();
@@ -95,6 +98,7 @@ public class TaxSystem extends TimerTask {
 			mun.mail.add(mail);
 			//
 			mun.tax_collected = 0;
+			LDEvent.run(new CollectTaxEvent(mun));
 		}
 		for(County ct : ResManager.COUNTIES.values()){
 			float cttax = ct.region.norms.get("county-tax-percent").decimal();
@@ -127,6 +131,7 @@ public class TaxSystem extends TimerTask {
 			ct.mail.add(mail);
 			//
 			ct.tax_collected = 0;
+			LDEvent.run(new CollectTaxEvent(ct));
 		}
 		for(Region st : ResManager.REGIONS.values()){
 			Mail mail = new Mail(MailType.SYSTEM, Layers.REGION, st.id);
@@ -136,6 +141,7 @@ public class TaxSystem extends TimerTask {
 			mail.expireInDays(3);
 			st.mail.add(mail);
 			st.tax_collected = 0;
+			LDEvent.run(new CollectTaxEvent(st));
 		}
 		HashMap<ChunkKey, Chunk_> map = new HashMap(ResManager.CHUNKS);
 		long cktax = 0;
