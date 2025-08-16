@@ -45,7 +45,7 @@ public class ExternalData implements Saveable, LDUIModule {
 		for(Saveable saveable : saveables){
 			saveable.save(exdata);
 		}
-		if(!exdata.value.isEmpty()) map.add("external", map);
+		if(!exdata.value.isEmpty()) map.add("external", exdata);
 	}
 
 	@Override
