@@ -24,12 +24,11 @@ public class ChunkRegion {
 	public ConcurrentHashMap<ChunkKey, Chunk_> chunks = new ConcurrentHashMap<>();
 	private TagCW compound;
 	private ChunkKey key;
-	private File file;
 	public long last_access;
 
 	public ChunkRegion(ChunkKey rkey){
 		key = rkey;
-		file = new File(LandDev.SAVE_DIR + "/chunks/" + key.toString() + ".nbt");
+		File file = new File(LandDev.SAVE_DIR + "/chunks/" + key.toString() + ".nbt");
 		if(!file.getParentFile().exists()) file.getParentFile().mkdirs();
 		compound = WrapperHolder.read(file);
 		setLastAccess();
@@ -83,7 +82,7 @@ public class ChunkRegion {
 	}
 
 	private void save(){
-		WrapperHolder.write(compound, file);
+		WrapperHolder.write(compound, new File(LandDev.SAVE_DIR + "/chunks/" + key.toString() + ".nbt"));
 	}
 
 	public static void saveRegions(){
