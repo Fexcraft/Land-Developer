@@ -26,7 +26,6 @@ public class ChunkEvents {
 	private static void load(World world){
 		if(world.isRemote) return;
 		if(!FSMM.isDataManagerLoaded()) FSMM.loadDataManager();
-		LandDev.updateSaveDirectory(world);
 		ResManager.INSTANCE.load();
 	}
 
