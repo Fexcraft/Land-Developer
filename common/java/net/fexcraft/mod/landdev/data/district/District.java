@@ -53,6 +53,7 @@ public class District implements Saveable, Layer, PermInteractive, LDUIModule {
 	public DistrictOwner owner = new DistrictOwner();
 	public ExternalData external = new ExternalData(this);
 	public boolean disbanded;
+	public boolean locked;
 	public long tax_collected;
 	public long chunks;
 	
@@ -84,6 +85,7 @@ public class District implements Saveable, Layer, PermInteractive, LDUIModule {
 		external.save(map);
 		map.add("chunks", chunks);
 		if(disbanded) map.add("disbanded", true);
+		if(locked) map.add("locked", true);
 	}
 
 	@Override
@@ -101,7 +103,8 @@ public class District implements Saveable, Layer, PermInteractive, LDUIModule {
 		tax_collected = map.getLong("tax_collected", 0);
 		external.load(map);
 		chunks = map.getLong("chunks", 0);
-		disbanded = map.get("disbanded", false);
+		disbanded = map.getBoolean("disbanded", false);
+		locked = map.getBoolean("locked", false);
 	}
 	
 	@Override
@@ -162,6 +165,7 @@ public class District implements Saveable, Layer, PermInteractive, LDUIModule {
 
 	@Override
 	public boolean can(PermAction act, UUID uuid){
+		if(locked) return false;
 		boolean man = manage.isManager(uuid);
 		for(PermAction action : manage.actions()){
 			if(action != act) continue;
@@ -241,14 +245,17 @@ public class District implements Saveable, Layer, PermInteractive, LDUIModule {
 	@Override
 	public void sync_packet(BaseCon container, ModuleResponse resp){
 		resp.setTitle("district.title");
-		boolean canman = can(MANAGE_DISTRICT, container.ldp.uuid) || container.ldp.adm;
-		boolean canoman = owner.manageable().can(MANAGE_DISTRICT, container.ldp.uuid) || container.ldp.adm;
+		boolean canman = (!locked && can(MANAGE_DISTRICT, container.ldp.uuid)) || container.ldp.adm;
+		boolean canoman = (!locked && owner.manageable().can(MANAGE_DISTRICT, container.ldp.uuid)) || container.ldp.adm;
 		switch(container.pos.x){
 			case UI_MAIN:
-				resp.addRow("id", ELM_GENERIC, id);
 				if(disbanded){
 					resp.addRow("disbanded", ELM_RED, id);
 				}
+				if(locked){
+					resp.addRow("locked", ELM_RED, id);
+				}
+				resp.addRow("id", ELM_GENERIC, id);
 				if(canman){
 					resp.addButton("name", ELM_GENERIC, OPEN, name());
 					resp.addButton("type", ELM_GENERIC, OPEN, type.name());
@@ -365,8 +372,8 @@ public class District implements Saveable, Layer, PermInteractive, LDUIModule {
 
 	@Override
 	public void on_interact(BaseCon container, ModuleRequest req){
-		boolean canman = can(MANAGE_DISTRICT, container.ldp.uuid) || container.ldp.adm;
-		boolean canoman = owner.manageable().can(MANAGE_DISTRICT, container.ldp.uuid) || container.ldp.adm;
+		boolean canman = (!locked && can(MANAGE_DISTRICT, container.ldp.uuid)) || container.ldp.adm;
+		boolean canoman = (!locked && owner.manageable().can(MANAGE_DISTRICT, container.ldp.uuid)) || container.ldp.adm;
 		switch(req.event()){
 			case "name":{
 				container.open(UI_NORM_EDIT, id, norms.index(norms.get("name")));
