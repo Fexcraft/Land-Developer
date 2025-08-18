@@ -28,7 +28,7 @@ public class LandDev {
     public static final String VERSION = "1.x.x";
 	@Mod.Instance(LDN.MODID)
 	public static LandDev INSTANCE;
-	public static File SAVE_DIR;
+	public static File SAVE_DIR = new File("./landdev/");
 
 	public static final String PKT_RECEIVER_ID = "landdev:util";
     private static Logger logger;
@@ -80,10 +80,6 @@ public class LandDev {
     @Mod.EventHandler
 	public void serverStopped(FMLServerStoppedEvent event){
 		LDN.onServerStop();
-	}
-	
-	public static final File updateSaveDirectory(World world){
-		return SAVE_DIR = new File(world.getSaveHandler().getWorldDirectory(), "landdev/");
 	}
 	
 	public static final File getSaveDirectory(){
