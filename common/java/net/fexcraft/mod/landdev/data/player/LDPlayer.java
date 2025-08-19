@@ -226,7 +226,7 @@ public class LDPlayer implements Saveable, Layer, LDUIModule, Appendable<UniEnti
 				}
 				resp.addButton("county", ELM_GENERIC, OPEN, county.name());
 				resp.addButton("region", ELM_GENERIC, OPEN, county.region.name());
-				return;
+				break;
 			}
 			case UI_NICKNAME:{
 				resp.setTitle("player.appearance.title");
@@ -236,7 +236,7 @@ public class LDPlayer implements Saveable, Layer, LDUIModule, Appendable<UniEnti
 				resp.addField("appearance.color_field", colorcode == null ? "" : colorcode);
 				resp.addButton("appearance.submit", ELM_BLUE, OPEN);
 				resp.setFormular();
-				return;
+				break;
 			}
 		}
 		external.sync_packet(container, resp);
@@ -248,23 +248,23 @@ public class LDPlayer implements Saveable, Layer, LDUIModule, Appendable<UniEnti
 			case "nick":
 			case "color":{
 				container.open(UI_NICKNAME);
-				return;
+				break;
 			}
 			case "company":{
 				//
-				return;
+				break;
 			}
 			case "municipality":{
 				if(municipality.id > -1){
-					container.open(LDKeys.MUNICIPALITY, 0, municipality.id, 0);return;
+					container.open(LDKeys.MUNICIPALITY, 0, municipality.id, 0);break;
 				}
-				return;
+				break;
 			}
-			case "county": container.open(LDKeys.COUNTY, 0, county.id, 0); return;
-			case "region": container.open(LDKeys.REGION, 0, county.region.id, 0); return;
+			case "county": container.open(LDKeys.COUNTY, 0, county.id, 0); break;
+			case "region": container.open(LDKeys.REGION, 0, county.region.id, 0); break;
 			case "appearance.submit":{
 				String nick = req.getField("appearance.nick_field");
-				if(nick.length() == 0 || nick.length() > 16) return;
+				if(nick.length() == 0 || nick.length() > 16) break;
 				nickname = nick;
 				String color = req.getField("appearance.color_field");
 				if(color.length() > 0){
@@ -275,7 +275,7 @@ public class LDPlayer implements Saveable, Layer, LDUIModule, Appendable<UniEnti
 				}
 				save();
 				container.open(UI_MAIN);
-				return;
+				break;
 			}
 		}
 		external.on_interact(container, req);
