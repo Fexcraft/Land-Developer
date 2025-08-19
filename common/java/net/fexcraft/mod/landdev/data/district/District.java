@@ -286,7 +286,7 @@ public class District implements Saveable, Layer, PermInteractive, LDUIModule {
 				resp.addBlank();
 				resp.addButton("merge", ELM_YELLOW, OPEN);
 				resp.addButton("disband", ELM_RED, OPEN);
-				return;
+				break;
 			case UI_TYPE:
 				resp.setTitle("district.type.title");
 				for(DistrictType dtp : DistrictType.TYPES.values()){
@@ -294,7 +294,7 @@ public class District implements Saveable, Layer, PermInteractive, LDUIModule {
 				}
 				resp.addButton("type.submit", ELM_GENERIC, OPEN);
 				resp.setFormular();
-				return;
+				break;
 			case UI_MANAGER:
 				resp.setTitle("district.manager.title");
 				resp.addRow("manager.current", ELM_GENERIC, BLANK, manage.getManagerName());
@@ -302,7 +302,7 @@ public class District implements Saveable, Layer, PermInteractive, LDUIModule {
 				resp.addButton("manager.submit", ELM_GENERIC, manage.hasManager() ? OPEN : ADD);
 				if(manage.hasManager()) resp.addButton("manager.remove", ELM_GENERIC, REM);
 				resp.setFormular();
-				return;
+				break;
 			case UI_PRICE:
 				resp.setTitle("district.buy.title");
 				resp.addRow("id", ELM_GENERIC, BLANK, id);
@@ -315,28 +315,28 @@ public class District implements Saveable, Layer, PermInteractive, LDUIModule {
 				resp.addButton("buy.payer", ELM_GENERIC, CHECK_UNCHECKED);
 				resp.addButton("buy.submit", ELM_GENERIC, OPEN);
 				resp.setFormular();
-				return;
+				break;
 			case UI_SET_PRICE:
 				resp.setTitle("district.set_price.title");
 				resp.addRow("id", ELM_GENERIC, BLANK, id);
 				resp.addField("set_price.field");
 				resp.addButton("set_price.submit", ELM_GENERIC, OPEN);
 				resp.setFormular();
-				return;
+				break;
 			case UI_APPREARANCE:
 				AppearModule.resp(container, resp, "district", icon, color, canman);
-				return;
+				break;
 			case UI_NORMS:
 				NormModule.respNormList(norms, container, resp, "district", canman);
-				return;
+				break;
 			case UI_NORM_EDIT:{
 				NormModule.respNormEdit(norms, container, resp, "district", canman);
-				return;
+				break;
 			}
 			case UI_MERGE:{
 				resp.setTitle("district.merge.title");
 				resp.addRow("merge.wip", ELM_GENERIC);
-				return;
+				break;
 			}
 			case UI_DISBAND:{
 				resp.setTitle("district.disband.title");
@@ -347,7 +347,7 @@ public class District implements Saveable, Layer, PermInteractive, LDUIModule {
 				resp.addField("disband.name");
 				resp.addButton("disband.submit", ELM_YELLOW, canoman ? OPEN : EMPTY);
 				resp.setFormular();
-				return;
+				break;
 			}
 			case UI_CREATE:{
 				resp.setTitle("district.create.title");
@@ -364,7 +364,7 @@ public class District implements Saveable, Layer, PermInteractive, LDUIModule {
 				resp.addButton("create.submit", ELM_BLUE, OPEN);
 				resp.setFormular();
 				resp.setNoBack();
-				return;
+				break;
 			}
 		}
 		external.sync_packet(container, resp);
@@ -377,36 +377,36 @@ public class District implements Saveable, Layer, PermInteractive, LDUIModule {
 		switch(req.event()){
 			case "name":{
 				container.open(UI_NORM_EDIT, id, norms.index(norms.get("name")));
-				return;
+				break;
 			}
-			case "type": container.open(UI_TYPE); return;
+			case "type": container.open(UI_TYPE); break;
 			case "owner":{
 				container.open(owner.is_county ? LDKeys.COUNTY : LDKeys.MUNICIPALITY, 0, owner.owid, 0);
-				return;
+				break;
 			}
-			case "manager": if(canoman) container.open(UI_MANAGER); return;
-			case "price": container.open(UI_PRICE); return;
-			case "set_price": if(canman) container.open(UI_SET_PRICE); return;
-			case "mailbox": if(canman) container.open(MAILBOX, getLayer().ordinal(), id, 0); return;
-			case "norms": container.open(UI_NORMS); return;
-			case "appearance": container.open(UI_APPREARANCE); return;
-			case "merge": container.open(UI_MERGE); return;
-			case "disband": container.open(UI_DISBAND); return;
+			case "manager": if(canoman) container.open(UI_MANAGER); break;
+			case "price": container.open(UI_PRICE); break;
+			case "set_price": if(canman) container.open(UI_SET_PRICE); break;
+			case "mailbox": if(canman) container.open(MAILBOX, getLayer().ordinal(), id, 0); break;
+			case "norms": container.open(UI_NORMS); break;
+			case "appearance": container.open(UI_APPREARANCE); break;
+			case "merge": container.open(UI_MERGE); break;
+			case "disband": container.open(UI_DISBAND); break;
 			//
 			case "type.submit":{
-				if(!canman) return;
+				if(!canman) break;
 				DistrictType type = DistrictType.TYPES.get(req.getRadio("type."));
-				if(type == null) return;
+				if(type == null) break;
 				this.type = type;
 				container.open(UI_MAIN);
-				return;
+				break;
 			}
 			case "manager.submit":{
-				if(!canoman) return;
+				if(!canoman) break;
 				LDPlayer man = req.getPlayerField("manager.field");
 				if(man == null){
 					container.msg("landdev.cmd.uuid_player_not_found", false);
-					return;
+					break;
 				}
 				if(owner.manageable().isStaff(man.uuid)){
 					manage.setManager(man.uuid);
@@ -415,13 +415,13 @@ public class District implements Saveable, Layer, PermInteractive, LDUIModule {
 				else{
 					container.msg("landdev.cmd.player_not_staff", false);
 				}
-				return;
+				break;
 			}
 			case "manager.remove":{
-				if(!canoman) return;
+				if(!canoman) break;
 				manage.setNoManager();
 				container.open(0);
-				return;
+				break;
 			}
 			case "buy.submit":{
 				String radio = req.getRadio();
@@ -431,28 +431,28 @@ public class District implements Saveable, Layer, PermInteractive, LDUIModule {
 				boolean rep = req.getCheck("buy.payer");
 				if(!tct && !mct && !mmu){
 					container.msg("buy.nobuyer");
-					return;
+					break;
 				}
 				if(tct || mct){
 					if(mct && county().id == container.ldp.county.id){
 						container.msg("buy.alreadypartofcounty");
-						return;
+						break;
 					}
 					else if(tct && owner.is_county){
 						container.msg("buy.alreadypartofcounty");
-						return;
+						break;
 					}
 					County ct = mct ? container.ldp.county : county();
 					if(rep && !ct.manage.can(FINANCES_USE, container.ldp.uuid)){
 						container.msg("buy.no_county_perm");
-						return;
+						break;
 					}
 					Account account = rep ? ct.account : container.ldp.account;
 					if(account.getBalance() < sell.price){
 						container.msg("buy.notenoughmoney");
-						return;
+						break;
 					}
-					if(!account.getBank().processAction(Action.TRANSFER, container.ldp.entity, account, sell.price, ct.account)) return;
+					if(!account.getBank().processAction(Action.TRANSFER, container.ldp.entity, account, sell.price, ct.account)) break;
 					owner.set(ct);
 					sell.price = 0;
 					container.open(UI_MAIN);
@@ -460,27 +460,27 @@ public class District implements Saveable, Layer, PermInteractive, LDUIModule {
 				else{
 					if(!owner.is_county && municipality().id == container.ldp.municipality.id){
 						container.msg("buy.alreadypartofmunicipality");
-						return;
+						break;
 					}
 					Municipality mun = container.ldp.municipality;
 					if(rep && !mun.manage.can(FINANCES_USE, container.ldp.uuid)){
 						container.msg("buy.no_municipality_perm");
-						return;
+						break;
 					}
 					Account account = rep ? mun.account : container.ldp.account;
 					if(account.getBalance() < sell.price){
 						container.msg("buy.notenoughmoney");
-						return;
+						break;
 					}
-					if(!account.getBank().processAction(Action.TRANSFER, container.ldp.entity, account, sell.price, mun.account)) return;
+					if(!account.getBank().processAction(Action.TRANSFER, container.ldp.entity, account, sell.price, mun.account)) break;
 					owner.set(mun);
 					sell.price = 0;
 					container.open(UI_MAIN);
 				}
-				return;
+				break;
 			}
 			case "set_price.submit":{
-				if(!canoman) return;
+				if(!canoman) break;
 				String[] err = new String[]{ "" };
 				String val = req.getField("set_price.field");
 				long value = LDConfig.format_price(err, val);
@@ -491,48 +491,48 @@ public class District implements Saveable, Layer, PermInteractive, LDUIModule {
 					sell.price = value;
 					container.open(UI_MAIN);
 				}
-				return;
+				break;
 			}
 			case "norm_submit":{
-				if(!canman) return;
+				if(!canman) break;
 				NormModule.processNorm(norms, container, req, UI_NORM_EDIT);
-				return;
+				break;
 			}
 			case "norm_bool":{
-				if(!canman) return;
+				if(!canman) break;
 				NormModule.processBool(norms, container, req, UI_NORM_EDIT);
-				return;
+				break;
 			}
 			case "disband.warning1":{
 				container.open(UI_MERGE);
-				return;
+				break;
 			}
 			case "disband.submit":{
-				if(id < 0) return;
+				if(id < 0) break;
 				if(owner.is_county){
 					if(county().districts.size() < 2){
 						container.msg("disband.last_county");
-						return;
+						break;
 					}
 				}
 				else{
 					if(municipality().districts.size() < 2){
 						container.msg("disband.last_municipality");
-						return;
+						break;
 					}
 				}
 				if(!canoman){
 					container.msg("disband.no_perm");
-					return;
+					break;
 				}
 				String name = req.getField("disband.name");
 				if(!name.equals(name())){
 					container.msg("disband.wrong_name");
-					return;
+					break;
 				}
 				disband();
 				container.open(UI_MAIN);
-				return;
+				break;
 			}
 			case "create.submit":{
 				Chunk_ chunk = ResManager.getChunk(container.ldp.entity);
@@ -544,39 +544,39 @@ public class District implements Saveable, Layer, PermInteractive, LDUIModule {
 				Account account = null;
 				if(chunk.district.id > -1 && chunk.district.chunks < 2){
 					container.msg("create.exists");
-					return;
+					break;
 				}
 				if(forct){
 					if(chunk.district.county().id < 0){
 						container.msg("create.county_invalid");
-						return;
+						break;
 					}
 					if(!chunk.district.county().manage.can(CREATE_DISTRICT, player.uuid)){
 						container.msg("create.no_perm");
-						return;
+						break;
 					}
 					if(opay){
 						if(!chunk.district.county().manage.can(FINANCES_USE, player.uuid)){
 							container.msg("create.no_fund_perm");
-							return;
+							break;
 						}
 						account = chunk.district.county().account;
 					}
 				}
 				else{
-					if(player.municipality.id < 0) return;
+					if(player.municipality.id < 0) break;
 					if(player.municipality.county.id != chunk.district.county().id){
 						container.msg("create.wrong_county");
-						return;
+						break;
 					}
 					if(!player.municipality.manage.can(CREATE_DISTRICT, player.uuid)){
 						container.msg("create.no_perm");
-						return;
+						break;
 					}
 					if(opay){
 						if(!player.municipality.manage.can(FINANCES_USE, player.uuid)){
 							container.msg("create.no_fund_perm");
-							return;
+							break;
 						}
 						account = player.municipality.account;
 					}
@@ -584,15 +584,15 @@ public class District implements Saveable, Layer, PermInteractive, LDUIModule {
 				if(account == null) account = player.account;
 				if(account.getBalance() < sum){
 					container.msg("create.not_enough_money");
-					return;
+					break;
 				}
 				int newid = ResManager.getNewIdFor(saveTable());
 				if(newid < 0){
 					player.entity.send("DB ERROR, INVALID NEW ID '" + newid + "'!");
-					return;
+					break;
 				}
 				if(!account.getBank().processAction(Action.TRANSFER, player.entity, account, sum, SERVER_ACCOUNT)){
-					return;
+					break;
 				}
 				District dis = new District(newid);
 				ResManager.DISTRICTS.put(dis.id, dis);
@@ -608,12 +608,12 @@ public class District implements Saveable, Layer, PermInteractive, LDUIModule {
 				player.entity.closeUI();
 				player.entity.send(translate("gui.district.create.complete"));
 				Announcer.announce(Announcer.Target.GLOBAL, 0, "announce.district.created", name, newid);
-				return;
+				break;
 			}
 			case "appearance.submit":{
-				if(!canman) return;
+				if(!canman) break;
 				if(AppearModule.req(container, req, icon, color)) container.open(UI_MAIN);
-				return;
+				break;
 			}
 		}
 		if(NormModule.isNormReq(norms, container, req, UI_NORM_EDIT, id)) return;
