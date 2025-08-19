@@ -235,7 +235,7 @@ public class County implements Saveable, Layer, LDUIModule {
 				}
 				resp.addButton("norms", ELM_GREEN, OPEN);
 				resp.addButton("appearance", ELM_YELLOW, OPEN);
-				return;
+				break;
 			}
 			//
 			case UI_DISTRICTS:{
@@ -243,7 +243,7 @@ public class County implements Saveable, Layer, LDUIModule {
 				for(int id : districts){
 					resp.addButton("district." + id, ELM_GENERIC, OPEN, VALONLY + ResManager.getDistrictName(id));
 				}
-				return;
+				break;
 			}
 			case UI_MUNICIPALITY_LIST:{
 				resp.setTitle("county.municipality.title");
@@ -254,7 +254,7 @@ public class County implements Saveable, Layer, LDUIModule {
 				for(int id : municipalities){
 					resp.addButton("municipality.edit." + id, ELM_GENERIC, OPEN, VALONLY + getMunicipalityName(id));
 				}
-				return;
+				break;
 			}
 			case UI_MUNICIPALITY_EDIT:{
 				resp.setTitle("county.municipality.edit.title");
@@ -270,7 +270,7 @@ public class County implements Saveable, Layer, LDUIModule {
 					resp.addButton("municipality.remove", ELM_RED, REM);
 				}
 				resp.setNoSubmit();
-				return;
+				break;
 			}
 			case UI_CITIZEN_LIST:{
 				resp.setTitle("county.citizen.title");
@@ -311,7 +311,7 @@ public class County implements Saveable, Layer, LDUIModule {
 				for(UUID uuid : citizens.map().keySet()){
 					resp.addButton("citizen.edit." + uuid, ELM_GENERIC, OPEN, VALONLY + "- " + ResManager.getPlayerName(uuid));
 				}
-				return;
+				break;
 			}
 			case UI_CITIZEN_EDIT:{
 				resp.setTitle("county.citizen.edit.title");
@@ -328,7 +328,7 @@ public class County implements Saveable, Layer, LDUIModule {
 					resp.addButton("citizen.permission." + entry.getKey().name().toLowerCase(), ELM_GENERIC, enabled(entry.getValue()));
 				}
 				resp.setNoSubmit();
-				return;
+				break;
 			}
 			case UI_CITIZEN_INVITE:{
 				resp.setTitle("county.citizen.invite.title");
@@ -337,7 +337,7 @@ public class County implements Saveable, Layer, LDUIModule {
 				resp.addField("citizen.invite.field");
 				resp.addButton("citizen.invite.submit", ELM_GENERIC, OPEN);
 				resp.setFormular();
-				return;
+				break;
 			}
 			case UI_STAFF_EDIT:{
 				resp.setTitle("county.staff.edit.title");
@@ -355,7 +355,7 @@ public class County implements Saveable, Layer, LDUIModule {
 					resp.addButton("staff.permission." + entry.getKey().name().toLowerCase(), ELM_GENERIC, enabled(entry.getValue()));
 				}
 				resp.setNoSubmit();
-				return;
+				break;
 			}
 			case UI_STAFF_LIST:{
 				resp.setTitle("county.staff.title");
@@ -367,7 +367,7 @@ public class County implements Saveable, Layer, LDUIModule {
 				for(Manageable.Staff staff : manage.staff){
 					resp.addButton("staff.edit." + staff.uuid, ELM_GENERIC, OPEN, VALONLY + "- " + staff.getPlayerName());
 				}
-				return;
+				break;
 			}
 			case UI_STAFF_ADD:{
 				resp.setTitle("county.staff.add.title");
@@ -376,17 +376,17 @@ public class County implements Saveable, Layer, LDUIModule {
 				resp.addField("staff.add.field");
 				resp.addButton("staff.add.submit", ELM_GENERIC, OPEN);
 				resp.setFormular();
-				return;
+				break;
 			}
 			case UI_APPREARANCE:
 				AppearModule.resp(container, resp, "county", icon, color, canman);
-				return;
+				break;
 			case UI_NORMS:
 				NormModule.respNormList(norms, container, resp, "county", canman);
-				return;
+				break;
 			case UI_NORM_EDIT:{
 				NormModule.respNormEdit(norms, container, resp, "county", canman);
-				return;
+				break;
 			}
 			case UI_CREATE:
 				resp.setTitle("county.create.title");
@@ -396,7 +396,7 @@ public class County implements Saveable, Layer, LDUIModule {
 				boolean pp = container.ldp.hasPermit(CREATE_COUNTY, region.getLayer(), region.id);
 				if(!rn && !pp){
 					resp.addRow("create.no_perm", ELM_GENERIC, BLANK);
-					return;
+					break;
 				}
 				resp.addRow("create.name", ELM_GENERIC);
 				resp.addField("create.name_field");
@@ -411,7 +411,7 @@ public class County implements Saveable, Layer, LDUIModule {
 				resp.addButton("create.submit", ELM_BLUE, OPEN);
 				resp.setFormular();
 				resp.setNoBack();
-				return;
+				break;
 		}
 		external.sync_packet(container, resp);
 	}
@@ -422,49 +422,49 @@ public class County implements Saveable, Layer, LDUIModule {
 		boolean canman = manage.can(MANAGE_MUNICIPALITY, container.ldp.uuid) || player.adm;
 		switch(req.event()){
 			case "name":{
-				if(!canman) return;
+				if(!canman) break;
 				container.open(UI_NORM_EDIT, id, norms.index(norms.get("name")));
-				return;
+				break;
 			}
-			case "seat": if(seat >= 0) container.open(LDKeys.MUNICIPALITY, 0, seat, 0);return;
-			case "region": container.open(LDKeys.REGION, 0, region.id, 0); return;
-			case "citizen": container.open(UI_CITIZEN_LIST); return;
-			case "municipalities": container.open(UI_MUNICIPALITY_LIST); return;
-			case "districts": container.open(UI_DISTRICTS); return;
-			case "staff": container.open(UI_STAFF_LIST); return;
-			case "price": container.open(UI_PRICE); return;
-			case "set_price": if(canman) container.open(UI_SET_PRICE); return;
-			case "mailbox": if(canman) container.open(MAILBOX, getLayer().ordinal(), id, 0); return;
-			case "norms": container.open(UI_NORMS); return;
-			case "appearance": container.open(UI_APPREARANCE); return;
+			case "seat": if(seat >= 0) container.open(LDKeys.MUNICIPALITY, 0, seat, 0);break;
+			case "region": container.open(LDKeys.REGION, 0, region.id, 0); break;
+			case "citizen": container.open(UI_CITIZEN_LIST); break;
+			case "municipalities": container.open(UI_MUNICIPALITY_LIST); break;
+			case "districts": container.open(UI_DISTRICTS); break;
+			case "staff": container.open(UI_STAFF_LIST); break;
+			case "price": container.open(UI_PRICE); break;
+			case "set_price": if(canman) container.open(UI_SET_PRICE); break;
+			case "mailbox": if(canman) container.open(MAILBOX, getLayer().ordinal(), id, 0); break;
+			case "norms": container.open(UI_NORMS); break;
+			case "appearance": container.open(UI_APPREARANCE); break;
 			//
 			case "municipality.goto":{
 				int mun = req.getFieldInt("mun-id");
-				if(!municipalities.contains(mun)) return;
+				if(!municipalities.contains(mun)) break;
 				container.open(LDKeys.MUNICIPALITY, 0, mun, 0);
-				return;
+				break;
 			}
 			case "municipality.setmain":{
-				if(!canman) return;
+				if(!canman) break;
 				int mun = req.getFieldInt("mun-id");
-				if(!municipalities.contains(mun)) return;
+				if(!municipalities.contains(mun)) break;
 				Municipality muni = ResManager.getMunicipality(mun, true);
-				if(muni.county.id != id) return;
+				if(muni.county.id != id) break;
 				seat = muni.id;
 				container.open(UI_MUNICIPALITY_LIST);
-				return;
+				break;
 			}
 			case "municipality.remove":{
-				if(!canman) return;
+				if(!canman) break;
 				int mun = req.getFieldInt("mun-id");
-				if(!municipalities.contains(mun)) return;
+				if(!municipalities.contains(mun)) break;
 				if(municipalities.size() < 2){
 					container.msg("municipality.only_one");
-					return;
+					break;
 				}
 				if(seat == mun){
 					container.msg("municipality.setnew");
-					return;
+					break;
 				}
 				Municipality muni = ResManager.getMunicipality(mun, true);
 				muni.county = ResManager.getCounty(-1, true);
@@ -476,44 +476,44 @@ public class County implements Saveable, Layer, LDUIModule {
 				save();
 				Announcer.announce(Announcer.Target.MUNICIPALITY, id, "announce.county.municipality.removed", muni.name(), name(), id);
 				container.open(UI_MUNICIPALITY_LIST);
-				return;
+				break;
 			}
 			case "citizen.invite":{
 				container.open(UI_CITIZEN_INVITE);
-				return;
+				break;
 			}
 			case "citizen.join":{
-				if(!opentojoin()) return;
+				if(!opentojoin()) break;
 				if(player.isMunicipalityManager() && player.municipality.county.id != id){
 					container.msg("landdev.mail.municipality.citizen.ismanager", false);
-					return;
+					break;
 				}
 				if(player.isCountyManager() && id != player.county.id){
 					container.msg("landdev.mail.county.citizen.ismanager", false);
-					return;
+					break;
 				}
 				player.setCitizenOf(this);
 				container.open(UI_MAIN);
-				return;
+				break;
 			}
 			case "citizen.leave":{
 				if(player.isCountyManager() && !player.adm){
 					container.msg("landdev.mail.county.citizen.ismanager", false);
-					return;
+					break;
 				}
 				if(player.municipality.county.id == id){
 					container.msg("landdev.mail.county.citizen.isinsame", false);
-					return;
+					break;
 				}
 				if(player.isCountyManager()){
 					manage.setManager((UUID)null);
 				}
 				player.leaveCounty();
 				container.open(UI_MAIN);
-				return;
+				break;
 			}
 			case "citizen.request":{
-				if(opentojoin()) return;
+				if(opentojoin()) break;
 				Mail mail = new Mail(MailType.REQUEST, Layers.PLAYER, player.uuid, Layers.COUNTY, id);
 				mail.setTitle(player.name_raw()).expireInDays(7);
 				mail.addMessage(translate("mail.player.county.join_request0", player.name_raw()));
@@ -521,14 +521,14 @@ public class County implements Saveable, Layer, LDUIModule {
 				this.mail.mails.add(mail);
 				requests.timeouts.put(player.uuid, 0l);
 				container.open(UI_CITIZEN_LIST);
-				return;
+				break;
 			}
 			case "citizen.invite.submit":{
-				if(!manage.can(PermAction.PLAYER_INVITE, player.uuid) && !player.adm) return;
+				if(!manage.can(PermAction.PLAYER_INVITE, player.uuid) && !player.adm) break;
 				LDPlayer ply = req.getPlayerField("citizen.invite.field");
 				if(ply == null){
 					container.msg("citizen.invite.notfound");
-					return;
+					break;
 				}
 				Mail mail = new Mail(MailType.INVITE, Layers.COUNTY, id, Layers.PLAYER, ply.uuid);
 				mail.setTitle(name()).expireInDays(7);
@@ -537,16 +537,16 @@ public class County implements Saveable, Layer, LDUIModule {
 				ply.addMailAndSave(mail);
 				player.entity.send(translate("gui.county.citizen.invite.success"));
 				player.entity.closeUI();
-				return;
+				break;
 			}
 			case "citizen.remove":{
-				if(!canman) return;
+				if(!canman) break;
 				Citizens.Citizen cit = citizens.get(req.getUUIDField());
 				if(cit != null && !manage.isManager(cit.uuid)){
 					LDPlayer ply = ResManager.getPlayer(cit.uuid, true);
 					if(ply.municipality.county.id == id){
 						container.msg("citizen.remove.isinsame");
-						return;
+						break;
 					}
 					ply.setCitizenOf(ResManager.getCounty(-1, true));
 					Mail mail = new Mail(MailType.SYSTEM, Layers.COUNTY, id, Layers.PLAYER, ply.uuid).expireInDays(7);
@@ -558,22 +558,22 @@ public class County implements Saveable, Layer, LDUIModule {
 					Announcer.announce(Announcer.Target.COUNTY, id, "announce.county.citizen.removed", cit.getPlayerName(), name(), id);
 				}
 				container.open(UI_CITIZEN_LIST);
-				return;
+				break;
 			}
 			case "staff.add":{
 				container.open(UI_STAFF_ADD);
-				return;
+				break;
 			}
 			case "staff.add.submit":{
-				if(!canman) return;
+				if(!canman) break;
 				LDPlayer ply = req.getPlayerField("staff.add.field");
 				if(ply == null){
 					container.msg("staff.add.notfound");
-					return;
+					break;
 				}
 				if(!citizens.isCitizen(ply.uuid)){
 					container.msg("staff.add.notmember");
-					return;
+					break;
 				}
 				Mail mail = new Mail(MailType.INVITE, Layers.COUNTY, id, Layers.PLAYER, ply.uuid).expireInDays(7);
 				mail.setTitle(name()).setStaffInvite();
@@ -582,10 +582,10 @@ public class County implements Saveable, Layer, LDUIModule {
 				ply.addMailAndSave(mail);
 				player.entity.send(translate("gui.county.staff.add.success"));
 				player.entity.closeUI();
-				return;
+				break;
 			}
 			case "staff.remove":{
-				if(!canman) return;
+				if(!canman) break;
 				Manageable.Staff staff = manage.getStaff(req.getUUIDField());
 				if(staff != null && !manage.isManager(staff)){
 					manage.removeStaff(staff.uuid);
@@ -602,10 +602,10 @@ public class County implements Saveable, Layer, LDUIModule {
 					Announcer.announce(Announcer.Target.COUNTY, id, "announce.county.staff.removed", staff.getPlayerName(), name(), id);
 				}
 				container.open(UI_STAFF_LIST);
-				return;
+				break;
 			}
 			case "staff.setmanager":{
-				if(!player.adm && !canman) return;
+				if(!player.adm && !canman) break;
 				Manageable.Staff staff = manage.getStaff(req.getUUIDField());
 				if(staff != null){
 					manage.setManager(staff.uuid);
@@ -623,7 +623,7 @@ public class County implements Saveable, Layer, LDUIModule {
 					Announcer.announce(Announcer.Target.COUNTY, id, "announce.county.manager_set", staff.getPlayerName(), name(), id);
 				}
 				container.open(UI_MAIN);
-				return;
+				break;
 			}
 			//
 			case "create.submit":{
@@ -636,70 +636,70 @@ public class County implements Saveable, Layer, LDUIModule {
 					player.entity.send(translateCmd("ct.no_new_counties"));
 					player.entity.send(translateCmd("ct.no_create_permit"));
 					player.entity.closeUI();
-					return;
+					break;
 				}
 				boolean cd = req.getCheck("create.integrate_district");
 				boolean cm = req.getCheck("create.integrate_municipality");
 				boolean fm = req.getCheck("create.municipality_funded");
 				Municipality mun = cm ? chunk.district.municipality() : null;
-				if(cm && mun == null) return;
+				if(cm && mun == null) break;
 				if(!cm && player.isInManagement(Layers.MUNICIPALITY)){
 					container.msg("create.leave_municipality_management");
-					return;
+					break;
 				}
 				if(player.isInManagement(Layers.COUNTY)){
 					container.msg("create.leave_county_management");
-					return;
+					break;
 				}
 				if(player.isInManagement(Layers.REGION) && player.county.region.id != region.id){
 					container.msg("create.leave_region_management");
-					return;
+					break;
 				}
 				String name = req.getField("create.name_field");
-				if(!validateName(container, name)) return;
+				if(!validateName(container, name)) break;
 				boolean ura = req.getCheck("create.region_funded");
 				if(!pp && !ura) sum += region.norms.get("new-county-fee").integer();
 				Permit perm = pp ? player.getPermit(CREATE_COUNTY_FUND, region.getLayer(), region.id) : null;
 				if(!pp && ura){
 					container.msg("create.no_fund_permit");
-					return;
+					break;
 				}
 				Account acc = pp && ura ? perm.getAccount() : cm && fm ? mun.account : player.account;
 				if(acc.getBalance() < sum){
 					container.msg("create.not_enough_money");
-					return;
+					break;
 				}
 				if(cd && !chunk.district.norms.get("county-can-form").bool()){
 					container.msg("create.district_no_forming");
-					return;
+					break;
 				}
 				if(cd && chunk.district.municipality() != null && chunk.district.municipality().districts.size() == 1){
 					container.msg("create.only_district");
-					return;
+					break;
 				}
 				if(!cd && !cm && chunk.district.id >= 0){
 					container.msg("create.chunk_is_claimed");
-					return;
+					break;
 				}
 				if(cm && !mun.manage.isManager(player.uuid)){
 					container.msg("create.municipality_not_manager");
-					return;
+					break;
 				}
 				//todo notifications
 				int newid = ResManager.getNewIdFor(saveTable()), ndid = -2;
 				if(newid < 0){
 					player.entity.send("DB ERROR, INVALID NEW ID '" + newid + "'!");
-					return;
+					break;
 				}
 				if(!cd){
 					ndid = ResManager.getNewIdFor(chunk.district.saveTable());
 					if(ndid < 0){
 						player.entity.send("DB ERROR, INVALID NEW DISTRICT ID '" + newid + "'!");
-						return;
+						break;
 					}
 				}
 				if(!acc.getBank().processAction(Bank.Action.TRANSFER, player.entity, acc, sum, SERVER_ACCOUNT)){
-					return;
+					break;
 				}
 				if(!ura) SERVER_ACCOUNT.getBank().processAction(Bank.Action.TRANSFER, null, SERVER_ACCOUNT, region.norms.get("new-county-fee").integer(), region.account);
 				County nct = new County(newid);
@@ -748,23 +748,23 @@ public class County implements Saveable, Layer, LDUIModule {
 				player.entity.closeUI();
 				player.entity.send(translate("gui.county.create.complete"));
 				Announcer.announce(Announcer.Target.GLOBAL, 0, "announce.county.created", name, newid);
-				return;
+				break;
 			}
 			//
 			case "norm_submit":{
-				if(!canman) return;
+				if(!canman) break;
 				NormModule.processNorm(norms, container, req, UI_NORM_EDIT);
-				return;
+				break;
 			}
 			case "norm_bool":{
-				if(!canman) return;
+				if(!canman) break;
 				NormModule.processBool(norms, container, req, UI_NORM_EDIT);
-				return;
+				break;
 			}
 			case "appearance.submit":{
-				if(!canman) return;
+				if(!canman) break;
 				if(AppearModule.req(container, req, icon, color)) container.open(UI_MAIN);
-				return;
+				break;
 			}
 		}
 		if(NormModule.isNormReq(norms, container, req, UI_NORM_EDIT, id)) return;
