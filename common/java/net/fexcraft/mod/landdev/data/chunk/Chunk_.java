@@ -183,7 +183,7 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 				resp.addRow("access_interact", ELM_GENERIC, canman ? access.interact ? ENABLED : DISABLED : EMPTY, canman, access.interact ? LANG_YES : LANG_NO);
 				resp.addButton("access_player", ELM_GENERIC, LIST, access.players.size());
 				resp.addButton("access_company", ELM_GENERIC, LIST, access.companies.size());
-				return;
+				break;
 			case UI_LINK:
 				resp.setTitle("chunk.link.title");
 				resp.addRow("link.info0", ELM_YELLOW, BLANK);
@@ -192,10 +192,10 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 				resp.addField("link.field");
 				resp.addButton("link.submit", ELM_BLUE, OPEN);
 				resp.setFormular();
-				return;
+				break;
 			case UI_LINKS:
 				resp.setTitle("chunk.links.title");
-				if(link.linked == null) return;
+				if(link.linked == null) break;
 				resp.addButton("links.submit", ELM_BLUE, OPEN, key.comma());
 				boolean first = true;
 				for(int i = 0; i < link.linked.size(); i++){
@@ -203,12 +203,12 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 					first = false;
 				}
 				resp.setFormular();
-				return;
+				break;
 			case UI_LINKED:
 				resp.setTitle("chunk.linked.title");
 				resp.addButton("linked.key", ELM_GENERIC, OPEN, "!!!" + link.root_key.comma());
 				resp.addButton("linked.disconnect", ELM_RED, REM, key.comma());
-				return;
+				break;
 			case UI_TYPE:
 				resp.setTitle("chunk.select_type.title");
 				resp.addRow("key", ELM_GENERIC, BLANK, key.comma());
@@ -221,7 +221,7 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 				}
 				resp.addButton("select_type.submit", ELM_GENERIC, OPEN);
 				resp.setFormular();
-				return;
+				break;
 			case UI_OWNER:
 				resp.setTitle("chunk.set_owner.title");
 				resp.addRow("key", ELM_GENERIC, BLANK, key.comma());
@@ -236,7 +236,7 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 				resp.addRadio("set_owner.none", ELM_BLUE, owner.owner == Layers.NONE);
 				resp.addButton("set_owner.submit", ELM_GENERIC, OPEN);
 				resp.setFormular();
-				return;
+				break;
 			case UI_PRICE:
 				resp.setTitle("chunk.buy.title");
 				resp.addRow("key", ELM_GENERIC, BLANK, key.comma());
@@ -250,14 +250,14 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 				resp.addButton("buy.payer", ELM_GENERIC, CHECK_UNCHECKED);
 				resp.addButton("buy.submit", ELM_GENERIC, OPEN);
 				resp.setFormular();
-				return;
+				break;
 			case UI_SET_PRICE:
 				resp.setTitle("chunk.set_price.title");
 				resp.addRow("key", ELM_GENERIC, BLANK, key.comma());
 				resp.addField("set_price.field");
 				resp.addButton("set_price.submit", ELM_GENERIC, OPEN);
 				resp.setFormular();
-				return;
+				break;
 			case UI_TAX:
 				boolean bool = district.can(CHUNK_CUSTOMTAX, container.ldp.uuid) || container.ldp.adm;
 				resp.setTitle("chunk.tax.title");
@@ -277,7 +277,7 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 					resp.addButton("set_tax.submit", ELM_GENERIC, OPEN);
 					resp.setFormular();
 				}
-				return;
+				break;
 			case UI_ACC_PLAYER:
 				resp.setTitle("chunk.access_player.title");
 				boolean bcm = can_manage(container.ldp);
@@ -301,9 +301,9 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 					}
 					if(bcm) resp.setFormular();
 				}
-				return;
+				break;
 			case UI_ACC_COMPANY:
-				return;
+				break;
 		}
 		external.sync_packet(container, resp);
 	}
@@ -313,41 +313,41 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 		boolean canman = can_manage(container.ldp);
 		switch(req.event()){
 			case "access_interact":{
-				if(!canman) return;
+				if(!canman) break;
 				access.interact = !access.interact;
 				container.sendResp();
-				return;
+				break;
 			}
-			case "link": container.open(UI_LINK); return;
+			case "link": container.open(UI_LINK); break;
 			case "link.submit":{
-				if(!canman || LDConfig.CHUNK_LINK_LIMIT == 0 || link != null) return;
+				if(!canman || LDConfig.CHUNK_LINK_LIMIT == 0 || link != null) break;
 				ChunkKey ckk = new ChunkKey(req.getField("link.field"));
 				Chunk_ ck = ResManager.getChunk(ckk);
 				if(ck == null){
 					container.msg("link.notfound");
-					return;
+					break;
 				}
 				if(ck.link != null && ck.link.root_key != null){
 					container.msg("link.issub");
-					return;
+					break;
 				}
 				ChunkLink ckl = ck.link == null ? new ChunkLink(ck) : ck.link;
 				if(ckl.linked == null) ckl.linked = new ArrayList<>();
 				if(key.equals(ckk) || ckl.linked.contains(ckk)){
 					container.msg("link.islinked");
-					return;
+					break;
 				}
 				if(ckl.linked.size() > LDConfig.CHUNK_LINK_LIMIT){
 					container.msg("link.limit");
-					return;
+					break;
 				}
 				if(!ckl.validate(key)){
 					container.msg("link.noborder");
-					return;
+					break;
 				}
 				if(!ck.owner.issame(owner)){
 					container.msg("link.nosameowner");
-					return;
+					break;
 				}
 				(ck.link = ckl).linked.add(key);
 				link = new ChunkLink(this);
@@ -355,22 +355,22 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 				ck.save();
 				save();
 				container.open(UI_MAIN);
-				return;
+				break;
 			}
-			case "links": container.open(UI_LINKS); return;
+			case "links": container.open(UI_LINKS); break;
 			case "links.submit":{
-				if(!canman) return;
+				if(!canman) break;
 				ChunkKey key = link.linked.get(req.getRadioInt("links.key"));
 				container.open(LDKeys.CHUNK, 0, key.x, key.z);
-				return;
+				break;
 			}
-			case "linked": container.open(UI_LINKED); return;
+			case "linked": container.open(UI_LINKED); break;
 			case "linked.key":{
 				container.open(LDKeys.CHUNK, 0, link.root_key.x, link.root_key.z);
-				return;
+				break;
 			}
 			case "linked.disconnect":{
-				if(!canman) return;
+				if(!canman) break;
 				Chunk_ lt = ResManager.getChunk(link.root_key);
 				lt.link.linked.remove(key);
 				if(lt.link.linked.isEmpty()) lt.link = null;
@@ -378,32 +378,32 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 				lt.save();
 				save();
 				container.open(UI_MAIN);
-				return;
+				break;
 			}
-			case "type": if(canman) container.open(UI_TYPE); return;
-			case "district": container.open(LDKeys.DISTRICT, 0, district.id, 0); return;
-			case "owner": if(canman) container.open(UI_OWNER); return;
-			case "price": /*if(!canman)*/ container.open(UI_PRICE); return;
-			case "set_price": container.open(UI_SET_PRICE); return;
-			case "tax": container.open(UI_TAX); return;
-			case "access_player": container.open(UI_ACC_PLAYER); return;
-			case "access_company": container.open(UI_ACC_COMPANY); return;
+			case "type": if(canman) container.open(UI_TYPE); break;
+			case "district": container.open(LDKeys.DISTRICT, 0, district.id, 0); break;
+			case "owner": if(canman) container.open(UI_OWNER); break;
+			case "price": /*if(!canman)*/ container.open(UI_PRICE); break;
+			case "set_price": container.open(UI_SET_PRICE); break;
+			case "tax": container.open(UI_TAX); break;
+			case "access_player": container.open(UI_ACC_PLAYER); break;
+			case "access_company": container.open(UI_ACC_COMPANY); break;
 			//
 			case "select_type.submit":{
-				if(!canman) return;
+				if(!canman) break;
 				ChunkType type = ChunkType.get(req.getRadio("type."));
-				if(type == null) return;
-				if(!container.ldp.adm && (type == ChunkType.LOCKED || this.type == ChunkType.LOCKED)) return;
+				if(type == null) break;
+				if(!container.ldp.adm && (type == ChunkType.LOCKED || this.type == ChunkType.LOCKED)) break;
 				if(owner.playerchunk && (type == ChunkType.RESTRICTED || type == ChunkType.LOCKED)){
 					container.msg("select_type.notforplayerchunks");
-					return;
+					break;
 				}
 				this.type = type;
 				container.open(UI_MAIN);
-				return;
+				break;
 			}
 			case "set_price.submit":{
-				if(!canman) return;
+				if(!canman) break;
 				String[] err = new String[]{ "" };
 				String val = req.getField("set_price.field");
 				long value = LDConfig.format_price(err, val);
@@ -414,41 +414,41 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 					sell.price = value;
 					container.open(UI_MAIN);
 				}
-				return;
+				break;
 			}
 			case "set_owner.submit":{
-				if(!canman) return;
+				if(!canman) break;
 				Layers layer = Layers.get(req.getRadio("set_owner."));
-				if(!layer.isValidChunkOwner2()) return;
+				if(!layer.isValidChunkOwner2()) break;
 				if(layer.is(Layers.MUNICIPALITY) && district.owner.is_county){
 					container.msg("landdev.district.not_part_of_municipality", false);
-					return;
+					break;
 				}
 				owner.set(layer, null, getLayerId(layer));
 				sell.price = 0;
 				container.open(UI_MAIN);
-				return;
+				break;
 			}
 			case "buy.submit":{
 				if(link != null && link.root_key != null){
 					container.msg("buy.islinked");
-					return;
+					break;
 				}
 				String radio = req.getRadio();
 				Layers layer = radio.endsWith(".self") ? Layers.PLAYER : Layers.get(radio.replace("buy.", ""));
-				if(!layer.isValidChunkOwner()) return;
+				if(!layer.isValidChunkOwner()) break;
 				if(layer.is(Layers.MUNICIPALITY) && district.owner.is_county){
 					container.msg("landdev.district.not_part_of_municipality", false);
-					return;
+					break;
 				}
 				boolean npp = req.getCheck("buy.payer");
 				Account account = npp ? district.getLayerAccount(layer, container) : container.ldp.account;
-				if(account == null) return;
+				if(account == null) break;
 				if(account.getBalance() < sell.price){
 					container.msg("buy.notenoughmoney");
-					return;
+					break;
 				}
-				if(!account.getBank().processAction(Action.TRANSFER, container.ldp.entity, account, sell.price, owner.getAccount(this))) return;
+				if(!account.getBank().processAction(Action.TRANSFER, container.ldp.entity, account, sell.price, owner.getAccount(this))) break;
 				owner.set(layer, layer.is(Layers.PLAYER) ? container.ldp.uuid : null, district.getLayerId(layer));
 				sell.price = 0;
 				save();
@@ -462,10 +462,10 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 					}
 				}
 				container.open(UI_MAIN);
-				return;
+				break;
 			}
 			case "set_tax.submit":{
-				if(!district.can(CHUNK_CUSTOMTAX, container.ldp.uuid) && !container.ldp.adm) return;
+				if(!district.can(CHUNK_CUSTOMTAX, container.ldp.uuid) && !container.ldp.adm) break;
 				String val = req.getField("set_tax.field");
 				String[] err = new String[]{ "" };
 				long value = LDConfig.format_price(err, val);
@@ -476,29 +476,29 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 					tax.custom_tax = value;
 					container.open(UI_TAX);
 				}
-				return;
+				break;
 			}
 			case "access_player.add.submit":{
-				if(!can_manage(container.ldp)) return;
+				if(!can_manage(container.ldp)) break;
 				LDPlayer other = req.getPlayerField("access_player.field", true);
 				if(other == null){
 					container.msg("access_player.notfound");
-					return;
+					break;
 				}
 				access.players.put(other.uuid, 0l);
 				container.open(UI_ACC_PLAYER);
-				return;
+				break;
 			}
 			case "access_player.rem.submit":{
-				if(!can_manage(container.ldp)) return;
+				if(!can_manage(container.ldp)) break;
 				UUID uuid = UUID.fromString(req.getRadio("access_player.id_"));
 				if(!access.players.containsKey(uuid)){
 					container.msg("access_player.notfound");
-					return;
+					break;
 				}
 				access.players.remove(uuid);
 				container.open(UI_ACC_PLAYER);
-				return;
+				break;
 			}
 		}
 		external.on_interact(container, req);
