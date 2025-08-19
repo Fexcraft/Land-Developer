@@ -139,4 +139,20 @@ public class ModuleResponse {
 		return LDUIModule.VALONLY + string;
 	}
 
+	public void remEntry(String index){
+		remEntry(list, index);
+	}
+
+	public void remEntry(TagLW root, String index){
+		int remidx = -1;
+		for(int idx = 0; idx < root.size(); idx++){
+			TagLW list = root.getList(idx);
+			if(list.getString(0).equals(index)){
+				remidx = idx;
+				break;
+			}
+		}
+		if(remidx > -1) root.remove(remidx);
+	}
+
 }
