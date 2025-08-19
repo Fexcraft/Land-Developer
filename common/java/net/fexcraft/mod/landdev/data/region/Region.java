@@ -197,7 +197,7 @@ public class Region implements Saveable, Layer, LDUIModule {
 				}
 				resp.addButton("norms", ELM_GREEN, OPEN);
 				resp.addButton("appearance", ELM_YELLOW, OPEN);
-				return;
+				break;
 			}
 			//
 			case UI_COUNTY_LIST:{
@@ -209,7 +209,7 @@ public class Region implements Saveable, Layer, LDUIModule {
 				for(int id : counties){
 					resp.addButton("county.edit." + id, ELM_GENERIC, OPEN, VALONLY + getCountyName(id));
 				}
-				return;
+				break;
 			}
 			case UI_COUNTY_EDIT:{
 				resp.setTitle("region.county.edit.title");
@@ -225,7 +225,7 @@ public class Region implements Saveable, Layer, LDUIModule {
 					resp.addButton("county.remove", ELM_RED, REM);
 				}
 				resp.setNoSubmit();
-				return;
+				break;
 			}
 			//
 			case UI_STAFF_EDIT:{
@@ -244,7 +244,7 @@ public class Region implements Saveable, Layer, LDUIModule {
 					resp.addButton("staff.permission." + entry.getKey().name().toLowerCase(), ELM_GENERIC, enabled(entry.getValue()));
 				}
 				resp.setNoSubmit();
-				return;
+				break;
 			}
 			case UI_STAFF_LIST:{
 				resp.setTitle("region.staff.title");
@@ -256,7 +256,7 @@ public class Region implements Saveable, Layer, LDUIModule {
 				for(Manageable.Staff staff : manage.staff){
 					resp.addButton("staff.edit." + staff.uuid, ELM_GENERIC, OPEN, VALONLY + "- " + staff.getPlayerName());
 				}
-				return;
+				break;
 			}
 			case UI_STAFF_ADD:{
 				resp.setTitle("region.staff.add.title");
@@ -265,17 +265,17 @@ public class Region implements Saveable, Layer, LDUIModule {
 				resp.addField("staff.add.field");
 				resp.addButton("staff.add.submit", ELM_GENERIC, OPEN);
 				resp.setFormular();
-				return;
+				break;
 			}
 			case UI_APPREARANCE:
 				AppearModule.resp(container, resp, "region", icon, color, canman);
-				return;
+				break;
 			case UI_NORMS:
 				NormModule.respNormList(norms, container, resp, "region", canman);
-				return;
+				break;
 			case UI_NORM_EDIT:{
 				NormModule.respNormEdit(norms, container, resp, "region", canman);
-				return;
+				break;
 			}
 			case UI_CREATE:
 				resp.setTitle("region.create.title");
@@ -285,14 +285,14 @@ public class Region implements Saveable, Layer, LDUIModule {
 				boolean pp = container.ldp.hasPermit(CREATE_COUNTY, region.getLayer(), region.id);
 				if(!rn && !pp){
 					resp.addRow("create.no_perm", ELM_GENERIC, BLANK);
-					return;
+					break;
 				}
 				resp.addRow("create.name", ELM_GENERIC);
 				resp.addField("create.name_field");
 				resp.addButton("create.submit", ELM_BLUE, OPEN);
 				resp.setFormular();
 				resp.setNoBack();
-				return;
+				break;
 		}
 		external.sync_packet(container, resp);
 	}
@@ -303,46 +303,46 @@ public class Region implements Saveable, Layer, LDUIModule {
 		boolean canman = manage.can(MANAGE_MUNICIPALITY, container.ldp.uuid) || player.adm;
 		switch(req.event()){
 			case "name":{
-				if(!canman) return;
+				if(!canman) break;
 				container.open(UI_NORM_EDIT, id, norms.index(norms.get("name")));
-				return;
+				break;
 			}
-			case "seat": if(seat >= 0) container.open(LDKeys.COUNTY, 0, seat, 0); return;
-			case "counties": container.open(UI_COUNTY_LIST); return;
-			case "staff": container.open(UI_STAFF_LIST); return;
-			case "price": container.open(UI_PRICE); return;
-			case "set_price": if(canman) container.open(UI_SET_PRICE); return;
-			case "mailbox": if(canman) container.open(MAILBOX, getLayer().ordinal(), id, 0); return;
-			case "norms": container.open(UI_NORMS); return;
-			case "appearance": container.open(UI_APPREARANCE); return;
+			case "seat": if(seat >= 0) container.open(LDKeys.COUNTY, 0, seat, 0); break;
+			case "counties": container.open(UI_COUNTY_LIST); break;
+			case "staff": container.open(UI_STAFF_LIST); break;
+			case "price": container.open(UI_PRICE); break;
+			case "set_price": if(canman) container.open(UI_SET_PRICE); break;
+			case "mailbox": if(canman) container.open(MAILBOX, getLayer().ordinal(), id, 0); break;
+			case "norms": container.open(UI_NORMS); break;
+			case "appearance": container.open(UI_APPREARANCE); break;
 			//
 			case "county.goto":{
 				int ct = req.getFieldInt("ct-id");
-				if(!counties.contains(ct)) return;
+				if(!counties.contains(ct)) break;
 				container.open(LDKeys.COUNTY, 0, ct, 0);
-				return;
+				break;
 			}
 			case "county.setmain":{
-				if(!canman) return;
+				if(!canman) break;
 				int ct = req.getFieldInt("ct-id");
-				if(!counties.contains(ct)) return;
+				if(!counties.contains(ct)) break;
 				County cty = ResManager.getCounty(ct, true);
-				if(cty.region.id != id) return;
+				if(cty.region.id != id) break;
 				seat = cty.id;
 				container.open(UI_COUNTY_LIST);
-				return;
+				break;
 			}
 			case "county.remove":{
-				if(!canman) return;
+				if(!canman) break;
 				int ct = req.getFieldInt("ct-id");
-				if(!counties.contains(ct)) return;
+				if(!counties.contains(ct)) break;
 				if(counties.size() < 2){
 					container.msg("county.only_one");
-					return;
+					break;
 				}
 				if(seat == ct){
 					container.msg("county.setnew");
-					return;
+					break;
 				}
 				County cty = ResManager.getCounty(ct, true);
 				cty.region = ResManager.getRegion(-1, true);
@@ -350,23 +350,23 @@ public class Region implements Saveable, Layer, LDUIModule {
 				save();
 				Announcer.announce(Announcer.Target.MUNICIPALITY, id, "announce.region.county.removed", cty.name(), name(), id);
 				container.open(UI_COUNTY_LIST);
-				return;
+				break;
 			}
 			//
 			case "staff.add":{
 				container.open(UI_STAFF_ADD);
-				return;
+				break;
 			}
 			case "staff.add.submit":{
-				if(!canman) return;
+				if(!canman) break;
 				LDPlayer ply = req.getPlayerField("staff.add.field");
 				if(ply == null){
 					container.msg("staff.add.notfound");
-					return;
+					break;
 				}
 				if(!isCitizen(ply.uuid)){
 					container.msg("staff.add.notmember");
-					return;
+					break;
 				}
 				Mail mail = new Mail(MailType.INVITE, Layers.REGION, id, Layers.PLAYER, ply.uuid).expireInDays(7);
 				mail.setTitle(name()).setStaffInvite();
@@ -375,10 +375,10 @@ public class Region implements Saveable, Layer, LDUIModule {
 				ply.addMailAndSave(mail);
 				player.entity.send(translate("gui.region.staff.add.success"));
 				player.entity.closeUI();
-				return;
+				break;
 			}
 			case "staff.remove":{
-				if(!canman) return;
+				if(!canman) break;
 				Manageable.Staff staff = manage.getStaff(req.getUUIDField());
 				if(staff != null && !manage.isManager(staff)){
 					manage.removeStaff(staff.uuid);
@@ -395,10 +395,10 @@ public class Region implements Saveable, Layer, LDUIModule {
 					Announcer.announce(Announcer.Target.REGION, id, "announce.region.staff.removed", staff.getPlayerName(), name(), id);
 				}
 				container.open(UI_STAFF_LIST);
-				return;
+				break;
 			}
 			case "staff.setmanager":{
-				if(!player.adm && !canman) return;
+				if(!player.adm && !canman) break;
 				Manageable.Staff staff = manage.getStaff(req.getUUIDField());
 				if(staff != null){
 					manage.setManager(staff.uuid);
@@ -416,7 +416,7 @@ public class Region implements Saveable, Layer, LDUIModule {
 					Announcer.announce(Announcer.Target.REGION, id, "announce.region.manager_set", staff.getPlayerName(), name(), id);
 				}
 				container.open(UI_MAIN);
-				return;
+				break;
 			}
 			//
 			case "create.submit":{
@@ -427,41 +427,41 @@ public class Region implements Saveable, Layer, LDUIModule {
 				if(!player.adm){
 					if(ct.region.id >= 0){
 						container.msg("create.already_in_region");
-						return;
+						break;
 					}
 					if(!player.isCountyManager()){
 						container.msg("create.not_county_manager");
-						return;
+						break;
 					}
 					if(ct.id != player.county.id){
 						container.msg("create.not_in_county");
-						return;
+						break;
 					}
 					if(!LDConfig.NEW_REGIONS && !pp){
 						container.msg("create.new_regions_disabled");
 						container.msg("create.no_perm");
-						return;
+						break;
 					}
 				}
 				if(ct.id < 0){
 					container.msg("create.invalid_county");
-					return;
+					break;
 				}
 				long sum = LDConfig.REGION_CREATION_FEE;
 				String name = req.getField("create.name_field");
-				if(!validateName(container, name)) return;
+				if(!validateName(container, name)) break;
 				if(!player.adm && ct.account.getBalance() < sum){
 					container.msg("create.not_enough_money");
-					return;
+					break;
 				}
 				//todo notifications
 				int newid = ResManager.getNewIdFor(saveTable()), ndid = -2;
 				if(newid < 0){
 					player.entity.send("DB ERROR, INVALID NEW ID '" + newid + "'!");
-					return;
+					break;
 				}
 				if(!player.adm && !ct.account.getBank().processAction(Bank.Action.TRANSFER, player.entity, ct.account, sum, SERVER_ACCOUNT)){
-					return;
+					break;
 				}
 				Region reg = new Region(newid);
 				reg.created.create(player.uuid);
@@ -486,23 +486,23 @@ public class Region implements Saveable, Layer, LDUIModule {
 				player.entity.closeUI();
 				player.entity.send(translate("gui.region.create.complete"));
 				Announcer.announce(Announcer.Target.GLOBAL, 0, "announce.region.created", name, newid);
-				return;
+				break;
 			}
 			//
 			case "norm_submit":{
-				if(!canman) return;
+				if(!canman) break;
 				NormModule.processNorm(norms, container, req, UI_NORM_EDIT);
-				return;
+				break;
 			}
 			case "norm_bool":{
-				if(!canman) return;
+				if(!canman) break;
 				NormModule.processBool(norms, container, req, UI_NORM_EDIT);
-				return;
+				break;
 			}
 			case "appearance.submit":{
-				if(!canman) return;
+				if(!canman) break;
 				if(AppearModule.req(container, req, icon, color)) container.open(UI_MAIN);
-				return;
+				break;
 			}
 		}
 		if(NormModule.isNormReq(norms, container, req, UI_NORM_EDIT, id)) return;
