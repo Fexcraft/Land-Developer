@@ -7,7 +7,6 @@ import java.util.List;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.mod.landdev.data.Layer;
 import net.fexcraft.mod.landdev.data.Layers;
-import net.fexcraft.mod.landdev.data.Saveable;
 import net.fexcraft.mod.landdev.ui.BaseCon;
 import net.fexcraft.mod.landdev.ui.LDUIModule;
 import net.fexcraft.mod.landdev.ui.modules.ModuleRequest;
@@ -16,7 +15,7 @@ import net.fexcraft.mod.landdev.ui.modules.ModuleResponse;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class ExternalData implements Saveable, LDUIModule {
+public class ExternalData implements ExternalSaveable, LDUIModule {
 
 	public static final HashMap<Layers, ArrayList<Class<? extends ExternalSaveable>>> REGISTRY = new HashMap<>();
 	static{ for(Layers layer : Layers.values()) REGISTRY.put(layer, new ArrayList<>()); }
@@ -26,7 +25,35 @@ public class ExternalData implements Saveable, LDUIModule {
 
 	public ExternalData(LDUIModule module){
 		this.module = module;
-		for(Class<? extends ExternalSaveable> clazz : REGISTRY.get(((Layer)module).getLayer())){
+		setup((Layer)module);
+	}
+
+	@Override
+	public void save(Layer layer, JsonMap map){
+		JsonMap exdata = new JsonMap();
+		for(ExternalSaveable saveable : saveables){
+			saveable.save(layer, exdata);
+		}
+		if(!exdata.value.isEmpty()) map.add("external", exdata);
+	}
+
+	@Override
+	public void load(Layer layer, JsonMap map){
+		if(!map.has("external")) return;
+		JsonMap exdata = map.getMap("external");
+		for(ExternalSaveable saveable : saveables){
+			saveable.load(layer, exdata);
+		}
+	}
+
+	@Override
+	public String id(){
+		return "root";
+	}
+
+	@Override
+	public void setup(Layer layer){
+		for(Class<? extends ExternalSaveable> clazz : REGISTRY.get(layer.getLayer())){
 			try{
 				ExternalSaveable save = clazz.newInstance();
 				saveables.add(save);
@@ -40,27 +67,9 @@ public class ExternalData implements Saveable, LDUIModule {
 	}
 
 	@Override
-	public void save(JsonMap map){
-		JsonMap exdata = new JsonMap();
-		for(Saveable saveable : saveables){
-			saveable.save(exdata);
-		}
-		if(!exdata.value.isEmpty()) map.add("external", exdata);
-	}
-
-	@Override
-	public void load(JsonMap map){
-		if(!map.has("external")) return;
-		JsonMap exdata = map.getMap("external");
-		for(Saveable saveable : saveables){
-			saveable.load(exdata);
-		}
-	}
-
-	@Override
-	public void gendef(){
-		for(Saveable saveable : saveables){
-			saveable.gendef();
+	public void gendef(Layer layer){
+		for(ExternalSaveable saveable : saveables){
+			saveable.gendef(layer);
 		}
 	}
 
