@@ -82,7 +82,7 @@ public class District implements Saveable, Layer, PermInteractive, LDUIModule {
 		norms.save(map);
 		owner.save(map);
 		map.add("tax_collected", tax_collected);
-		external.save(map);
+		external.save(this, map);
 		map.add("chunks", chunks);
 		if(disbanded) map.add("disbanded", true);
 		if(locked) map.add("locked", true);
@@ -101,7 +101,7 @@ public class District implements Saveable, Layer, PermInteractive, LDUIModule {
 		norms.load(map);
 		owner.load(map);
 		tax_collected = map.getLong("tax_collected", 0);
-		external.load(map);
+		external.load(this, map);
 		chunks = map.getLong("chunks", 0);
 		disbanded = map.getBoolean("disbanded", false);
 		locked = map.getBoolean("locked", false);
@@ -123,7 +123,7 @@ public class District implements Saveable, Layer, PermInteractive, LDUIModule {
 			owner.municipality = ResManager.getMunicipality(0, true);
 			color.set(0xff9900);
 		}
-		external.gendef();
+		external.gendef(this);
 	}
 	
 	@Override
