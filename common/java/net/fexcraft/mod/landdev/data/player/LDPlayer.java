@@ -94,7 +94,7 @@ public class LDPlayer implements Saveable, Layer, LDUIModule, Appendable<UniEnti
 		map.add("municipality", municipality.id);
 		map.add("county", county.id);
 		map.add("last_tax", last_tax);
-		external.save(map);
+		external.save(this, map);
 		DataManager.save(account);
 	}
 
@@ -117,7 +117,7 @@ public class LDPlayer implements Saveable, Layer, LDUIModule, Appendable<UniEnti
 		county = ResManager.getCounty(map.getInteger("county", -1), true);
 		if(municipality.id >= 0 && county != municipality.county) county = municipality.county;
 		last_tax = map.getLong("last_tax", 0);
-		external.load(map);
+		external.load(this, map);
 	}
 	
 	@Override
@@ -125,7 +125,7 @@ public class LDPlayer implements Saveable, Layer, LDUIModule, Appendable<UniEnti
 		joined = Time.getDate();
 		municipality = ResManager.getMunicipality(-1, true);
 		county = ResManager.getCounty(-1, true);
-		external.gendef();
+		external.gendef(this);
 	}
 	
 	public String saveId(){
