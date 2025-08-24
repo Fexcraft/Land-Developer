@@ -82,7 +82,7 @@ public class Region implements Saveable, Layer, LDUIModule {
 		map.add("counties", array);
 		map.add("tax_collected", tax_collected);
 		if(seat >= 0) map.add("seat", seat);
-		external.save(map);
+		external.save(this, map);
 		DataManager.save(account);
 	}
 
@@ -103,7 +103,7 @@ public class Region implements Saveable, Layer, LDUIModule {
 		}
 		tax_collected = map.getLong("tax_collected", 0);
 		seat = map.getInteger("seat", -1);
-		external.load(map);
+		external.load(this, map);
 	}
 	
 	@Override
@@ -123,7 +123,7 @@ public class Region implements Saveable, Layer, LDUIModule {
 			color.set(0xff9900);
 			seat = 0;
 		}
-		external.gendef();
+		external.gendef(this);
 	}
 	
 	@Override
