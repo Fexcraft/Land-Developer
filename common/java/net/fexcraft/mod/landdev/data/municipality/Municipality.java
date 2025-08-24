@@ -95,7 +95,7 @@ public class Municipality implements Saveable, Layer, LDUIModule {
 		map.add("districts", array);
 		map.add("county", county.id);
 		map.add("tax_collected", tax_collected);
-		external.save(map);
+		external.save(this, map);
 		if(abandoned) map.add("abandoned", abandoned);
 		DataManager.save(account);
 	}
@@ -121,7 +121,7 @@ public class Municipality implements Saveable, Layer, LDUIModule {
 		county = ResManager.getCounty(map.getInteger("county", -1), true);
 		tax_collected = map.getLong("tax_collected", 0);
 		abandoned = map.get("abandoned", false);
-		external.load(map);
+		external.load(this, map);
 	}
 	
 	@Override
@@ -147,7 +147,7 @@ public class Municipality implements Saveable, Layer, LDUIModule {
 			norms.get("name").set("Unnamed Place");
 			norms.get("title").set("Untitled");
 		};
-		external.gendef();
+		external.gendef(this);
 	}
 	
 	@Override
