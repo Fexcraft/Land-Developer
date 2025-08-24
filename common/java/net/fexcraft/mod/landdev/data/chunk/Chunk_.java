@@ -72,7 +72,7 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 		tax.save(map);
 		label.save(map);
 		if(district != null) map.add("district", district.id);
-		external.save(map);
+		external.save(this, map);
 	}
 
 	@Override
@@ -90,14 +90,14 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 		label.load(map);
 		district = ResManager.getDistrict(map.getInteger("district", -1));
 		if(district.disbanded) district = ResManager.getDistrict(-1);
-		external.load(map);
+		external.load(this, map);
 		TaxSystem.taxChunk(this, null, false);
 	}
 	
 	@Override
 	public void gendef(){
 		district = ResManager.getDistrict(-1);
-		external.gendef();
+		external.gendef(this);
 	}
 	
 	@Override
