@@ -277,6 +277,7 @@ landdev.gui.chunk.links.title=List of linked Chunks:
 landdev.gui.chunk.links.submit=Go to selected Chunk Info
 landdev.gui.chunk.linked.title=This Chunk is currently linked to:
 landdev.gui.chunk.linked.disconnect=Disconnect?
+landdev.gui.chunk.locked=Chunk is locked.
 landdev.gui.chunk.select_type.title=Chunk Protection Type
 landdev.gui.chunk.select_type.submit=Confirm Change
 landdev.gui.chunk.select_type.notforplayerchunks=This Type is not available for Player owned chunks.
