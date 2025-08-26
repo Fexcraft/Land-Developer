@@ -46,6 +46,7 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 	public ExternalData external = new ExternalData(this);
 	public District district;
 	public long loaded;
+	public boolean locked;
 	public UniChunk uck;
 
 	public Chunk_(UniChunk ck){
@@ -73,6 +74,7 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 		label.save(map);
 		if(district != null) map.add("district", district.id);
 		external.save(this, map);
+		if(locked) map.add("locked", true);
 	}
 
 	@Override
@@ -91,6 +93,7 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 		district = ResManager.getDistrict(map.getInteger("district", -1));
 		if(district.disbanded) district = ResManager.getDistrict(-1);
 		external.load(this, map);
+		locked = map.getBoolean("locked", false);
 		TaxSystem.taxChunk(this, null, false);
 	}
 	
@@ -128,6 +131,7 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 
 	public boolean can_manage(LDPlayer player){
 		if(player.adm) return true;
+		if(locked) return false;
 		UUID uuid = player.uuid;
 		if(owner.playerchunk && owner.player.equals(uuid)) return true;
 		else if(owner.owner.is(Layers.DISTRICT) && district.can(MANAGE_DISTRICT, uuid)) return true;
@@ -155,6 +159,9 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 		switch(container.pos.x){
 			case UI_MAIN:
 				boolean canman = can_manage(container.ldp);// || container.ldp.adm;
+				if(locked){
+					resp.addRow("locked", ELM_RED, key.comma());
+				}
 				resp.addRow("key", ELM_GENERIC, key.comma());
 				if(LDConfig.CHUNK_LINK_LIMIT > 0){
 					if(link == null){
