@@ -169,6 +169,7 @@ public class TaxSystem extends TimerTask {
 		}
 		broad(Config.getWorthAsString(pytax) + " player tax collected.");
 		broad(Config.getWorthAsString(cktax + pytax) + " tax collected in total.");
+		LDEvent.run(new CollectTaxEvent(null)); // Called without a layer at the end to signify all layers have been taxed
 	}
 
 	public static long taxPlayer(LDPlayer player, Long date, boolean ignore){
