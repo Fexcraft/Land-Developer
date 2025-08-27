@@ -18,7 +18,7 @@ import java.util.ArrayList;
  */
 public class ModuleResponse {
 
-	private ArrayList<TagLW> elmlist = new ArrayList<>();
+	private ArrayList<TagCW> elmlist = new ArrayList<>();
 	private TagCW compound;
 	private int in_index = 0;
 	private boolean form;
@@ -46,7 +46,7 @@ public class ModuleResponse {
 
 	public TagCW build(){
 		TagLW list = TagLW.create();
-		for(TagLW elm : elmlist) list.add(elm);
+		for(TagCW elm : elmlist) list.add(elm);
 		compound.set("elements", list);
 		if(form) compound.set("form", true);
 		if(nosubmit) compound.set("nosubmit", true);
@@ -130,13 +130,29 @@ public class ModuleResponse {
 	}
 
 	public void addEntry(String index, LDUIRow elm, LDUIButton icon, boolean button, boolean field, Object value, boolean valonly, boolean hidefield){
+		TagCW com = TagCW.create();
 		TagLW list = TagLW.create();
 		list.add(index);
 		list.add(elm.name());
 		list.add(icon.name());
-		list.add((elm == ELM_BLANK ? "0" : "1") + (button ? "1" : "0") + (field ? hidefield ? "2" : "1" : "0"));
-		if(value != null) list.add(valonly ? val(value.toString()) : value.toString());
-		elmlist.add(in_index++, list);
+		com.set("elm", list);
+		if(elm != ELM_BLANK) com.set("text", true);
+		if(button) com.set("button", true);
+		if(field){
+			com.set("field", field);
+			if(hidefield) com.set("hidden", true);
+		}
+		if(value != null){
+			if(valonly) com.set("value", value.toString());
+			else if(value instanceof String[]){
+				com.set("format", true);
+				TagLW val = TagLW.create();
+				for(String s : ((String[])value)) val.add(s);
+				com.set("value", val);
+			}
+			else com.set("value", value.toString());
+		}
+		elmlist.add(in_index++, com);
 	}
 
 	public String val(String string){
@@ -146,7 +162,7 @@ public class ModuleResponse {
 	public void remEntry(String index){
 		int remidx = -1;
 		for(int idx = 0; idx < elmlist.size(); idx++){
-			TagLW list = elmlist.get(idx);
+			TagLW list = elmlist.get(idx).getList("elm");
 			if(list.getString(0).equals(index)){
 				remidx = idx;
 				break;
@@ -171,7 +187,7 @@ public class ModuleResponse {
 	private int indexOfEntry(String index){
 		int idx = -1;
 		for(int i = 0; i < elmlist.size(); i++){
-			TagLW entry = elmlist.get(i);
+			TagLW entry = elmlist.get(i).getList("elm");
 			if(entry.getString(0).equals(index)){
 				idx = i;
 				break;
