@@ -206,7 +206,7 @@ public class District implements Saveable, Layer, PermInteractive, LDUIModule {
 		boolean dis = layer.is(Layers.DISTRICT);
 		if((dis && !owner.is_county) || layer.is(Layers.MUNICIPALITY)){
 			if(!owner.municipality.manage.can(container.ldp.uuid, FINANCES_USE, FINANCES_MANAGE)){
-				if(container == null) container.ldp.entity.send(TranslationUtil.translateCmd("account.noperm.municipality"));
+				if(container == null) container.ldp.entity.send("landdev.cmd.account.noperm.municipality");
 				else container.msg("landdev.cmd.account.noperm.municipality", false);
 				return null;
 			}
@@ -214,7 +214,7 @@ public class District implements Saveable, Layer, PermInteractive, LDUIModule {
 		}
 		if((dis && owner.is_county) || layer.is(Layers.COUNTY)){
 			if(!county().manage.can(container.ldp.uuid, FINANCES_USE, FINANCES_MANAGE)){
-				if(container == null) container.ldp.entity.send(TranslationUtil.translateCmd("account.noperm.county"));
+				if(container == null) container.ldp.entity.send("landdev.cmd.account.noperm.county");
 				else container.msg("landdev.cmd.account.noperm.county", false);
 				return null;
 			}
@@ -222,7 +222,7 @@ public class District implements Saveable, Layer, PermInteractive, LDUIModule {
 		}
 		if(layer.is(Layers.REGION)){
 			if(!region().manage.can(container.ldp.uuid, FINANCES_USE, FINANCES_MANAGE)){
-				if(container == null) container.ldp.entity.send(TranslationUtil.translateCmd("account.noperm.region"));
+				if(container == null) container.ldp.entity.send("landdev.cmd.account.noperm.region");
 				else container.msg("landdev.cmd.account.noperm.region", false);
 				return null;
 			}
