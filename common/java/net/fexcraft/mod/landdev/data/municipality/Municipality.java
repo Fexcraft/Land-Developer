@@ -5,7 +5,6 @@ import static net.fexcraft.mod.landdev.ui.LDUIButton.*;
 import static net.fexcraft.mod.landdev.ui.LDUIRow.*;
 import static net.fexcraft.mod.landdev.util.ResManager.SERVER_ACCOUNT;
 import static net.fexcraft.mod.landdev.util.TranslationUtil.translate;
-import static net.fexcraft.mod.landdev.util.TranslationUtil.translateCmd;
 
 import java.util.ArrayList;
 import java.util.Map.Entry;
@@ -690,8 +689,8 @@ public class Municipality implements Saveable, Layer, LDUIModule {
     			boolean cn = county.norms.get("new-municipalities").bool();
     			boolean pp = player.hasPermit(CREATE_MUNICIPALITY, county.getLayer(), county.id);
     			if(!cn && !pp){
-	    			player.entity.send(translateCmd("mun.no_new_municipalities"));
-	    			player.entity.send(translateCmd("mun.no_create_permit"));
+	    			player.entity.send("landdev.cmd.mun.no_new_municipalities");
+	    			player.entity.send("landdev.cmd.mun.no_create_permit");
 	    			player.entity.closeUI();
     				break;
     			}
