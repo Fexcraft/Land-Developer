@@ -62,6 +62,8 @@ public class LDN {
 		UniReg.registerMenu(LDKeys.CHUNK_SELL, "landdev:uis/chunk_claim", ChunkClaimCon.class);
 		UniReg.registerUI(LDKeys.CHUNK_BUY, ChunkClaimUI.class);
 		UniReg.registerMenu(LDKeys.CHUNK_BUY, "landdev:uis/chunk_claim", ChunkClaimCon.class);
+		UniReg.registerUI(LDKeys.CHUNK_LOCK, ChunkClaimUI.class);
+		UniReg.registerMenu(LDKeys.CHUNK_LOCK, "landdev:uis/chunk_claim", ChunkClaimCon.class);
 	}
 
 	public static void postinit(){
