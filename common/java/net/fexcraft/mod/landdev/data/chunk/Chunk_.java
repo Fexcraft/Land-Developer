@@ -160,7 +160,7 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 			case UI_MAIN:
 				boolean canman = can_manage(container.ldp);// || container.ldp.adm;
 				if(locked){
-					resp.addRow("locked", ELM_RED, key.comma());
+					resp.addButton("locked", ELM_RED, container.ldp.adm ? ENABLED : EMPTY);
 				}
 				resp.addRow("key", ELM_GENERIC, key.comma());
 				if(LDConfig.CHUNK_LINK_LIMIT > 0){
@@ -190,6 +190,9 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 				resp.addRow("access_interact", ELM_GENERIC, canman ? access.interact ? ENABLED : DISABLED : EMPTY, canman, access.interact ? LANG_YES : LANG_NO);
 				resp.addButton("access_player", ELM_GENERIC, LIST, access.players.size());
 				resp.addButton("access_company", ELM_GENERIC, LIST, access.companies.size());
+				if(!locked && container.ldp.adm){
+					resp.addButton("lock", ELM_RED, DISABLED);
+				}
 				break;
 			case UI_LINK:
 				resp.setTitle("chunk.link.title");
@@ -395,6 +398,14 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 			case "tax": container.open(UI_TAX); break;
 			case "access_player": container.open(UI_ACC_PLAYER); break;
 			case "access_company": container.open(UI_ACC_COMPANY); break;
+			case "lock":
+			case "locked":{
+				if(!container.ldp.adm) break;
+				locked = !locked;
+				save();
+				container.open(UI_MAIN);
+				break;
+			}
 			//
 			case "select_type.submit":{
 				if(!canman) break;
