@@ -50,7 +50,7 @@ public class MailModule implements LDUIModule {
 		resp.addBlank();
 		resp.addRow("title", ELM_GREEN, resp.val(mail.title));
 		for(int i = 0; i < mail.message.size(); i++){
-			resp.addRow("msg" + i, ELM_GENERIC, resp.val(mail.message.get(i)));
+			resp.addRow("msg" + i, ELM_GENERIC, mail.message.get(i));
 		}
 		if(mail.invite()){
 			if(mail.expired() || mail.type == MailType.EXPIRED){
@@ -89,7 +89,7 @@ public class MailModule implements LDUIModule {
 							Municipality mun = ResManager.getMunicipality(mail.fromInt(), true);
 							if(mail.staff){
 								if(!mun.citizens.isCitizen(player.uuid)){
-									player.entity.send(translate("mail.municipality.staff.notmember"));
+									player.entity.send("mail.municipality.staff.notmember");
 									return;
 								}
 								mun.manage.staff.add(new Staff(player.uuid, MUNICIPALITY_STAFF));
@@ -98,7 +98,7 @@ public class MailModule implements LDUIModule {
 								for(Staff stf : mun.manage.staff){
 									LDPlayer stp = ResManager.getPlayer(stf.uuid, true);
 									mail = new Mail(MailType.SYSTEM, Layers.MUNICIPALITY, mun.id, Layers.PLAYER, stp.uuid).expireInDays(7);
-									mail.setTitle(mun.name()).addMessage(translate("mail.municipality.staff.added", pln));
+									mail.setTitle(mun.name()).addMessage("landdev.mail.municipality.staff.added", pln);
 									stp.addMailAndSave(mail);
 								}
 								mail.expire();
@@ -138,7 +138,7 @@ public class MailModule implements LDUIModule {
 								for(Staff stf : ct.manage.staff){
 									LDPlayer stp = ResManager.getPlayer(stf.uuid, true);
 									mail = new Mail(MailType.SYSTEM, Layers.COUNTY, ct.id, Layers.PLAYER, stp.uuid).expireInDays(7);
-									mail.setTitle(ct.name()).addMessage(translate("mail.county.staff.added", pln));
+									mail.setTitle(ct.name()).addMessage("landdev.mail.county.staff.added", pln);
 									stp.addMailAndSave(mail);
 								}
 								mail.expire();
@@ -178,7 +178,7 @@ public class MailModule implements LDUIModule {
 								for(Staff stf : rg.manage.staff){
 									LDPlayer stp = ResManager.getPlayer(stf.uuid, true);
 									mail = new Mail(MailType.SYSTEM, Layers.REGION, rg.id, Layers.PLAYER, stp.uuid).expireInDays(7);
-									mail.setTitle(rg.name()).addMessage(translate("mail.region.staff.added", pln));
+									mail.setTitle(rg.name()).addMessage("landdev.mail.region.staff.added", pln);
 									stp.addMailAndSave(mail);
 								}
 								mail.expire();
