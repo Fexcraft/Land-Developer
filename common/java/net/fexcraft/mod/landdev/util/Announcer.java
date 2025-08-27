@@ -43,7 +43,7 @@ public class Announcer {
 	
 	
 	public static void announce(MessageSender player, String string, Object[] objs){
-		player.send(TranslationUtil.translate(string, objs));
+		player.send("landdev." + string, objs);
 	}
 
 
