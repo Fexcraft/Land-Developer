@@ -13,12 +13,4 @@ public class TranslationUtil {
 		return I18n.translateToLocalFormatted("landdev." + key, args);
 	}
 
-	public static String translateCmd(String key){
-		return I18n.translateToLocal("landdev.cmd." + key);
-	}
-
-	public static String translateCmd(String key, Object... args){
-		return I18n.translateToLocalFormatted("landdev.cmd." + key, args);
-	}
-
 }
