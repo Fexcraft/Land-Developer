@@ -5,7 +5,6 @@ import static net.fexcraft.mod.landdev.ui.LDKeys.MAILBOX;
 import static net.fexcraft.mod.landdev.ui.LDUIButton.*;
 import static net.fexcraft.mod.landdev.ui.LDUIRow.*;
 import static net.fexcraft.mod.landdev.util.ResManager.*;
-import static net.fexcraft.mod.landdev.util.TranslationUtil.translate;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -534,7 +533,7 @@ public class County implements Saveable, Layer, LDUIModule {
 				mail.addMessage("landdev.mail.county.citizen.invite0");
 				mail.addMessage("landdev.mail.county.citizen.invite1", name());
 				ply.addMailAndSave(mail);
-				player.entity.send(translate("gui.county.citizen.invite.success"));
+				player.entity.send("landdev.gui.county.citizen.invite.success");
 				player.entity.closeUI();
 				break;
 			}
@@ -579,7 +578,7 @@ public class County implements Saveable, Layer, LDUIModule {
 				mail.addMessage("landdev.mail.county.staff.invite0");
 				mail.addMessage("landdev.mail.county.staff.invite1");
 				ply.addMailAndSave(mail);
-				player.entity.send(translate("gui.county.staff.add.success"));
+				player.entity.send("landdev.gui.county.staff.add.success");
 				player.entity.closeUI();
 				break;
 			}
@@ -745,7 +744,7 @@ public class County implements Saveable, Layer, LDUIModule {
 				SERVER_ACCOUNT.getBank().processAction(Bank.Action.TRANSFER, null, SERVER_ACCOUNT, LDConfig.COUNTY_CREATION_FEE / 2, nct.account);
 				ResManager.bulkSave(nct, region, player);
 				player.entity.closeUI();
-				player.entity.send(translate("gui.county.create.complete"));
+				player.entity.send("landdev.gui.county.create.complete");
 				Announcer.announce(Announcer.Target.GLOBAL, 0, "announce.county.created", name, newid);
 				break;
 			}
