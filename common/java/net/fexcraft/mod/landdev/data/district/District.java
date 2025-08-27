@@ -1,19 +1,9 @@
 package net.fexcraft.mod.landdev.data.district;
 
-import static net.fexcraft.mod.fsmm.util.Config.getWorthAsString;
-import static net.fexcraft.mod.landdev.data.PermAction.*;
-import static net.fexcraft.mod.landdev.ui.LDKeys.MAILBOX;
-import static net.fexcraft.mod.landdev.ui.LDUIButton.*;
-import static net.fexcraft.mod.landdev.ui.LDUIRow.*;
-import static net.fexcraft.mod.landdev.util.ResManager.SERVER_ACCOUNT;
-import static net.fexcraft.mod.landdev.util.TranslationUtil.translate;
-
-import java.util.UUID;
-
-import net.fexcraft.mod.landdev.data.*;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.mod.fsmm.data.Account;
 import net.fexcraft.mod.fsmm.data.Bank.Action;
+import net.fexcraft.mod.landdev.data.*;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.data.county.County;
 import net.fexcraft.mod.landdev.data.hooks.ExternalData;
@@ -24,16 +14,24 @@ import net.fexcraft.mod.landdev.data.norm.StringNorm;
 import net.fexcraft.mod.landdev.data.player.LDPlayer;
 import net.fexcraft.mod.landdev.data.region.Region;
 import net.fexcraft.mod.landdev.ui.BaseCon;
-import net.fexcraft.mod.landdev.ui.modules.AppearModule;
+import net.fexcraft.mod.landdev.ui.LDKeys;
 import net.fexcraft.mod.landdev.ui.LDUIModule;
+import net.fexcraft.mod.landdev.ui.modules.AppearModule;
 import net.fexcraft.mod.landdev.ui.modules.ModuleRequest;
 import net.fexcraft.mod.landdev.ui.modules.ModuleResponse;
 import net.fexcraft.mod.landdev.ui.modules.NormModule;
-import net.fexcraft.mod.landdev.ui.LDKeys;
 import net.fexcraft.mod.landdev.util.Announcer;
-import net.fexcraft.mod.landdev.util.ResManager;
 import net.fexcraft.mod.landdev.util.LDConfig;
-import net.fexcraft.mod.landdev.util.TranslationUtil;
+import net.fexcraft.mod.landdev.util.ResManager;
+
+import java.util.UUID;
+
+import static net.fexcraft.mod.fsmm.util.Config.getWorthAsString;
+import static net.fexcraft.mod.landdev.data.PermAction.*;
+import static net.fexcraft.mod.landdev.ui.LDKeys.MAILBOX;
+import static net.fexcraft.mod.landdev.ui.LDUIButton.*;
+import static net.fexcraft.mod.landdev.ui.LDUIRow.*;
+import static net.fexcraft.mod.landdev.util.ResManager.SERVER_ACCOUNT;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -606,7 +604,7 @@ public class District implements Saveable, Layer, PermInteractive, LDUIModule {
 				chunk.save();
 				ResManager.bulkSave(dis.owner.is_county? dis.owner.county : dis.owner.municipality, dis, chunk, player);
 				player.entity.closeUI();
-				player.entity.send(translate("gui.district.create.complete"));
+				player.entity.send("landdev.gui.district.create.complete");
 				Announcer.announce(Announcer.Target.GLOBAL, 0, "announce.district.created", name, newid);
 				break;
 			}
