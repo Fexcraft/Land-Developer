@@ -1,16 +1,5 @@
 package net.fexcraft.mod.landdev.data.municipality;
 
-import static net.fexcraft.mod.landdev.data.PermAction.*;
-import static net.fexcraft.mod.landdev.ui.LDUIButton.*;
-import static net.fexcraft.mod.landdev.ui.LDUIRow.*;
-import static net.fexcraft.mod.landdev.util.ResManager.SERVER_ACCOUNT;
-import static net.fexcraft.mod.landdev.util.TranslationUtil.translate;
-
-import java.util.ArrayList;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.UUID;
-
 import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.Time;
@@ -30,20 +19,29 @@ import net.fexcraft.mod.landdev.data.hooks.ExternalData;
 import net.fexcraft.mod.landdev.data.norm.BoolNorm;
 import net.fexcraft.mod.landdev.data.norm.IntegerNorm;
 import net.fexcraft.mod.landdev.data.norm.StringNorm;
-import net.fexcraft.mod.landdev.data.player.Permit;
 import net.fexcraft.mod.landdev.data.player.LDPlayer;
+import net.fexcraft.mod.landdev.data.player.Permit;
 import net.fexcraft.mod.landdev.ui.BaseCon;
-import net.fexcraft.mod.landdev.ui.modules.AppearModule;
+import net.fexcraft.mod.landdev.ui.LDKeys;
 import net.fexcraft.mod.landdev.ui.LDUIModule;
+import net.fexcraft.mod.landdev.ui.modules.AppearModule;
 import net.fexcraft.mod.landdev.ui.modules.ModuleRequest;
 import net.fexcraft.mod.landdev.ui.modules.ModuleResponse;
 import net.fexcraft.mod.landdev.ui.modules.NormModule;
-import net.fexcraft.mod.landdev.ui.LDKeys;
 import net.fexcraft.mod.landdev.util.Announcer;
 import net.fexcraft.mod.landdev.util.Announcer.Target;
-import net.fexcraft.mod.landdev.util.ResManager;
 import net.fexcraft.mod.landdev.util.LDConfig;
+import net.fexcraft.mod.landdev.util.ResManager;
 import org.apache.commons.lang3.tuple.Pair;
+
+import java.util.ArrayList;
+import java.util.Map.Entry;
+import java.util.UUID;
+
+import static net.fexcraft.mod.landdev.data.PermAction.*;
+import static net.fexcraft.mod.landdev.ui.LDUIButton.*;
+import static net.fexcraft.mod.landdev.ui.LDUIRow.*;
+import static net.fexcraft.mod.landdev.util.ResManager.SERVER_ACCOUNT;
 
 public class Municipality implements Saveable, Layer, LDUIModule {
 
@@ -546,7 +544,7 @@ public class Municipality implements Saveable, Layer, LDUIModule {
 				mail.addMessage("mail.municipality.citizen.invite0");
 				mail.addMessage("mail.municipality.citizen.invite1", name());
 				ply.addMailAndSave(mail);
-				player.entity.send(translate("gui.municipality.citizen.invite.success"));
+				player.entity.send("landdev.gui.municipality.citizen.invite.success");
 				player.entity.closeUI();
 				break;
 			}
@@ -587,7 +585,7 @@ public class Municipality implements Saveable, Layer, LDUIModule {
 				mail.addMessage("landdev.mail.municipality.staff.invite0");
 				mail.addMessage("landdev.mail.municipality.staff.invite1");
 				ply.addMailAndSave(mail);
-				player.entity.send(translate("gui.municipality.staff.add.success"));
+				player.entity.send("landdev.gui.municipality.staff.add.success");
 				player.entity.closeUI();
 				break;
 			}
@@ -798,7 +796,7 @@ public class Municipality implements Saveable, Layer, LDUIModule {
 				SERVER_ACCOUNT.getBank().processAction(Action.TRANSFER, null, SERVER_ACCOUNT, LDConfig.MUNICIPALITY_CREATION_FEE / 2, mnew.account);
 				ResManager.bulkSave(mnew, county, player, mold, cold);
 				player.entity.closeUI();
-    			player.entity.send(translate("gui.municipality.create.complete"));
+    			player.entity.send("landdev.gui.municipality.create.complete");
     			Announcer.announce(Announcer.Target.GLOBAL, 0, "announce.municipality.created", name, newid);
 				break;
 			}
