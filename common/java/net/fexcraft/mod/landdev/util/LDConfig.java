@@ -257,7 +257,7 @@ public class LDConfig extends ConfigBase {
 			return Long.parseLong(format.replace(",", "").replace(".", ""));
 		}
 		catch(Exception e){
-			err[0] = TranslationUtil.translateCmd("invalid_price") + " " + e.getMessage();
+			err[0] = "Invalid Price | " + " " + e.getMessage();
 			if(Static.dev()) e.printStackTrace();
 			return 0;
 		}
