@@ -174,6 +174,11 @@ public class ChunkClaimCon extends ContainerInterface {
 					chunk.sell.price = 0;
 					chunk.save();
 				}
+				else if(mode == Mode.LOCK){
+					if(!ldp.adm) return;
+					chunk.locked = !chunk.locked;
+					chunk.save();
+				}
 				sendSync(com);
 			}
 		}
@@ -292,8 +297,10 @@ public class ChunkClaimCon extends ContainerInterface {
 				}
 				else{
 					com.set("d", di = chunk.district.id);
-					com.set("c", chunk.district.color.getInteger());
+					if(mode.lock()) com.set("c", chunk.locked ? 0xeb4034 : 0x32a852);
+					else com.set("c", chunk.district.color.getInteger());
 					com.set("p", chunk.sell.price == 0 && chunk.district.id == -1 ? LDConfig.DEFAULT_CHUNK_PRICE : chunk.sell.price);
+					if(chunk.locked) com.set("l", true);
 				}
 				list.add(com);
 				if(!dis.containsKey(di) && di != -10) dis.put(di, ResManager.getDistrict(di));
@@ -328,11 +335,13 @@ public class ChunkClaimCon extends ContainerInterface {
 		protected RGB color = new RGB();
 		protected long price;
 		protected int dis, x, z;
+		protected boolean locked;
 
 		public ChunkData(TagCW com, int x, int z){
 			color.packed = com.getInteger("c");
 			dis = com.getInteger("d");
 			price = com.getLong("p");
+			locked = com.getBoolean("l");
 			this.x = x;
 			this.z = z;
 		}
@@ -359,7 +368,7 @@ public class ChunkClaimCon extends ContainerInterface {
 
 	public static enum Mode {
 
-		CLAIM, TRANSFER, SELL, BUY;
+		CLAIM, TRANSFER, SELL, BUY, LOCK;
 
 		public static Mode fromKey(UIKey key){
 			switch(key.id){
@@ -367,6 +376,7 @@ public class ChunkClaimCon extends ContainerInterface {
 				case LDKeys.ID_CHUNK_TRANSFER: return TRANSFER;
 				case LDKeys.ID_CHUNK_SELL: return SELL;
 				case LDKeys.ID_CHUNK_BUY: return BUY;
+				case LDKeys.ID_CHUNK_LOCK: return LOCK;
 			}
 			return CLAIM;
 		}
@@ -374,6 +384,11 @@ public class ChunkClaimCon extends ContainerInterface {
 		public boolean claimtrans(){
 			return this == CLAIM || this == TRANSFER;
 		}
+
+		public boolean lock(){
+			return this == LOCK;
+		}
+
 	}
 	
 }
