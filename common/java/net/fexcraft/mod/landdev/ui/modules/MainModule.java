@@ -10,7 +10,6 @@ import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.ui.BaseCon;
 import net.fexcraft.mod.landdev.ui.LDUIModule;
 import net.fexcraft.mod.landdev.util.ResManager;
-import net.fexcraft.mod.landdev.util.TranslationUtil;
 
 public class MainModule implements LDUIModule {
 	
@@ -45,7 +44,7 @@ public class MainModule implements LDUIModule {
 					container.open(MUNICIPALITY, 0, chunk.district.owner.municipality.id, 0);
 				}
 				else{
-					container.player.entity.send(TranslationUtil.translate("district.not_part_of_municipality"));
+					container.player.entity.send("landdev.district.not_part_of_municipality");
 					container.player.entity.closeUI();
 				}
 				return;
