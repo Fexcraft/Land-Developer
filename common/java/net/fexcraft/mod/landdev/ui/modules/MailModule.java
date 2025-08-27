@@ -3,7 +3,6 @@ package net.fexcraft.mod.landdev.ui.modules;
 import static net.fexcraft.mod.landdev.data.PermAction.*;
 import static net.fexcraft.mod.landdev.ui.LDUIButton.*;
 import static net.fexcraft.mod.landdev.ui.LDUIRow.*;
-import static net.fexcraft.mod.landdev.util.TranslationUtil.translate;
 
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.mod.landdev.data.Layers;
@@ -105,11 +104,11 @@ public class MailModule implements LDUIModule {
 							}
 							else{
 								if(player.isMunicipalityManager()){
-									player.entity.send(translate("mail.municipality.citizen.ismanager"));
+									player.entity.send("landdev.mail.municipality.citizen.ismanager");
 									return;
 								}
 								if(player.isCountyManager() && mun.county.id != player.county.id){
-									player.entity.send(translate("mail.county.citizen.ismanager"));
+									player.entity.send("landdev.mail.county.citizen.ismanager");
 									return;
 								}
 								player.setCitizenOf(mun);
@@ -129,7 +128,7 @@ public class MailModule implements LDUIModule {
 							County ct = ResManager.getCounty(mail.fromInt(), true);
 							if(mail.staff){
 								if(!ct.citizens.isCitizen(player.uuid)){
-									player.entity.send(translate("mail.county.staff.notmember"));
+									player.entity.send("landdev.mail.county.staff.notmember");
 									return;
 								}
 								ct.manage.staff.add(new Staff(player.uuid, COUNTY_STAFF));
@@ -145,11 +144,11 @@ public class MailModule implements LDUIModule {
 							}
 							else{
 								if(player.isMunicipalityManager() && ct.id != player.municipality.county.id){
-									player.entity.send(translate("mail.municipality.citizen.ismanager"));
+									player.entity.send("landdev.mail.municipality.citizen.ismanager");
 									return;
 								}
 								if(player.isCountyManager() && ct.id != player.county.id){
-									player.entity.send(translate("mail.county.citizen.ismanager"));
+									player.entity.send("landdev.mail.county.citizen.ismanager");
 									return;
 								}
 								player.setCitizenOf(ct);
@@ -169,7 +168,7 @@ public class MailModule implements LDUIModule {
 							Region rg = ResManager.getRegion(mail.fromInt(), true);
 							if(mail.staff){
 								if(!rg.isCitizen(player.uuid)){
-									player.entity.send(translate("mail.region.staff.notmember"));
+									player.entity.send("landdev.mail.region.staff.notmember");
 									return;
 								}
 								rg.manage.staff.add(new Staff(player.uuid, COUNTY_STAFF));
@@ -210,11 +209,11 @@ public class MailModule implements LDUIModule {
 							player = ResManager.getPlayer(mail.fromUUID(), true);
 							Municipality mun = ResManager.getMunicipality(mail.recInt(), true);
 							if(player.isMunicipalityManager()){
-								player.entity.send(translate("mail.municipality.request.ismanager"));
+								player.entity.send("landdev.mail.municipality.request.ismanager");
 								return;
 							}
 							if(player.isCountyManager() && mun.county.id != player.county.id){
-								player.entity.send(translate("mail.county.request.ismanager"));
+								player.entity.send("landdev.mail.county.request.ismanager");
 								return;
 							}
 							player.setCitizenOf(mun);
