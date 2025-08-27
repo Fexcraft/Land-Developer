@@ -29,7 +29,6 @@ public class ChunkClaimUI extends UserInterface {
 	private boolean mapgrid = true;
 	private boolean deltex;
 
-
 	public ChunkClaimUI(JsonMap map, ContainerInterface container) throws Exception {
 		super(map, container);
 		con = (ChunkClaimCon)container;
@@ -144,6 +143,9 @@ public class ChunkClaimUI extends UserInterface {
 					if(dis == null) return;
 					list.add(transformat("landdev.gui.claim.district", dis.name + " (" + dis.id + ")"));
 					list.add(transformat("landdev.gui.claim." + (dis.county ? "county" : "municipality"), dis.cname + " (" + dis.cid + ")"));
+					if(ck.locked){
+						list.add(transformat("landdev.gui.claim.locked"));
+					}
 				}
 			}
 		}
