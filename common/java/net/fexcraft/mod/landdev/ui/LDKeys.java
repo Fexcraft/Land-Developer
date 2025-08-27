@@ -26,6 +26,7 @@ public class LDKeys {
 	public static final int ID_CHUNK_TRANSFER = 101;
 	public static final int ID_CHUNK_SELL = 102;
 	public static final int ID_CHUNK_BUY = 103;
+	public static final int ID_CHUNK_LOCK = 104;
 	public static final int ID_IMG_PREVIEW = 200;
 
 	public static final UIKey MAIN = new UIKey(ID_MAIN, "landdev:main");
@@ -44,6 +45,7 @@ public class LDKeys {
 	public static final UIKey CHUNK_TRANSFER = new UIKey(ID_CHUNK_TRANSFER, "landdev:chunk_transfer");
 	public static final UIKey CHUNK_SELL = new UIKey(ID_CHUNK_SELL, "landdev:chunk_sell");
 	public static final UIKey CHUNK_BUY = new UIKey(ID_CHUNK_BUY, "landdev:chunk_buy");
+	public static final UIKey CHUNK_LOCK = new UIKey(ID_CHUNK_LOCK, "landdev:chunk_lock");
 	public static final UIKey IMG_VIEW = new UIKey(ID_IMG_PREVIEW, "landdev:img_view");
 
 	public static final HashMap<UIKey, Class<? extends BaseCon>> CONS = new LinkedHashMap<>();
