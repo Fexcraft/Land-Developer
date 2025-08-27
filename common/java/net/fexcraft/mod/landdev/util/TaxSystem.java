@@ -28,7 +28,6 @@ import java.io.File;
 import java.util.*;
 
 import static net.fexcraft.mod.landdev.LandDev.SAVE_DIR;
-import static net.fexcraft.mod.landdev.util.TranslationUtil.translate;
 
 public class TaxSystem extends TimerTask {
 
@@ -61,7 +60,7 @@ public class TaxSystem extends TimerTask {
 			Mail mail = new Mail(MailType.SYSTEM, Layers.DISTRICT, dis.id);
 			mail.addMessage("landdev.tax.district.collected");
 			mail.addMessage(Config.getWorthAsString(dis.tax_collected));
-			mail.setTitle(translate("tax.summary.mail"));
+			mail.setTitle("landdev.tax.summary.mail");
 			mail.expireInDays(3);
 			dis.mail.add(mail);
 			dis.tax_collected = 0;
@@ -80,7 +79,7 @@ public class TaxSystem extends TimerTask {
 				mail.addMessage(Config.getWorthAsString(mun.account.getBalance()));
 				mail.addMessage("landdev.tax.county.mun_missing_funds2");
 				mail.addMessage(Config.getWorthAsString(tax));
-				mail.setTitle(translate("tax.warning.mail"));
+				mail.setTitle("landdev.tax.warning.mail");
 				mail.expireInDays(3);
 				mun.county.mail.add(mail);
 				tax = mun.account.getBalance() > 0 ? mun.account.getBalance() : 0;
@@ -93,7 +92,7 @@ public class TaxSystem extends TimerTask {
 			mail.addMessage(Config.getWorthAsString(mun.tax_collected));
 			mail.addMessage("landdev.tax.municipality.transferred");
 			mail.addMessage(Config.getWorthAsString(tax));
-			mail.setTitle(translate("tax.summary.mail"));
+			mail.setTitle("landdev.tax.summary.mail");
 			mail.expireInDays(3);
 			mun.mail.add(mail);
 			//
@@ -115,7 +114,7 @@ public class TaxSystem extends TimerTask {
 				mail.addMessage(Config.getWorthAsString(ct.account.getBalance()));
 				mail.addMessage("landdev.tax.region.county_missing_funds2");
 				mail.addMessage(Config.getWorthAsString(tax));
-				mail.setTitle(translate("tax.warning.mail"));
+				mail.setTitle("landdev.tax.warning.mail");
 				mail.expireInDays(3);
 				ct.region.mail.add(mail);
 				tax = ct.account.getBalance() > 0 ? ct.account.getBalance() : 0;
@@ -126,7 +125,7 @@ public class TaxSystem extends TimerTask {
 			mail.addMessage(Config.getWorthAsString(ct.tax_collected));
 			mail.addMessage("landdev.tax.county.transferred");
 			mail.addMessage(Config.getWorthAsString(tax));
-			mail.setTitle(translate("tax.summary.mail"));
+			mail.setTitle("landdev.tax.summary.mail");
 			mail.expireInDays(3);
 			ct.mail.add(mail);
 			//
@@ -137,7 +136,7 @@ public class TaxSystem extends TimerTask {
 			Mail mail = new Mail(MailType.SYSTEM, Layers.REGION, st.id);
 			mail.addMessage("landdev.tax.county.collected");
 			mail.addMessage(Config.getWorthAsString(st.tax_collected));
-			mail.setTitle(translate("tax.summary.mail"));
+			mail.setTitle("landdev.tax.summary.mail");
 			mail.expireInDays(3);
 			st.mail.add(mail);
 			st.tax_collected = 0;
@@ -198,13 +197,13 @@ public class TaxSystem extends TimerTask {
 			if(account.getBalance() < tax){
 				if(account.getBalance() <= 0){
 					Mail mail = new Mail(MailType.SYSTEM, in.getLayer(), in.lid(), Layers.PLAYER, player.uuid).expireInDays(7);
-					mail.setTitle(translate("tax.unpaid_notice.mail"));
+					mail.setTitle("landdev.tax.unpaid_notice.mail");
 					mail.addMessage("landdev.tax.no_funds");
 					if(kick && !player.isInManagement(in.getLayer())){
 						mail.addMessage("landdev.tax.no_funds.kicked");
 						if(in.is(Layers.COUNTY)){
 							Mail ml = new Mail(MailType.SYSTEM, in.getLayer(), in.lid());
-							ml.setTitle(translate("tax.player_kicked"));
+							ml.setTitle("landdev.tax.player_kicked");
 							ml.addMessage("landdev.tax.player_kicked.info");
 							ml.addMessage(player.name());
 							ml.addMessage(player.uuid.toString());
@@ -213,7 +212,7 @@ public class TaxSystem extends TimerTask {
 						}
 						else{
 							Mail ml = new Mail(MailType.SYSTEM, in.getLayer(), in.lid());
-							ml.setTitle(translate("tax.player_kicked"));
+							ml.setTitle("landdev.tax.player_kicked");
 							ml.addMessage("landdev.tax.player_kicked.info");
 							ml.addMessage(player.name());
 							ml.addMessage(player.uuid.toString());
@@ -227,7 +226,7 @@ public class TaxSystem extends TimerTask {
 				else{
 					tax = account.getBalance();
 					Mail mail = new Mail(MailType.SYSTEM, in.getLayer(), in.lid(), Layers.PLAYER, player.uuid).expireInDays(7);
-					mail.setTitle(translate("tax.unpaid_notice.mail"));
+					mail.setTitle("landdev.tax.unpaid_notice.mail");
 					mail.addMessage("landdev.tax.missing_funds");
 					if(kick && !player.isInManagement(in.getLayer())){
 						mail.addMessage("landdev.tax.missing_funds.kick");
@@ -264,7 +263,7 @@ public class TaxSystem extends TimerTask {
 				String ckoid = chunk.owner.playerchunk ? chunk.owner.player.toString() : chunk.owner.owid + "";
 				if(account.getBalance() <= 0){
 					Mail mail = new Mail(MailType.SYSTEM, chunk).expireInDays(7);
-					mail.setTitle(translate("tax.unpaid_notice.mail"));
+					mail.setTitle("landdev.tax.unpaid_notice.mail");
 					mail.addMessage("landdev.tax.no_funds");
 					if(chunk.district.norms.get("unclaim-bankrupt").bool()){
 						mail.addMessage("landdev.tax.no_funds.unclaimed");
@@ -276,7 +275,7 @@ public class TaxSystem extends TimerTask {
 				}
 				else{
 					Mail mail = new Mail(MailType.SYSTEM, chunk).expireInDays(7);
-					mail.setTitle(translate("tax.unpaid_notice.mail"));
+					mail.setTitle("landdev.tax.unpaid_notice.mail");
 					mail.addMessage("landdev.tax.missing_funds");
 					if(chunk.district.norms.get("unclaim-bankrupt").bool()){
 						mail.addMessage("landdev.tax.missing_funds.unclaim");
