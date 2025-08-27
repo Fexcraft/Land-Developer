@@ -355,6 +355,12 @@ public class LandDev {
 				player.entity.openUI(LDKeys.CHUNK_TRANSFER, new V3I(chunk.key.x, dis, chunk.key.z));
 				return 0;
 			})))
+			.then(literal("lock").executes(cmd -> {
+				LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
+				Chunk_ chunk = ResManager.getChunk(player.entity);
+				player.entity.openUI(LDKeys.CHUNK_LOCK, new V3I(chunk.key.x, 0, chunk.key.z));
+				return 0;
+			}))
 			.then(literal("map").executes(cmd -> {
 				LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
 				Chunk_ chunk = ResManager.getChunk(player.entity);
