@@ -8,7 +8,9 @@ import net.fexcraft.mod.landdev.ui.modules.ModuleResponse;
  */
 public interface LDUIModule {
 	
-	public static final String LANG_YES = "landdev.gui.yes", LANG_NO = "landdev.gui.no", VALONLY = "!!!";
+	public static final String LANG_YES = "landdev.gui.yes";
+	public static final String LANG_NO = "landdev.gui.no";
+	public static final String VALONLY = "!!!";
 	public static final int UI_MAIN = 0;
 
 	public void sync_packet(BaseCon container, ModuleResponse resp);
