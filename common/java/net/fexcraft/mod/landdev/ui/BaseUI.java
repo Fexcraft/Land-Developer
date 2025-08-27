@@ -226,7 +226,7 @@ public class BaseUI extends UserInterface {
 						text.transval(arr[0]);
 					}
 					else{
-						text.transval(arr[0], Arrays.copyOfRange(arr, 1, arr.length));
+						text.transval(arr[0], (Object[])Arrays.copyOfRange(arr, 1, arr.length));
 					}
 				}
 				text.scale = -1;
