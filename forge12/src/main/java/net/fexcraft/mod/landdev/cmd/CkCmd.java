@@ -93,9 +93,9 @@ public class CkCmd extends CommandBase {
 						ck = ResManager.getChunk(x, z);
 						str += (ck == null ? "&4" : ck.district.id >= 0 ? "&9" : "&2") + marker;
 					}
-					Print.chat(sender, str + "&0|");
+					ent.send(str + "&0|");
 				}
-				Print.chat(sender, TranslationUtil.translateCmd("chunk.mapdesc"));
+				ent.send("landdev.cmd.chunk.mapdesc");
 			}
     	}
     	else{
