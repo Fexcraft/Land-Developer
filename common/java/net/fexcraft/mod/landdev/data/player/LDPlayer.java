@@ -28,7 +28,6 @@ import net.fexcraft.mod.landdev.ui.LDUIModule;
 import net.fexcraft.mod.landdev.ui.modules.ModuleRequest;
 import net.fexcraft.mod.landdev.ui.modules.ModuleResponse;
 import net.fexcraft.mod.landdev.util.ResManager;
-import net.fexcraft.mod.landdev.util.TranslationUtil;
 import net.fexcraft.mod.uni.Appendable;
 import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.tag.TagCW;
@@ -300,7 +299,7 @@ public class LDPlayer implements Saveable, Layer, LDUIModule, Appendable<UniEnti
 	public void addMail(Mail newmail){
 		mail.add(newmail);
 		if(entity != null && mail.unread() > 0){
-			entity.send(TranslationUtil.translate("mail.player.new"));
+			entity.send("landdev.mail.player.new");
 		}
 	}
 
