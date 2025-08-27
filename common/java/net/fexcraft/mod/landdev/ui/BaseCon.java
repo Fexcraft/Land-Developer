@@ -161,8 +161,8 @@ public class BaseCon extends ContainerInterface {
 		bui.clear();
 		int size = 0;
 		for(int i = 0; i < list.size(); i++){
-			TagLW li = list.getList(i);
-			if(li.getString(3).charAt(2) != '2') size++;
+			TagCW li = list.getCompound(i);
+			if(!li.has("hidden")) size++;
 		}
 		bui.tabs.get("scroll").visible(bui.addscroll = size > 12);
 		bui.texts.get("title").value("landdev.gui." + com.getString("title_lang"));
@@ -178,16 +178,16 @@ public class BaseCon extends ContainerInterface {
 		bui.texttips.clear();
 		bui.elements.clear();
 		for(int li = 0; li < list.size(); li++){
-			TagLW lis = list.getList(li);
-			String index = lis.getString(0);
-			LDUIRow elm = LDUIRow.valueOf(lis.getString(1));
-			LDUIButton icon = LDUIButton.valueOf(lis.getString(2));
-			String bools = lis.getString(3);
-			String val = lis.size() > 4 ? lis.getString(4) : null;
-			if(bools.charAt(2) == '2'){
-				sfields.put(index, val);
+			TagCW ecom = list.getCompound(li);
+			TagLW elis = ecom.getList("elm");
+			String index = elis.getString(0);
+			LDUIRow elm = LDUIRow.valueOf(elis.getString(1));
+			LDUIButton icon = LDUIButton.valueOf(elis.getString(2));
+			Object val = ecom.has("value") ? ecom.getBoolean("format") ? ecom.getList("value").toStringArray() : ecom.getString("value") : null;
+			if(ecom.has("field") && ecom.getBoolean("hidden")){
+				sfields.put(index, val.toString());
 			}
-			else bui.addElm(index, elm, icon, bools.charAt(0) == '1', bools.charAt(1) == '1', bools.charAt(2) == '1', val);
+			else bui.addElm(index, elm, icon, ecom.getBoolean("text"), ecom.has("button"), ecom.has("field") && !ecom.has("hidden"), val);
 			if(icon.isCheck()){
 				checkboxes.put(index, icon.check());
 			}
