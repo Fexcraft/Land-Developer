@@ -51,7 +51,6 @@ import static net.fexcraft.mod.fsmm.util.Config.getWorthAsString;
 import static net.fexcraft.mod.landdev.data.PermAction.CREATE_COUNTY;
 import static net.fexcraft.mod.landdev.data.PermAction.CREATE_MUNICIPALITY;
 import static net.fexcraft.mod.landdev.util.InteractHandler.control;
-import static net.fexcraft.mod.landdev.util.TranslationUtil.translateCmd;
 import static net.fexcraft.mod.landdev.util.broad.Broadcaster.TargetTransmitter.NO_INTERNAL;
 import static net.minecraft.commands.Commands.argument;
 import static net.minecraft.commands.Commands.literal;
@@ -182,7 +181,7 @@ public class LandDev implements ModInitializer {
 				LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
 				if(cmd.getSource().getServer().isSingleplayer() || isOp(cmd.getSource())){
 					player.adm = !player.adm;
-					player.entity.send(translateCmd("adminmode." + player.adm));
+					player.entity.send("landdev.cmd.adminmode." + player.adm);
 				}
 				else{
 					player.entity.send("\u00A7cno.permission");
@@ -211,23 +210,23 @@ public class LandDev implements ModInitializer {
 			.then(literal("fees").executes(cmd -> {
 				LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
 				Chunk_ chunk = ResManager.getChunk(player.entity);
-				player.entity.send(translateCmd("fees"));
+				player.entity.send("landdev.cmd.fees");
 				long sf = LDConfig.MUNICIPALITY_CREATION_FEE;
 				long cf = chunk.district.county().norms.get("new-municipality-fee").integer();
-				player.entity.send(translateCmd("fees_municipality"));
-				player.entity.send(translateCmd("fees_mun_server"), getWorthAsString(sf));
-				player.entity.send(translateCmd("fees_mun_county"), getWorthAsString(cf));
-				player.entity.send(translateCmd("fees_mun_total"), getWorthAsString(sf + cf));
+				player.entity.send("landdev.cmd.fees_municipality");
+				player.entity.send("landdev.cmd.fees_mun_server", getWorthAsString(sf));
+				player.entity.send("landdev.cmd.fees_mun_county", getWorthAsString(cf));
+				player.entity.send("landdev.cmd.fees_mun_total", getWorthAsString(sf + cf));
 				sf = LDConfig.COUNTY_CREATION_FEE;
 				cf = chunk.district.region().norms.get("new-county-fee").integer();
-				player.entity.send(translateCmd("fees_county"));
-				player.entity.send(translateCmd("fees_ct_server"), getWorthAsString(sf));
-				player.entity.send(translateCmd("fees_ct_region"), getWorthAsString(cf));
-				player.entity.send(translateCmd("fees_ct_total"), getWorthAsString(sf + cf));
+				player.entity.send("landdev.cmd.fees_county");
+				player.entity.send("landdev.cmd.fees_ct_server", getWorthAsString(sf));
+				player.entity.send("landdev.cmd.fees_ct_region", getWorthAsString(cf));
+				player.entity.send("landdev.cmd.fees_ct_total", getWorthAsString(sf + cf));
 				sf = LDConfig.REGION_CREATION_FEE;
-				player.entity.send(translateCmd("fees_region"));
-				player.entity.send(translateCmd("fees_rg_server"), getWorthAsString(sf));
-				player.entity.send(translateCmd("fees_rg_total"), getWorthAsString(sf));
+				player.entity.send("landdev.cmd.fees_region");
+				player.entity.send("landdev.cmd.fees_rg_server", getWorthAsString(sf));
+				player.entity.send("landdev.cmd.fees_rg_total", getWorthAsString(sf));
 				return 0;
 			}))
 			.then(literal("help").executes(cmd -> {
@@ -368,7 +367,7 @@ public class LandDev implements ModInitializer {
 					}
 					player.entity.send(str + "\u00A70|");
 				}
-				player.entity.send(TranslationUtil.translateCmd("chunk.mapdesc"));
+				player.entity.send("landdev.cmd.chunk.mapdesc");
 				return 0;
 			}))
 			.executes(cmd -> {
@@ -409,8 +408,8 @@ public class LandDev implements ModInitializer {
 				boolean cn = county.norms.get("new-municipalities").bool();
 				boolean pp = player.hasPermit(CREATE_MUNICIPALITY, county.getLayer(), county.id);
 				if(!cn && !pp){
-					player.entity.send(translateCmd("mun.no_new_municipalities"));
-					player.entity.send(translateCmd("mun.no_create_permit"));
+					player.entity.send("landdev.cmd.mun.no_new_municipalities");
+					player.entity.send("landdev.cmd.mun.no_create_permit");
 				}
 				else{
 					player.entity.openUI(LDKeys.MUNICIPALITY, Municipality.UI_CREATE, 0, 0);
@@ -421,7 +420,7 @@ public class LandDev implements ModInitializer {
 				LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
 				Chunk_ chunk = ResManager.getChunk(player.entity);
 				if(chunk.district.municipality() == null){
-					player.entity.send(translateCmd("mun.not_in_a_municipality"));
+					player.entity.send("landdev.cmd.mun.not_in_a_municipality");
 					return 0;
 				}
 				Municipality mun = chunk.district.municipality();
@@ -433,7 +432,7 @@ public class LandDev implements ModInitializer {
 				if(min < LDConfig.MIN_MUN_DIS) min = LDConfig.MIN_MUN_DIS;
 				Pair<Integer, Double> dis = ResManager.disToNearestMun(chunk.key, mun.id);
 				if(dis.getLeft() >= 0 && dis.getRight() < min){
-					player.entity.send(translateCmd("mun.center_too_close", ResManager.getMunicipality(dis.getLeft(), true).name(), dis.getLeft()));
+					player.entity.send("landdev.cmd.mun.center_too_close", ResManager.getMunicipality(dis.getLeft(), true).name(), dis.getLeft());
 				}
 				else{
 					ResManager.MUN_CENTERS.put(dis.getLeft(), chunk.key);
@@ -445,7 +444,7 @@ public class LandDev implements ModInitializer {
 				LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
 				Chunk_ chunk = ResManager.getChunk(player.entity);
 				if(chunk.district.municipality() == null){
-					player.entity.send(translateCmd("mun.not_in_a_municipality"));
+					player.entity.send("landdev.cmd.mun.not_in_a_municipality");
 					return 0;
 				}
 				player.entity.openUI(LDKeys.MUNICIPALITY, new V3I(0, chunk.district.municipality().id, 0));
@@ -460,8 +459,8 @@ public class LandDev implements ModInitializer {
 				boolean cn = region.norms.get("new-counties").bool();
 				boolean pp = player.hasPermit(CREATE_COUNTY, region.getLayer(), region.id);
 				if(!cn && !pp){
-					player.entity.send(translateCmd("ct.no_new_county"));
-					player.entity.send(translateCmd("ct.no_create_permit"));
+					player.entity.send("landdev.cmd.ct.no_new_county");
+					player.entity.send("landdev.cmd.ct.no_create_permit");
 				}
 				else{
 					player.entity.openUI(LDKeys.COUNTY, County.UI_CREATE, 0, 0);
@@ -485,8 +484,8 @@ public class LandDev implements ModInitializer {
 				LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
 				Chunk_ chunk = ResManager.getChunk(player.entity);
 				if(!LDConfig.NEW_REGIONS && !player.adm){
-					player.entity.send(translateCmd("rg.no_new_region"));
-					player.entity.send(translateCmd("rg.no_create_permit"));
+					player.entity.send("landdev.cmd.rg.no_new_region");
+					player.entity.send("landdev.cmd.rg.no_create_permit");
 				}
 				else{
 					player.entity.openUI(LDKeys.REGION, County.UI_CREATE, 0, 0);
