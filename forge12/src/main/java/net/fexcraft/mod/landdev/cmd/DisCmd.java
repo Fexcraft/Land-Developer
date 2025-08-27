@@ -1,10 +1,7 @@
 package net.fexcraft.mod.landdev.cmd;
 
-import static net.fexcraft.mod.landdev.util.TranslationUtil.translateCmd;
-
 import java.util.List;
 
-import net.fexcraft.lib.mc.utils.Print;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.data.district.District;
 import net.fexcraft.mod.landdev.data.player.LDPlayer;
@@ -52,7 +49,7 @@ public class DisCmd extends CommandBase {
 					return;
 				}
 				default:{
-					Print.chat(sender, translateCmd("unknown_argument"));
+					ply.entity.send("landdev.cmd.unknown_argument");
 					return;
 				}
 			}
