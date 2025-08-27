@@ -251,7 +251,7 @@ public class District implements Saveable, Layer, PermInteractive, LDUIModule {
 					resp.addRow("disbanded", ELM_RED, id);
 				}
 				if(locked){
-					resp.addRow("locked", ELM_RED, id);
+					resp.addButton("locked", ELM_RED, container.ldp.adm ? ENABLED : EMPTY);
 				}
 				resp.addRow("id", ELM_GENERIC, id);
 				if(canman){
@@ -284,6 +284,9 @@ public class District implements Saveable, Layer, PermInteractive, LDUIModule {
 				resp.addBlank();
 				resp.addButton("merge", ELM_YELLOW, OPEN);
 				resp.addButton("disband", ELM_RED, OPEN);
+				if(!locked && container.ldp.adm){
+					resp.addButton("lock", ELM_RED, DISABLED);
+				}
 				break;
 			case UI_TYPE:
 				resp.setTitle("district.type.title");
@@ -390,6 +393,14 @@ public class District implements Saveable, Layer, PermInteractive, LDUIModule {
 			case "appearance": container.open(UI_APPREARANCE); break;
 			case "merge": container.open(UI_MERGE); break;
 			case "disband": container.open(UI_DISBAND); break;
+			case "lock":
+			case "locked":{
+				if(!container.ldp.adm) break;
+				locked = !locked;
+				save();
+				container.open(UI_MAIN);
+				break;
+			}
 			//
 			case "type.submit":{
 				if(!canman) break;
