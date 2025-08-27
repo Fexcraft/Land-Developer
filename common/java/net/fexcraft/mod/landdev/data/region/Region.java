@@ -6,7 +6,6 @@ import static net.fexcraft.mod.landdev.ui.LDUIButton.*;
 import static net.fexcraft.mod.landdev.ui.LDUIButton.OPEN;
 import static net.fexcraft.mod.landdev.ui.LDUIRow.*;
 import static net.fexcraft.mod.landdev.util.ResManager.*;
-import static net.fexcraft.mod.landdev.util.TranslationUtil.translate;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -373,7 +372,7 @@ public class Region implements Saveable, Layer, LDUIModule {
 				mail.addMessage("landdev.mail.region.staff.invite0");
 				mail.addMessage("landdev.mail.region.staff.invite1");
 				ply.addMailAndSave(mail);
-				player.entity.send(translate("gui.region.staff.add.success"));
+				player.entity.send("landdev.gui.region.staff.add.success");
 				player.entity.closeUI();
 				break;
 			}
@@ -484,7 +483,7 @@ public class Region implements Saveable, Layer, LDUIModule {
 				if(!player.adm) SERVER_ACCOUNT.getBank().processAction(Bank.Action.TRANSFER, null, SERVER_ACCOUNT, LDConfig.COUNTY_CREATION_FEE / 2, reg.account);
 				ResManager.bulkSave(reg, ct, player);
 				player.entity.closeUI();
-				player.entity.send(translate("gui.region.create.complete"));
+				player.entity.send("landdev.gui.region.create.complete");
 				Announcer.announce(Announcer.Target.GLOBAL, 0, "announce.region.created", name, newid);
 				break;
 			}
