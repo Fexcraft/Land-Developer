@@ -6,8 +6,4 @@ public class TranslationUtil {
 		return "landdev." + str;
 	}
 
-	public static String translateCmd(String str, Object... args){
-		return "landdev.cmd." + str;
-	}
-
 }
