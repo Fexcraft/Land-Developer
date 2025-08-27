@@ -94,6 +94,9 @@ public class CkCmd extends CommandBase {
 				}
 				ent.send("landdev.cmd.chunk.mapdesc");
 			}
+			else if(args[0].equals("lock")){
+				ent.openUI(LDKeys.CHUNK_LOCK, chunk.key.x, 0, chunk.key.z);
+			}
     	}
     	else{
 			ent.openUI(LDKeys.CHUNK, 0, chunk.key.x, chunk.key.z);
