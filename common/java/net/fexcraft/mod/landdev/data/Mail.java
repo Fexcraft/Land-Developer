@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonMap;
+import net.fexcraft.app.json.JsonValue;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 
@@ -19,7 +20,7 @@ public class Mail implements Saveable {
 	public Layers receiver;
 	public String recid;
 	public String title;
-	public ArrayList<String> message = new ArrayList<>();
+	public ArrayList<String[]> message = new ArrayList<>();
 	public MailType type;
 	public long expiry;
 	public long sent;
@@ -77,6 +78,11 @@ public class Mail implements Saveable {
 	}
 
 	public Mail addMessage(String msg){
+		message.add(new String[]{ msg });
+		return this;
+	}
+
+	public Mail addMessage(String... msg){
 		message.add(msg);
 		return this;
 	}
@@ -94,7 +100,9 @@ public class Mail implements Saveable {
 		map.add("receiver", receiver.name());
 		map.add("rec_id", recid);
 		map.add("title", title);
-		map.add("message", new JsonArray(message.toArray()));
+		JsonArray msgs = new JsonArray();
+		for(String[] strs : message) msgs.add(new JsonArray(strs));
+		map.add("message", msgs);
 		map.add("type", type.name());
 		map.add("sent", sent);
 		if(expiry > 0) map.add("expiry", expiry);
@@ -109,7 +117,18 @@ public class Mail implements Saveable {
 		receiver = Layers.get(map.getString("receiver", Layers.NONE.name()));
 		recid = map.getString("rec_id", "ERROR");
 		title = map.getString("title", "No Title");
-		message = map.getArray("message").toStringList();
+		message.clear();
+		JsonArray array = map.getArray("message");
+		if(array.get(0).isArray()){
+			for(JsonValue<?> val : array.value){
+				message.add(val.asArray().toStringArray());
+			}
+		}
+		else{//old message format
+			for(JsonValue<?> val : array.value){
+				message.add(new String[]{ val.string_value() });
+			}
+		}
 		type = MailType.get(map.getString("type", "EXPIRED"));
 		expiry = map.getLong("expiry", 0);
 		staff = map.getBoolean("staffinv", false);
