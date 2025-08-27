@@ -101,7 +101,7 @@ public class Mail implements Saveable {
 		map.add("rec_id", recid);
 		map.add("title", title);
 		JsonArray msgs = new JsonArray();
-		for(String[] strs : message) msgs.add(new JsonArray(strs));
+		for(String[] strs : message) msgs.add(new JsonArray((Object[])strs));
 		map.add("message", msgs);
 		map.add("type", type.name());
 		map.add("sent", sent);
