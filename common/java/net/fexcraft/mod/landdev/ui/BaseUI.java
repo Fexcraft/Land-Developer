@@ -6,6 +6,7 @@ import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.tag.TagCW;
+import net.fexcraft.mod.uni.tag.TagLW;
 import net.fexcraft.mod.uni.ui.*;
 
 import java.util.ArrayList;
@@ -142,7 +143,7 @@ public class BaseUI extends UserInterface {
 		if(list.size() == 1 && list.get(0).length() == 0) list.clear();
 	}
 
-	protected void addElm(String id, LDUIRow elm, LDUIButton icon, boolean text, boolean button, boolean field, String val){
+	protected void addElm(String id, LDUIRow elm, LDUIButton icon, boolean text, boolean button, boolean field, Object val){
 		BaseElm belm = new BaseElm(this, "gen_" + id, elm, icon, button);
 		if(field) belm.addField(this, val, icon == LDUIButton.BLANK);
 		else belm.addText(this, text ? id : null, val);
@@ -197,7 +198,7 @@ public class BaseUI extends UserInterface {
 			tab.visible(vis);
 		}
 
-		public void addText(BaseUI base, String str, String val){
+		public void addText(BaseUI base, String str, Object val){
 			if(str == null && val == null) return;
 			try{
 				text = UIElement.create(UIText.IMPLEMENTATION, base, base.container.ui_map.getMap("texts").getMap("temp"));
@@ -210,14 +211,23 @@ public class BaseUI extends UserInterface {
 					texttips.put(text, Arrays.asList(hin.split("\\\\n")));
 				}
 				if(val == null) text.translate();
-				else if(val.startsWith(LDUIModule.VALONLY)) text.value(val.substring(3));
+				else if(val instanceof String){
+					String valstr = val.toString();
+					if(valstr.startsWith(LDUIModule.VALONLY)) text.value(valstr.substring(3));
+					else{
+						String old = text.value();
+						text.transval(valstr);
+						text.transval(old, text.value());
+					}
+				}
 				else{
-					String old = text.value();
-					text.value(val);
-					text.translate();
-					val = text.value();
-					text.value(old);
-					text.translate(val);
+					String[] arr = (String[])val;
+					if(arr.length == 0){
+						text.transval(arr[0]);
+					}
+					else{
+						text.transval(arr[0], Arrays.copyOfRange(arr, 1, arr.length));
+					}
 				}
 				text.scale = -1;
 				tab.texts.put(id, text);
@@ -229,7 +239,7 @@ public class BaseUI extends UserInterface {
 			}
 		}
 
-		public void addField(BaseUI base, String val, boolean wide){
+		public void addField(BaseUI base, Object val, boolean wide){
 			try{
 				field = UIElement.create(UIField.IMPLEMENTATION, base, new JsonMap());
 				field.width = (field.background = wide) ? 212 : 198;
@@ -239,7 +249,7 @@ public class BaseUI extends UserInterface {
 				tab.fields.put(id, field);
 				base.root.initField(field);
 				field.maxlength(256);
-				if(val != null) field.text(val);
+				if(val != null) field.text(val.toString());
 				field.visible(true);
 			}
 			catch(Exception e){
