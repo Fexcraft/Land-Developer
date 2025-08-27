@@ -370,8 +370,8 @@ public class Region implements Saveable, Layer, LDUIModule {
 				}
 				Mail mail = new Mail(MailType.INVITE, Layers.REGION, id, Layers.PLAYER, ply.uuid).expireInDays(7);
 				mail.setTitle(name()).setStaffInvite();
-				mail.addMessage(translate("mail.region.staff.invite0"));
-				mail.addMessage(translate("mail.region.staff.invite1"));
+				mail.addMessage("landdev.mail.region.staff.invite0");
+				mail.addMessage("landdev.mail.region.staff.invite1");
 				ply.addMailAndSave(mail);
 				player.entity.send(translate("gui.region.staff.add.success"));
 				player.entity.closeUI();
@@ -384,12 +384,12 @@ public class Region implements Saveable, Layer, LDUIModule {
 					manage.removeStaff(staff.uuid);
 					LDPlayer ply = ResManager.getPlayer(staff.uuid, true);
 					Mail mail = new Mail(MailType.SYSTEM, Layers.REGION, id, Layers.PLAYER, ply.uuid).expireInDays(7);
-					mail.setTitle(name()).addMessage(translate("mail.region.staff.nolonger"));
+					mail.setTitle(name()).addMessage("landdev.mail.region.staff.nolonger");
 					ply.addMailAndSave(mail);
 					for(Manageable.Staff stf : manage.staff){
 						LDPlayer stp = ResManager.getPlayer(stf.uuid, true);
 						mail = new Mail(MailType.SYSTEM, Layers.REGION, id, Layers.PLAYER, stp.uuid).expireInDays(7);
-						mail.setTitle(name()).addMessage(translate("mail.region.staff.removed", staff.getPlayerName()));
+						mail.setTitle(name()).addMessage("landdev.mail.region.staff.removed", staff.getPlayerName());
 						stp.addMailAndSave(mail);
 					}
 					Announcer.announce(Announcer.Target.REGION, id, "announce.region.staff.removed", staff.getPlayerName(), name(), id);
@@ -404,13 +404,13 @@ public class Region implements Saveable, Layer, LDUIModule {
 					manage.setManager(staff.uuid);
 					LDPlayer ply = ResManager.getPlayer(staff.uuid, true);
 					Mail mail = new Mail(MailType.SYSTEM, Layers.REGION, id, Layers.PLAYER, ply.uuid).expireInDays(7);
-					mail.setTitle(name()).addMessage(translate("mail.region.manager_now"));
+					mail.setTitle(name()).addMessage("landdev.mail.region.manager_now");
 					ply.addMailAndSave(mail);
 					save();
 					for(Manageable.Staff stf : manage.staff){
 						LDPlayer stp = ResManager.getPlayer(stf.uuid, true);
 						mail = new Mail(MailType.SYSTEM, Layers.REGION, id, Layers.PLAYER, stp.uuid).expireInDays(7);
-						mail.setTitle(name()).addMessage(translate("mail.region.manager_set", staff.getPlayerName()));
+						mail.setTitle(name()).addMessage("landdev.mail.region.manager_set", staff.getPlayerName());
 						stp.addMailAndSave(mail);
 					}
 					Announcer.announce(Announcer.Target.REGION, id, "announce.region.manager_set", staff.getPlayerName(), name(), id);
