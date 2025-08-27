@@ -6,7 +6,6 @@ import static net.fexcraft.mod.landdev.ui.LDUIButton.*;
 import static net.fexcraft.mod.landdev.ui.LDUIRow.*;
 import static net.fexcraft.mod.landdev.util.ResManager.*;
 import static net.fexcraft.mod.landdev.util.TranslationUtil.translate;
-import static net.fexcraft.mod.landdev.util.TranslationUtil.translateCmd;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -633,8 +632,8 @@ public class County implements Saveable, Layer, LDUIModule {
 				boolean rn = region.norms.get("new-counties").bool();
 				boolean pp = player.hasPermit(CREATE_COUNTY, region.getLayer(), region.id);
 				if(!rn && !pp){
-					player.entity.send(translateCmd("ct.no_new_counties"));
-					player.entity.send(translateCmd("ct.no_create_permit"));
+					player.entity.send("landdev.cmd.ct.no_new_counties");
+					player.entity.send("landdev.cmd.ct.no_create_permit");
 					player.entity.closeUI();
 					break;
 				}
