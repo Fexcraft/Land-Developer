@@ -2,13 +2,10 @@ package net.fexcraft.mod.landdev.ui;
 
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.mod.landdev.data.MailType;
-import net.fexcraft.mod.landdev.util.TranslationUtil;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.ui.*;
 
 import java.util.List;
-
-import static net.fexcraft.mod.landdev.util.TranslationUtil.translate;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -105,12 +102,12 @@ public class MailboxUI extends UserInterface {
 	@Override
 	public void getTooltip(int mx, int my, List<String> list){
 		if(mon.mailbox == null) return;
-		if(buttons.get("prev").hovered()) list.add(translate("gui.mailbox.prev"));
-		if(buttons.get("next").hovered()) list.add(translate("gui.mailbox.next"));
+		if(buttons.get("prev").hovered()) list.add("landdev.gui.mailbox.prev");
+		if(buttons.get("next").hovered()) list.add("landdev.gui.mailbox.next");
 		for(int i = 0; i < 10; i++){
 			if(i + page * 10 >= mon.mailbox.mails.size()) break;
-			if(buttons.get("open_" + i).hovered()) list.add(translate("gui.mailbox.read"));
-			if(buttons.get("del_" + i).hovered()) list.add(translate("gui.mailbox.delete"));
+			if(buttons.get("open_" + i).hovered()) list.add("landdev.gui.mailbox.read");
+			if(buttons.get("del_" + i).hovered()) list.add("landdev.gui.mailbox.delete");
 			if(texts.get("mail_" + 1).hovered()) list.add(texts.get("mail_" + i).value());
 		}
 	}
