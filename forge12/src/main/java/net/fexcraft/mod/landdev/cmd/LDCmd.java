@@ -2,15 +2,12 @@ package net.fexcraft.mod.landdev.cmd;
 
 import static net.fexcraft.mod.fsmm.util.Config.getWorthAsString;
 import static net.fexcraft.mod.landdev.LandDev.PKT_RECEIVER_ID;
-import static net.fexcraft.mod.landdev.util.TranslationUtil.translate;
 
 import java.util.List;
 
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.lib.mc.network.PacketHandler;
-import net.fexcraft.lib.mc.utils.Print;
-import net.fexcraft.lib.mc.utils.Static;
 import net.fexcraft.mod.landdev.data.Layers;
 import net.fexcraft.mod.landdev.data.Mail;
 import net.fexcraft.mod.landdev.data.MailType;
@@ -60,41 +57,41 @@ public class LDCmd extends CommandBase {
     		switch(args[0]){
 	    		case "fees":{
 	    			Chunk_ chunk = ResManager.getChunk(player.entity);
-	        		Print.chat(sender, TranslationUtil.translateCmd("fees"));
+	        		player.entity.send("landdev.cmd.fees");
 	        		long sf = LDConfig.MUNICIPALITY_CREATION_FEE;
 	        		long cf = chunk.district.county().norms.get("new-municipality-fee").integer();
-	        		Print.chat(sender, TranslationUtil.translateCmd("fees_municipality"));
-	        		Print.chat(sender, TranslationUtil.translateCmd("fees_mun_server", getWorthAsString(sf)));
-	        		Print.chat(sender, TranslationUtil.translateCmd("fees_mun_county", getWorthAsString(cf)));
-	        		Print.chat(sender, TranslationUtil.translateCmd("fees_mun_total", getWorthAsString(sf + cf)));
+	        		player.entity.send("landdev.cmd.fees_municipality");
+	        		player.entity.send("landdev.cmd.fees_mun_server", getWorthAsString(sf));
+	        		player.entity.send("landdev.cmd.fees_mun_county", getWorthAsString(cf));
+	        		player.entity.send("landdev.cmd.fees_mun_total", getWorthAsString(sf + cf));
 					sf = LDConfig.COUNTY_CREATION_FEE;
 					cf = chunk.district.region().norms.get("new-county-fee").integer();
-					Print.chat(sender, TranslationUtil.translateCmd("fees_county"));
-					Print.chat(sender, TranslationUtil.translateCmd("fees_ct_server", getWorthAsString(sf)));
-					Print.chat(sender, TranslationUtil.translateCmd("fees_ct_region", getWorthAsString(cf)));
-					Print.chat(sender, TranslationUtil.translateCmd("fees_ct_total", getWorthAsString(sf + cf)));
+					player.entity.send("landdev.cmd.fees_county");
+					player.entity.send("landdev.cmd.fees_ct_server", getWorthAsString(sf));
+					player.entity.send("landdev.cmd.fees_ct_region", getWorthAsString(cf));
+					player.entity.send("landdev.cmd.fees_ct_total", getWorthAsString(sf + cf));
 					sf = LDConfig.REGION_CREATION_FEE;
-					Print.chat(sender, TranslationUtil.translateCmd("fees_region"));
-					Print.chat(sender, TranslationUtil.translateCmd("fees_rg_server", getWorthAsString(sf)));
-					Print.chat(sender, TranslationUtil.translateCmd("fees_rg_total", getWorthAsString(sf)));
+					player.entity.send("landdev.cmd.fees_region");
+					player.entity.send("landdev.cmd.fees_rg_server", getWorthAsString(sf));
+					player.entity.send("landdev.cmd.fees_rg_total", getWorthAsString(sf));
 	        		return;
 	    		}
 	    		case "admin":{
 	    			if(server.isSinglePlayer() || WrapperHolder.isOp(player.entity)){
 	    				player.adm = !player.adm;
-		        		Print.chat(sender, TranslationUtil.translateCmd("adminmode." + player.adm));
+		        		player.entity.send("landdev.cmd.adminmode." + player.adm);
 	    			}
 	    			else{
-	    				Print.chat(sender, "&cno.permission");
+	    				player.entity.send("&cno.permission");
 	    			}
 	        		return;
 	    		}
 	    		case "reload":{
 	    			Protector.load();
-	        		Print.chat(sender, TranslationUtil.translateCmd("reload", "landdev-interaction.json"));
+	        		player.entity.send("landdev.cmd.reload", "landdev-interaction.json");
 	        		DiscordTransmitter.restart();
-	        		Print.chat(sender, TranslationUtil.translateCmd("reload", "discord-bot-integration"));
-	        		Print.chat(sender, TranslationUtil.translateCmd("reload.complete"));
+	        		player.entity.send("landdev.cmd.reload", "discord-bot-integration");
+	        		player.entity.send("landdev.cmd.reload.complete");
 	    			return;
 	    		}
 	    		case "img":{
@@ -135,10 +132,10 @@ public class LDCmd extends CommandBase {
 						mail.recid = player.uuid.toString();
 						mail.unread = true;
 						mail.title = "Bulk mail from /ld bulkmail";
-						mail.message.add("Example Mail Text 1");
-						mail.message.add("Example Mail Text 2");
-						mail.message.add("Example Mail Text 3");
-						mail.message.add("Example Mail Text 4");
+						mail.addMessage("Example Mail Text 1");
+						mail.addMessage("Example Mail Text 2");
+						mail.addMessage("Example Mail Text 3");
+						mail.addMessage("Example Mail Text 4");
 						mail.type = type;
 						mail.staff = type == MailType.INVITE;
 						player.mail.mails.add(mail);
