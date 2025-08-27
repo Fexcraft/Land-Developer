@@ -516,8 +516,8 @@ public class County implements Saveable, Layer, LDUIModule {
 				if(opentojoin()) break;
 				Mail mail = new Mail(MailType.REQUEST, Layers.PLAYER, player.uuid, Layers.COUNTY, id);
 				mail.setTitle(player.name_raw()).expireInDays(7);
-				mail.addMessage(translate("mail.player.county.join_request0", player.name_raw()));
-				mail.addMessage(translate("mail.player.county.join_request1"));
+				mail.addMessage("landdev.mail.player.county.join_request0", player.name_raw());
+				mail.addMessage("landdev.mail.player.county.join_request1");
 				this.mail.mails.add(mail);
 				requests.timeouts.put(player.uuid, 0l);
 				container.open(UI_CITIZEN_LIST);
@@ -532,8 +532,8 @@ public class County implements Saveable, Layer, LDUIModule {
 				}
 				Mail mail = new Mail(MailType.INVITE, Layers.COUNTY, id, Layers.PLAYER, ply.uuid);
 				mail.setTitle(name()).expireInDays(7);
-				mail.addMessage(translate("mail.county.citizen.invite0"));
-				mail.addMessage(translate("mail.county.citizen.invite1", name()));
+				mail.addMessage("landdev.mail.county.citizen.invite0");
+				mail.addMessage("landdev.mail.county.citizen.invite1", name());
 				ply.addMailAndSave(mail);
 				player.entity.send(translate("gui.county.citizen.invite.success"));
 				player.entity.closeUI();
@@ -550,10 +550,10 @@ public class County implements Saveable, Layer, LDUIModule {
 					}
 					ply.setCitizenOf(ResManager.getCounty(-1, true));
 					Mail mail = new Mail(MailType.SYSTEM, Layers.COUNTY, id, Layers.PLAYER, ply.uuid).expireInDays(7);
-					mail.setTitle(name()).addMessage(translate("mail.county.citizen.nolonger"));
+					mail.setTitle(name()).addMessage("landdev.mail.county.citizen.nolonger");
 					ply.addMailAndSave(mail);
 					mail = new Mail(MailType.SYSTEM, Layers.COUNTY, id, Layers.COUNTY, id).expireInDays(7);
-					mail.setTitle(name()).addMessage(translate("mail.county.citizen.removed", cit.getPlayerName()));
+					mail.setTitle(name()).addMessage("landdev.mail.county.citizen.removed", cit.getPlayerName());
 					this.mail.mails.add(mail);
 					Announcer.announce(Announcer.Target.COUNTY, id, "announce.county.citizen.removed", cit.getPlayerName(), name(), id);
 				}
@@ -577,8 +577,8 @@ public class County implements Saveable, Layer, LDUIModule {
 				}
 				Mail mail = new Mail(MailType.INVITE, Layers.COUNTY, id, Layers.PLAYER, ply.uuid).expireInDays(7);
 				mail.setTitle(name()).setStaffInvite();
-				mail.addMessage(translate("mail.county.staff.invite0"));
-				mail.addMessage(translate("mail.county.staff.invite1"));
+				mail.addMessage("landdev.mail.county.staff.invite0");
+				mail.addMessage("landdev.mail.county.staff.invite1");
 				ply.addMailAndSave(mail);
 				player.entity.send(translate("gui.county.staff.add.success"));
 				player.entity.closeUI();
@@ -591,12 +591,12 @@ public class County implements Saveable, Layer, LDUIModule {
 					manage.removeStaff(staff.uuid);
 					LDPlayer ply = ResManager.getPlayer(staff.uuid, true);
 					Mail mail = new Mail(MailType.SYSTEM, Layers.COUNTY, id, Layers.PLAYER, ply.uuid).expireInDays(7);
-					mail.setTitle(name()).addMessage(translate("mail.county.staff.nolonger"));
+					mail.setTitle(name()).addMessage("landdev.mail.county.staff.nolonger");
 					ply.addMailAndSave(mail);
 					for(Manageable.Staff stf : manage.staff){
 						LDPlayer stp = ResManager.getPlayer(stf.uuid, true);
 						mail = new Mail(MailType.SYSTEM, Layers.COUNTY, id, Layers.PLAYER, stp.uuid).expireInDays(7);
-						mail.setTitle(name()).addMessage(translate("mail.county.staff.removed", staff.getPlayerName()));
+						mail.setTitle(name()).addMessage("landdev.mail.county.staff.removed", staff.getPlayerName());
 						stp.addMailAndSave(mail);
 					}
 					Announcer.announce(Announcer.Target.COUNTY, id, "announce.county.staff.removed", staff.getPlayerName(), name(), id);
@@ -611,13 +611,13 @@ public class County implements Saveable, Layer, LDUIModule {
 					manage.setManager(staff.uuid);
 					LDPlayer ply = ResManager.getPlayer(staff.uuid, true);
 					Mail mail = new Mail(MailType.SYSTEM, Layers.COUNTY, id, Layers.PLAYER, ply.uuid).expireInDays(7);
-					mail.setTitle(name()).addMessage(translate("mail.county.manager_now"));
+					mail.setTitle(name()).addMessage("landdev.mail.county.manager_now");
 					ply.addMailAndSave(mail);
 					save();
 					for(Manageable.Staff stf : manage.staff){
 						LDPlayer stp = ResManager.getPlayer(stf.uuid, true);
 						mail = new Mail(MailType.SYSTEM, Layers.COUNTY, id, Layers.PLAYER, stp.uuid).expireInDays(7);
-						mail.setTitle(name()).addMessage(translate("mail.county.manager_set", staff.getPlayerName()));
+						mail.setTitle(name()).addMessage("landdev.mail.county.manager_set", staff.getPlayerName());
 						stp.addMailAndSave(mail);
 					}
 					Announcer.announce(Announcer.Target.COUNTY, id, "announce.county.manager_set", staff.getPlayerName(), name(), id);
