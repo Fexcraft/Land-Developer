@@ -541,8 +541,8 @@ public class Municipality implements Saveable, Layer, LDUIModule {
 				}
 				Mail mail = new Mail(MailType.INVITE, Layers.MUNICIPALITY, id, Layers.PLAYER, ply.uuid);
 				mail.setTitle(name()).expireInDays(7);
-				mail.addMessage("mail.municipality.citizen.invite0");
-				mail.addMessage("mail.municipality.citizen.invite1", name());
+				mail.addMessage("landdev.mail.municipality.citizen.invite0");
+				mail.addMessage("landdev.mail.municipality.citizen.invite1", name());
 				ply.addMailAndSave(mail);
 				player.entity.send("landdev.gui.municipality.citizen.invite.success");
 				player.entity.closeUI();
