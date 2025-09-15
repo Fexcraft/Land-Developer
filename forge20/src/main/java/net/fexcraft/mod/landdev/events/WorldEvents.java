@@ -41,7 +41,7 @@ public class WorldEvents {
 		if(event.getLevel().isClientSide()) return;
 		if(event.getLevel() != FCL.SERVER.get().overworld()) return;
 		Chunk_ chunk = ResManager.getChunkS(event.getExplosion().getPosition().x, event.getExplosion().getPosition().z);
-		event.setCanceled(!chunk.district.norms.get("explosions").bool());
+		if(!chunk.district.norms.get("explosions").bool()) event.getExplosion().clearToBlow();
 	}
 	
 }
