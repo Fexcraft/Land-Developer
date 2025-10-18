@@ -258,7 +258,7 @@ public class LDConfig extends ConfigBase {
 		}
 		catch(Exception e){
 			err[0] = "Invalid Price | " + " " + e.getMessage();
-			if(Static.dev()) e.printStackTrace();
+			if(EnvInfo.DEV) e.printStackTrace();
 			return 0;
 		}
 	}
