@@ -52,6 +52,7 @@ public class ResManager implements Saveable {
 	public static ConcurrentHashMap<Integer, ChunkKey> RG_CENTERS = new ConcurrentHashMap<>();
 	public static Account SERVER_ACCOUNT;
 
+	/** Get chunk from chuck coordinates. */
 	public static Chunk_ getChunk(int x, int z){
 		for(Chunk_ ck : CHUNKS.values()){
 			if(ck.key.x == x && ck.key.z == z) return ck;
@@ -59,14 +60,17 @@ public class ResManager implements Saveable {
 		return ChunkRegion.get(x, z);
 	}
 
+	/** Get chunk from world coordinates. */
 	public static Chunk_ getChunkS(double x, double z){
 		return getChunk((int)x >> 4, (int)z >> 4);
 	}
 
+	/** Get chunk from block coordinates. */
 	public static Chunk_ getChunkS(int x, int z){
 		return getChunk(x >> 4, z >> 4);
 	}
 
+	/** Get chunk from chunk key. */
 	public static Chunk_ getChunk(ChunkKey key){
 		for(Chunk_ ck : CHUNKS.values()){
 			if(ck.key.equals(key)) return ck;
@@ -74,18 +78,22 @@ public class ResManager implements Saveable {
 		return ChunkRegion.get(key);
 	}
 
+	/** Get chunk from world coordinates. */
 	public static Chunk_ getChunk(V3D pos){
 		return getChunk((int)pos.x >> 4, (int)pos.z >> 4);
 	}
 
+	/** Get chunk from player position. */
 	public static Chunk_ getChunk(EntityW player){
 		return getChunk(player.getPos());
 	}
 
+	/** Get chunk from player position. */
 	public static Chunk_ getChunkP(Object player){
 		return getChunk(UniEntity.get(player).entity);
 	}
 
+	/** Remove and unload chunk. */
 	public static void remChunk(int x, int z){
 		Chunk_ ck = getChunk(x, z);
 		if(ck != null){
