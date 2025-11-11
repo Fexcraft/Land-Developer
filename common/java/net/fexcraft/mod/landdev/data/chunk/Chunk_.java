@@ -50,7 +50,7 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 	public UniChunk uck;
 
 	public Chunk_(UniChunk ck){
-		key = new ChunkKey(ck.chunk.getX(), ck.chunk.getZ());
+		key = new ChunkKey(ck.chunk.x(), ck.chunk.z());
 		region = key.asRegion();
 		uck = ck;
 	}
