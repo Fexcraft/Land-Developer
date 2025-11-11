@@ -60,7 +60,7 @@ public class ChunkRegion {
 	}
 
 	public static Chunk_ getFor(UniChunk uck){
-		ChunkKey key = new ChunkKey(uck.chunk.getX(), uck.chunk.getZ());
+		ChunkKey key = new ChunkKey(uck.chunk.x(), uck.chunk.z());
 		ChunkRegion region = getRegion(key.asRegion());
 		if(region.chunks.containsKey(key)){
 			Chunk_ ck = region.chunks.get(key);
