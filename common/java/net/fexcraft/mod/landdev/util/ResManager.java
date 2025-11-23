@@ -224,14 +224,14 @@ public class ResManager implements Saveable {
 		SAVER.schedule(new TimerTask() {
 			@Override
 			public void run(){
-				saveAll();
+				saveAll(false);
 			}
 		}, Time.MIN_MS * 5, Time.MIN_MS * 5);
 		LOADED = true;
 	}
 
-	public static void saveAll(){
-		ChunkRegion.saveAll();
+	public static void saveAll(boolean unload){
+		if(unload) ChunkRegion.saveAll();
 		DISTRICTS.values().forEach(save -> DB.save(save));
 		MUNICIPALITIES.values().forEach(save -> DB.save(save));
 		COUNTIES.values().forEach(save -> DB.save(save));
