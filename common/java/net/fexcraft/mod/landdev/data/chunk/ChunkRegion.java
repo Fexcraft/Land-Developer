@@ -1,5 +1,6 @@
 package net.fexcraft.mod.landdev.data.chunk;
 
+import net.fexcraft.app.json.JsonHandler;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.mod.landdev.LandDev;
@@ -22,35 +23,44 @@ public class ChunkRegion {
 
 	public static ConcurrentHashMap<ChunkKey, ChunkRegion> REGIONS = new ConcurrentHashMap<>();
 	public ConcurrentHashMap<ChunkKey, Chunk_> chunks = new ConcurrentHashMap<>();
-	private TagCW compound;
+	private JsonMap regionmap;
 	private ChunkKey key;
 	public long last_access;
 
 	public ChunkRegion(ChunkKey rkey){
 		key = rkey;
-		File file = new File(LandDev.SAVE_DIR + "/chunks/" + key.toString() + ".nbt");
-		if(!file.getParentFile().exists()) file.getParentFile().mkdirs();
-		compound = WrapperHolder.read(file);
+		File jf = new File(LandDev.SAVE_DIR + "/chunks/" + key.toString() + ".json");
+		File nf = new File(LandDev.SAVE_DIR + "/chunks/" + key.toString() + ".nbt");
+		if(!jf.getParentFile().exists()) jf.getParentFile().mkdirs();
+		if(!jf.exists() && nf.exists()){//convert old data
+			LandDev.debug("Loading chunk region from " + nf.getAbsolutePath());
+			regionmap = JsonTagConverter.demap(WrapperHolder.read(nf));
+		}
+		else{
+			LandDev.debug("Loading chunk region from " + jf.getAbsolutePath());
+			regionmap = JsonHandler.parse(jf);
+		}
 		setLastAccess();
 	}
 
 	public static void save(Chunk_ ck){
-		getRegion(ck.region).saveChunk(ck);
+		ChunkRegion region = getRegion(ck.region);
+		region.chunks.put(ck.key, ck);
+		region.saveChunk(ck);
 	}
 
 	private void saveChunk(Chunk_ ck){
-		chunks.put(ck.key, ck);
 		JsonMap map = new JsonMap();
 		ck.save(map);
-		compound.set(ck.key.toString(), JsonTagConverter.map(TagCW.create(), map));
+		regionmap.add(ck.key.toString(), map);
 		setLastAccess();
 	}
 
 	private void loadChunk(Chunk_ ck){
 		chunks.put(ck.key, ck);
-		TagCW tag = compound.getCompound(ck.key.toString());
-		if(tag.empty()) ck.gendef();
-		ck.load(JsonTagConverter.demap(tag));
+		JsonMap map = regionmap.getMap(ck.key.toString());
+		if(map.empty()) ck.gendef();
+		ck.load(map);
 		ResManager.CHUNKS.put(ck.key, ck);
 		setLastAccess();
 	}
@@ -82,7 +92,11 @@ public class ChunkRegion {
 	}
 
 	private void save(){
-		WrapperHolder.write(compound, new File(LandDev.SAVE_DIR + "/chunks/" + key.toString() + ".nbt"));
+		for(Chunk_ ck : chunks.values()) saveChunk(ck);
+		//WrapperHolder.write(compound, new File(LandDev.SAVE_DIR + "/chunks/" + key.toString() + ".nbt"));
+		File file = new File(LandDev.SAVE_DIR + "/chunks/" + key.toString() + ".json");
+		JsonHandler.print(file, regionmap, LDConfig.SAVE_SPACED_JSON ? JsonHandler.PrintOption.FLAT : JsonHandler.PrintOption.SPACED);
+		LandDev.debug("Saving chunk region to " + file.getAbsolutePath());
 	}
 
 	public static void saveRegions(){
@@ -129,7 +143,7 @@ public class ChunkRegion {
 		return ck;
 	}
 
-	private static ChunkRegion getRegion(ChunkKey key){
+	public static ChunkRegion getRegion(ChunkKey key){
 		ChunkRegion region = REGIONS.get(key);
 		if(region == null) REGIONS.put(key, region = new ChunkRegion(key));
 		return region;
