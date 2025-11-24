@@ -23,9 +23,9 @@ public class Taxable implements Saveable {
 
 	@Override
 	public void load(JsonMap map){
-		last_interval = map.getLong("last_interval", 0);
-		last_tax = map.getLong("last_tax", 0);
-		custom_tax = map.getLong("custom_tax", 0);
+		last_interval = map.getLong("tax_interval", 0);
+		last_tax = map.getLong("tax_last", 0);
+		custom_tax = map.getLong("tax_custom", 0);
 	}
 
 }
