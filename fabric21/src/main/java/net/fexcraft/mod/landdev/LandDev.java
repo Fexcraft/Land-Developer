@@ -33,6 +33,7 @@ import net.fexcraft.mod.landdev.util.*;
 import net.fexcraft.mod.landdev.util.broad.BroadcastChannel;
 import net.fexcraft.mod.landdev.util.broad.Broadcaster;
 import net.fexcraft.mod.landdev.util.broad.DiscordTransmitter;
+import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.UniChunk;
 import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.tag.TagCW;
@@ -509,6 +510,10 @@ public class LandDev implements ModInitializer {
 
 	public static void log(String str){
 		LOGGER.info(str);
+	}
+
+	public static void debug(String str){
+		if(EnvInfo.DEV) LOGGER.info(str);
 	}
 
 	public static void sendLocationPacket(EntityW entity, TagCW com){
