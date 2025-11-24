@@ -9,7 +9,6 @@ import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fcl.util.ClientPacketPlayer;
 import net.fexcraft.mod.fcl.util.UIPacket;
 import net.fexcraft.mod.landdev.data.PermAction;
-import net.fexcraft.mod.landdev.data.chunk.ChunkKey;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.data.county.County;
 import net.fexcraft.mod.landdev.data.district.District;
@@ -20,6 +19,7 @@ import net.fexcraft.mod.landdev.events.LocationUpdate;
 import net.fexcraft.mod.landdev.ui.LDKeys;
 import net.fexcraft.mod.landdev.util.*;
 import net.fexcraft.mod.landdev.util.broad.DiscordTransmitter;
+import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.EntityW;
 import net.minecraft.client.Minecraft;
@@ -100,6 +100,10 @@ public class LandDev {
 
 	public static void log(Object s){
 		LOGGER.info(s + "");
+	}
+
+	public static void debug(String s){
+		if(EnvInfo.DEV) LOGGER.info(s);
 	}
 
 	@SubscribeEvent
