@@ -6,6 +6,7 @@ import net.fexcraft.mod.landdev.cmd.*;
 import net.fexcraft.mod.landdev.events.LocationUpdate;
 import net.fexcraft.mod.landdev.util.GuiHandler;
 import net.fexcraft.mod.landdev.util.*;
+import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.impl.PacketTagHandler.I12_PacketTag;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.EntityW;
@@ -88,6 +89,10 @@ public class LandDev {
 	
 	public static void log(Object obj){
 		logger.log(Level.INFO, obj);
+	}
+
+	public static void debug(String s){
+		if(EnvInfo.DEV) logger.log(Level.INFO, s);
 	}
 
 	public static void sendLocationPacket(EntityW entity, TagCW com){
