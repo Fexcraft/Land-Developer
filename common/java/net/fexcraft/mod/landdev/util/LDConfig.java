@@ -100,7 +100,8 @@ public class LDConfig extends ConfigBase {
 			})
 		);
 		entries.add(new ConfigEntry(this, GENERAL_CAT, "save_spaced_json", false)
-			.info("If true, the JSON will be formatted to be easily readable, otherwise if false it will not have any spacing, to save on disk and load time.")
+			.info("If true, the JSON will be formatted to be easily readable,",
+				"otherwise if false it will not have any spacing, to save on disk and load time.")
 			.cons((con, map) -> SAVE_SPACED_JSON = con.getBoolean(map))
 		);
 		entries.add(new ConfigEntry(this, GENERAL_CAT, "protect_wilderness", true)
@@ -120,7 +121,8 @@ public class LDConfig extends ConfigBase {
 			.cons((con, map) -> SAVE_CHUNKS_IN_REGIONS = con.getBoolean(map))
 		);*/
 		entries.add(new ConfigEntry(this, GENERAL_CAT, "run_location_event", false)
-			.info("Should the 'PlayerLocationEvent' be run every time the player enters another district/named-chunk? Use this if you have an LD Addon requiring it.")
+			.info("Should the 'PlayerLocationEvent' be run every time the player enters another district/named-chunk?",
+				"Use this if you have an LD Addon requiring it.")
 			.cons((con, map) -> RUN_LOCATION_EVENT = con.getBoolean(map))
 		);
 		entries.add(new ConfigEntry(this, GENERAL_CAT, "min_municipality_distance", 16).rang(4, 40960)
@@ -189,7 +191,7 @@ public class LDConfig extends ConfigBase {
 			.cons((con, map) -> DISCORD_BOT_ACTIVE = con.getBoolean(map))
 		);
 		entries.add(new ConfigEntry(this, DISCORD_CAT, "adress", DISCORD_BOT_ADRESS)
-			.info("Adress/IP of the Discord Chat Bot you are using. By default this points to the one provided by Fexcraft.")
+			.info("Adress/IP of the Discord Chat Bot you are using.", "By default this points to the one provided by Fexcraft.")
 			.cons((con, map) -> DISCORD_BOT_ADRESS = con.getString(map))
 		);
 		entries.add(new ConfigEntry(this, DISCORD_CAT, "port", DISCORD_BOT_PORT).rang(1000, 65535)
@@ -206,8 +208,8 @@ public class LDConfig extends ConfigBase {
 			.cons((con, map) -> LOCUP_SIDE = con.getBoolean(map))
 		);
 		entries.add(new ConfigEntry(this, CLIENT_CAT, "chat_format", "%s#&0] %s&0: &f%s")
-				.info("Format of chat messages if chat override is enabled.")
-				.cons((con, map) -> CHAT_OVERRIDE_LANG = con.getString(map))
+			.info("Format of chat messages if chat override is enabled.")
+			.cons((con, map) -> CHAT_OVERRIDE_LANG = con.getString(map))
 		);
 		//
 		entries.add(new ConfigEntry(this, SERVLANG, "started", SERVLANG_STARTED)
