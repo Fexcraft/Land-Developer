@@ -37,11 +37,11 @@ public class Createable implements Saveable {
 	public void save(JsonMap map){
 		map.add("created", created);
 		if(!creator.equals(ResManager.CONSOLE_UUID)){
-			if(chunk){
+			/*if(chunk){
 				map.add("creator0", creator.getMostSignificantBits());
 				map.add("creator1", creator.getLeastSignificantBits());
 			}
-			else map.add("creator", creator.toString());
+			else*/ map.add("creator", creator.toString());
 		}
 		map.add("updated", updated);
 	}
