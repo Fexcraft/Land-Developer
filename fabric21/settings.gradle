@@ -10,6 +10,6 @@ pluginManagement {
 }
 
 include ':FCL'
-project(':FCL').projectDir = new File('../../GitHub/FCL/fabric21')
+project(':FCL').projectDir = new File('../../FCL/fabric21')
 include ':FSMM'
-project(':FSMM').projectDir = new File('../../GitHub/FSMM/fabric21')
+project(':FSMM').projectDir = new File('../../FSMM/fabric21')
