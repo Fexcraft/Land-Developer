@@ -66,7 +66,7 @@ public class Municipality implements Saveable, Layer, LDUIModule {
 	public Municipality(int id){
 		this.id = id;
 		mail = new MailData(getLayer(), id);
-		account = DataManager.getAccount("municipality:" + id, false, true);
+		account = DataManager.getAccount("municipality:" + id, 2).addHolder(this);
 		norms.add(new StringNorm("name", ""));
 		norms.add(new StringNorm("title", ""));
 		norms.add(new BoolNorm("open-to-join", true));
