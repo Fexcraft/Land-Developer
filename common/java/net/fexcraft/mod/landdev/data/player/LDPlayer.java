@@ -68,7 +68,8 @@ public class LDPlayer implements Saveable, Layer, LDUIModule, Appendable<UniEnti
 		offline = true;
 		this.uuid = uuid;
 		mail = new MailData(Layers.PLAYER, uuid);
-		account = DataManager.getAccount("player:" + uuid.toString(), false, true);
+		account = DataManager.getAccount("player:" + uuid.toString(), 2);
+		account.addHolder(this);
 	}
 
 	@Override
