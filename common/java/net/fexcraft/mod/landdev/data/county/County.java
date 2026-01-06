@@ -67,7 +67,7 @@ public class County implements Saveable, Layer, LDUIModule {
 	public County(int id){
 		this.id = id;
 		mail = new MailData(getLayer(), id);
-		account = DataManager.getAccount("county:" + id, false, true);
+		account = DataManager.getAccount("county:" + id, 2).addHolder(this);
 		norms.add(new StringNorm("name", "Unnamed County"));
 		norms.add(new BoolNorm("new-municipalities", false));
 		norms.add(new IntegerNorm("new-municipality-fee", 100000));
