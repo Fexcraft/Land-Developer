@@ -153,6 +153,7 @@ public class ResManager implements Saveable {
 	public static void unloadIfOffline(LDPlayer player){
 		if(!WrapperHolder.getOnlinePlayerIDs().contains(player.uuid)){
 			player.save();
+			player.account.remHolder(player);
 			PLAYERS.remove(player.uuid);
 		}
 	}
@@ -213,12 +214,10 @@ public class ResManager implements Saveable {
 	}
 
 	public void load(){
-		SERVER_ACCOUNT = DataManager.getAccount("server:landdev", false, false);
-		if(SERVER_ACCOUNT == null){
-			SERVER_ACCOUNT = DataManager.getAccount("server:landdev", false, true);
-			SERVER_ACCOUNT.setBalance(1000000000000l);
-			SERVER_ACCOUNT.setName("LandDeveloper Server Account");
-		}
+		SERVER_ACCOUNT = DataManager.getAccount("server:landdev", 2, account -> {
+			account.setBalance(1000000000000L);
+			account.setName("LandDeveloper Server Account");
+		}).addHolder(this);
 		JsonMap map = DB.load(saveTable(), saveId());
 		if(map != null) load(map);
 		SAVER.schedule(new TimerTask() {
