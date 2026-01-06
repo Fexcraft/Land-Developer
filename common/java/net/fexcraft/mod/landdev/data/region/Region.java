@@ -57,7 +57,7 @@ public class Region implements Saveable, Layer, LDUIModule {
 	public Region(int id){
 		this.id = id;
 		mail = new MailData(getLayer(), id);
-		account = DataManager.getAccount("region:" + id, false, true);
+		account = DataManager.getAccount("region:" + id, 2).addHolder(this);
 		norms.add(new StringNorm("name", "Unnamed Region"));
 		norms.add(new BoolNorm("new-counties", false));
 		norms.add(new IntegerNorm("new-county-fee", 1000000));
