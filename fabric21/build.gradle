@@ -42,7 +42,7 @@ dependencies {
 
 	implementation project(path: ':FCL', configuration: "namedElements")
 	implementation project(path: ':FSMM', configuration: "namedElements")
-	compileOnly files("libs/Dynmap-3.7-beta-8-fabric-1.21.3.jar")
+	compileOnly files("libs/Dynmap-3.7-beta-11-fabric-1.21.6.jar")
 
 }
 
