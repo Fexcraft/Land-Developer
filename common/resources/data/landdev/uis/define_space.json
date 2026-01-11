@@ -1,0 +1,43 @@
+{
+	"_info_": "LandDev Space Definition UI",
+	"background": false,
+	"size": [ 138, 144 ],
+	"tabs": {
+		"main": {
+			"texture": "landdev:textures/ui/define_space.png",
+			"size": [ 138, 144 ],
+			"pos": [ 0, 0 ],
+			"absolute": true,
+			"texts": [
+				"title"
+			],
+			"buttons": [
+				"confirm",
+				"cancel"
+			]
+		}
+	},
+	"buttons": {
+		"confirm": {
+			"size": [ 12, 12 ],
+			"pos": [ 106, 6 ],
+			"absolute": true
+		},
+		"cancel": {
+			"size": [ 12, 12 ],
+			"pos": [ 120, 6 ],
+			"absolute": true
+		}
+	},
+	"texts": {
+		"title": {
+			"size": [ 94, 8 ],
+			"pos": [ 8, 8 ],
+			"absolute": true,
+			"autoscale": true,
+			"color": "#0e0e0e",
+			"value": "landdev.gui.define_space.title",
+			"translate": true
+		}
+	}
+}
