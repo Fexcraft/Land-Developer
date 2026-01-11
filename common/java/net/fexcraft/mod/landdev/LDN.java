@@ -1,15 +1,13 @@
 package net.fexcraft.mod.landdev;
 
 import net.fexcraft.lib.common.math.Time;
+import net.fexcraft.mod.fcl.UniFCL;
 import net.fexcraft.mod.landdev.data.chunk.ChunkApp;
 import net.fexcraft.mod.landdev.data.chunk.ChunkRegion;
 import net.fexcraft.mod.landdev.db.Database;
 import net.fexcraft.mod.landdev.db.JsonFileDB;
-import net.fexcraft.mod.landdev.util.FsmmEventHooks;
+import net.fexcraft.mod.landdev.util.*;
 import net.fexcraft.mod.landdev.ui.*;
-import net.fexcraft.mod.landdev.util.LDConfig;
-import net.fexcraft.mod.landdev.util.Protector;
-import net.fexcraft.mod.landdev.util.TaxSystem;
 import net.fexcraft.mod.landdev.util.broad.BroadcastChannel;
 import net.fexcraft.mod.landdev.util.broad.Broadcaster;
 import net.fexcraft.mod.landdev.util.broad.DiscordTransmitter;
@@ -35,6 +33,7 @@ import static net.fexcraft.mod.landdev.util.broad.Broadcaster.TargetTransmitter.
 public class LDN {
 
 	public static final String MODID = "landdev";
+	public static final String PKT_RECEIVER_ID = "landdev:util";
 	public static Database DB = new JsonFileDB();
 	public static LDConfig CONFIG;
 	public static Timer TAX_TIMER;
@@ -64,6 +63,8 @@ public class LDN {
 		UniReg.registerMenu(LDKeys.CHUNK_BUY, "landdev:uis/chunk_claim", ChunkClaimCon.class);
 		UniReg.registerUI(LDKeys.CHUNK_LOCK, ChunkClaimUI.class);
 		UniReg.registerMenu(LDKeys.CHUNK_LOCK, "landdev:uis/chunk_claim", ChunkClaimCon.class);
+		//
+		UniFCL.regTagPacketListener(PKT_RECEIVER_ID, false, new ServerUtilReceiver());
 	}
 
 	public static void postinit(){
