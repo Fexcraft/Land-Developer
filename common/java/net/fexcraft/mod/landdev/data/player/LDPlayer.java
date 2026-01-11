@@ -62,6 +62,7 @@ public class LDPlayer implements Saveable, Layer, LDUIModule, Appendable<UniEnti
 	public County county;
 	public Chunk_ chunk_current;
 	public Chunk_ chunk_last;
+	public SpaceDefinitionCache defcache;
 	public ExternalData external = new ExternalData(this);
 	
 	public LDPlayer(UUID uuid){
@@ -375,6 +376,14 @@ public class LDPlayer implements Saveable, Layer, LDUIModule, Appendable<UniEnti
 	@Override
 	public String id(){
 		return "landdev:player";
+	}
+
+	public void onSpaceDefCommand(){
+		if(defcache == null){
+			defcache = new SpaceDefinitionCache(entity.getV3I());
+			defcache.start(this);
+		}
+		entity.openUI(LDKeys.DEF_SPACE, defcache.pos);
 	}
 
 }
