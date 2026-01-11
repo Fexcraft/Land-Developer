@@ -3,6 +3,7 @@ package net.fexcraft.mod.landdev.util;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.common.utils.Formatter;
 import net.fexcraft.lib.mc.render.ExternalTextureHelper;
+import net.fexcraft.mod.landdev.LandDev;
 import net.fexcraft.mod.landdev.events.LocationUpdate;
 import net.fexcraft.mod.landdev.gui.LDGuiImgPreview;
 import net.fexcraft.mod.uni.packet.PacketTagListener;
@@ -59,6 +60,10 @@ public class PacketReceiver implements PacketTagListener {
 			}
 			case "img_preview_url":
 				LDGuiImgPreview.IMG_URL = ExternalTextureHelper.get(packet.getString("url"));
+				return;
+			default:
+				LandDev.log("Received packet with unknown task '" + packet.getString("task") + "'.");
+				LandDev.log(packet);
 				return;
 		}
 	}
