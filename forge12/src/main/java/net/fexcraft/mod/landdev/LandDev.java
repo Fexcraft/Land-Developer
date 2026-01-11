@@ -3,6 +3,7 @@ package net.fexcraft.mod.landdev;
 import net.fexcraft.lib.mc.network.PacketHandler;
 import net.fexcraft.mod.fcl.UniFCL;
 import net.fexcraft.mod.landdev.cmd.*;
+import net.fexcraft.mod.landdev.data.player.LDPlayer;
 import net.fexcraft.mod.landdev.events.LocationUpdate;
 import net.fexcraft.mod.landdev.util.GuiHandler;
 import net.fexcraft.mod.landdev.util.*;
@@ -21,6 +22,8 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 
+import static net.fexcraft.mod.landdev.LDN.PKT_RECEIVER_ID;
+
 @Mod(modid = LDN.MODID, name = LandDev.NAME, version = LandDev.VERSION,
 	dependencies = "required-after:fcl", acceptedMinecraftVersions = "*", acceptableRemoteVersions = "*")
 public class LandDev {
@@ -31,7 +34,6 @@ public class LandDev {
 	public static LandDev INSTANCE;
 	public static File SAVE_DIR = new File("./landdev/");
 
-	public static final String PKT_RECEIVER_ID = "landdev:util";
     private static Logger logger;
 
 	@EventHandler
@@ -100,7 +102,15 @@ public class LandDev {
 	}
 
 	public static void sendToAll(TagCW com){
-		if(ResManager.INSTANCE.LOADED) PacketHandler.getInstance().sendToAll(new I12_PacketTag(PKT_RECEIVER_ID, com));
+		if(ResManager.INSTANCE.LOADED){
+			PacketHandler.getInstance().sendToAll(new I12_PacketTag(PKT_RECEIVER_ID, com));
+		}
+	}
+
+	public static void sendTo(TagCW com, LDPlayer player){
+		if(ResManager.INSTANCE.LOADED){
+			PacketHandler.getInstance().sendTo(new I12_PacketTag(PKT_RECEIVER_ID, com), player.entity.local());
+		}
 	}
 	
 }
