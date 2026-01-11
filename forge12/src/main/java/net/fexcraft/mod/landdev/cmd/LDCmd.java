@@ -1,7 +1,7 @@
 package net.fexcraft.mod.landdev.cmd;
 
 import static net.fexcraft.mod.fsmm.util.Config.getWorthAsString;
-import static net.fexcraft.mod.landdev.LandDev.PKT_RECEIVER_ID;
+import static net.fexcraft.mod.landdev.LDN.PKT_RECEIVER_ID;
 
 import java.util.List;
 
@@ -173,6 +173,10 @@ public class LDCmd extends CommandBase {
 						}
 					}
 				}
+				case "define-space":{
+					player.onSpaceDefCommand();
+					return;
+				}
     			case "help":
     			default:{
 					player.entity.send("\u00A70[\u00A7bLD\u00A70]\u00A76>>\u00A72===========");
@@ -182,6 +186,7 @@ public class LDCmd extends CommandBase {
 					player.entity.send("/ld fees");
 					player.entity.send("/ld reload");
 					player.entity.send("/ld force-tax");
+					player.entity.send("/ld define-space");
 					player.entity.send("PolyClaim (Admin)");
 					player.entity.send("/ld polyclaim district <dis-id>");
 					player.entity.send("/ld polyclaim select");
