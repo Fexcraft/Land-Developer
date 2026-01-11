@@ -2,7 +2,6 @@ package net.fexcraft.mod.landdev.data.prop;
 
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.mod.landdev.data.*;
-import net.fexcraft.mod.landdev.data.chunk.ChunkKey;
 import net.fexcraft.mod.landdev.data.chunk.ChunkLabel;
 import net.fexcraft.mod.landdev.data.chunk.ChunkOwner;
 import net.fexcraft.mod.landdev.data.hooks.ExternalData;
@@ -10,9 +9,6 @@ import net.fexcraft.mod.landdev.ui.BaseCon;
 import net.fexcraft.mod.landdev.ui.LDUIModule;
 import net.fexcraft.mod.landdev.ui.modules.ModuleRequest;
 import net.fexcraft.mod.landdev.ui.modules.ModuleResponse;
-
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
