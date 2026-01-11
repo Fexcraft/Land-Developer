@@ -184,6 +184,15 @@ public class LandDev {
 		}
 	}
 
+	public static void sendTo(TagCW com, LDPlayer player){
+		try{
+			CHANNEL.send(PacketDistributor.PLAYER.with(() -> player.entity.local()), new UIPacket(com.local()));
+		}
+		catch(Throwable e){
+			e.printStackTrace();
+		}
+	}
+
 	private void regCmd(CommandDispatcher<CommandSourceStack> dispatcher){
 		dispatcher.register(literal("ld")
 			.then(literal("admin").executes(cmd -> {
