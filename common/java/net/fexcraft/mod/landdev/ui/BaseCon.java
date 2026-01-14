@@ -10,6 +10,7 @@ import net.fexcraft.mod.landdev.data.county.County;
 import net.fexcraft.mod.landdev.data.district.District;
 import net.fexcraft.mod.landdev.data.municipality.Municipality;
 import net.fexcraft.mod.landdev.data.player.LDPlayer;
+import net.fexcraft.mod.landdev.data.prop.Property;
 import net.fexcraft.mod.landdev.data.region.Region;
 import net.fexcraft.mod.landdev.ui.modules.MailModule;
 import net.fexcraft.mod.landdev.ui.modules.MainModule;
@@ -92,6 +93,18 @@ public class BaseCon extends ContainerInterface {
 				}
 				case ID_PLAYER:{
 					ldp.on_interact(this, req);
+					break;
+				}
+				case ID_PROPERTY:{
+					if(pos.x < 0){
+						ResManager.getProperty(-1).on_interact(this, req);
+						break;
+					}
+					Property prop = ResManager.getProperty(pos.y);
+					if(prop != null){
+						prop.on_interact(this, req);
+						break;
+					}
 					break;
 				}
 				case ID_CHUNK:{
@@ -234,6 +247,18 @@ public class BaseCon extends ContainerInterface {
 			}
 			case ID_CHUNK:{
 				chunk.sync_packet(this, resp);
+				break;
+			}
+			case ID_PROPERTY:{
+				if(pos.x < 0){
+					ResManager.getProperty(-1).sync_packet(this, resp);
+					break;
+				}
+				Property prop = ResManager.getProperty(pos.y);
+				if(prop != null){
+					prop.sync_packet(this, resp);
+					break;
+				}
 				break;
 			}
 			case ID_DISTRICT:{
