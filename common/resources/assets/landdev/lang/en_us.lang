@@ -207,6 +207,15 @@ landdev.gui.mailbox.next=Next Page
 landdev.gui.mailbox.read=Read Mail
 landdev.gui.mailbox.delete=Delete Mail
 
+landdev.gui.define_space.title=New Space Creation
+landdev.gui.define_space.pos=Position/Anchor
+landdev.gui.define_space.size=Size/Measurements
+landdev.gui.define_space.confirm=Confirm Space Data
+landdev.gui.define_space.cancel=Cancel Space Creation
+landdev.gui.define_space.copy=Copy Player Position
+landdev.gui.define_space.send=Apply Field Input Changes
+landdev.gui.define_space.reset=Reset Size to 1, 1, 1
+
 landdev.gui.player.title=Your Profile
 landdev.gui.player.id=UUID: %s
 landdev.gui.player.name=Name: %s
