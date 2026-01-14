@@ -11,6 +11,7 @@ public interface LDUIModule {
 	public static final String LANG_YES = "landdev.gui.yes";
 	public static final String LANG_NO = "landdev.gui.no";
 	public static final String VALONLY = "!!!";
+	public static final int UI_CREATE = -1;
 	public static final int UI_MAIN = 0;
 
 	public void sync_packet(BaseCon container, ModuleResponse resp);
