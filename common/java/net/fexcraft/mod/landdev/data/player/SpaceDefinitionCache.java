@@ -17,16 +17,8 @@ public class SpaceDefinitionCache {
 		size = new V3I(1, 1, 1);
 	}
 
-	public void start(LDPlayer player){
-		TagCW com = TagCW.create();
-		fillPacket("space_def_start", com);
-		LandDev.sendTo(com, player);
-	}
+	public void finish(){
 
-	private void fillPacket(String task, TagCW com){
-		com.set("task", task);
-		com.set("pos", pos);
-		com.set("size", size);
 	}
 
 }
