@@ -13,9 +13,7 @@ import net.fexcraft.mod.landdev.util.broad.Broadcaster;
 import net.fexcraft.mod.landdev.util.broad.DiscordTransmitter;
 import net.fexcraft.mod.uni.UniChunk;
 import net.fexcraft.mod.uni.UniReg;
-import net.fexcraft.mod.uni.ui.ContainerInterface;
 import net.fexcraft.mod.uni.ui.UIKey;
-import net.fexcraft.mod.uni.ui.UserInterface;
 
 import java.io.File;
 import java.time.LocalDate;
@@ -65,8 +63,8 @@ public class LDN {
 		UniReg.registerMenu(LDKeys.CHUNK_BUY, "landdev:uis/chunk_claim", ChunkClaimCon.class);
 		UniReg.registerUI(LDKeys.CHUNK_LOCK, ChunkClaimUI.class);
 		UniReg.registerMenu(LDKeys.CHUNK_LOCK, "landdev:uis/chunk_claim", ChunkClaimCon.class);
-		UniReg.registerUI(LDKeys.DEF_SPACE, UserInterface.class);
-		UniReg.registerMenu(LDKeys.DEF_SPACE, "landdev:uis/define_space", ContainerInterface.class);
+		UniReg.registerUI(LDKeys.DEF_SPACE, SpaceDefUI.class);
+		UniReg.registerMenu(LDKeys.DEF_SPACE, "landdev:uis/define_space", SpaceDefCon.class);
 		//
 		UniFCL.regTagPacketListener(PKT_RECEIVER_ID, false, new ServerUtilReceiver());
 	}
