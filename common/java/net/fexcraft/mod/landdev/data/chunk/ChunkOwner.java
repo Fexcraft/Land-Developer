@@ -5,7 +5,9 @@ import java.util.UUID;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.mod.fsmm.data.Account;
 import net.fexcraft.mod.landdev.data.Layers;
+import net.fexcraft.mod.landdev.data.PermAction;
 import net.fexcraft.mod.landdev.data.Saveable;
+import net.fexcraft.mod.landdev.data.player.LDPlayer;
 import net.fexcraft.mod.landdev.util.ResManager;
 
 /**
@@ -94,6 +96,25 @@ public class ChunkOwner implements Saveable {
 
 	public boolean taxable(){
 		return playerchunk || owner.is(Layers.COMPANY);
+	}
+
+	public boolean is(LDPlayer ldp){
+		if(playerchunk) return player.equals(ldp.uuid);
+		switch(owner){
+			case COMPANY:
+				//TODO
+				return false;
+			case DISTRICT:
+				return ResManager.getDistrict(owid).manage.can(PermAction.MANAGE_PROPERTY, ldp.uuid);
+			case MUNICIPALITY:
+				return ResManager.getMunicipality(owid, true).manage.can(PermAction.MANAGE_PROPERTY, ldp.uuid);
+			case COUNTY:
+				return ResManager.getCounty(owid, true).manage.can(PermAction.MANAGE_PROPERTY, ldp.uuid);
+			case REGION:
+				return ResManager.getRegion(owid, true).manage.can(PermAction.MANAGE_PROPERTY, ldp.uuid);
+			case NONE: return true;
+			default: return false;
+		}
 	}
 
 }
