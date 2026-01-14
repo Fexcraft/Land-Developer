@@ -9,11 +9,29 @@
 			"pos": [ 0, 0 ],
 			"absolute": true,
 			"texts": [
-				"title"
+				"title",
+				"pos",
+				"size"
 			],
 			"buttons": [
 				"confirm",
-				"cancel"
+				"cancel",
+				"copy",
+				"x+", "x-",
+				"y+", "y-",
+				"z+", "z-",
+				"reset",
+				"w+", "w-",
+				"h+", "h-",
+				"d+", "d-"
+			],
+			"fields": [
+				"pos_x",
+				"pos_y",
+				"pos_z",
+				"size_x",
+				"size_y",
+				"size_z"
 			]
 		}
 	},
@@ -21,11 +39,85 @@
 		"confirm": {
 			"size": [ 12, 12 ],
 			"pos": [ 106, 6 ],
-			"absolute": true
+			"absolute": true,
+			"tooltip": "landdev.gui.define_space.confirm"
 		},
 		"cancel": {
 			"size": [ 12, 12 ],
 			"pos": [ 120, 6 ],
+			"absolute": true,
+			"tooltip": "landdev.gui.define_space.cancel"
+		},
+		"copy": {
+			"size": [ 12, 12 ],
+			"pos": [ 120, 24 ],
+			"absolute": true,
+			"tooltip": "landdev.gui.define_space.copy"
+		},
+		"x-": {
+			"size": [ 12, 12 ],
+			"pos": [ 106, 38 ],
+			"absolute": true
+		},
+		"x+": {
+			"size": [ 12, 12 ],
+			"pos": [ 120, 38 ],
+			"absolute": true
+		},
+		"y-": {
+			"size": [ 12, 12 ],
+			"pos": [ 106, 52 ],
+			"absolute": true
+		},
+		"y+": {
+			"size": [ 12, 12 ],
+			"pos": [ 120, 52 ],
+			"absolute": true
+		},
+		"z-": {
+			"size": [ 12, 12 ],
+			"pos": [ 106, 66 ],
+			"absolute": true
+		},
+		"z+": {
+			"size": [ 12, 12 ],
+			"pos": [ 120, 66 ],
+			"absolute": true
+		},
+		"reset": {
+			"size": [ 12, 12 ],
+			"pos": [ 120, 84 ],
+			"absolute": true,
+			"tooltip": "landdev.gui.define_space.reset"
+		},
+		"w-": {
+			"size": [ 12, 12 ],
+			"pos": [ 106, 98 ],
+			"absolute": true
+		},
+		"w+": {
+			"size": [ 12, 12 ],
+			"pos": [ 120, 98 ],
+			"absolute": true
+		},
+		"h-": {
+			"size": [ 12, 12 ],
+			"pos": [ 106, 112 ],
+			"absolute": true
+		},
+		"h+": {
+			"size": [ 12, 12 ],
+			"pos": [ 120, 112 ],
+			"absolute": true
+		},
+		"d-": {
+			"size": [ 12, 12 ],
+			"pos": [ 106, 126 ],
+			"absolute": true
+		},
+		"d+": {
+			"size": [ 12, 12 ],
+			"pos": [ 120, 126 ],
 			"absolute": true
 		}
 	},
@@ -38,6 +130,68 @@
 			"color": "#0e0e0e",
 			"value": "landdev.gui.define_space.title",
 			"translate": true
+		},
+		"pos": {
+			"size": [ 94, 8 ],
+			"pos": [ 8, 26 ],
+			"absolute": true,
+			"autoscale": true,
+			"color": "#0e0e0e",
+			"value": "landdev.gui.define_space.pos",
+			"translate": true
+		},
+		"size": {
+			"size": [ 94, 8 ],
+			"pos": [ 8, 86 ],
+			"absolute": true,
+			"autoscale": true,
+			"color": "#0e0e0e",
+			"value": "landdev.gui.define_space.size",
+			"translate": true
+		}
+	},
+	"fields": {
+		"pos_x": {
+			"absolute": true,
+			"size": [ 96, 10 ],
+			"pos": [ 7, 39 ],
+			"background": true,
+			"numberfield": true
+		},
+		"pos_y": {
+			"absolute": true,
+			"size": [ 96, 10 ],
+			"pos": [ 7, 53 ],
+			"background": true,
+			"numberfield": true
+		},
+		"pos_z": {
+			"absolute": true,
+			"size": [ 96, 10 ],
+			"pos": [ 7, 67 ],
+			"background": true,
+			"numberfield": true
+		},
+		"size_x": {
+			"absolute": true,
+			"size": [ 96, 10 ],
+			"pos": [ 7, 99 ],
+			"background": true,
+			"numberfield": true
+		},
+		"size_y": {
+			"absolute": true,
+			"size": [ 96, 10 ],
+			"pos": [ 7, 113 ],
+			"background": true,
+			"numberfield": true
+		},
+		"size_z": {
+			"absolute": true,
+			"size": [ 96, 10 ],
+			"pos": [ 7, 127 ],
+			"background": true,
+			"numberfield": true
 		}
 	}
 }
