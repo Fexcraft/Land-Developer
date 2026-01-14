@@ -247,6 +247,11 @@ public class LandDev {
 				player.entity.send("landdev.cmd.fees_rg_total", getWorthAsString(sf));
 				return 0;
 			}))
+			.then(literal("define-space").executes(cmd -> {
+				LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
+				player.onSpaceDefCommand();
+				return 0;
+			}))
 			.then(literal("help").executes(cmd -> {
 				LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
 				player.entity.send("\u00A70[\u00A7bLD\u00A70]\u00A76>>\u00A72===========");
@@ -256,6 +261,7 @@ public class LandDev {
 				player.entity.send("/ld fees");
 				player.entity.send("/ld reload");
 				player.entity.send("/ld force-tax");
+				player.entity.send("/ld define-space");
 				player.entity.send("PolyClaim (Admin)");
 				player.entity.send("/ld polyclaim district <dis-id>");
 				player.entity.send("/ld polyclaim select");
