@@ -184,7 +184,6 @@ public class County implements Saveable, Layer, LDUIModule {
 		return norms.get("name").string();
 	}
 
-	public static final int UI_CREATE = -1;
 	public static final int UI_STAFF_LIST = 1;
 	public static final int UI_STAFF_EDIT = 2;
 	public static final int UI_STAFF_ADD = 3;
