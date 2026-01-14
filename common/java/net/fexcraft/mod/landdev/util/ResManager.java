@@ -19,6 +19,7 @@ import net.fexcraft.mod.landdev.data.county.County;
 import net.fexcraft.mod.landdev.data.district.District;
 import net.fexcraft.mod.landdev.data.municipality.Municipality;
 import net.fexcraft.mod.landdev.data.player.LDPlayer;
+import net.fexcraft.mod.landdev.data.prop.Property;
 import net.fexcraft.mod.landdev.data.region.Region;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.UniEntity;
@@ -41,6 +42,7 @@ public class ResManager implements Saveable {
 	public static Timer SAVER = new Timer();
 	public static final UUID CONSOLE_UUID = UUID.fromString("f78a4d8d-d51b-4b39-98a3-230f2de0c670");
 	public static ConcurrentHashMap<ChunkKey, Chunk_> CHUNKS = new ConcurrentHashMap<>();
+	public static ConcurrentHashMap<Integer, Property> PROPERTIES = new ConcurrentHashMap<>();
 	public static ConcurrentHashMap<Integer, District> DISTRICTS = new ConcurrentHashMap<>();
 	public static ConcurrentHashMap<Integer, Municipality> MUNICIPALITIES = new ConcurrentHashMap<>();
 	public static ConcurrentHashMap<Integer, County> COUNTIES = new ConcurrentHashMap<>();
@@ -100,6 +102,12 @@ public class ResManager implements Saveable {
 			CHUNKS.remove(ck.key);
 			ChunkRegion.unload(ck);
 		}
+	}
+
+	public static Property getProperty(int idx){
+		Property prop = PROPERTIES.get(idx);
+		if(prop == null) PROPERTIES.put(idx, load(prop = new Property(idx)));
+		return prop;
 	}
 
 	public static District getDistrict(int idx){
