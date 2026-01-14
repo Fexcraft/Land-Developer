@@ -229,7 +229,6 @@ public class District implements Saveable, Layer, PermInteractive, LDUIModule {
 		return null;
 	}
 
-	public static final int UI_CREATE = -1;
 	public static final int UI_TYPE = 1;
 	public static final int UI_PRICE = 2;
 	public static final int UI_MANAGER = 3;
