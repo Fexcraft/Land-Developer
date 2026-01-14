@@ -183,8 +183,7 @@ public class Municipality implements Saveable, Layer, LDUIModule {
 	public boolean opentojoin(){
 		return norms.get("open-to-join").bool();
 	}
-	
-	public static final int UI_CREATE = -1;
+
 	public static final int UI_STAFF_LIST = 1;
 	public static final int UI_STAFF_EDIT = 2;
 	public static final int UI_STAFF_ADD = 3;
