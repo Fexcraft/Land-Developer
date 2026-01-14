@@ -379,10 +379,7 @@ public class LDPlayer implements Saveable, Layer, LDUIModule, Appendable<UniEnti
 	}
 
 	public void onSpaceDefCommand(){
-		if(defcache == null){
-			defcache = new SpaceDefinitionCache(entity.getV3I());
-			defcache.start(this);
-		}
+		if(defcache == null) defcache = new SpaceDefinitionCache(entity.getV3I());
 		entity.openUI(LDKeys.DEF_SPACE, defcache.pos);
 	}
 
