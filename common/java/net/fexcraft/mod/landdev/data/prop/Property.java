@@ -75,7 +75,19 @@ public class Property implements Saveable, Layer, LDUIModule {
 
 	@Override
 	public void sync_packet(BaseCon container, ModuleResponse resp){
+		resp.setTitle("property.title");
+		boolean canman = owner.is(container.ldp) || container.ldp.adm;
+		switch(container.pos.x){
+			case UI_MAIN:{
 
+				break;
+			}
+			case UI_CREATE:{
+
+				break;
+			}
+		}
+		external.sync_packet(container, resp);
 	}
 
 	@Override
