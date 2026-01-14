@@ -7,6 +7,7 @@ import static net.fexcraft.mod.landdev.ui.LDUIRow.ELM_GENERIC;
 
 import net.fexcraft.mod.landdev.data.Layers;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
+import net.fexcraft.mod.landdev.data.player.LDPlayer;
 import net.fexcraft.mod.landdev.ui.BaseCon;
 import net.fexcraft.mod.landdev.ui.LDUIModule;
 import net.fexcraft.mod.landdev.util.ResManager;
@@ -35,8 +36,16 @@ public class MainModule implements LDUIModule {
 		switch(req.event()){
 			case "player": container.open(PLAYER, 0, 0, 0); return;
 			case "mail": container.open(MAILBOX, Layers.PLAYER.ordinal(), 0, 0); return;
-			case "property": container.open(PROPERTY, 0, 0, 0); return;
-			case "company": container.open(COMPANY, 0, 0, 0); return;
+			case "property":{
+				//container.open(PROPERTY, 0, 0, 0);
+				container.open(PLAYER, LDPlayer.UI_PROPERTIES, 0, 0);
+				return;
+			}
+			case "company":{
+				//container.open(COMPANY, 0, 0, 0);
+				container.open(PLAYER, LDPlayer.UI_COMPANY, 0, 0);
+				return;
+			}
 			case "chunk": container.open(CHUNK, 0, chunk.key.x, chunk.key.z); return;
 			case "district": container.open(DISTRICT, 0, chunk.district.id, 0); return;
 			case "municipality":{
