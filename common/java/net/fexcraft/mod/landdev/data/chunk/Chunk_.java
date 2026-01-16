@@ -18,6 +18,7 @@ import net.fexcraft.mod.landdev.data.*;
 import net.fexcraft.mod.landdev.data.district.District;
 import net.fexcraft.mod.landdev.data.hooks.ExternalData;
 import net.fexcraft.mod.landdev.data.player.LDPlayer;
+import net.fexcraft.mod.landdev.data.prop.PropHolder;
 import net.fexcraft.mod.landdev.ui.BaseCon;
 import net.fexcraft.mod.landdev.ui.LDUIModule;
 import net.fexcraft.mod.landdev.ui.modules.ModuleRequest;
@@ -44,6 +45,7 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 	public Taxable tax = new Taxable(this);
 	public ChunkLabel label = new ChunkLabel();
 	public ExternalData external = new ExternalData(this);
+	public PropHolder propholder = new PropHolder();
 	public District district;
 	public long loaded;
 	public boolean locked;
@@ -73,6 +75,7 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 		tax.save(map);
 		label.save(map);
 		if(district != null) map.add("district", district.id);
+		propholder.save(map);
 		external.save(this, map);
 		if(locked) map.add("locked", true);
 	}
@@ -92,6 +95,7 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 		label.load(map);
 		district = ResManager.getDistrict(map.getInteger("district", -1));
 		if(district.disbanded) district = ResManager.getDistrict(-1);
+		propholder.load(map);
 		external.load(this, map);
 		locked = map.getBoolean("locked", false);
 		TaxSystem.taxChunk(this, null, false);
@@ -187,6 +191,7 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 				}
 				resp.addButton("tax", ELM_GENERIC, OPEN, getWorthAsString(tax.custom_tax == 0 ? district.tax() : tax.custom_tax));
 				resp.addBlank();
+				resp.addButton("properties", ELM_GENERIC, LIST, propholder.properties.size());
 				resp.addRow("access_interact", ELM_GENERIC, canman ? access.interact ? ENABLED : DISABLED : EMPTY, canman, access.interact ? LANG_YES : LANG_NO);
 				resp.addButton("access_player", ELM_GENERIC, LIST, access.players.size());
 				resp.addButton("access_company", ELM_GENERIC, LIST, access.companies.size());
