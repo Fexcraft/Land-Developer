@@ -266,6 +266,14 @@ landdev.gui.property.create.title=Property Creation
 landdev.gui.property.create.info=Chunk Owner will be Property Owner
 landdev.gui.property.create.owner_type=Type: %s
 landdev.gui.property.create.submit=Start Creation
+landdev.gui.property.create.too_narrow=Selected space is below min property width (%s).
+landdev.gui.property.create.too_low=Selected space is below min property height (%s).
+landdev.gui.property.create.too_wide=Selected space is above max property width (%s).
+landdev.gui.property.create.too_high=Selected space is above max property height (%s).
+landdev.gui.property.create.no_man_perm=You do not have permission to manage properties.
+landdev.gui.property.create.no_own_perm=You do not own this chunk or have manage permissions.
+landdev.gui.property.create.no_perm_chunks=You do not have permission on all mentioned chunks.
+landdev.gui.property.create.no_perm_chunk=Chunk: %s
 
 landdev.gui.chunk.title=Chunk Overview
 landdev.gui.chunk.key=Key: %s
