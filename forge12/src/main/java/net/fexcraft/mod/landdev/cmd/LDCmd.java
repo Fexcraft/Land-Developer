@@ -58,8 +58,14 @@ public class LDCmd extends CommandBase {
 	    		case "fees":{
 	    			Chunk_ chunk = ResManager.getChunk(player.entity);
 	        		player.entity.send("landdev.cmd.fees");
-	        		long sf = LDConfig.MUNICIPALITY_CREATION_FEE;
-	        		long cf = chunk.district.county().norms.get("new-municipality-fee").integer();
+	        		long sf = LDConfig.PROPERTY_CREATION_FEE;
+	        		long cf = chunk.district.norms.get("new-property-fee").integer();
+	        		player.entity.send("landdev.cmd.fees_property");
+	        		player.entity.send("landdev.cmd.fees_prop_server", getWorthAsString(sf));
+	        		player.entity.send("landdev.cmd.fees_prop_district", getWorthAsString(cf));
+	        		player.entity.send("landdev.cmd.fees_prop_total", getWorthAsString(sf + cf));
+	        		sf = LDConfig.MUNICIPALITY_CREATION_FEE;
+	        		cf = chunk.district.county().norms.get("new-municipality-fee").integer();
 	        		player.entity.send("landdev.cmd.fees_municipality");
 	        		player.entity.send("landdev.cmd.fees_mun_server", getWorthAsString(sf));
 	        		player.entity.send("landdev.cmd.fees_mun_county", getWorthAsString(cf));
@@ -173,10 +179,6 @@ public class LDCmd extends CommandBase {
 						}
 					}
 				}
-				case "define-space":{
-					player.onSpaceDefCommand();
-					return;
-				}
     			case "help":
     			default:{
 					player.entity.send("\u00A70[\u00A7bLD\u00A70]\u00A76>>\u00A72===========");
@@ -186,7 +188,6 @@ public class LDCmd extends CommandBase {
 					player.entity.send("/ld fees");
 					player.entity.send("/ld reload");
 					player.entity.send("/ld force-tax");
-					player.entity.send("/ld define-space");
 					player.entity.send("PolyClaim (Admin)");
 					player.entity.send("/ld polyclaim district <dis-id>");
 					player.entity.send("/ld polyclaim select");
