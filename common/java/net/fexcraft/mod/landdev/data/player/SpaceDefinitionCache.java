@@ -1,11 +1,17 @@
 package net.fexcraft.mod.landdev.data.player;
 
 import net.fexcraft.lib.common.math.V3I;
+import net.fexcraft.mod.fsmm.data.Account;
+import net.fexcraft.mod.fsmm.data.Bank;
+import net.fexcraft.mod.fsmm.util.Config;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
+import net.fexcraft.mod.landdev.data.prop.Property;
 import net.fexcraft.mod.landdev.util.LDConfig;
 import net.fexcraft.mod.landdev.util.ResManager;
 
 import java.util.HashSet;
+
+import static net.fexcraft.mod.landdev.util.ResManager.SERVER_ACCOUNT;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -60,6 +66,7 @@ public class SpaceDefinitionCache {
 					ldp.entity.send("landdev.gui.property.create.no_perm_chunk", ok.key.comma());
 					failed = true;
 				}
+				cks.add(ok);
 			}
 		}
 		if(failed){
@@ -67,7 +74,36 @@ public class SpaceDefinitionCache {
 			return;
 		}
 		//
+		int nid = ResManager.getNewIdFor(ResManager.getProperty(-1).saveTable());
+		if(nid < 0){
+			ldp.entity.send("DB ERROR, INVALID NEW ID '" + nid + "'!");
+			return;
+		}
+		Account acc = ck.owner.getAccount(ck);
+		long fee = ck.owner.playerchunk ? ck.district.norms.get("new-property-fee").integer() : 0;
+		if(acc.getBalance() < fee + LDConfig.PROPERTY_CREATION_FEE){
+			ldp.entity.send("landdev.gui.property.create.not_enough_money", Config.getWorthAsString(fee + LDConfig.PROPERTY_CREATION_FEE));
+			return;
+		}
+		if(fee > 0 && !acc.getBank().processAction(Bank.Action.TRANSFER, ldp.entity, acc, fee, ck.district.account())){
+			return;
+		}
+		if(!acc.getBank().processAction(Bank.Action.TRANSFER, ldp.entity, acc, LDConfig.PROPERTY_CREATION_FEE, SERVER_ACCOUNT)){
+			return;
+		}
+		Property prop = new Property(nid);
+		prop.start = pos;
+		prop.end = pos.add(size);
+		prop.created.create(ldp.uuid);
+		for(Chunk_ ok : cks){
+			ok.propholder.properties.add(prop);
+			prop.chunks_in.chunks.add(ok.key);
+			ok.save();
+		}
+		prop.save();
+		ldp.entity.send("landdev.gui.property.create.success", prop.id);
 		ldp.entity.closeUI();
+		ldp.defcache = null;
 	}
 
 }
