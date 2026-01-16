@@ -38,6 +38,7 @@ public class LDConfig extends ConfigBase {
 	public static long COUNTY_CREATION_FEE;
 	public static long MUNICIPALITY_CREATION_FEE;
 	public static long DISTRICT_CREATION_FEE;
+	public static long PROPERTY_CREATION_FEE;
 	public static int CHUNK_LINK_LIMIT;
 	public static int REQUEST_TIMEOUT_DAYS;
 	public static int MIN_MUN_DIS;
@@ -138,6 +139,10 @@ public class LDConfig extends ConfigBase {
 		entries.add(new ConfigEntry(this, PRICES_CAT, "default.chunk", "100000")
 			.info("Default price for unclaimed chunks. (1000 = 1$)")
 			.cons((con, map) -> DEFAULT_CHUNK_PRICE = parse(con.getString(map), 100000))
+		);
+		entries.add(new ConfigEntry(this, PRICES_CAT, "create.property", "100000")
+			.info("Server fee for creating a property.")
+			.cons((con, map) -> PROPERTY_CREATION_FEE = parse(con.getString(map), 100000))
 		);
 		entries.add(new ConfigEntry(this, PRICES_CAT, "create.district", "5000000")
 			.info("Server fee for creating a district.")
