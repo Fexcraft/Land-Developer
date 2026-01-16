@@ -63,6 +63,7 @@ public class LandDev {
 		AliasLoader.load();
 		event.registerServerCommand(new DebugCmd());
 		event.registerServerCommand(new LDCmd());
+		event.registerServerCommand(new PropCmd());
 		event.registerServerCommand(new CkCmd());
 		event.registerServerCommand(new DisCmd());
 		event.registerServerCommand(new MunCmd());
