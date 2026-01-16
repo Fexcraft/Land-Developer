@@ -9,6 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.common.math.V3D;
+import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fsmm.data.Account;
 import net.fexcraft.mod.fsmm.util.DataManager;
 import net.fexcraft.mod.landdev.data.Saveable;
@@ -85,6 +86,11 @@ public class ResManager implements Saveable {
 		return getChunk((int)pos.x >> 4, (int)pos.z >> 4);
 	}
 
+	/** Get chunk from world coordinates. */
+	public static Chunk_ getChunk(V3I pos){
+		return getChunk(pos.x >> 4, pos.z >> 4);
+	}
+
 	/** Get chunk from player position. */
 	public static Chunk_ getChunk(EntityW player){
 		return getChunk(player.getPos());
@@ -108,6 +114,14 @@ public class ResManager implements Saveable {
 		Property prop = PROPERTIES.get(idx);
 		if(prop == null) PROPERTIES.put(idx, load(prop = new Property(idx)));
 		return prop;
+	}
+
+	public static Property getProperty(V3I pos){
+		Chunk_ ck = getChunk(pos);
+		for(Property prop : ck.propholder.properties){
+			if(prop.isInside(pos)) return prop;
+		}
+		return null;
 	}
 
 	public static District getDistrict(int idx){
