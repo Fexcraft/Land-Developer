@@ -47,8 +47,8 @@ public class SpaceDefCon extends ContainerInterface {
 			return;
 		}
 		if(com.has("confirm")){
-			ldp.defcache.finish();
-			player.entity.closeUI();
+			ldp.defcache.finish(ldp);
+			//player.entity.closeUI();
 			return;
 		}
 		if(com.has("x")) ldp.defcache.pos.x = com.getInteger("x");
