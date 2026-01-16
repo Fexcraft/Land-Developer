@@ -98,7 +98,7 @@ public class ChunkOwner implements Saveable {
 		return playerchunk || owner.is(Layers.COMPANY);
 	}
 
-	public boolean is(LDPlayer ldp){
+	public boolean isPropMan(LDPlayer ldp){
 		if(playerchunk) return player.equals(ldp.uuid);
 		switch(owner){
 			case COMPANY:
@@ -112,9 +112,16 @@ public class ChunkOwner implements Saveable {
 				return ResManager.getCounty(owid, true).manage.can(PermAction.MANAGE_PROPERTY, ldp.uuid);
 			case REGION:
 				return ResManager.getRegion(owid, true).manage.can(PermAction.MANAGE_PROPERTY, ldp.uuid);
-			case NONE: return true;
+			case NONE:
 			default: return false;
 		}
+	}
+
+	public boolean isPropMan(LDPlayer ldp, Chunk_ ck){
+		if(unowned){
+			return ck.district.can(PermAction.MANAGE_PROPERTY, ldp.uuid);
+		}
+		return isPropMan(ldp);
 	}
 
 }
