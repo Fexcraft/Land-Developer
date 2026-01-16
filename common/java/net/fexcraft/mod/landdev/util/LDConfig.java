@@ -40,6 +40,10 @@ public class LDConfig extends ConfigBase {
 	public static long DISTRICT_CREATION_FEE;
 	public static long PROPERTY_CREATION_FEE;
 	public static int CHUNK_LINK_LIMIT;
+	public static int MIN_PROPERTY_WIDTH;
+	public static int MIN_PROPERTY_HEIGHT;
+	public static int MAX_PROPERTY_WIDTH;
+	public static int MAX_PROPERTY_HEIGHT;
 	public static int REQUEST_TIMEOUT_DAYS;
 	public static int MIN_MUN_DIS;
 	//
@@ -112,6 +116,22 @@ public class LDConfig extends ConfigBase {
 		entries.add(new ConfigEntry(this, GENERAL_CAT, "chunk_link_limit", 3).rang(0, 64)
 			.info("How many chunks can be linked to another. Set to '0' to disable.")
 			.cons((con, map) -> CHUNK_LINK_LIMIT = con.getInteger(map))
+		);
+		entries.add(new ConfigEntry(this, GENERAL_CAT, "min_property_width", 2).rang(2, 128)
+			.info("Min width on x and z axis for Properties.")
+			.cons((con, map) -> MIN_PROPERTY_WIDTH = con.getInteger(map))
+		);
+		entries.add(new ConfigEntry(this, GENERAL_CAT, "min_property_height", 2).rang(2, 256)
+			.info("Min height on y axis for Properties.")
+			.cons((con, map) -> MIN_PROPERTY_HEIGHT = con.getInteger(map))
+		);
+		entries.add(new ConfigEntry(this, GENERAL_CAT, "max_property_width", 32).rang(2, 128)
+			.info("Max width on x and z axis for Properties.")
+			.cons((con, map) -> MAX_PROPERTY_WIDTH = con.getInteger(map))
+		);
+		entries.add(new ConfigEntry(this, GENERAL_CAT, "max_property_height", 8).rang(2, 256)
+			.info("Min height on y axis for Properties.")
+			.cons((con, map) -> MAX_PROPERTY_HEIGHT = con.getInteger(map))
 		);
 		entries.add(new ConfigEntry(this, GENERAL_CAT, "request_timeout_days", 7).rang(1, 30)
 			.info("Default days value for request timeouts.")
