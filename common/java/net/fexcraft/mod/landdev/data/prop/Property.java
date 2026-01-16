@@ -94,7 +94,7 @@ public class Property implements Saveable, Layer, LDUIModule {
 	@Override
 	public void sync_packet(BaseCon container, ModuleResponse resp){
 		resp.setTitle("property.title");
-		boolean canman = owner.is(container.ldp) || container.ldp.adm;
+		boolean canman = owner.isPropMan(container.ldp) || container.ldp.adm;
 		switch(container.pos.x){
 			case UI_MAIN:{
 
@@ -120,7 +120,7 @@ public class Property implements Saveable, Layer, LDUIModule {
 
 	@Override
 	public void on_interact(BaseCon container, ModuleRequest req){
-		boolean canman = owner.is(container.ldp) || container.ldp.adm;
+		boolean canman = owner.isPropMan(container.ldp) || container.ldp.adm;
 		LDPlayer player = container.ldp;
 		switch(req.event()){
 			case "create.submit":{
