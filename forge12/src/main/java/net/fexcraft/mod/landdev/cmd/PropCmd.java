@@ -53,6 +53,14 @@ public class PropCmd extends CommandBase {
 					}
 					return;
 				}
+				case "show":{
+					ply.propView(true);
+					return;
+				}
+				case "hide":{
+					ply.propView(false);
+					return;
+				}
 				default:{
 					ply.entity.send("landdev.cmd.unknown_argument");
 					return;
