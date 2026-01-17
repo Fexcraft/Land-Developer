@@ -73,6 +73,14 @@ public class SpaceDefinitionCache {
 			ldp.entity.send("landdev.gui.property.create.no_perm_chunks");
 			return;
 		}
+		for(Chunk_ ok : cks){
+			for(Property prop : ok.propholder.properties){
+				if(prop.intersects(pos, pos.add(size))){
+					ldp.entity.send("landdev.gui.property.create.intersection", prop.id, ok.key.comma());
+					return;
+				}
+			}
+		}
 		//
 		int nid = ResManager.getNewIdFor(ResManager.getProperty(-1).saveTable());
 		if(nid < 0){
