@@ -274,6 +274,7 @@ landdev.gui.property.create.no_man_perm=You do not have permission to manage pro
 landdev.gui.property.create.no_own_perm=You do not own this chunk or have manage permissions.
 landdev.gui.property.create.no_perm_chunks=You do not have permission on all mentioned chunks.
 landdev.gui.property.create.no_perm_chunk=Chunk: %s
+landdev.gui.property.create.intersection=Space intersects with Property '%s' at chunk %s
 landdev.gui.property.create.not_enough_money=Not enough money to pay the fee! %s
 landdev.gui.property.create.success=New Property with ID '%s' created!
 
