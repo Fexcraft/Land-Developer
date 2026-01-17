@@ -97,7 +97,7 @@ public class Property implements Saveable, Layer, LDUIModule {
 		boolean canman = owner.isPropMan(container.ldp) || container.ldp.adm;
 		switch(container.pos.x){
 			case UI_MAIN:{
-
+				resp.addRow("id", ELM_GENERIC, id);
 				break;
 			}
 			case UI_CREATE:{
@@ -143,7 +143,7 @@ public class Property implements Saveable, Layer, LDUIModule {
 	}
 
 	public boolean intersects(V3I os, V3I oe){
-		return !(end.x < os.x || start.x > oe.x || end.y < os.y || start.y > oe.y || end.z < os.z || start.z > oe.z);
+		return !(end.x <= os.x || start.x >= oe.x || end.y <= os.y || start.y >= oe.y || end.z <= os.z || start.z >= oe.z);
 	}
 
 }
