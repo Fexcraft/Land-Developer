@@ -262,6 +262,7 @@ landdev.gui.main.county=County
 landdev.gui.main.region=Region
 
 landdev.gui.property.title=Property Overview
+landdev.gui.property.id=ID: %s
 landdev.gui.property.create.title=Property Creation
 landdev.gui.property.create.info=Chunk Owner will be Property Owner
 landdev.gui.property.create.owner_type=Type: %s
