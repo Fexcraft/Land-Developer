@@ -66,7 +66,11 @@ public class LDN {
 		UniReg.registerUI(LDKeys.DEF_SPACE, SpaceDefUI.class);
 		UniReg.registerMenu(LDKeys.DEF_SPACE, "landdev:uis/define_space", SpaceDefCon.class);
 		//
-		UniFCL.regTagPacketListener(PKT_RECEIVER_ID, false, new ServerUtilReceiver());
+		UniFCL.regTagPacketListener(PKT_RECEIVER_ID, false, new STagListener());
+	}
+
+	public static void client_init(LandDev inst){
+		UniFCL.regTagPacketListener(PKT_RECEIVER_ID, true, new CTagListener());
 	}
 
 	public static void postinit(){
