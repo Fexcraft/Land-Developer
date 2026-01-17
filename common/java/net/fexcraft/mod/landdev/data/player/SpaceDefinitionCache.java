@@ -4,10 +4,12 @@ import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fsmm.data.Account;
 import net.fexcraft.mod.fsmm.data.Bank;
 import net.fexcraft.mod.fsmm.util.Config;
+import net.fexcraft.mod.landdev.LandDev;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.data.prop.Property;
 import net.fexcraft.mod.landdev.util.LDConfig;
 import net.fexcraft.mod.landdev.util.ResManager;
+import net.fexcraft.mod.uni.tag.TagCW;
 
 import java.util.HashSet;
 
@@ -101,7 +103,7 @@ public class SpaceDefinitionCache {
 		}
 		Property prop = new Property(nid);
 		prop.start = pos;
-		prop.end = pos.add(size);
+		prop.end = pos.add(size).sub(1, 1, 1);
 		prop.created.create(ldp.uuid);
 		for(Chunk_ ok : cks){
 			ok.propholder.properties.add(prop);
@@ -112,6 +114,18 @@ public class SpaceDefinitionCache {
 		ldp.entity.send("landdev.gui.property.create.success", prop.id);
 		ldp.entity.closeUI();
 		ldp.defcache = null;
+		TagCW com = TagCW.create();
+		com.set("task", "space_created");
+		com.set("id", prop.id);
+		LandDev.sendTo(com, ldp);
+	}
+
+	public void cancel(LDPlayer ldp){
+		ldp.entity.closeUI();
+		ldp.defcache = null;
+		TagCW com = TagCW.create();
+		com.set("task", "space_cancel");
+		LandDev.sendTo(com, ldp);
 	}
 
 }
