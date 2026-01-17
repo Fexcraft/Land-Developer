@@ -6,6 +6,7 @@ import net.fexcraft.lib.mc.render.ExternalTextureHelper;
 import net.fexcraft.mod.landdev.cmd.*;
 import net.fexcraft.mod.landdev.data.player.LDPlayer;
 import net.fexcraft.mod.landdev.events.LocationUpdate;
+import net.fexcraft.mod.landdev.events.RenderEvents;
 import net.fexcraft.mod.landdev.gui.LDGuiImgPreview;
 import net.fexcraft.mod.landdev.util.GuiHandler;
 import net.fexcraft.mod.landdev.util.*;
@@ -90,6 +91,7 @@ public class LandDev {
 				LDGuiImgPreview.IMG_URL = ExternalTextureHelper.get(packet.getString("url"));
 			});
         	MinecraftForge.EVENT_BUS.register(new LocationUpdate());
+        	MinecraftForge.EVENT_BUS.register(new RenderEvents());
         }
     }
 
