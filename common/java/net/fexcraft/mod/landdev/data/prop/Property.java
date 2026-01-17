@@ -142,4 +142,8 @@ public class Property implements Saveable, Layer, LDUIModule {
 		return false;
 	}
 
+	public boolean intersects(V3I os, V3I oe){
+		return !(end.x < os.x || start.x > oe.x || end.y < os.y || start.y > oe.y || end.z < os.z || start.z > oe.z);
+	}
+
 }
