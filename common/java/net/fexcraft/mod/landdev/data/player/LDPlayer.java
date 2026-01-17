@@ -1,6 +1,7 @@
 package net.fexcraft.mod.landdev.data.player;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.UUID;
 
 import net.fexcraft.app.json.JsonArray;
@@ -19,6 +20,7 @@ import net.fexcraft.mod.landdev.data.hooks.ExternalData;
 import net.fexcraft.mod.landdev.data.municipality.Municipality;
 import net.fexcraft.mod.landdev.data.Layers;
 import net.fexcraft.mod.landdev.data.Saveable;
+import net.fexcraft.mod.landdev.data.prop.Property;
 import net.fexcraft.mod.landdev.event.JoinLayerEvent;
 import net.fexcraft.mod.landdev.event.LDEvent;
 import net.fexcraft.mod.landdev.event.LeaveLayerEvent;
@@ -63,6 +65,7 @@ public class LDPlayer implements Saveable, Layer, LDUIModule, Appendable<UniEnti
 	public Chunk_ chunk_current;
 	public Chunk_ chunk_last;
 	public SpaceDefinitionCache defcache;
+	public boolean show_props;
 	public ExternalData external = new ExternalData(this);
 	
 	public LDPlayer(UUID uuid){
@@ -380,4 +383,30 @@ public class LDPlayer implements Saveable, Layer, LDUIModule, Appendable<UniEnti
 		return "landdev:player";
 	}
 
+	public void propView(boolean bool){
+		TagCW pkt = TagCW.create();
+		pkt.set("visible", show_props = bool);
+		pkt.set("task", "properties");
+		if(show_props){
+			Chunk_ ck;
+			TagLW lis = TagLW.create();
+			HashSet<Property> set = new HashSet();
+			for(int x = -3; x < 3; x++){
+				for(int z = -3; z < 3; z++){
+					ck = ResManager.getChunk(chunk_current.key.x + x, chunk_current.key.z + z);
+					set.addAll(ck.propholder.properties);
+				}
+			}
+			for(Property prop : set){
+				TagCW com = TagCW.create();
+				com.set("id", prop.id);
+				com.set("pos", prop.start);
+				com.set("size", prop.end.sub(prop.start).add(1, 1, 1));
+				lis.add(com);
+			}
+			pkt.set("list", lis);
+		}
+		LandDev.sendTo(pkt, this);
+	}
+	
 }
