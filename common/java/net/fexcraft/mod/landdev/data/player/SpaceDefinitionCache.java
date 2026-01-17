@@ -5,6 +5,7 @@ import net.fexcraft.mod.fsmm.data.Account;
 import net.fexcraft.mod.fsmm.data.Bank;
 import net.fexcraft.mod.fsmm.util.Config;
 import net.fexcraft.mod.landdev.LandDev;
+import net.fexcraft.mod.landdev.data.Layers;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.data.prop.Property;
 import net.fexcraft.mod.landdev.util.LDConfig;
@@ -105,6 +106,9 @@ public class SpaceDefinitionCache {
 		prop.start = pos;
 		prop.end = pos.add(size).sub(1, 1, 1);
 		prop.created.create(ldp.uuid);
+		if(!ck.owner.unowned){
+			prop.owner.set(ck.owner.layer(), ck.owner.player, ck.owner.owid);
+		}
 		for(Chunk_ ok : cks){
 			ok.propholder.properties.add(prop);
 			prop.chunks_in.chunks.add(ok.key);
