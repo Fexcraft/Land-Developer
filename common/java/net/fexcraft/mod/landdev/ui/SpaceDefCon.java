@@ -3,6 +3,7 @@ package net.fexcraft.mod.landdev.ui;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.landdev.data.player.LDPlayer;
+import net.fexcraft.mod.landdev.data.prop.ClientPropCache;
 import net.fexcraft.mod.landdev.util.ResManager;
 import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.tag.TagCW;
@@ -15,8 +16,6 @@ public class SpaceDefCon extends ContainerInterface {
 
 	private LDPlayer ldp;
 	protected boolean refresh;
-	protected V3I pos;
-	protected V3I size;
 
 	public SpaceDefCon(JsonMap map, UniEntity ply, V3I pos){
 		super(map, ply, pos);
@@ -32,8 +31,9 @@ public class SpaceDefCon extends ContainerInterface {
 	public void packet(TagCW com, boolean client){
 		if(com.has("sync")){
 			if(client){
-				pos = com.getV3I("pos");
-				size = com.getV3I("size");
+				if(ClientPropCache.space == null) ClientPropCache.space = new ClientPropCache.PropCache();
+				ClientPropCache.space.pos = com.getV3I("pos");
+				ClientPropCache.space.size = com.getV3I("size");
 				refresh = true;
 			}
 			else{
@@ -42,8 +42,7 @@ public class SpaceDefCon extends ContainerInterface {
 			return;
 		}
 		if(com.has("cancel")){
-			ldp.defcache = null;
-			player.entity.closeUI();
+			ldp.defcache.cancel(ldp);
 			return;
 		}
 		if(com.has("confirm")){
