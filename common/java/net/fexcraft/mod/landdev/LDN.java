@@ -4,6 +4,7 @@ import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.mod.fcl.UniFCL;
 import net.fexcraft.mod.landdev.data.chunk.ChunkApp;
 import net.fexcraft.mod.landdev.data.chunk.ChunkRegion;
+import net.fexcraft.mod.landdev.data.prop.ClientPropCache;
 import net.fexcraft.mod.landdev.db.Database;
 import net.fexcraft.mod.landdev.db.JsonFileDB;
 import net.fexcraft.mod.landdev.util.*;
@@ -13,6 +14,8 @@ import net.fexcraft.mod.landdev.util.broad.Broadcaster;
 import net.fexcraft.mod.landdev.util.broad.DiscordTransmitter;
 import net.fexcraft.mod.uni.UniChunk;
 import net.fexcraft.mod.uni.UniReg;
+import net.fexcraft.mod.uni.tag.TagCW;
+import net.fexcraft.mod.uni.tag.TagLW;
 import net.fexcraft.mod.uni.ui.UIKey;
 
 import java.io.File;
@@ -20,10 +23,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneOffset;
-import java.util.Date;
-import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 import static net.fexcraft.mod.landdev.util.broad.Broadcaster.TargetTransmitter.NO_INTERNAL;
 
@@ -71,6 +71,24 @@ public class LDN {
 
 	public static void client_init(LandDev inst){
 		UniFCL.regTagPacketListener(PKT_RECEIVER_ID, true, new CTagListener());
+		CTagListener.TASKS.put("properties", (packet, player) -> {
+			TagLW lis = packet.getList("list");
+			ClientPropCache.visible = packet.getBoolean("visible");
+			ClientPropCache.cache.clear();
+			for(TagCW com : lis){
+				ClientPropCache.PropCache cache = new ClientPropCache.PropCache();
+				cache.pos = com.getV3I("pos");
+				cache.size = com.getV3I("size");
+				ClientPropCache.cache.put(com.getInteger("id"), cache);
+			}
+		});
+		CTagListener.TASKS.put("space_created", (packet, player) -> {
+			ClientPropCache.cache.put(packet.getInteger("id"), ClientPropCache.space);
+			ClientPropCache.space = null;
+		});
+		CTagListener.TASKS.put("space_cancel", (packet, player) -> {
+			ClientPropCache.space = null;
+		});
 	}
 
 	public static void postinit(){
