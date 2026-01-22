@@ -19,6 +19,7 @@ import net.fexcraft.mod.landdev.data.district.District;
 import net.fexcraft.mod.landdev.data.hooks.ExternalData;
 import net.fexcraft.mod.landdev.data.player.LDPlayer;
 import net.fexcraft.mod.landdev.data.prop.PropHolder;
+import net.fexcraft.mod.landdev.data.prop.Property;
 import net.fexcraft.mod.landdev.ui.BaseCon;
 import net.fexcraft.mod.landdev.ui.LDUIModule;
 import net.fexcraft.mod.landdev.ui.modules.ModuleRequest;
@@ -153,8 +154,9 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 		UI_PRICE = 6,
 		UI_SET_PRICE = 7,
 		UI_TAX = 8,
-		UI_ACC_PLAYER = 9,
-		UI_ACC_COMPANY = 10
+		UI_PROPERTIES = 9,
+		UI_ACC_PLAYER = 10,
+		UI_ACC_COMPANY = 11
 		;
 
 	@Override
@@ -293,6 +295,18 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 					resp.setFormular();
 				}
 				break;
+			case UI_PROPERTIES:
+				resp.setTitle("chunk.properties.title");
+				resp.addButton("properties.open", ELM_GENERIC, OPEN);
+				boolean rad = true;
+				for(Property prop : propholder.properties){
+					resp.addButton("properties.id_" + prop.id, ELM_BLUE, radio(rad), "!!!" + prop.id);
+					rad = false;
+				}
+				resp.addButton("properties.create", ELM_YELLOW, ADD);
+				resp.setFormular();
+				resp.setNoSubmit();
+				break;
 			case UI_ACC_PLAYER:
 				resp.setTitle("chunk.access_player.title");
 				boolean bcm = can_manage(container.ldp);
@@ -401,6 +415,7 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 			case "price": /*if(!canman)*/ container.open(UI_PRICE); break;
 			case "set_price": container.open(UI_SET_PRICE); break;
 			case "tax": container.open(UI_TAX); break;
+			case "properties": container.open(UI_PROPERTIES); break;
 			case "access_player": container.open(UI_ACC_PLAYER); break;
 			case "access_company": container.open(UI_ACC_COMPANY); break;
 			case "lock":
@@ -499,6 +514,15 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 					tax.custom_tax = value;
 					container.open(UI_TAX);
 				}
+				break;
+			}
+			case "properties.open":{
+				int id = Integer.parseInt(req.getRadio("properties.id_"));
+				container.open(LDKeys.PROPERTY, UI_MAIN, id, 0);
+				break;
+			}
+			case "properties.create":{
+				container.ldp.createPropReq();
 				break;
 			}
 			case "access_player.add.submit":{
