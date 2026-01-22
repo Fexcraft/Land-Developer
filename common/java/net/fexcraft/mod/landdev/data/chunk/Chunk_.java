@@ -299,8 +299,10 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 				resp.setTitle("chunk.properties.title");
 				resp.addButton("properties.open", ELM_GENERIC, OPEN);
 				boolean rad = true;
+				String label = "";
 				for(Property prop : propholder.properties){
-					resp.addButton("properties.id_" + prop.id, ELM_BLUE, radio(rad), "!!!" + prop.id);
+					label = prop.label.present ? " | " + prop.label.label : "";
+					resp.addButton("properties.id_" + prop.id, ELM_BLUE, radio(rad), "!!!" + prop.id + label);
 					rad = false;
 				}
 				resp.addButton("properties.create", ELM_YELLOW, ADD);
