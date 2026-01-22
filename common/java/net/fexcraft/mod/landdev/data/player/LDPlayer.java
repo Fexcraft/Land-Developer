@@ -408,5 +408,14 @@ public class LDPlayer implements Saveable, Layer, LDUIModule, Appendable<UniEnti
 		}
 		LandDev.sendTo(pkt, this);
 	}
-	
+
+	public void createPropReq(){
+		if(defcache != null){
+			entity.openUI(LDKeys.DEF_SPACE, defcache.pos);
+		}
+		else{
+			entity.openUI(LDKeys.PROPERTY, LDUIModule.UI_CREATE, -1, 0);
+		}
+	}
+
 }
