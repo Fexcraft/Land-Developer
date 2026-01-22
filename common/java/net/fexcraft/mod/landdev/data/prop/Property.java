@@ -2,7 +2,9 @@ package net.fexcraft.mod.landdev.data.prop;
 
 import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonMap;
+import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.common.math.V3I;
+import net.fexcraft.mod.fsmm.util.Config;
 import net.fexcraft.mod.landdev.data.*;
 import net.fexcraft.mod.landdev.data.chunk.ChunkLabel;
 import net.fexcraft.mod.landdev.data.chunk.ChunkOwner;
@@ -16,9 +18,8 @@ import net.fexcraft.mod.landdev.ui.LDUIModule;
 import net.fexcraft.mod.landdev.ui.modules.ModuleRequest;
 import net.fexcraft.mod.landdev.ui.modules.ModuleResponse;
 
-import static net.fexcraft.mod.landdev.ui.LDUIButton.OPEN;
+import static net.fexcraft.mod.landdev.ui.LDUIButton.*;
 import static net.fexcraft.mod.landdev.ui.LDUIRow.*;
-import static net.fexcraft.mod.landdev.ui.LDUIRow.ELM_BLUE;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -32,6 +33,7 @@ public class Property implements Saveable, Layer, LDUIModule {
 	public ExternalData external = new ExternalData(this);
 	public ChunksIn chunks_in = new ChunksIn();
 	public ChunkLabel label = new ChunkLabel();
+	public PropRent rent = new PropRent();
 	public V3I start = new V3I();
 	public V3I end = new V3I();
 
@@ -49,6 +51,7 @@ public class Property implements Saveable, Layer, LDUIModule {
 		sell.save(map);
 		chunks_in.save(map);
 		label.save(map);
+		rent.save(map);
 		external.save(this, map);
 	}
 
@@ -63,6 +66,7 @@ public class Property implements Saveable, Layer, LDUIModule {
 		sell.load(map);
 		chunks_in.load(map);
 		label.load(map);
+		rent.load(map);
 		external.load(this, map);
 	}
 
@@ -95,9 +99,42 @@ public class Property implements Saveable, Layer, LDUIModule {
 	public void sync_packet(BaseCon container, ModuleResponse resp){
 		resp.setTitle("property.title");
 		boolean canman = owner.isPropMan(container.ldp) || container.ldp.adm;
+		boolean renter = rent.renter.isPropMan(container.ldp) || container.ldp.adm;
 		switch(container.pos.x){
 			case UI_MAIN:{
 				resp.addRow("id", ELM_GENERIC, id);
+				if(label.present){
+					resp.addRow("label", ELM_GENERIC, label.label);
+				}
+				if(canman){
+					resp.addButton("set_label", ELM_GENERIC, OPEN);
+				}
+				if(sell.price > 0){
+					resp.addButton("buy", ELM_GREEN, OPEN, Config.getWorthAsString(sell.price));
+				}
+				if(canman){
+					resp.addButton("price", ELM_GENERIC, OPEN);
+				}
+				resp.addBlank();
+				if(rent.rentable){
+					if(rent.renter.unowned){
+						resp.addButton("rent", ELM_GENERIC, OPEN);
+					}
+					else{
+						resp.addRow("renter", ELM_GENERIC, rent.renter.name());
+						resp.addRow("until", ELM_GENERIC, Time.getAsString(rent.until));
+						if(rent.renewable){
+							resp.addRow("renew", ELM_GENERIC, rent.autorenew ? ENABLED : DISABLED);
+						}
+					}
+					resp.addButton("duration", ELM_GENERIC, canman ? OPEN : EMPTY, rent.duration_string());
+				}
+				if(canman){
+					resp.addBlank();
+					resp.addButton("rentable", ELM_GENERIC, rent.rentable ? ENABLED : DISABLED);
+					resp.addButton("renewable", ELM_GENERIC, rent.renewable ? ENABLED : DISABLED);
+					resp.addButton("amount", ELM_GENERIC, OPEN, Config.getWorthAsString(rent.amount));
+				}
 				break;
 			}
 			case UI_CREATE:{
