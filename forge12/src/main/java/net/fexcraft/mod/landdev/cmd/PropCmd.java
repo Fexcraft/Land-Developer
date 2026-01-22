@@ -45,12 +45,7 @@ public class PropCmd extends CommandBase {
 		if(args.length > 0){
 			switch(args[0]){
 				case "create":{
-					if(ply.defcache != null){
-						ply.entity.openUI(LDKeys.DEF_SPACE, ply.defcache.pos);
-					}
-					else{
-						ply.entity.openUI(LDKeys.PROPERTY, LDUIModule.UI_CREATE, -1, 0);
-					}
+					ply.createPropReq();
 					return;
 				}
 				case "show":{
