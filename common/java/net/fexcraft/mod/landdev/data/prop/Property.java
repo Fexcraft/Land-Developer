@@ -187,7 +187,7 @@ public class Property implements Saveable, Layer, LDUIModule {
 				break;
 			case UI_RENT_AMOUNT:
 				resp.setTitle("property.rent_amount.title");
-				resp.addField("amount", sell.price);
+				resp.addField("amount", rent.amount);
 				resp.addButton("rent_amount.submit", ELM_BLUE, OPEN);
 				resp.setFormular();
 				break;
