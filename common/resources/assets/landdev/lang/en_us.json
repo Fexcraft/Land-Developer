@@ -107,9 +107,11 @@
     "landdev.mail.player.county.join_request0": "%s requests to join",
     "landdev.mail.player.county.join_request1": "your County.",
 
+    "landdev.mail.property.rent": "Property Renting",
+    "landdev.mail.property.rent_ended": "Renting period ended.",
     "landdev.mail.property.rent_collection": "Property Rent Collection.",
-    "landdev.mail.property.rent_collection_failed": "Property rent renewal failed.",
-    "landdev.mail.property.rent_collection_success": "Property rent renewed.",
+    "landdev.mail.property.rent_collection_failed": "Rent renewal failed.",
+    "landdev.mail.property.rent_collection_success": "Rent renewed.",
 
     "landdev.mail.municipality.staff.nolonger": "You are no longer Municipality Staff.",
     "landdev.mail.municipality.staff.removed": "%s is no longer Municipality Staff.",
@@ -283,7 +285,7 @@
     "landdev.gui.property.rent_amount.submit": "Confirm Rent Amount",
     "landdev.gui.property.rent_duration.title": "Set Property Rent Duration",
     "landdev.gui.property.rent_duration.format": "Format: 0d, 0h, 0m",
-    "landdev.gui.property.rent_duration.example": "Ex. '3d, 6h, 10m'",
+    "landdev.gui.property.rent_duration.example": "Example:  3d, 6h, 10m",
     "landdev.gui.property.rent_duration.lang": "d = Day, h = Hour, m = Minute",
     "landdev.gui.property.rent_duration.submit": "Confirm Rent Duration",
 
