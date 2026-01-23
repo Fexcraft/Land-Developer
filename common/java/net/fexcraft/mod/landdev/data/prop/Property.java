@@ -4,6 +4,8 @@ import net.fexcraft.app.json.JsonArray;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.common.math.V3I;
+import net.fexcraft.mod.fsmm.data.Account;
+import net.fexcraft.mod.fsmm.data.Bank;
 import net.fexcraft.mod.fsmm.util.Config;
 import net.fexcraft.mod.landdev.data.*;
 import net.fexcraft.mod.landdev.data.chunk.ChunkLabel;
@@ -95,6 +97,15 @@ public class Property implements Saveable, Layer, LDUIModule {
 		return Layers.CHUNK;
 	}
 
+	public static final int
+		UI_LABEL = 1,
+		UI_BUY = 2,
+		UI_PRICE = 3,
+		UI_RENT = 4,
+		UI_RENT_DURATION = 5,
+		UI_RENT_AMOUNT = 6
+		;
+
 	@Override
 	public void sync_packet(BaseCon container, ModuleResponse resp){
 		resp.setTitle("property.title");
@@ -106,37 +117,66 @@ public class Property implements Saveable, Layer, LDUIModule {
 				if(label.present){
 					resp.addRow("label", ELM_GENERIC, label.label);
 				}
-				if(canman){
-					resp.addButton("set_label", ELM_GENERIC, OPEN);
+				if(!owner.unowned){
+					resp.addRow("owner", ELM_GENERIC, owner.name());
 				}
 				if(sell.price > 0){
-					resp.addButton("buy", ELM_GREEN, OPEN, Config.getWorthAsString(sell.price));
+					resp.addButton("price", ELM_GREEN, OPEN, Config.getWorthAsString(sell.price));
 				}
 				if(canman){
-					resp.addButton("price", ELM_GENERIC, OPEN);
+					resp.addButton("set_label", ELM_GENERIC, OPEN);
+					resp.addButton("set_price", ELM_GENERIC, OPEN);
 				}
 				resp.addBlank();
-				if(rent.rentable){
+				if(rent.rentable || !rent.renter.unowned){
 					if(rent.renter.unowned){
-						resp.addButton("rent", ELM_GENERIC, OPEN);
+						resp.addButton("rent", ELM_GREEN, OPEN);
 					}
 					else{
 						resp.addRow("renter", ELM_GENERIC, rent.renter.name());
 						resp.addRow("until", ELM_GENERIC, Time.getAsString(rent.until));
-						if(rent.renewable){
-							resp.addRow("renew", ELM_GENERIC, rent.autorenew ? ENABLED : DISABLED);
+						if(renter){
+							if(rent.renewable){
+								resp.addButton("renew", ELM_GENERIC, rent.autorenew ? ENABLED : DISABLED);
+							}
+							resp.addButton("end_rent", ELM_RED, REM);
 						}
 					}
-					resp.addButton("duration", ELM_GENERIC, canman ? OPEN : EMPTY, rent.duration_string());
+					resp.addRow("amount", ELM_GENERIC, Config.getWorthAsString(rent.amount));
+					resp.addRow("duration", ELM_GENERIC, rent.duration_string());
 				}
 				if(canman){
 					resp.addBlank();
 					resp.addButton("rentable", ELM_GENERIC, rent.rentable ? ENABLED : DISABLED);
 					resp.addButton("renewable", ELM_GENERIC, rent.renewable ? ENABLED : DISABLED);
-					resp.addButton("amount", ELM_GENERIC, OPEN, Config.getWorthAsString(rent.amount));
+					resp.addButton("set_amount", ELM_GENERIC, OPEN);
+					resp.addButton("set_duration", ELM_GENERIC, OPEN, Config.getWorthAsString(rent.amount));
 				}
 				break;
 			}
+			case UI_LABEL:{
+				if(!canman) break;
+				resp.setTitle("property.set_label.title");
+				resp.addField("label", label.present ? label.label : "");
+				resp.addButton("set_label.submit", ELM_BLUE, OPEN);
+				resp.setFormular();
+				break;
+			}
+			case UI_BUY:
+				resp.setTitle("property.buy.title");
+				resp.addRow("buy.for", ELM_GENERIC);
+				resp.addRadio("buy.self", ELM_BLUE, true);
+				resp.addRadio("buy.company", ELM_BLUE, false);
+				resp.addButton("buy.submit", ELM_YELLOW, OPEN);
+				resp.setFormular();
+				break;
+			case UI_PRICE:
+				if(!canman) break;
+				resp.setTitle("property.set_price.title");
+				resp.addField("price", sell.price);
+				resp.addButton("set_price.submit", ELM_BLUE, OPEN);
+				resp.setFormular();
+				break;
 			case UI_CREATE:{
 				Chunk_ ck = container.ldp.chunk_current;
 				resp.setTitle("property.create.title");
@@ -158,14 +198,72 @@ public class Property implements Saveable, Layer, LDUIModule {
 	@Override
 	public void on_interact(BaseCon container, ModuleRequest req){
 		boolean canman = owner.isPropMan(container.ldp) || container.ldp.adm;
+		boolean renter = rent.renter.isPropMan(container.ldp) || container.ldp.adm;
 		LDPlayer player = container.ldp;
 		switch(req.event()){
+			case "set_label": container.open(UI_LABEL); break;
+			case "price": container.open(UI_BUY); break;
+			case "set_price": container.open(UI_PRICE); break;
+			case "rent": container.open(UI_RENT); break;
+			case "renew":{
+				if(renter) rent.autorenew = !rent.autorenew;
+				container.open(UI_MAIN);
+				save();
+				break;
+			}
+			case "rentable":{
+				if(canman) rent.rentable = !rent.rentable;
+				container.open(UI_MAIN);
+				save();
+				break;
+			}
+			case "renewable":{
+				if(canman) rent.renewable = !rent.renewable;
+				container.open(UI_MAIN);
+				save();
+				break;
+			}
+			case "amount": container.open(UI_RENT_AMOUNT); break;
+			case "set_duration": container.open(UI_RENT_DURATION); break;
+			case "set_label.submit":{
+				if(!canman) break;
+				label.label = req.getField("label");
+				label.present = label.label.length() > 0;
+				container.open(UI_MAIN);
+				save();
+				break;
+			}
+			case "set_price.submit":{
+				if(!canman) break;
+				sell.price = req.getFieldInt("price");
+				container.open(UI_MAIN);
+				save();
+				break;
+			}
+			case "buy.submit":{
+				boolean ply = req.getRadio().equals("buy.self");
+				if(!ply){
+					//TODO
+				}
+				else{
+					Account oacc = owner.getAccount(player.chunk_current);
+					if(!oacc.getBank().processAction(Bank.Action.TRANSFER, player.entity, player.account, sell.price, oacc)){
+						return;
+					}
+					sell.price = 0;
+					owner.set(Layers.PLAYER, player.uuid, 0);
+					container.open(UI_MAIN);
+					save();
+				}
+				break;
+			}
 			case "create.submit":{
 				player.defcache = new SpaceDefinitionCache(player.entity.getV3I());
 				player.entity.openUI(LDKeys.DEF_SPACE, player.defcache.pos);
 				break;
 			}
 		}
+		external.on_interact(container, req);
 	}
 
 	public boolean isInside(V3I pos){
