@@ -8,7 +8,6 @@ import net.fexcraft.mod.landdev.data.Layers;
 import net.fexcraft.mod.landdev.data.Mail;
 import net.fexcraft.mod.landdev.data.MailType;
 import net.fexcraft.mod.landdev.data.Saveable;
-import net.fexcraft.mod.landdev.data.chunk.ChunkOwner;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.util.ResManager;
 
@@ -20,7 +19,7 @@ public class PropRent implements Saveable {
 	public boolean rentable;
 	public boolean renewable;
 	public boolean autorenew;
-	public ChunkOwner renter = new ChunkOwner();
+	public PropOwner renter = new PropOwner();
 	public long duration = Time.DAY_MS * 7;
 	public long amount = 10000;
 	public long until;
@@ -72,7 +71,7 @@ public class PropRent implements Saveable {
 			mail.addMessage("landdev.mail.property.rent_ended");
 			mail.expireInDays(7);
 			renter.addMail(mail);
-			renter.set(Layers.NONE, null, 0);
+			renter.set(null, -1);
 			until = 0;
 			prop.save();
 		}
@@ -89,7 +88,7 @@ public class PropRent implements Saveable {
 			mail.addMessage("landdev.mail.property.rent_collection_failed");
 			mail.expireInDays(7);
 			renter.addMail(mail);
-			renter.set(Layers.NONE, null, 0);
+			renter.set(null, -1);
 			until = 0;
 		}
 		else{
