@@ -1,6 +1,5 @@
 package net.fexcraft.mod.landdev.events;
 
-import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.landdev.data.prop.ClientPropCache;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
@@ -29,93 +28,14 @@ public class RenderEvents {
 		GL11.glTranslated(-cx, -cy, -cz);
 		if(ClientPropCache.space != null){
 			Minecraft.getMinecraft().getTextureManager().bindTexture(loc1);
-			renderCube(ClientPropCache.space.pos, ClientPropCache.space.size);
+			ClientPropCache.renderCube(ClientPropCache.space.pos, ClientPropCache.space.size);
 		}
 		if(ClientPropCache.visible){
 			Minecraft.getMinecraft().getTextureManager().bindTexture(loc0);
 			for(ClientPropCache.PropCache prop : ClientPropCache.cache.values()){
-				renderCube(prop.pos, prop.size);
+				ClientPropCache.renderCube(prop.pos, prop.size);
 			}
 		}
-		GL11.glPopMatrix();
-	}
-
-	private void renderCube(V3I pos, V3I size){
-		GL11.glPushMatrix();
-		GL11.glTranslated(pos.x, pos.y, pos.z);
-		//
-		GL11.glPushMatrix();
-		GL11.glScalef(size.x, 1, 1);
-		ClientPropCache.polyx.render();
-		GL11.glPopMatrix();
-		//
-		GL11.glPushMatrix();
-		GL11.glScalef(1, size.y, 1);
-		ClientPropCache.polyy.render();
-		GL11.glPopMatrix();
-		//
-		GL11.glPushMatrix();
-		GL11.glScalef(1, 1, size.z);
-		ClientPropCache.polyz.render();
-		GL11.glPopMatrix();
-		//
-		GL11.glTranslated(size.x, 0, 0);
-		//
-		GL11.glPushMatrix();
-		GL11.glScalef(1, size.y, 1);
-		ClientPropCache.polyy.render();
-		GL11.glPopMatrix();
-		//
-		GL11.glPushMatrix();
-		GL11.glScalef(1, 1, size.z);
-		ClientPropCache.polyz.render();
-		GL11.glPopMatrix();
-		//
-		GL11.glTranslated(0, 0, size.z);
-		//
-		GL11.glPushMatrix();
-		GL11.glScalef(1, size.y, 1);
-		ClientPropCache.polyy.render();
-		GL11.glPopMatrix();
-		//
-		GL11.glTranslated(-size.x, 0, 0);
- 		//
-		GL11.glPushMatrix();
-		GL11.glScalef(1, size.y, 1);
-		ClientPropCache.polyy.render();
-		GL11.glPopMatrix();
-		//
-		GL11.glPushMatrix();
-		GL11.glScalef(size.x, 1, 1);
-		ClientPropCache.polyx.render();
-		GL11.glPopMatrix();
-		//
-		GL11.glTranslated(0, size.y, -size.z);
-		//
-		GL11.glPushMatrix();
-		GL11.glScalef(size.x, 1, 1);
-		ClientPropCache.polyx.render();
-		GL11.glPopMatrix();
-		//
-		GL11.glPushMatrix();
-		GL11.glScalef(1, 1, size.z);
-		ClientPropCache.polyz.render();
-		GL11.glPopMatrix();
-		//
-		GL11.glTranslated(size.x, 0, 0);
-		//
-		GL11.glPushMatrix();
-		GL11.glScalef(1, 1, size.z);
-		ClientPropCache.polyz.render();
-		GL11.glPopMatrix();
-		//
-		GL11.glTranslated(-size.x, 0, size.z);
- 		//
-		GL11.glPushMatrix();
-		GL11.glScalef(size.x, 1, 1);
-		ClientPropCache.polyx.render();
-		GL11.glPopMatrix();
- 		//
 		GL11.glPopMatrix();
 	}
 
