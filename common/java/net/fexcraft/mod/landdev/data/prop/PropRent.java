@@ -2,8 +2,14 @@ package net.fexcraft.mod.landdev.data.prop;
 
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.Time;
+import net.fexcraft.mod.fsmm.data.Account;
+import net.fexcraft.mod.fsmm.data.Bank;
+import net.fexcraft.mod.landdev.data.Layers;
+import net.fexcraft.mod.landdev.data.Mail;
+import net.fexcraft.mod.landdev.data.MailType;
 import net.fexcraft.mod.landdev.data.Saveable;
 import net.fexcraft.mod.landdev.data.chunk.ChunkOwner;
+import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -47,8 +53,73 @@ public class PropRent implements Saveable {
 		}
 	}
 
+	public void collect(Property prop, Chunk_ ck){
+		if(until > Time.getDate()) return;
+		Account oacc = prop.owner.getAccount(ck);
+		Account racc = renter.getAccount(ck);
+		if(!oacc.getBank().processAction(Bank.Action.TRANSFER, null, racc, amount, oacc)){
+			Mail mail = new Mail(MailType.SYSTEM, Layers.PROPERTY, prop.id);
+			mail.setTitle("landdev.mail.property.rent_collection");
+			if(prop.label.present) mail.addMessage(prop.label.label);
+			mail.addMessage("landdev.mail.property.rent_collection_failed");
+			mail.expireInDays(7);
+			renter.addMail(mail);
+			renter.set(Layers.NONE, null, 0);
+			until = 0;
+		}
+		else{
+			Mail mail = new Mail(MailType.SYSTEM, Layers.PROPERTY, prop.id);
+			mail.setTitle("landdev.mail.property.rent_collection");
+			if(prop.label.present) mail.addMessage(prop.label.label);
+			mail.addMessage("landdev.mail.property.rent_collection_success");
+			mail.expireInDays(7);
+			renter.addMail(mail);
+			until = Time.getDate() + duration;
+		}
+		prop.save();
+	}
+
 	public String duration_string(){
-		return duration + "";
+		return toDHM(duration);
+	}
+
+	public String until_string(){
+		return toDHM(Time.getDate() - until);
+	}
+
+	public static String toDHM(long dura){
+		long dur = dura - (dura % Time.MIN_MS);
+		long min = dur % Time.HOUR_MS / Time.MIN_MS;
+		long hor = dur % Time.DAY_MS / Time.HOUR_MS;
+		long day = dur / Time.DAY_MS;
+		if(min < 0) min = -min;
+		if(hor < 0) hor = -hor;
+		if(day < 0) day = -day;
+		return day + "d, " + hor + "h, " + min + "m";
+	}
+
+	public static long parse_duration(String dur){
+		String[] str = dur.split(",");
+		String e;
+		long res = 0;
+		for(String s : str){
+			s = s.trim();
+			e = s.substring(s.length() -1);
+			s = s.substring(0, s.length() - 1).trim();
+			switch(e){
+				case "d":
+					res += Time.DAY_MS * Long.parseLong(s);
+					break;
+				case "h":
+					res += Time.HOUR_MS * Long.parseLong(s);
+					break;
+				case "m":
+					res += Time.MIN_MS * Long.parseLong(s);
+					break;
+			}
+		}
+		if(res < Time.MIN_MS) res = Time.MIN_MS;
+		return res;
 	}
 
 }
