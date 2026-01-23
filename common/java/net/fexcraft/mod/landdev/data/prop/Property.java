@@ -9,7 +9,6 @@ import net.fexcraft.mod.fsmm.data.Bank;
 import net.fexcraft.mod.fsmm.util.Config;
 import net.fexcraft.mod.landdev.data.*;
 import net.fexcraft.mod.landdev.data.chunk.ChunkLabel;
-import net.fexcraft.mod.landdev.data.chunk.ChunkOwner;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.data.hooks.ExternalData;
 import net.fexcraft.mod.landdev.data.player.LDPlayer;
@@ -30,7 +29,7 @@ public class Property implements Saveable, Layer, LDUIModule {
 
 	public final int id;
 	public Createable created = new Createable(true);
-	public ChunkOwner owner = new ChunkOwner();
+	public PropOwner owner = new PropOwner();
 	public Sellable sell = new Sellable(this);
 	public ExternalData external = new ExternalData(this);
 	public ChunksIn chunks_in = new ChunksIn();
@@ -109,8 +108,8 @@ public class Property implements Saveable, Layer, LDUIModule {
 	@Override
 	public void sync_packet(BaseCon container, ModuleResponse resp){
 		resp.setTitle("property.title");
-		boolean canman = owner.isPropMan(container.ldp) || container.ldp.adm;
-		boolean renter = rent.renter.isPropMan(container.ldp) || container.ldp.adm;
+		boolean canman = owner.hasPerm(container.ldp, this) || container.ldp.adm;
+		boolean renter = rent.renter.hasPerm(container.ldp, this) || container.ldp.adm;
 		switch(container.pos.x){
 			case UI_MAIN:{
 				resp.addRow("id", ELM_GENERIC, id);
@@ -206,7 +205,7 @@ public class Property implements Saveable, Layer, LDUIModule {
 				resp.addBlank();
 				resp.addRow("create.info", ELM_YELLOW);
 				Layers ow = ck.owner.layer();
-				if(ow.is(Layers.NONE)) ow = ck.district.getParentLayer();
+				if(ow.is(Layers.NONE)) ow = Layers.DISTRICT;
 				resp.addRow("create.owner_type", ELM_BLUE, ow);
 				resp.addBlank();
 				resp.addButton("create.submit", ELM_BLUE, OPEN);
@@ -220,8 +219,8 @@ public class Property implements Saveable, Layer, LDUIModule {
 
 	@Override
 	public void on_interact(BaseCon container, ModuleRequest req){
-		boolean canman = owner.isPropMan(container.ldp) || container.ldp.adm;
-		boolean renter = rent.renter.isPropMan(container.ldp) || container.ldp.adm;
+		boolean canman = owner.hasPerm(container.ldp, this) || container.ldp.adm;
+		boolean renter = rent.renter.hasPerm(container.ldp, this) || container.ldp.adm;
 		LDPlayer player = container.ldp;
 		switch(req.event()){
 			case "set_label": container.open(UI_LABEL); break;
@@ -274,7 +273,7 @@ public class Property implements Saveable, Layer, LDUIModule {
 						return;
 					}
 					sell.price = 0;
-					owner.set(Layers.PLAYER, player.uuid, 0);
+					owner.set(player.uuid, -1);
 					container.open(UI_MAIN);
 					save();
 				}
@@ -291,7 +290,7 @@ public class Property implements Saveable, Layer, LDUIModule {
 					if(!oacc.getBank().processAction(Bank.Action.TRANSFER, player.entity, player.account, rent.amount, oacc)){
 						return;
 					}
-					rent.renter.set(Layers.PLAYER, player.uuid, 0);
+					rent.renter.set(player.uuid, -1);
 					rent.until = Time.getDate() + rent.duration;
 					container.open(UI_MAIN);
 					save();
@@ -300,7 +299,7 @@ public class Property implements Saveable, Layer, LDUIModule {
 			}
 			case "end_rent":{
 				if(!renter) break;
-				rent.renter.set(Layers.NONE, null, 0);
+				rent.renter.set(null, -1);
 				rent.until = 0;
 				container.open(UI_MAIN);
 				save();
@@ -333,6 +332,17 @@ public class Property implements Saveable, Layer, LDUIModule {
 		if(pos.x >= start.x && pos.x <= end.x){
 			if(pos.y >= start.y && pos.y <= end.y){
 				if(pos.z >= start.z && pos.z <= end.z){
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	public boolean isInside(int x, int y, int z){
+		if(x >= start.x && x <= end.x){
+			if(y >= start.y && y <= end.y){
+				if(z >= start.z && z <= end.z){
 					return true;
 				}
 			}
