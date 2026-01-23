@@ -6,30 +6,27 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.logging.LogUtils;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.common.math.V3I;
-import net.fexcraft.mod.fcl.util.ClientPacketPlayer;
-import net.fexcraft.mod.fcl.util.UIPacket;
+import net.fexcraft.mod.fcl.FCL;
 import net.fexcraft.mod.landdev.data.PermAction;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.data.county.County;
 import net.fexcraft.mod.landdev.data.district.District;
 import net.fexcraft.mod.landdev.data.municipality.Municipality;
 import net.fexcraft.mod.landdev.data.player.LDPlayer;
+import net.fexcraft.mod.landdev.data.prop.Property;
 import net.fexcraft.mod.landdev.data.region.Region;
 import net.fexcraft.mod.landdev.events.LocationUpdate;
 import net.fexcraft.mod.landdev.ui.LDKeys;
 import net.fexcraft.mod.landdev.util.*;
 import net.fexcraft.mod.landdev.util.broad.DiscordTransmitter;
 import net.fexcraft.mod.uni.EnvInfo;
+import net.fexcraft.mod.uni.packet.PacketTag;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.EntityW;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
@@ -41,9 +38,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
-import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.PacketDistributor;
-import net.minecraftforge.network.simple.SimpleChannel;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 
@@ -51,6 +46,7 @@ import java.io.File;
 
 import static net.fexcraft.mod.fsmm.local.FsmmCmd.isOp;
 import static net.fexcraft.mod.fsmm.util.Config.getWorthAsString;
+import static net.fexcraft.mod.landdev.LDN.PKT_RECEIVER_ID;
 import static net.fexcraft.mod.landdev.data.PermAction.CREATE_COUNTY;
 import static net.fexcraft.mod.landdev.data.PermAction.CREATE_MUNICIPALITY;
 import static net.fexcraft.mod.uni.ui.ContainerInterface.transformat;
@@ -64,11 +60,6 @@ public class LandDev {
 	public static final String VERSION = "1.5.0";
 	private static final Logger LOGGER = LogUtils.getLogger();
 	public static File SAVE_DIR = new File("./landdev/");
-	public static final SimpleChannel CHANNEL = NetworkRegistry.ChannelBuilder.named(new ResourceLocation("landdev", "channel"))
-		.clientAcceptedVersions(pro -> true)
-		.serverAcceptedVersions(pro -> true)
-		.networkProtocolVersion(() -> VERSION)
-		.simpleChannel();
 
 	public LandDev(){
 		IEventBus modbus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -80,22 +71,6 @@ public class LandDev {
 	private void commonSetup(final FMLCommonSetupEvent event){
 		LDN.init(this);
 		LDN.postinit();
-		CHANNEL.registerMessage(1, UIPacket.class, (packet, buffer) -> buffer.writeNbt(packet.com()), buffer -> new UIPacket(buffer.readNbt()), (packet, context) -> {
-			context.get().enqueueWork(() -> {
-				if(context.get().getDirection().getOriginationSide().isClient()){
-					ServerPlayer player = context.get().getSender();
-					onServerPacket(player, packet.com());
-				}
-				else{
-					ClientModEvents.onClientPacket(ClientPacketPlayer.get(), packet.com());
-				}
-			});
-			context.get().setPacketHandled(true);
-		});
-	}
-
-	private static void onServerPacket(ServerPlayer player, CompoundTag com){
-
 	}
 
 	public static void log(Object s){
@@ -131,20 +106,15 @@ public class LandDev {
 
 		@SubscribeEvent
 		public static void onClientSetup(FMLClientSetupEvent event){
-			//
-		}
-
-		private static void onClientPacket(Player player, CompoundTag com){
-			switch(com.getString("task")){
-				case "location_update":{
-					int time = com.contains("time") ? com.getInt("time") : 10;
-					LocationUpdate.clear(Time.getDate() + (time * 1000));
-					LocationUpdate.loadIcons((ListTag)com.get("icons"));
-					LocationUpdate.loadLines((ListTag)com.get("lines"));
-					return;
-				}
-				case "chat_message":{
-					ListTag list = (ListTag)com.get("msg");
+			LDN.client_init();
+			CTagListener.TASKS.put("location_update", (packet, player) -> {
+				int time = packet.has("time") ? packet.getInteger("time") : 10;
+				LocationUpdate.clear(Time.getDate() + (time * 1000));
+				LocationUpdate.loadIcons(packet.getList("icons").local());
+				LocationUpdate.loadLines(packet.getList("lines").local());
+			});
+			CTagListener.TASKS.put("chat_message", (packet, player) -> {
+				ListTag list = packet.getList("msg").local();
 					String c = list.size() > 3 ? list.getString(3) : "\u00A7a";
 					Component text = null;
 					switch(list.getString(0)){
@@ -158,9 +128,10 @@ public class LandDev {
 							break;
 					}
 					Minecraft.getInstance().gui.getChat().addMessage(text);
-					return;
-				}
-			}
+			});
+			CTagListener.TASKS.put("img_preview_url", (packet, player) -> {
+				//
+			});
 		}
 
 	}
@@ -172,12 +143,12 @@ public class LandDev {
 	}
 
 	public static void sendLocationPacket(EntityW entity, TagCW com){
-		CHANNEL.send(PacketDistributor.PLAYER.with(entity::local), new UIPacket(com.local()));
+		FCL.CHANNEL.send(PacketDistributor.PLAYER.with(entity::local), new PacketTag().fill(PKT_RECEIVER_ID, com));
 	}
 
 	public static void sendToAll(TagCW com){
 		try{
-			CHANNEL.send(PacketDistributor.ALL.noArg(), new UIPacket(com.local()));
+			FCL.CHANNEL.send(PacketDistributor.ALL.noArg(), new PacketTag().fill(PKT_RECEIVER_ID, com));
 		}
 		catch(Throwable e){
 			e.printStackTrace();
@@ -186,7 +157,7 @@ public class LandDev {
 
 	public static void sendTo(TagCW com, LDPlayer player){
 		try{
-			CHANNEL.send(PacketDistributor.PLAYER.with(() -> player.entity.local()), new UIPacket(com.local()));
+			FCL.CHANNEL.send(PacketDistributor.PLAYER.with(() -> player.entity.local()), new PacketTag().fill(PKT_RECEIVER_ID, com));
 		}
 		catch(Throwable e){
 			e.printStackTrace();
@@ -247,11 +218,6 @@ public class LandDev {
 				player.entity.send("landdev.cmd.fees_rg_total", getWorthAsString(sf));
 				return 0;
 			}))
-			.then(literal("define-space").executes(cmd -> {
-				LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
-				player.onSpaceDefCommand();
-				return 0;
-			}))
 			.then(literal("help").executes(cmd -> {
 				LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
 				player.entity.send("\u00A70[\u00A7bLD\u00A70]\u00A76>>\u00A72===========");
@@ -261,7 +227,6 @@ public class LandDev {
 				player.entity.send("/ld fees");
 				player.entity.send("/ld reload");
 				player.entity.send("/ld force-tax");
-				player.entity.send("/ld define-space");
 				player.entity.send("PolyClaim (Admin)");
 				player.entity.send("/ld polyclaim district <dis-id>");
 				player.entity.send("/ld polyclaim select");
@@ -307,6 +272,37 @@ public class LandDev {
 				try{
 					LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
 					player.entity.openUI(LDKeys.MAIN, new V3I(0, (int)player.entity.getPos().x >> 4, (int)player.entity.getPos().z >> 4));
+				}
+				catch(Exception e){
+					e.printStackTrace();
+				}
+				return 0;
+			})
+		);
+		dispatcher.register(literal("prop")
+			.then(literal("create").executes(cmd -> {
+				LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
+				player.createPropReq();
+				return 0;
+			}))
+			.then(literal("show").executes(cmd -> {
+				LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
+				player.propView(true);
+				return 0;
+			}))
+			.then(literal("hide").executes(cmd -> {
+				LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
+				player.propView(false);
+				return 0;
+			}))
+			.executes(cmd -> {
+				try{
+					LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
+					Property prop = ResManager.getProperty(player.entity.getV3I());
+					if(prop == null){
+						player.entity.send("landdev.cmd.no_property_at_pos");
+					}
+					else player.entity.openUI(LDKeys.PROPERTY, 0, prop.id, 0);
 				}
 				catch(Exception e){
 					e.printStackTrace();
