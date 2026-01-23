@@ -47,7 +47,7 @@ public class SpaceDefinitionCache {
 			return;
 		}
 		Chunk_ ck = ResManager.getChunk(pos);
-		if(!ldp.adm && !ck.owner.isPropMan(ldp, ck)){
+		if(!ldp.adm && !ck.owner.canManProp(ldp, ck)){
 			if(ck.owner.unowned){
 				ldp.entity.send("landdev.gui.property.create.no_man_perm");
 			}
@@ -65,7 +65,7 @@ public class SpaceDefinitionCache {
 		for(int x = sx; x < ex; x++){
 			for(int z = sz; z < ez; z++){
 				Chunk_ ok = ResManager.getChunk(x, z);
-				if(!ldp.adm && !ok.owner.isPropMan(ldp, ok)){
+				if(!ldp.adm && !ok.owner.canManProp(ldp, ok)){
 					ldp.entity.send("landdev.gui.property.create.no_perm_chunk", ok.key.comma());
 					failed = true;
 				}
@@ -106,8 +106,11 @@ public class SpaceDefinitionCache {
 		prop.start = pos;
 		prop.end = pos.add(size).sub(1, 1, 1);
 		prop.created.create(ldp.uuid);
-		if(!ck.owner.unowned){
-			prop.owner.set(ck.owner.layer(), ck.owner.player, ck.owner.owid);
+		if(ck.owner.playerchunk){
+			prop.owner.set(ck.owner.player, -1);
+		}
+		if(ck.owner.layer().is(Layers.COMPANY)){
+			prop.owner.set(null, ck.owner.owid);
 		}
 		for(Chunk_ ok : cks){
 			ok.propholder.properties.add(prop);
