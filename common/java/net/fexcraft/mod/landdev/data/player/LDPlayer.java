@@ -213,8 +213,7 @@ public class LDPlayer implements Saveable, Layer, LDUIModule, Appendable<UniEnti
 	}
 
 	public static final int UI_NICKNAME = 1;
-	public static final int UI_PROPERTIES = 2;
-	public static final int UI_COMPANY = 3;
+	public static final int UI_COMPANY = 2;
 
 	@Override
 	public void sync_packet(BaseCon container, ModuleResponse resp){
