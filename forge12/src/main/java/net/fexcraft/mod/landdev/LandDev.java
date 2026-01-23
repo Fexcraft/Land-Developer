@@ -56,7 +56,7 @@ public class LandDev {
         NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
 		LDN.init(this);
         if(event.getSide().isClient()){
-			LDN.client_init(this);
+			LDN.client_init();
 			CTagListener.TASKS.put("location_update", (packet, player) -> {
 				int time = packet.has("time") ? packet.getInteger("time") : 10;
 				LocationUpdate.clear(Time.getDate() + (time * 1000));
