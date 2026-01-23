@@ -8,7 +8,9 @@ import static net.fexcraft.mod.landdev.ui.LDUIRow.ELM_GENERIC;
 import net.fexcraft.mod.landdev.data.Layers;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.data.player.LDPlayer;
+import net.fexcraft.mod.landdev.data.prop.Property;
 import net.fexcraft.mod.landdev.ui.BaseCon;
+import net.fexcraft.mod.landdev.ui.LDKeys;
 import net.fexcraft.mod.landdev.ui.LDUIModule;
 import net.fexcraft.mod.landdev.util.ResManager;
 
@@ -21,9 +23,9 @@ public class MainModule implements LDUIModule {
 		resp.setTitle("main.title");
 		resp.addButton("player", ELM_GENERIC, OPEN);
 		resp.addButton("mail", ELM_GENERIC, OPEN);
-		resp.addButton("property", ELM_GENERIC, OPEN);
 		resp.addButton("company", ELM_GENERIC, OPEN);
 		resp.addBlank();
+		resp.addButton("property", ELM_GENERIC, OPEN);
 		resp.addButton("chunk", ELM_GENERIC, OPEN);
 		resp.addButton("district", ELM_GENERIC, OPEN);
 		resp.addButton("municipality", ELM_GENERIC, OPEN);
@@ -37,8 +39,12 @@ public class MainModule implements LDUIModule {
 			case "player": container.open(PLAYER, 0, 0, 0); return;
 			case "mail": container.open(MAILBOX, Layers.PLAYER.ordinal(), 0, 0); return;
 			case "property":{
-				//container.open(PROPERTY, 0, 0, 0);
-				container.open(PLAYER, LDPlayer.UI_PROPERTIES, 0, 0);
+				Property prop = ResManager.getProperty(container.player.entity.getV3I());
+				if(prop == null){
+					container.player.entity.send("landdev.cmd.no_property_at_pos");
+					return;
+				}
+				container.open(LDKeys.PROPERTY, 0, prop.id, 0);
 				return;
 			}
 			case "company":{
