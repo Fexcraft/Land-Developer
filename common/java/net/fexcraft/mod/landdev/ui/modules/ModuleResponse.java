@@ -159,6 +159,10 @@ public class ModuleResponse {
 		return LDUIModule.VALONLY + string;
 	}
 
+	public String olang(String string){
+		return LDUIModule.OVERLANG + string;
+	}
+
 	public void remEntry(String index){
 		int remidx = -1;
 		for(int idx = 0; idx < elmlist.size(); idx++){
