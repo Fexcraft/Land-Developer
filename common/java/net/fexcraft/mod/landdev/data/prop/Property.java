@@ -129,28 +129,28 @@ public class Property implements Saveable, Layer, LDUIModule {
 				}
 				resp.addBlank();
 				if(rent.rentable || !rent.renter.unowned){
+					resp.addRow("amount", ELM_GENERIC, Config.getWorthAsString(rent.amount));
+					resp.addRow("duration", ELM_GENERIC, rent.duration_string());
 					if(rent.renter.unowned){
 						resp.addButton("rent", ELM_GREEN, OPEN);
 					}
 					else{
 						resp.addRow("renter", ELM_GENERIC, rent.renter.name());
-						resp.addRow("until", ELM_GENERIC, Time.getAsString(rent.until));
+						if(renter && rent.renewable){
+							resp.addButton("renew", ELM_GENERIC, rent.autorenew ? ENABLED : DISABLED);
+						}
+						resp.addRow("until", ELM_GENERIC, rent.until_string());
 						if(renter){
-							if(rent.renewable){
-								resp.addButton("renew", ELM_GENERIC, rent.autorenew ? ENABLED : DISABLED);
-							}
 							resp.addButton("end_rent", ELM_RED, REM);
 						}
 					}
-					resp.addRow("amount", ELM_GENERIC, Config.getWorthAsString(rent.amount));
-					resp.addRow("duration", ELM_GENERIC, rent.duration_string());
 				}
 				if(canman){
 					resp.addBlank();
 					resp.addButton("rentable", ELM_GENERIC, rent.rentable ? ENABLED : DISABLED);
 					resp.addButton("renewable", ELM_GENERIC, rent.renewable ? ENABLED : DISABLED);
 					resp.addButton("set_amount", ELM_GENERIC, OPEN);
-					resp.addButton("set_duration", ELM_GENERIC, OPEN, Config.getWorthAsString(rent.amount));
+					resp.addButton("set_duration", ELM_GENERIC, OPEN);
 				}
 				break;
 			}
@@ -175,6 +175,29 @@ public class Property implements Saveable, Layer, LDUIModule {
 				resp.setTitle("property.set_price.title");
 				resp.addField("price", sell.price);
 				resp.addButton("set_price.submit", ELM_BLUE, OPEN);
+				resp.setFormular();
+				break;
+			case UI_RENT:
+				resp.setTitle("property.rent.title");
+				resp.addRow("rent.for", ELM_GENERIC);
+				resp.addRadio("rent.self", ELM_BLUE, true);
+				resp.addRadio("rent.company", ELM_BLUE, false);
+				resp.addButton("rent.submit", ELM_YELLOW, OPEN);
+				resp.setFormular();
+				break;
+			case UI_RENT_AMOUNT:
+				resp.setTitle("property.rent_amount.title");
+				resp.addField("amount", sell.price);
+				resp.addButton("rent_amount.submit", ELM_BLUE, OPEN);
+				resp.setFormular();
+				break;
+			case UI_RENT_DURATION:
+				resp.setTitle("property.rent_duration.title");
+				resp.addRow("rent_duration.format", ELM_GENERIC);
+				resp.addRow("rent_duration.lang", ELM_GENERIC);
+				resp.addRow("rent_duration.example", ELM_GENERIC);
+				resp.addField("duration", rent.duration_string());
+				resp.addButton("rent_duration.submit", ELM_BLUE, OPEN);
 				resp.setFormular();
 				break;
 			case UI_CREATE:{
@@ -223,7 +246,7 @@ public class Property implements Saveable, Layer, LDUIModule {
 				save();
 				break;
 			}
-			case "amount": container.open(UI_RENT_AMOUNT); break;
+			case "set_amount": container.open(UI_RENT_AMOUNT); break;
 			case "set_duration": container.open(UI_RENT_DURATION); break;
 			case "set_label.submit":{
 				if(!canman) break;
@@ -255,6 +278,46 @@ public class Property implements Saveable, Layer, LDUIModule {
 					container.open(UI_MAIN);
 					save();
 				}
+				break;
+			}
+			case "rent.submit":{
+				if(!rent.rentable || !rent.renter.unowned) return;
+				boolean ply = req.getRadio().equals("rent.self");
+				if(!ply){
+					//TODO
+				}
+				else{
+					Account oacc = owner.getAccount(player.chunk_current);
+					if(!oacc.getBank().processAction(Bank.Action.TRANSFER, player.entity, player.account, rent.amount, oacc)){
+						return;
+					}
+					rent.renter.set(Layers.PLAYER, player.uuid, 0);
+					rent.until = Time.getDate() + rent.duration;
+					container.open(UI_MAIN);
+					save();
+				}
+				break;
+			}
+			case "end_rent":{
+				if(!renter) break;
+				rent.renter.set(Layers.NONE, null, 0);
+				rent.until = 0;
+				container.open(UI_MAIN);
+				save();
+				break;
+			}
+			case "rent_amount.submit":{
+				if(!canman) break;
+				rent.amount = req.getFieldInt("amount");
+				container.open(UI_MAIN);
+				save();
+				break;
+			}
+			case "rent_duration.submit":{
+				if(!canman) break;
+				rent.duration = PropRent.parse_duration(req.getField("duration"));
+				container.open(UI_MAIN);
+				save();
 				break;
 			}
 			case "create.submit":{
