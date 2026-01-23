@@ -22,7 +22,7 @@ public class CTagListener implements PacketTagListener {
 		if(cons != null) cons.accept(packet, player);
 		else{
 			LandDev.log("Received packet with unknown task '" + packet.getString("task") + "'.");
-			LandDev.log(packet);
+			LandDev.log(String.valueOf(packet));
 		}
 	}
 
