@@ -36,7 +36,7 @@ public class MailboxUI extends UserInterface {
 			buttons.get("open_" + i).visible(bool);
 			buttons.get("del_" + i).visible(bool);
 			texts.get("mail_" + i).visible(bool);
-			if(bool) texts.get("mail_" + i).value(mon.mailbox.mails.get(i).title);
+			if(bool) texts.get("mail_" + i).transval(mon.mailbox.mails.get(i).title);
 		}
 	}
 
