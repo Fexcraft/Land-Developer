@@ -18,7 +18,8 @@ import net.fexcraft.mod.landdev.util.ResManager;
  */
 public class ChunkOwner implements Saveable {
 	
-	public boolean unowned, playerchunk;
+	public boolean unowned = true;
+	public boolean playerchunk;
 	public Layers owner = Layers.NONE;
 	public UUID player;
 	public int owid;
