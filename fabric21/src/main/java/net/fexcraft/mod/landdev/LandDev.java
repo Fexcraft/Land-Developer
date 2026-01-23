@@ -27,6 +27,7 @@ import net.fexcraft.mod.landdev.data.county.County;
 import net.fexcraft.mod.landdev.data.district.District;
 import net.fexcraft.mod.landdev.data.municipality.Municipality;
 import net.fexcraft.mod.landdev.data.player.LDPlayer;
+import net.fexcraft.mod.landdev.data.prop.Property;
 import net.fexcraft.mod.landdev.data.region.Region;
 import net.fexcraft.mod.landdev.ui.LDKeys;
 import net.fexcraft.mod.landdev.util.*;
@@ -34,8 +35,8 @@ import net.fexcraft.mod.landdev.util.broad.BroadcastChannel;
 import net.fexcraft.mod.landdev.util.broad.Broadcaster;
 import net.fexcraft.mod.landdev.util.broad.DiscordTransmitter;
 import net.fexcraft.mod.uni.EnvInfo;
-import net.fexcraft.mod.uni.UniChunk;
 import net.fexcraft.mod.uni.UniEntity;
+import net.fexcraft.mod.uni.packet.PacketTag;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.EntityW;
 import net.minecraft.commands.CommandSourceStack;
@@ -49,6 +50,7 @@ import java.io.File;
 
 import static net.fexcraft.mod.fsmm.local.FsmmCmd.isOp;
 import static net.fexcraft.mod.fsmm.util.Config.getWorthAsString;
+import static net.fexcraft.mod.landdev.LDN.PKT_RECEIVER_ID;
 import static net.fexcraft.mod.landdev.data.PermAction.CREATE_COUNTY;
 import static net.fexcraft.mod.landdev.data.PermAction.CREATE_MUNICIPALITY;
 import static net.fexcraft.mod.landdev.util.InteractHandler.control;
@@ -62,7 +64,6 @@ import static net.minecraft.commands.Commands.literal;
 public class LandDev implements ModInitializer {
 
 	public static final Logger LOGGER = LoggerFactory.getLogger("landdev");
-	public static final Object VERSION = "1.5.0";
 	public static File SAVE_DIR;
 
 	@Override
@@ -70,8 +71,6 @@ public class LandDev implements ModInitializer {
 		LDN.preinit(FabricLoader.getInstance().getConfigDir().toAbsolutePath().toFile());
 		LDN.init(this);
 		LDN.postinit();
-
-		UniFCL.regTagPacketListener("landdev", false, (com, player) -> {});
 
 		ServerLifecycleEvents.SERVER_STARTING.register(server -> LDN.onServerStarting());
 		ServerLifecycleEvents.SERVER_STARTED.register(server -> LDN.onServerStarted());
@@ -284,6 +283,37 @@ public class LandDev implements ModInitializer {
 				try{
 					LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
 					player.entity.openUI(LDKeys.MAIN, new V3I(0, (int)player.entity.getPos().x >> 4, (int)player.entity.getPos().z >> 4));
+				}
+				catch(Exception e){
+					e.printStackTrace();
+				}
+				return 0;
+			})
+		);
+		dispatcher.register(literal("prop")
+			.then(literal("create").executes(cmd -> {
+				LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
+				player.createPropReq();
+				return 0;
+			}))
+			.then(literal("show").executes(cmd -> {
+				LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
+				player.propView(true);
+				return 0;
+			}))
+			.then(literal("hide").executes(cmd -> {
+				LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
+				player.propView(false);
+				return 0;
+			}))
+			.executes(cmd -> {
+				try{
+					LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
+					Property prop = ResManager.getProperty(player.entity.getV3I());
+					if(prop == null){
+						player.entity.send("landdev.cmd.no_property_at_pos");
+					}
+					else player.entity.openUI(LDKeys.PROPERTY, 0, prop.id, 0);
 				}
 				catch(Exception e){
 					e.printStackTrace();
@@ -517,12 +547,21 @@ public class LandDev implements ModInitializer {
 	}
 
 	public static void sendLocationPacket(EntityW entity, TagCW com){
-		ServerPlayNetworking.getSender((ServerPlayer)entity.direct()).sendPacket(new PacketTag21("landdev", com));
+		ServerPlayNetworking.getSender((ServerPlayer)entity.direct()).sendPacket(new PacketTag21(PKT_RECEIVER_ID, com));
 	}
 
 	public static void sendToAll(TagCW com){
 		for(ServerPlayer player : FCL.SERVER.get().getPlayerList().getPlayers()){
-			ServerPlayNetworking.getSender(player).sendPacket(new PacketTag21("landdev", com));
+			ServerPlayNetworking.getSender(player).sendPacket(new PacketTag21(PKT_RECEIVER_ID, com));
+		}
+	}
+
+	public static void sendTo(TagCW com, LDPlayer player){
+		try{
+			ServerPlayNetworking.getSender((ServerPlayer)player.entity.local()).sendPacket(new PacketTag21(PKT_RECEIVER_ID, com));
+		}
+		catch(Throwable e){
+			e.printStackTrace();
 		}
 	}
 
