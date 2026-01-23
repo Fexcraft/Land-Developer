@@ -214,6 +214,7 @@ public class BaseUI extends UserInterface {
 				else if(val instanceof String){
 					String valstr = val.toString();
 					if(valstr.startsWith(LDUIModule.VALONLY)) text.value(valstr.substring(3));
+					if(valstr.startsWith(LDUIModule.OVERLANG)) text.transval(valstr.substring(3));
 					else{
 						String old = text.value();
 						text.transval(valstr);
