@@ -115,6 +115,10 @@ landdev.mail.player.municipality.join_request1=your Municipality.
 landdev.mail.player.county.join_request0=%s requests to join
 landdev.mail.player.county.join_request1=your County.
 
+landdev.mail.property.rent_collection=Property Rent Collection.
+landdev.mail.property.rent_collection_failed=Property rent renewal failed.
+landdev.mail.property.rent_collection_success=Property rent renewed.
+
 landdev.mail.municipality.staff.nolonger=You are no longer Municipality Staff.
 landdev.mail.municipality.staff.removed=%s is no longer Municipality Staff.
 landdev.mail.municipality.staff.added=%s is now Municipality Staff.
@@ -270,7 +274,7 @@ landdev.gui.property.price=Price: %s
 landdev.gui.property.set_price=Set Price
 landdev.gui.property.rent=For rent!
 landdev.gui.property.renter=Rented by: %s
-landdev.gui.property.until=Until: %s
+landdev.gui.property.until=Time left: %s
 landdev.gui.property.renew=Auto-renew?
 landdev.gui.property.end_rent=Stop renting.
 landdev.gui.property.duration=Rent duration: %s
@@ -288,6 +292,18 @@ landdev.gui.property.buy.for=For who is the Property?
 landdev.gui.property.buy.self=Myself
 landdev.gui.property.buy.company=My Company
 landdev.gui.property.buy.submit=Confirm Acquisition
+landdev.gui.property.rent.title=Property Renting
+landdev.gui.property.rent.for=Who is renting the Property?
+landdev.gui.property.rent.self=Myself
+landdev.gui.property.rent.company=My Company
+landdev.gui.property.rent.submit=Confirm Rent
+landdev.gui.property.rent_amount.title=Set Property Rent Amount
+landdev.gui.property.rent_amount.submit=Confirm Rent Amount
+landdev.gui.property.rent_duration.title=Set Property Rent Duration
+landdev.gui.property.rent_duration.format=Format: 0d, 0h, 0m
+landdev.gui.property.rent_duration.example=Ex. '3d, 6h, 10m'
+landdev.gui.property.rent_duration.lang=d = Day, h = Hour, m = Minute
+landdev.gui.property.rent_duration.submit=Confirm Rent Duration
 
 landdev.gui.property.create.title=Property Creation
 landdev.gui.property.create.info=Chunk Owner will be Property Owner
