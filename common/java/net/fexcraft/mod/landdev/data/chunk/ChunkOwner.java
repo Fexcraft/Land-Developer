@@ -5,6 +5,7 @@ import java.util.UUID;
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.mod.fsmm.data.Account;
 import net.fexcraft.mod.landdev.data.Layers;
+import net.fexcraft.mod.landdev.data.Mail;
 import net.fexcraft.mod.landdev.data.PermAction;
 import net.fexcraft.mod.landdev.data.Saveable;
 import net.fexcraft.mod.landdev.data.player.LDPlayer;
@@ -123,6 +124,24 @@ public class ChunkOwner implements Saveable {
 			return ck.district.can(PermAction.MANAGE_PROPERTY, ldp.uuid);
 		}
 		return isPropMan(ldp);
+	}
+
+	public void addMail(Mail mail){
+		if(unowned) return;
+		if(playerchunk){
+			LDPlayer ldp = ResManager.getPlayer(player, true);
+			ldp.addMail(mail);
+			if(ldp.offline) ldp.save();
+			return;
+		}
+		switch(owner){
+			case DISTRICT: ResManager.getDistrict(owid).mail.add(mail); break;
+			case MUNICIPALITY: ResManager.getMunicipality(owid, true).mail.add(mail); break;
+			case COUNTY: ResManager.getCounty(owid, true).mail.add(mail); break;
+			case REGION: ResManager.getRegion(owid, true).mail.add(mail); break;
+			case COMPANY://TODO
+			default: return;
+		}
 	}
 
 }
