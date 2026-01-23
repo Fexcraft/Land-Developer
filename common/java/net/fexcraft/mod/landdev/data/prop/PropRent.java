@@ -10,6 +10,7 @@ import net.fexcraft.mod.landdev.data.MailType;
 import net.fexcraft.mod.landdev.data.Saveable;
 import net.fexcraft.mod.landdev.data.chunk.ChunkOwner;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
+import net.fexcraft.mod.landdev.util.ResManager;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -50,6 +51,30 @@ public class PropRent implements Saveable {
 			renter.load(r);
 			until = r.get("until", 0l);
 			autorenew = r.getBoolean("autorenew", autorenew);
+		}
+	}
+
+	public void checkRentStatus(Property prop, long time){
+		if(renter.unowned) return;
+		if(until > time) return;
+		boolean cancel = !rentable || !renewable;
+		if(rentable && renewable){
+			if(!autorenew) cancel = true;
+			else{
+				collect(prop, ResManager.getChunk(prop.start));
+				cancel = false;
+			}
+		}
+		if(cancel){
+			Mail mail = new Mail(MailType.SYSTEM, Layers.PROPERTY, prop.id);
+			mail.setTitle("landdev.mail.property.rent");
+			if(prop.label.present) mail.addMessage(prop.label.label);
+			mail.addMessage("landdev.mail.property.rent_ended");
+			mail.expireInDays(7);
+			renter.addMail(mail);
+			renter.set(Layers.NONE, null, 0);
+			until = 0;
+			prop.save();
 		}
 	}
 
