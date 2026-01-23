@@ -42,7 +42,7 @@ public class RenderEvents {
 
 	private void renderCube(V3I pos, V3I size){
 		GL11.glPushMatrix();
-		GL11.glTranslated(pos.x - 1, pos.y, pos.z);
+		GL11.glTranslated(pos.x, pos.y, pos.z);
 		//
 		GL11.glPushMatrix();
 		GL11.glScalef(size.x, 1, 1);
