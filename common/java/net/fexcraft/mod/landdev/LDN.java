@@ -105,7 +105,7 @@ public class LDN {
 		long mid = midnight.toInstant(ZoneOffset.UTC).toEpochMilli();
 		setupTaxTimer(mid);
 		setupGenericTimer(mid);
-		Broadcaster.send(NO_INTERNAL, BroadcastChannel.SERVER, null, String.format(LDConfig.SERVLANG_STARTED, LandDev.VERSION));
+		Broadcaster.send(NO_INTERNAL, BroadcastChannel.SERVER, null, String.format(LDConfig.SERVLANG_STARTED, "1.x.x"));
 	}
 
 	private static void setupTaxTimer(long mid){
