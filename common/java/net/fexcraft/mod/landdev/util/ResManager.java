@@ -1,9 +1,6 @@
 package net.fexcraft.mod.landdev.util;
 
-import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.fexcraft.app.json.JsonMap;
@@ -248,6 +245,15 @@ public class ResManager implements Saveable {
 				saveAll(false);
 			}
 		}, Time.MIN_MS * 5, Time.MIN_MS * 5);
+		SAVER.schedule(new TimerTask() {
+			@Override
+			public void run(){
+				long time = Time.getDate();
+				for(Property prop : PROPERTIES.values()){
+					prop.rent.checkRentStatus(prop, time);
+				}
+			}
+		}, Time.MIN_MS, Time.MIN_MS);
 		LOADED = true;
 	}
 
