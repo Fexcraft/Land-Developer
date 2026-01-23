@@ -497,6 +497,7 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 						Chunk_ ck = ResManager.getChunk(lk);
 						if(ck.link == null || !key.equals(ck.link.root_key)) continue;
 						ck.sell.price = 0;
+						ck.type = ChunkType.PRIVATE;
 						ck.owner.set(layer, layer.is(Layers.PLAYER) ? container.ldp.uuid : null, district.getLayerId(layer));
 						ck.save();
 					}
