@@ -4,6 +4,7 @@ import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.mod.landdev.data.chunk.ChunkType;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.data.player.LDPlayer;
+import net.fexcraft.mod.landdev.data.prop.Property;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -15,6 +16,9 @@ public class InteractHandler {
 		if(player == null) return false;
 		if(player.adm) return true;
 		Chunk_ chunk = ResManager.getChunkS(x, z);
+		for(Property prop : chunk.propholder.properties){
+			if(prop.isInside(x, y, z)) return hasperm(prop, chunk, player, interact);
+		}
 		if(chunk.district.id < 0){
 			if(chunk.district.id == -1){
 				return LDConfig.EDIT_WILDERNESS;
@@ -107,6 +111,11 @@ public class InteractHandler {
 			//TODO company check
 		}
 		return pass;
+	}
+
+	public static boolean hasperm(Property prop, Chunk_ chunk, LDPlayer player, boolean interact){
+		if(prop.rent.renter.unowned) return prop.owner.hasPerm(player, chunk);
+		else return prop.rent.renter.hasPerm(player, chunk);
 	}
 
 }
