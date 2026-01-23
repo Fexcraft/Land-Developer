@@ -69,7 +69,7 @@ public class LDN {
 		UniFCL.regTagPacketListener(PKT_RECEIVER_ID, false, new STagListener());
 	}
 
-	public static void client_init(LandDev inst){
+	public static void client_init(){
 		UniFCL.regTagPacketListener(PKT_RECEIVER_ID, true, new CTagListener());
 		CTagListener.TASKS.put("properties", (packet, player) -> {
 			TagLW lis = packet.getList("list");
