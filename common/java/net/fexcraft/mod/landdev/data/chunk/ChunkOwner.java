@@ -12,7 +12,6 @@ import net.fexcraft.mod.landdev.data.player.LDPlayer;
 import net.fexcraft.mod.landdev.util.ResManager;
 
 /**
- * For Chunks and Properties
  * 
  * @author Ferdnand Calo' (FEX___96)
  *
@@ -100,32 +99,6 @@ public class ChunkOwner implements Saveable {
 		return playerchunk || owner.is(Layers.COMPANY);
 	}
 
-	public boolean isPropMan(LDPlayer ldp){
-		if(playerchunk) return player.equals(ldp.uuid);
-		switch(owner){
-			case COMPANY:
-				//TODO
-				return false;
-			case DISTRICT:
-				return ResManager.getDistrict(owid).manage.can(PermAction.MANAGE_PROPERTY, ldp.uuid);
-			case MUNICIPALITY:
-				return ResManager.getMunicipality(owid, true).manage.can(PermAction.MANAGE_PROPERTY, ldp.uuid);
-			case COUNTY:
-				return ResManager.getCounty(owid, true).manage.can(PermAction.MANAGE_PROPERTY, ldp.uuid);
-			case REGION:
-				return ResManager.getRegion(owid, true).manage.can(PermAction.MANAGE_PROPERTY, ldp.uuid);
-			case NONE:
-			default: return false;
-		}
-	}
-
-	public boolean isPropMan(LDPlayer ldp, Chunk_ ck){
-		if(unowned){
-			return ck.district.can(PermAction.MANAGE_PROPERTY, ldp.uuid);
-		}
-		return isPropMan(ldp);
-	}
-
 	public void addMail(Mail mail){
 		if(unowned) return;
 		if(playerchunk){
@@ -142,6 +115,12 @@ public class ChunkOwner implements Saveable {
 			case COMPANY://TODO
 			default: return;
 		}
+	}
+
+	public boolean canManProp(LDPlayer ldp, Chunk_ ck){
+		if(playerchunk) return player.equals(ldp.uuid);
+		if(owner.is(Layers.COMPANY)) return false;//TODO
+		return ck.district.can(PermAction.MANAGE_PROPERTY, ldp.uuid);
 	}
 
 }
