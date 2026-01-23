@@ -9,6 +9,7 @@ import net.fexcraft.lib.frl.gen.ValueMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static net.fexcraft.lib.common.Static.sixteenth;
+import static net.fexcraft.lib.frl.Renderer.RENDERER;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -41,6 +42,85 @@ public class ClientPropCache {
 		public V3I pos;
 		public V3I size;
 
+	}
+	
+	public static void renderCube(V3I pos, V3I size){
+		RENDERER.push();
+		RENDERER.translate(pos.x, pos.y, pos.z);
+		//
+		RENDERER.push();
+		RENDERER.scale(size.x, 1, 1);
+		ClientPropCache.polyx.render();
+		RENDERER.pop();
+		//
+		RENDERER.push();
+		RENDERER.scale(1, size.y, 1);
+		ClientPropCache.polyy.render();
+		RENDERER.pop();
+		//
+		RENDERER.push();
+		RENDERER.scale(1, 1, size.z);
+		ClientPropCache.polyz.render();
+		RENDERER.pop();
+		//
+		RENDERER.translate(size.x, 0, 0);
+		//
+		RENDERER.push();
+		RENDERER.scale(1, size.y, 1);
+		ClientPropCache.polyy.render();
+		RENDERER.pop();
+		//
+		RENDERER.push();
+		RENDERER.scale(1, 1, size.z);
+		ClientPropCache.polyz.render();
+		RENDERER.pop();
+		//
+		RENDERER.translate(0, 0, size.z);
+		//
+		RENDERER.push();
+		RENDERER.scale(1, size.y, 1);
+		ClientPropCache.polyy.render();
+		RENDERER.pop();
+		//
+		RENDERER.translate(-size.x, 0, 0);
+ 		//
+		RENDERER.push();
+		RENDERER.scale(1, size.y, 1);
+		ClientPropCache.polyy.render();
+		RENDERER.pop();
+		//
+		RENDERER.push();
+		RENDERER.scale(size.x, 1, 1);
+		ClientPropCache.polyx.render();
+		RENDERER.pop();
+		//
+		RENDERER.translate(0, size.y, -size.z);
+		//
+		RENDERER.push();
+		RENDERER.scale(size.x, 1, 1);
+		ClientPropCache.polyx.render();
+		RENDERER.pop();
+		//
+		RENDERER.push();
+		RENDERER.scale(1, 1, size.z);
+		ClientPropCache.polyz.render();
+		RENDERER.pop();
+		//
+		RENDERER.translate(size.x, 0, 0);
+		//
+		RENDERER.push();
+		RENDERER.scale(1, 1, size.z);
+		ClientPropCache.polyz.render();
+		RENDERER.pop();
+		//
+		RENDERER.translate(-size.x, 0, size.z);
+ 		//
+		RENDERER.push();
+		RENDERER.scale(size.x, 1, 1);
+		ClientPropCache.polyx.render();
+		RENDERER.pop();
+ 		//
+		RENDERER.pop();
 	}
 
 }
