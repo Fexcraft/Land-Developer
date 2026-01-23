@@ -47,7 +47,7 @@ public class MailModule implements LDUIModule {
 		//resp.addRow("to", ELM_BLUE, mail.receiver);
 		resp.addRow("at", ELM_BLUE, Time.getAsString(mail.sent));
 		resp.addBlank();
-		resp.addRow("title", ELM_GREEN, resp.val(mail.title));
+		resp.addRow("title", ELM_GREEN, resp.olang(mail.title));
 		for(int i = 0; i < mail.message.size(); i++){
 			resp.addRow("msg" + i, ELM_GENERIC, mail.message.get(i));
 		}
