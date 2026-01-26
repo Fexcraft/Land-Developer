@@ -5,6 +5,7 @@ import net.fexcraft.mod.uni.UniEntity;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -20,8 +21,19 @@ public class BlockItemMixin extends Item {
 		super(properties);
 	}
 
-	@Inject(at = @At("HEAD"), method = "Lnet/minecraft/world/item/BlockItem;useOn(Lnet/minecraft/world/item/context/UseOnContext;)Lnet/minecraft/world/InteractionResult;", cancellable = true)
+	/*@Inject(at = @At("HEAD"), method = "Lnet/minecraft/world/item/BlockItem;useOn(Lnet/minecraft/world/item/context/UseOnContext;)Lnet/minecraft/world/InteractionResult;", cancellable = true)
 	public void _useOn(UseOnContext context, CallbackInfoReturnable<InteractionResult> info){
+		if(!context.getLevel().isClientSide() && context.getLevel() == FCL.SERVER.get().overworld()){
+			if(!control(context.getClickedPos().getX(), context.getClickedPos().getY(), context.getClickedPos().getZ(), context.getPlayer(), false)){
+				UniEntity.getEntity(context.getPlayer()).bar("interact.place.noperm");
+				info.setReturnValue(InteractionResult.FAIL);
+				info.cancel();
+			}
+		}
+	}*/
+
+	@Inject(at = @At("HEAD"), method = "Lnet/minecraft/world/item/BlockItem;place(Lnet/minecraft/world/item/context/BlockPlaceContext;)Lnet/minecraft/world/InteractionResult;", cancellable = true)
+	public void _place(BlockPlaceContext context, CallbackInfoReturnable<InteractionResult> info){
 		if(!context.getLevel().isClientSide() && context.getLevel() == FCL.SERVER.get().overworld()){
 			if(!control(context.getClickedPos().getX(), context.getClickedPos().getY(), context.getClickedPos().getZ(), context.getPlayer(), false)){
 				UniEntity.getEntity(context.getPlayer()).bar("interact.place.noperm");
