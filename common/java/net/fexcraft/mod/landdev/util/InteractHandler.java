@@ -103,7 +103,7 @@ public class InteractHandler {
 		if(!pass){
 			Long l = chunk.access.players.get(player.uuid);
 			if(l != null){
-				if(Time.getDate() < l) return true;
+				if(l == 0 || Time.getDate() < l) return true;
 				else{
 					chunk.access.players.remove(player.uuid);
 				}
