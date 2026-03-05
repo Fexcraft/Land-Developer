@@ -5,8 +5,10 @@ import net.fexcraft.mod.landdev.LandDev;
 import net.fexcraft.mod.landdev.data.chunk.ChunkKey;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.world.WorldW;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.MapColor;
 
@@ -34,7 +36,7 @@ public class ClaimMapTexture {
 		int sz = (key.z - 7) * 16;
 		for(int i = 0; i < grid; i++){
 			for(int j = 0; j < grid; j++){
-				pos.set(i + sx, level.getHeight() - 1, j + sz);
+				checkPos(level, pos, i + sx, j + sz);
 				state = level.getBlockState(pos);
 				img.setRGB(i, j, state.getMapColor(level, pos).calculateARGBColor(MapColor.Brightness.NORMAL));
 			}
@@ -46,6 +48,15 @@ public class ClaimMapTexture {
 		catch(IOException e){
 			e.printStackTrace();
 		}
+	}
+
+	private static BlockPos checkPos(Level world, MutableBlockPos pos, int x, int z){
+		for(int i = world.getHeight() - 1; i > 0; i--){
+			pos.set(x, i, z);
+			if(world.isWaterAt(pos)) return pos;
+			if(!world.getBlockState(pos).canBeReplaced()) return pos;
+		}
+		return new BlockPos(x, 0, z);
 	}
 
 }
