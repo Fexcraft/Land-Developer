@@ -1,68 +1,51 @@
 package net.fexcraft.mod.landdev.util;
 
-import com.mojang.blaze3d.platform.NativeImage;
-import net.fexcraft.mod.landdev.ui.ChunkClaimUI;
-import net.fexcraft.mod.uni.IDL;
-import net.fexcraft.mod.uni.IDLManager;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.texture.DynamicTexture;
-import net.minecraft.core.BlockPos;
+import net.fexcraft.mod.fcl.UniFCL;
+import net.fexcraft.mod.landdev.LandDev;
+import net.fexcraft.mod.landdev.data.chunk.ChunkKey;
+import net.fexcraft.mod.uni.EnvInfo;
+import net.fexcraft.mod.uni.world.WorldW;
 import net.minecraft.core.BlockPos.MutableBlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.MapColor;
+
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
 public class ClaimMapTexture {
 
-	protected static IDL temptexid = IDLManager.getIDLCached("landdev:claimtemptex.png");
-	private static TempTex temptex;
+	private static final int grid = 15 * 16;
 
-	public static void bind(ChunkClaimUI ui, int x, int z){
-		if(temptex == null){
-			Minecraft.getInstance().getTextureManager().register(temptexid.local(), temptex = new TempTex(temptexid.local(), x, z));
-		}
-		ui.drawer.bind(temptexid);
-	}
-
-	public static class TempTex extends DynamicTexture {
-
-		private static MutableBlockPos pos = new MutableBlockPos();
-		private static final int grid = 15 * 16;
-		private int sx, sz;
-
-		public TempTex(ResourceLocation rs, int x, int z){
-			super(rs::toString, new NativeImage(256, 256, true));
-			sx = (x - 7) * 16;
-			sz = (z - 7) * 16;
-		}
-
-		@Override
-		public void upload(){
-			for(int i = 0; i < grid; i++){
-				for(int j = 0; j < grid; j++){
-					checkPos(i + sx, j + sz);
-					BlockState state = Minecraft.getInstance().level.getBlockState(pos);
-					getPixels().setPixelABGR(i, j, state.getMapColor(Minecraft.getInstance().level, pos).calculateARGBColor(MapColor.Brightness.NORMAL));
-				}
+	public static void gen(ChunkKey key, WorldW world){
+		File file = new File(UniFCL.SF_FOLDER,"landdev/claim_view/" + key.x + "_" + key.z + ".png");
+		if(file.exists()) return;
+		if(!file.getParentFile().exists()) file.getParentFile().mkdirs();
+		ServerLevel level = world.local();
+		MutableBlockPos pos = new MutableBlockPos();
+		BufferedImage img = new BufferedImage(256, 256, BufferedImage.TYPE_INT_ARGB);
+		BlockState state;
+		int sx = (key.x - 7) * 16;
+		int sz = (key.z - 7) * 16;
+		for(int i = 0; i < grid; i++){
+			for(int j = 0; j < grid; j++){
+				pos.set(i + sx, level.getHeight() - 1, j + sz);
+				state = level.getBlockState(pos);
+				img.setRGB(i, j, state.getMapColor(level, pos).calculateARGBColor(MapColor.Brightness.NORMAL));
 			}
-			super.upload();
 		}
-
-		private BlockPos checkPos(int x, int z){
-			for(int i = Minecraft.getInstance().level.getHeight(); i > 0; i--){
-				if(!Minecraft.getInstance().level.getBlockState(pos.set(x, i, z)).canBeReplaced()) return pos;
-			}
-			return new BlockPos(x, 0, z);
+		try{
+			if(EnvInfo.DEV) LandDev.log("Writing: " + file);
+			ImageIO.write(img, "PNG", file);
 		}
-
-	}
-
-	public static void delete(){
-		Minecraft.getInstance().getTextureManager().release(temptexid.local());
-		temptex = null;
+		catch(IOException e){
+			e.printStackTrace();
+		}
 	}
 
 }
