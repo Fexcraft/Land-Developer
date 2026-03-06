@@ -9,7 +9,7 @@ public enum ChunkType {
 	NORMAL(0x1e943d),
 	RESTRICTED(0x6c0087),
 	PUBLIC(0xe6de00),
-	LOCKED(0xde4e00),
+	//LOCKED(0xde4e00),
 	;
 
 	public int color;
@@ -24,7 +24,7 @@ public enum ChunkType {
 			case NORMAL: return "N";
 			case RESTRICTED: return "R";
 			case PUBLIC: return "P";
-			case LOCKED: return "L";
+			//case LOCKED: return "L";
 		}
 		return "N";
 	}
@@ -35,7 +35,7 @@ public enum ChunkType {
 			case "N": return NORMAL;
 			case "R": return RESTRICTED;
 			case "P": return PUBLIC;
-			case "L": return LOCKED;
+			//case "L": return LOCKED;
 		}
 		return NORMAL;
 	}
@@ -50,7 +50,7 @@ public enum ChunkType {
 			case "normal": return NORMAL;
 			case "restricted": return RESTRICTED;
 			case "public": return PUBLIC;
-			case "locked": return LOCKED;
+			//case "locked": return LOCKED;
 		}
 		return null;
 	}
