@@ -236,9 +236,9 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 				resp.addRadio("type.private", ELM_BLUE, type == ChunkType.PRIVATE);
 				resp.addRadio("type.restricted", ELM_BLUE, type == ChunkType.RESTRICTED);
 				resp.addRadio("type.public", ELM_BLUE, type == ChunkType.PUBLIC);
-				if(container.ldp.adm){
+				/*if(container.ldp.adm){
 					resp.addRadio("type.locked", ELM_YELLOW, type == ChunkType.LOCKED);
-				}
+				}*/
 				resp.addButton("select_type.submit", ELM_GENERIC, OPEN);
 				resp.setFormular();
 				break;
@@ -436,8 +436,8 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 				if(!canman) break;
 				ChunkType type = ChunkType.get(req.getRadio("type."));
 				if(type == null) break;
-				if(!container.ldp.adm && (type == ChunkType.LOCKED || this.type == ChunkType.LOCKED)) break;
-				if(owner.isPlayer() && (type == ChunkType.RESTRICTED || type == ChunkType.LOCKED)){
+				//if(!container.ldp.adm && (type == ChunkType.LOCKED || this.type == ChunkType.LOCKED)) break;
+				if(owner.isPlayer() && (type == ChunkType.RESTRICTED /*|| type == ChunkType.LOCKED*/)){
 					container.msg("select_type.notforplayerchunks");
 					break;
 				}
@@ -600,8 +600,8 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 		}
 	}
 
-	public boolean locked(){
+	/*public boolean locked(){
 		return type == ChunkType.LOCKED;
-	}
+	}*/
 
 }
