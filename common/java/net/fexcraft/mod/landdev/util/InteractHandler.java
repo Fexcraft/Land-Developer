@@ -37,6 +37,7 @@ public class InteractHandler {
 
 	public static boolean hasperm(Chunk_ chunk, LDPlayer player, boolean interact){
 		if(interact && chunk.access.interact) return true;
+		if(chunk.locked) return player.adm;
 		boolean pass = false;
 		switch(chunk.type){
 			case NORMAL:
@@ -91,8 +92,6 @@ public class InteractHandler {
 					default:
 						break;
 				}
-				break;
-			case LOCKED:
 				break;
 			default:
 				player.entity.bar("interact.control.unknown_chunk_type");
