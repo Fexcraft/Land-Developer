@@ -17,64 +17,65 @@ import net.fexcraft.mod.landdev.util.ResManager;
  *
  */
 public class ChunkOwner implements Saveable {
-	
-	public boolean unowned = true;
-	public boolean playerchunk;
-	public Layers owner = Layers.NONE;
+
+	public Layers owner = Layers.DISTRICT;
 	public UUID player;
-	public int owid;
+	public int comid = -1;
 
 	@Override
 	public void save(JsonMap map){
-		if(unowned) return;
 		map.add("owner_type", owner.toString());
 		if(owner.is(Layers.PLAYER)){
 			map.add("owner", player.toString());
-			//map.add("owner0", player.getMostSignificantBits());
-			//map.add("owner1", player.getLeastSignificantBits());
 		}
-		else{
-			map.add("owner", owid);
+		if(owner.is(Layers.COMPANY)){
+			map.add("owner", comid);
 		}
 	}
 
 	@Override
 	public void load(JsonMap map){
-		if(unowned = !map.has("owner") && !map.has("owner0")) return;
-		owner = Layers.valueOf(map.getString("owner_type", "NONE"));
-		if(!owner.isValidChunkOwner()){
-			owner = Layers.NONE;
-			unowned = true;
-			return;
+		owner = Layers.valueOf(map.getString("owner_type", "DISTRICT"));
+		if(owner.is(Layers.NONE)) owner = Layers.DISTRICT;
+		if(owner.is(Layers.PLAYER)){
+			try{
+				player = UUID.fromString(map.get("owner").string_value());
+			}
+			catch(Exception e){
+				e.printStackTrace();
+				owner = Layers.DISTRICT;
+			}
 		}
-		if(playerchunk = owner.is(Layers.PLAYER)){
-			if(map.has("owner")) player = UUID.fromString(map.get("owner").string_value());
-			else player = new UUID(map.getLong("owner0", 0), map.getLong("owner1", 0));
+		if(owner.is(Layers.COMPANY)){
+			comid = map.get("owner").integer_value();
+			//TODO check if company still exists
 		}
-		else owid = map.getInteger("owner", -1);
 	}
-	
-	public void set(Layers layer, UUID uuid, int id){
-		if(unowned = !layer.isValidChunkOwner()){
-			owner = Layers.NONE;
-			playerchunk = false;
-			player = null;
-			owid = -1;
+
+	/** Sets the owning layer, id is necessary in cases where the owner is a player or company. */
+	public void set(Layers layer, Object id){
+		owner = layer;
+		player = null;
+		comid = -1;
+		if(!owner.isValidChunkOwner()){
+			owner = Layers.DISTRICT;
 		}
-		else{
-			playerchunk = (owner = layer).is(Layers.PLAYER);
-			player = playerchunk ? uuid : null;
-			owid = playerchunk ? -1 : id;
+		else if(owner.is(Layers.PLAYER)){
+			player = (UUID)id;
+			comid = -1;
+		}
+		else if(owner.is(Layers.COMPANY)){
+			player = null;
+			comid = (int)id;
 		}
 	}
 
 	public String name(){
-		return unowned ? "landdev.gui.chunk.unowned" : playerchunk ? ResManager.getPlayerName(player) : owner.name() + ":" + owid;
+		return player != null ? ResManager.getPlayerName(player) : comid >= 0 ? "//todo" : owner.name();
 	}
 
 	public Account getAccount(Chunk_ chunk){
-		if(unowned) return ResManager.SERVER_ACCOUNT;
-		if(playerchunk) return ResManager.getPlayer(player, true).account;
+		if(player != null) return ResManager.getPlayer(player, true).account;
 		switch(owner){
 			case DISTRICT: return chunk.district.account();
 			case MUNICIPALITY: return chunk.district.municipality().account;
@@ -87,8 +88,8 @@ public class ChunkOwner implements Saveable {
 	}
 
 	public boolean issame(ChunkOwner other){
-		if(playerchunk) return other.playerchunk && player.equals(other.player);
-		return owner == other.owner && owid == other.owid;
+		if(player != null) return player.equals(other.player);
+		return owner == other.owner && (!owner.is(Layers.COMPANY) || comid == other.comid);
 	}
 
 	public Layers layer(){
@@ -96,31 +97,25 @@ public class ChunkOwner implements Saveable {
 	}
 
 	public boolean taxable(){
-		return playerchunk || owner.is(Layers.COMPANY);
-	}
-
-	public void addMail(Mail mail){
-		if(unowned) return;
-		if(playerchunk){
-			LDPlayer ldp = ResManager.getPlayer(player, true);
-			ldp.addMail(mail);
-			if(ldp.offline) ldp.save();
-			return;
-		}
-		switch(owner){
-			case DISTRICT: ResManager.getDistrict(owid).mail.add(mail); break;
-			case MUNICIPALITY: ResManager.getMunicipality(owid, true).mail.add(mail); break;
-			case COUNTY: ResManager.getCounty(owid, true).mail.add(mail); break;
-			case REGION: ResManager.getRegion(owid, true).mail.add(mail); break;
-			case COMPANY://TODO
-			default: return;
-		}
+		return owner.is(Layers.PLAYER, Layers.COMPANY);
 	}
 
 	public boolean canManProp(LDPlayer ldp, Chunk_ ck){
-		if(playerchunk) return player.equals(ldp.uuid);
+		if(player != null) return player.equals(ldp.uuid);
 		if(owner.is(Layers.COMPANY)) return false;//TODO
 		return ck.district.can(PermAction.MANAGE_PROPERTY, ldp.uuid);
+	}
+
+	public boolean isPlayer(){
+		return player != null;
+	}
+
+	public boolean isCompany(){
+		return comid >= 0;
+	}
+
+	public boolean isPlayerOrCompany(){
+		return player != null || comid >= 0;
 	}
 
 }
