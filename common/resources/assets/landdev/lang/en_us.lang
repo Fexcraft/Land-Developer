@@ -190,6 +190,7 @@ landdev.gui.claim.district=&7District: &6%s
 landdev.gui.claim.municipality=&7Municipality of &6%s
 landdev.gui.claim.county=&6%s &7County
 landdev.gui.claim.locked=&cChunk is Locked.
+landdev.gui.claim.type=&7Type: &6%s
 landdev.gui.claim.not_adjacent=&4Chunk is not adjacent to District Chunks.
 landdev.gui.claim.already_claimed=&4Chunk is already part of a District.
 landdev.gui.claim.not_claimed=&4Chunk is not part of a District yet.
