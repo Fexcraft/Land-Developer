@@ -47,8 +47,8 @@ public class Mail implements Saveable {
 		type = mtype;
 		from = chunk.district.owner.layer();
 		fromid = chunk.district.owner.owid + "";
-		receiver = chunk.owner.playerchunk ? Layers.PLAYER : chunk.owner.layer();
-		recid = chunk.owner.playerchunk ? chunk.owner.player.toString() : chunk.owner.owid + "";
+		receiver = chunk.owner.isCompany() ? Layers.PLAYER : chunk.owner.layer();
+		recid = chunk.owner.isCompany() ? chunk.owner.player.toString() : chunk.owner.comid + "";
 		unread = true;
 	}
 
