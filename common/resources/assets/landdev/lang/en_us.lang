@@ -204,6 +204,7 @@ landdev.gui.claim.buy.not_for_sale=&4This chunk is not for sale/claim.
 landdev.gui.claim.buy.other_county=&4Chunk is in another County.
 landdev.gui.claim.buy.in_county=&4Chunk in in a County District.
 landdev.gui.claim.buy.other_municipality=&4Chunk is in another Municipality.
+landdev.gui.claim.set_type.no_perm=No permission to change chunk type.
 landdev.gui.claim.pass=&aChunk Claimed.
 landdev.gui.claim.transferred=&aChunk transferred.
 landdev.gui.claim.price_set=&aNew Chunk price set.
