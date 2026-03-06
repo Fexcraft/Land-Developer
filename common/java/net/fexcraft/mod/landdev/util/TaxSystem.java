@@ -260,14 +260,14 @@ public class TaxSystem extends TimerTask {
 			Bank bank = account.getBank();
 			if(account.getBalance() < tax){
 				Layers ckow = chunk.owner.layer();
-				String ckoid = chunk.owner.playerchunk ? chunk.owner.player.toString() : chunk.owner.owid + "";
+				String ckoid = chunk.owner.isPlayer() ? chunk.owner.player.toString() : chunk.owner.comid + "";
 				if(account.getBalance() <= 0){
 					Mail mail = new Mail(MailType.SYSTEM, chunk).expireInDays(7);
 					mail.setTitle("landdev.tax.unpaid_notice.mail");
 					mail.addMessage("landdev.tax.no_funds");
 					if(chunk.district.norms.get("unclaim-bankrupt").bool()){
 						mail.addMessage("landdev.tax.no_funds.unclaimed");
-						chunk.owner.set(Layers.DISTRICT, null, chunk.district.id);
+						chunk.owner.set(Layers.DISTRICT, null);
 					}
 					mail.addMessage("Chunk: " + chunk.key.toString());
 					chunk.sendToOwner(mail);
