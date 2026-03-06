@@ -66,6 +66,8 @@ public class LDN {
 		UniReg.registerMenu(LDKeys.CHUNK_BUY, "landdev:uis/chunk_claim", ChunkClaimCon.class);
 		UniReg.registerUI(LDKeys.CHUNK_LOCK, ChunkClaimUI.class);
 		UniReg.registerMenu(LDKeys.CHUNK_LOCK, "landdev:uis/chunk_claim", ChunkClaimCon.class);
+		UniReg.registerUI(LDKeys.CHUNK_SET_TYPE, ChunkClaimUI.class);
+		UniReg.registerMenu(LDKeys.CHUNK_SET_TYPE, "landdev:uis/chunk_claim", ChunkClaimCon.class);
 		UniReg.registerUI(LDKeys.DEF_SPACE, SpaceDefUI.class);
 		UniReg.registerMenu(LDKeys.DEF_SPACE, "landdev:uis/define_space", SpaceDefCon.class);
 		//
