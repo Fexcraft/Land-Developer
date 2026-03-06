@@ -37,14 +37,13 @@ public class InteractHandler {
 
 	public static boolean hasperm(Chunk_ chunk, LDPlayer player, boolean interact){
 		if(interact && chunk.access.interact) return true;
-		ChunkType type = chunk.owner.unowned ? ChunkType.NORMAL : chunk.type;
 		boolean pass = false;
-		switch(type){
+		switch(chunk.type){
 			case NORMAL:
 				pass = chunk.district.owner.isPartOf(player);
 				break;
 			case PRIVATE:
-				if(chunk.owner.playerchunk){
+				if(chunk.owner.isPlayer()){
 					pass = player.uuid.equals(chunk.owner.player);
 				}
 				else{
