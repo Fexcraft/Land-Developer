@@ -48,12 +48,12 @@ public class SpaceDefinitionCache {
 		}
 		Chunk_ ck = ResManager.getChunk(pos);
 		if(!ldp.adm && !ck.owner.canManProp(ldp, ck)){
-			if(ck.owner.unowned){
+			/*if(ck.owner.unowned){
 				ldp.entity.send("landdev.gui.property.create.no_man_perm");
 			}
-			else{
+			else{*/
 				ldp.entity.send("landdev.gui.property.create.no_own_perm");
-			}
+			//}
 			return;
 		}
 		int sx = ck.key.x;
@@ -91,7 +91,7 @@ public class SpaceDefinitionCache {
 			return;
 		}
 		Account acc = ck.owner.getAccount(ck);
-		long fee = ck.owner.playerchunk ? ck.district.norms.get("new-property-fee").integer() : 0;
+		long fee = ck.owner.isPlayer() ? ck.district.norms.get("new-property-fee").integer() : 0;
 		if(acc.getBalance() < fee + LDConfig.PROPERTY_CREATION_FEE){
 			ldp.entity.send("landdev.gui.property.create.not_enough_money", Config.getWorthAsString(fee + LDConfig.PROPERTY_CREATION_FEE));
 			return;
@@ -106,11 +106,11 @@ public class SpaceDefinitionCache {
 		prop.start = pos;
 		prop.end = pos.add(size).sub(1, 1, 1);
 		prop.created.create(ldp.uuid);
-		if(ck.owner.playerchunk){
+		if(ck.owner.isPlayer()){
 			prop.owner.set(ck.owner.player, -1);
 		}
-		if(ck.owner.layer().is(Layers.COMPANY)){
-			prop.owner.set(null, ck.owner.owid);
+		if(ck.owner.isCompany()){
+			prop.owner.set(null, ck.owner.comid);
 		}
 		for(Chunk_ ok : cks){
 			ok.propholder.properties.add(prop);
