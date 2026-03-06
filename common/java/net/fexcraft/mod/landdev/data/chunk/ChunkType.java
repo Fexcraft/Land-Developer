@@ -5,12 +5,18 @@ package net.fexcraft.mod.landdev.data.chunk;
  */
 public enum ChunkType {
 	
-	PRIVATE,
-	NORMAL,
-	RESTRICTED,
-	PUBLIC,
-	LOCKED,
+	PRIVATE(0x0d00ff),
+	NORMAL(0x00ff15),
+	RESTRICTED(0x6c0087),
+	PUBLIC(0xe6de00),
+	LOCKED(0xde4e00),
 	;
+
+	public int color;
+
+	ChunkType(int col){
+		color = col;
+	}
 
 	public String l1(){
 		switch(this){
