@@ -101,7 +101,7 @@ public class ChunkClaimCon extends ContainerInterface {
 					sendMsg(com, "landdev.gui.claim.not_adjacent");
 					return;
 				}
-				if(!ldp.adm && chunk.locked()){
+				if(!ldp.adm && chunk.locked){
 					sendMsg(com, "landdev.gui.claim.locked");
 					return;
 				}
