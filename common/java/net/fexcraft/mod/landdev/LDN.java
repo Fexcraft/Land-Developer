@@ -12,6 +12,7 @@ import net.fexcraft.mod.landdev.ui.*;
 import net.fexcraft.mod.landdev.util.broad.BroadcastChannel;
 import net.fexcraft.mod.landdev.util.broad.Broadcaster;
 import net.fexcraft.mod.landdev.util.broad.DiscordTransmitter;
+import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.UniChunk;
 import net.fexcraft.mod.uni.UniReg;
 import net.fexcraft.mod.uni.tag.TagCW;
@@ -19,6 +20,8 @@ import net.fexcraft.mod.uni.tag.TagLW;
 import net.fexcraft.mod.uni.ui.UIKey;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.attribute.FileTime;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -126,8 +129,29 @@ public class LDN {
 			@Override
 			public void run(){
 				ChunkRegion.saveRegions();
+				clearClaimImgCache();
 			}
 		}, new Date(mid), offset);
+	}
+
+	private static void clearClaimImgCache(){
+		File folder = new File(UniFCL.SF_FOLDER, "landdev/claim_view/");
+		if(!folder.exists()) return;
+		long now = Time.getDate();
+		long off = Time.MIN_MS * 6;
+		ArrayList<File> list = new ArrayList<>();
+		for(File file : folder.listFiles()){
+			try{
+				FileTime time = (FileTime)Files.getAttribute(file.toPath(), "creationTime");
+				if(time.toMillis() + off > now) continue;
+				list.add(file);
+			}
+			catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+		for(File file : list) file.delete();
+		if(EnvInfo.DEV && list.size() > 0) LandDev.log("[LD] Removed " + list.size() + " cached claim view files.");
 	}
 
 	public static void onServerStopping(){

@@ -1,21 +1,19 @@
 package net.fexcraft.mod.landdev.util;
 
-import com.mojang.blaze3d.platform.NativeImage;
-import com.mojang.blaze3d.platform.TextureUtil;
-import com.mojang.blaze3d.systems.RenderSystem;
-import net.fexcraft.mod.landdev.ui.ChunkClaimUI;
-import net.fexcraft.mod.uni.IDL;
-import net.fexcraft.mod.uni.IDLManager;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.texture.SimpleTexture;
+import net.fexcraft.mod.fcl.UniFCL;
+import net.fexcraft.mod.landdev.LandDev;
+import net.fexcraft.mod.landdev.data.chunk.ChunkKey;
+import net.fexcraft.mod.uni.EnvInfo;
+import net.fexcraft.mod.uni.world.WorldW;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.MapColor;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 
 /**
@@ -23,64 +21,41 @@ import java.io.IOException;
  */
 public class ClaimMapTexture {
 
-	protected static IDL temptexid = IDLManager.getIDLCached("landdev:claimtemptex.png");
-	private static TempTex temptex;
+	private static final int grid = 15 * 16;
 
-	public static void bind(ChunkClaimUI ui, int x, int z){
-		if(temptex == null){
-			Minecraft.getInstance().textureManager.register(temptexid.local(), temptex = new TempTex(temptexid.local(), x, z));
+	public static void gen(ChunkKey key, WorldW world){
+		File file = new File(UniFCL.SF_FOLDER,"landdev/claim_view/" + key.x + "_" + key.z + ".png");
+		if(file.exists()) return;
+		if(!file.getParentFile().exists()) file.getParentFile().mkdirs();
+		ServerLevel level = world.local();
+		MutableBlockPos pos = new MutableBlockPos();
+		BufferedImage img = new BufferedImage(256, 256, BufferedImage.TYPE_INT_RGB);
+		BlockState state;
+		int sx = (key.x - 7) * 16;
+		int sz = (key.z - 7) * 16;
+		for(int i = 0; i < grid; i++){
+			for(int j = 0; j < grid; j++){
+				checkPos(level, pos, i + sx, j + sz);
+				state = level.getBlockState(pos);
+				img.setRGB(i, j, state.getMapColor(level, pos).col);
+			}
 		}
-		ui.drawer.bind(temptexid);
+		try{
+			if(EnvInfo.DEV) LandDev.log("Writing: " + file);
+			ImageIO.write(img, "PNG", file);
+		}
+		catch(IOException e){
+			e.printStackTrace();
+		}
 	}
 
-	public static class TempTex extends SimpleTexture {
-
-		private static MutableBlockPos pos = new MutableBlockPos();
-		private static final int grid = 15 * 16;
-		private NativeImage image = new NativeImage(256, 256, true);
-		private Level world;
-		private int sx, sz;
-
-		public TempTex(ResourceLocation rs, int x, int z){
-			super(rs);
-			world = Minecraft.getInstance().level;
-			sx = (x - 7) * 16;
-			sz = (z - 7) * 16;
+	private static BlockPos checkPos(Level world, MutableBlockPos pos, int x, int z){
+		for(int i = world.getHeight() - 1; i > 0; i--){
+			pos.set(x, i, z);
+			if(world.isWaterAt(pos)) return pos;
+			if(!world.getBlockState(pos).canBeReplaced()) return pos;
 		}
-
-		@Override
-		public void load(ResourceManager resman) throws IOException {
-			for(int i = 0; i < grid; i++){
-				for(int j = 0; j < grid; j++){
-					checkPos(i + sx, j + sz);
-					BlockState state = world.getBlockState(pos);
-					image.setPixelRGBA(i, j, state.getMapColor(world, pos).calculateRGBColor(MapColor.Brightness.NORMAL));
-				}
-			}
-			if(!RenderSystem.isOnRenderThreadOrInit()){
-				RenderSystem.recordRenderCall(() -> {
-					TextureUtil.prepareImage(getId(), 0, image.getWidth(), image.getHeight());
-					image.upload(0, 0, 0, true);
-				});
-			}
-			else{
-				TextureUtil.prepareImage(getId(), 0, image.getWidth(), image.getHeight());
-				image.upload(0, 0, 0, true);
-			}
-		}
-
-		private BlockPos checkPos(int x, int z){
-			for(int i = world.getHeight(); i > 0; i--){
-				if(!world.getBlockState(pos.set(x, i, z)).canBeReplaced()) return pos;
-			}
-			return new BlockPos(x, 0, z);
-		}
-
-	}
-
-	public static void delete(){
-		Minecraft.getInstance().textureManager.release(temptexid.local());
-		temptex = null;
+		return new BlockPos(x, 0, z);
 	}
 
 }

@@ -1,11 +1,10 @@
 package net.fexcraft.mod.landdev.ui;
 
 import net.fexcraft.app.json.JsonMap;
+import net.fexcraft.mod.fcl.UniFCL;
 import net.fexcraft.mod.fsmm.util.Config;
 import net.fexcraft.mod.landdev.data.chunk.ChunkKey;
-import net.fexcraft.mod.landdev.util.ClaimMapTexture;
 import net.fexcraft.mod.uni.IDL;
-import net.fexcraft.mod.uni.IDLManager;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.ui.ContainerInterface;
 import net.fexcraft.mod.uni.ui.UIButton;
@@ -22,20 +21,16 @@ import static net.fexcraft.mod.uni.ui.ContainerInterface.*;
 public class ChunkClaimUI extends UserInterface {
 
 	protected ChunkClaimCon con;
-	private static final IDL TEXTURE = IDLManager.getIDLCached("landdev:textures/ui/claim.png");
 	private static UIButton[][] ckbuttons = new UIButton[15][15];
-	private static Integer lx, lz;
 	private boolean gridview = true;
 	private boolean mapgrid = true;
-	private boolean deltex;
+	private IDL texture;
 
 	public ChunkClaimUI(JsonMap map, ContainerInterface container) throws Exception {
 		super(map, container);
 		con = (ChunkClaimCon)container;
 		ChunkKey key = new ChunkKey(con.player.entity.getPos());
-		if(lx != null && (key.x != lx || key.z != lz)) deltex = true;
-		lx = key.x;
-		lz = key.z;
+		texture = UniFCL.requestServerFile(null, "server:landdev/claim_view/" + key.x + "_" + key.z + ".png");
 	}
 
 	@Override
@@ -80,7 +75,7 @@ public class ChunkClaimUI extends UserInterface {
 					}
 				}
 			}
-			ClaimMapTexture.bind(this, lx, lz);
+			drawer.bind(texture);
 			for(int i = 0; i < con.chunks.length; i++){
 				for(int k = 0; k < con.chunks[i].length; k++){
 					drawer.draw(gLeft + 6 + (i * 14), gTop + 20 + (k * 14), i * 16, k * 16, 12, 12);
@@ -112,10 +107,6 @@ public class ChunkClaimUI extends UserInterface {
 		}
 		switch(id){
 			case "map":{
-				if(deltex){
-					ClaimMapTexture.delete();
-					deltex = false;
-				}
 				gridview = false;
 				return true;
 			}

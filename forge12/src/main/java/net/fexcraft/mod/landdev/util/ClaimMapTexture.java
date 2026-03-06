@@ -2,80 +2,65 @@ package net.fexcraft.mod.landdev.util;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 
-import net.fexcraft.mod.landdev.ui.ChunkClaimUI;
+import net.fexcraft.mod.fcl.UniFCL;
+import net.fexcraft.mod.landdev.LandDev;
+import net.fexcraft.mod.landdev.data.chunk.ChunkKey;
+import net.fexcraft.mod.uni.EnvInfo;
+import net.fexcraft.mod.uni.world.WorldW;
+import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.texture.SimpleTexture;
-import net.minecraft.client.renderer.texture.TextureUtil;
-import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.init.Blocks;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockPos.MutableBlockPos;
 import net.minecraft.world.World;
+
+import javax.imageio.ImageIO;
 
 /**
  * @author Ferdinand Calo'
  */
 public class ClaimMapTexture {
 
-	protected static ResourceLocation temptexid = new ResourceLocation("landdev:claimtemptex.png");
+	private static final int grid = 15 * 16;
 
-	public static void bind(ChunkClaimUI ui, int x, int z){
-		if(Minecraft.getMinecraft().renderEngine.getTexture(temptexid) == null){
-			ui.texts.get("title").value("landdev.gui.claim.loadingmap");
-			ui.texts.get("title").translate();
-			Minecraft.getMinecraft().renderEngine.loadTexture(temptexid, new TempTex(Minecraft.getMinecraft().world, temptexid, x, z));
+	public static void gen(ChunkKey key, WorldW world){
+		File file = new File(UniFCL.SF_FOLDER,"landdev/claim_view/" + key.x + "_" + key.z + ".png");
+		if(file.exists()) return;
+		if(!file.getParentFile().exists()) file.getParentFile().mkdirs();
+		World level = world.local();
+		MutableBlockPos pos = new MutableBlockPos();
+		BufferedImage img = new BufferedImage(256, 256, BufferedImage.TYPE_INT_RGB);
+		IBlockState state;
+		int sx = (key.x - 7) * 16;
+		int sz = (key.z - 7) * 16;
+		for(int i = 0; i < grid; i++){
+			for(int j = 0; j < grid; j++){
+				checkPos(level, pos, i + sx, j + sz);
+				state = level.getBlockState(pos);
+				img.setRGB(i, j, new Color(state.getMapColor(level, pos).colorValue).getRGB());
+			}
 		}
-		Minecraft.getMinecraft().getTextureManager().bindTexture(temptexid);
+		try{
+			if(EnvInfo.DEV) LandDev.log("Writing: " + file);
+			ImageIO.write(img, "PNG", file);
+		}
+		catch(IOException e){
+			e.printStackTrace();
+		}
 	}
 
-	public static class TempTex extends SimpleTexture {
-
-		private static MutableBlockPos pos = new MutableBlockPos();
-		private static final int grid = 15 * 16;
-		private BufferedImage image = new BufferedImage(256, 256, BufferedImage.TYPE_INT_ARGB);
-		private World world;
-		private int sx, sz;
-
-		public TempTex(World world, ResourceLocation rs, int x, int z){
-			super(rs);
-			this.world = world;
-			sx = (x - 7) * 16;
-			sz = (z - 7) * 16;
+	private static BlockPos checkPos(World world, MutableBlockPos pos, int x, int z){
+		Block block;
+		for(int i = world.getHeight() - 1; i > 0; i--){
+			pos.setPos(x, i, z);
+			block = world.getBlockState(pos).getBlock();
+			if(block == Blocks.WATER || block == Blocks.FLOWING_WATER) return pos;
+			if(!block.isReplaceable(world, pos)) return pos;
 		}
-
-		@Override
-		public void loadTexture(IResourceManager resourceManager) throws IOException {
-			if(image == null && textureLocation != null){
-				super.loadTexture(resourceManager);
-			}
-			for(int i = 0; i < grid; i++){
-				for(int j = 0; j < grid; j++){
-					checkPos(i + sx, j + sz);
-					IBlockState state = world.getBlockState(pos);
-					image.setRGB(i, j, new Color(state.getMapColor(world, pos).colorValue).getRGB());
-				}
-			}
-			if(image != null){
-				if(textureLocation != null) deleteGlTexture();
-				TextureUtil.uploadTextureImage(super.getGlTextureId(), image);
-			}
-		}
-
-		private final BlockPos checkPos(int x, int z){
-			for(int i = world.getHeight(); i > 0; i--){
-				if(world.getBlockState(pos.setPos(x, i, z)).getBlock() != Blocks.AIR) return pos;
-			}
-			return new BlockPos(x, 0, z);
-		}
-
-	}
-
-	public static void delete(){
-		Minecraft.getMinecraft().renderEngine.deleteTexture(temptexid);
+		return new BlockPos(x, 0, z);
 	}
 
 }

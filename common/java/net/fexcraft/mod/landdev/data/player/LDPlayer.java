@@ -64,6 +64,8 @@ public class LDPlayer implements Saveable, Layer, LDUIModule, Appendable<UniEnti
 	public County county;
 	public Chunk_ chunk_current;
 	public Chunk_ chunk_last;
+	public Integer last_claim_x;
+	public Integer last_claim_z;
 	public SpaceDefinitionCache defcache;
 	public boolean show_props;
 	public ExternalData external = new ExternalData(this);

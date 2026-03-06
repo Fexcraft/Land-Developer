@@ -6,10 +6,12 @@ import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fsmm.data.Account;
 import net.fexcraft.mod.fsmm.data.Bank;
 import net.fexcraft.mod.landdev.data.Layers;
+import net.fexcraft.mod.landdev.data.chunk.ChunkKey;
 import net.fexcraft.mod.landdev.data.chunk.ChunkType;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.data.district.District;
 import net.fexcraft.mod.landdev.data.player.LDPlayer;
+import net.fexcraft.mod.landdev.util.ClaimMapTexture;
 import net.fexcraft.mod.landdev.util.LDConfig;
 import net.fexcraft.mod.landdev.util.ResManager;
 import net.fexcraft.mod.uni.UniEntity;
@@ -43,7 +45,12 @@ public class ChunkClaimCon extends ContainerInterface {
 		super(map, ply, pos);
 		ldp = ResManager.getPlayer(ply);
 		for(int i = 0; i < chunks.length; i++) for(int k = 0; k < chunks[i].length; k++) chunks[i][k] = new ChunkData();
-
+		ChunkKey key = new ChunkKey(ldp.entity.getPos());
+		if(ldp.last_claim_x == null || key.x != ldp.last_claim_x || key.z != ldp.last_claim_z){
+			if(!ply.entity.getWorld().isClient()) ClaimMapTexture.gen(key, ply.entity.getWorld());
+		}
+		ldp.last_claim_x = key.x;
+		ldp.last_claim_z = key.z;
 	}
 
 	public ContainerInterface set(UserInterface ui){
