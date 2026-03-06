@@ -8,6 +8,7 @@ import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fcl.FCL;
 import net.fexcraft.mod.landdev.data.PermAction;
+import net.fexcraft.mod.landdev.data.chunk.ChunkType;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.data.county.County;
 import net.fexcraft.mod.landdev.data.district.District;
@@ -368,6 +369,13 @@ public class LandDev {
 					dis = Integer.parseInt(arg.replace("county:", ""));
 				}
 				player.entity.openUI(LDKeys.CHUNK_TRANSFER, new V3I(chunk.key.x, dis, chunk.key.z));
+				return 0;
+			})))
+			.then(literal("set-type").then(argument("to", StringArgumentType.greedyString()).executes(cmd -> {
+				LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
+				Chunk_ chunk = ResManager.getChunk(player.entity);
+				ChunkType type = ChunkType.get(cmd.getArgument("to", String.class));
+				player.entity.openUI(LDKeys.CHUNK_SET_TYPE, new V3I(chunk.key.x, type.ordinal(), chunk.key.z));
 				return 0;
 			})))
 			.then(literal("lock").executes(cmd -> {
