@@ -27,6 +27,7 @@ public class LDKeys {
 	public static final int ID_CHUNK_SELL = 102;
 	public static final int ID_CHUNK_BUY = 103;
 	public static final int ID_CHUNK_LOCK = 104;
+	public static final int ID_CHUNK_SET_TYPE = 105;
 	public static final int ID_DEF_SPACE = 110;
 	public static final int ID_IMG_PREVIEW = 200;
 
@@ -44,6 +45,7 @@ public class LDKeys {
 	public static final UIKey MAIL = new UIKey(ID_MAIL, "landdev:mail");
 	public static final UIKey CHUNK_CLAIM = new UIKey(ID_CHUNK_CLAIM, "landdev:chunk_claim");
 	public static final UIKey CHUNK_TRANSFER = new UIKey(ID_CHUNK_TRANSFER, "landdev:chunk_transfer");
+	public static final UIKey CHUNK_SET_TYPE = new UIKey(ID_CHUNK_SET_TYPE, "landdev:chunk_set_type");
 	public static final UIKey CHUNK_SELL = new UIKey(ID_CHUNK_SELL, "landdev:chunk_sell");
 	public static final UIKey CHUNK_BUY = new UIKey(ID_CHUNK_BUY, "landdev:chunk_buy");
 	public static final UIKey CHUNK_LOCK = new UIKey(ID_CHUNK_LOCK, "landdev:chunk_lock");
