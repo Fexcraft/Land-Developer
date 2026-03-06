@@ -386,9 +386,7 @@ public class LandDev implements ModInitializer {
 				LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
 				Chunk_ chunk = ResManager.getChunk(player.entity);
 				ChunkType type = ChunkType.get(cmd.getArgument("to", String.class));
-				if(type != ChunkType.LOCKED){
-					player.entity.openUI(LDKeys.CHUNK_SET_TYPE, new V3I(chunk.key.x, type.ordinal(), chunk.key.z));
-				}
+				player.entity.openUI(LDKeys.CHUNK_SET_TYPE, new V3I(chunk.key.x, type.ordinal(), chunk.key.z));
 				return 0;
 			})))
 			.then(literal("lock").executes(cmd -> {
