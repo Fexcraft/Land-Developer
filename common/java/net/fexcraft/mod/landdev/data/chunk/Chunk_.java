@@ -2,8 +2,7 @@ package net.fexcraft.mod.landdev.data.chunk;
 
 import static net.fexcraft.lib.common.math.Time.getAsString;
 import static net.fexcraft.mod.fsmm.util.Config.getWorthAsString;
-import static net.fexcraft.mod.landdev.data.PermAction.CHUNK_CUSTOMTAX;
-import static net.fexcraft.mod.landdev.data.PermAction.MANAGE_DISTRICT;
+import static net.fexcraft.mod.landdev.data.PermAction.*;
 import static net.fexcraft.mod.landdev.ui.LDUIButton.*;
 import static net.fexcraft.mod.landdev.ui.LDUIRow.*;
 
@@ -138,11 +137,15 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 		if(player.adm) return true;
 		if(locked) return false;
 		UUID uuid = player.uuid;
-		if(owner.playerchunk && owner.player.equals(uuid)) return true;
-		else if(owner.owner.is(Layers.DISTRICT) && district.can(MANAGE_DISTRICT, uuid)) return true;
-		else if(owner.owner.is(Layers.MUNICIPALITY) && district.owner.manageable().isManager(uuid)) return true;
-		//TODO
-		return false;
+		switch(owner.owner){
+			case COMPANY: return false;//TODO
+			case DISTRICT: return district.can(MANAGE_DISTRICT, uuid);
+			case MUNICIPALITY: return district.municipality().manage.can(MANAGE_DISTRICT, uuid);
+			case COUNTY: return district.county().manage.can(MANAGE_DISTRICT, uuid);
+			case REGION: return district.region().manage.can(MANAGE_DISTRICT, uuid);
+			case PLAYER: return owner.player.equals(uuid);
+			default: return false;
+		}
 	}
 	
 	public static final int
@@ -184,7 +187,7 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 				resp.addRow("type", ELM_GENERIC, canman ? OPEN : EMPTY, canman, type.lang());
 				resp.addButton("district", ELM_GENERIC, OPEN, district.name());
 				resp.addBlank();
-				resp.addButton("owner", ELM_GENERIC, OPEN, owner.name());
+				resp.addButton("owner", ELM_GENERIC, canman ? OPEN : EMPTY, owner.name());
 				if(sell.price > 0){
 					resp.addRow("price", ELM_GENERIC, /*canman ? EMPTY :*/ OPEN, true/*!canman*/, sell.price_formatted());
 				}
@@ -434,7 +437,7 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 				ChunkType type = ChunkType.get(req.getRadio("type."));
 				if(type == null) break;
 				if(!container.ldp.adm && (type == ChunkType.LOCKED || this.type == ChunkType.LOCKED)) break;
-				if(owner.playerchunk && (type == ChunkType.RESTRICTED || type == ChunkType.LOCKED)){
+				if(owner.isPlayer() && (type == ChunkType.RESTRICTED || type == ChunkType.LOCKED)){
 					container.msg("select_type.notforplayerchunks");
 					break;
 				}
@@ -464,7 +467,7 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 					container.msg("landdev.district.not_part_of_municipality", false);
 					break;
 				}
-				owner.set(layer, null, getLayerId(layer));
+				owner.set(layer, null);
 				sell.price = 0;
 				container.open(UI_MAIN);
 				break;
@@ -489,7 +492,7 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 					break;
 				}
 				if(!account.getBank().processAction(Action.TRANSFER, container.ldp.entity, account, sell.price, owner.getAccount(this))) break;
-				owner.set(layer, layer.is(Layers.PLAYER) ? container.ldp.uuid : null, district.getLayerId(layer));
+				owner.set(layer, layer.is(Layers.PLAYER) ? container.ldp.uuid : district.getLayerId(layer));
 				sell.price = 0;
 				save();
 				if(link != null && link.linked != null){
@@ -498,7 +501,7 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 						if(ck.link == null || !key.equals(ck.link.root_key)) continue;
 						ck.sell.price = 0;
 						ck.type = ChunkType.PRIVATE;
-						ck.owner.set(layer, layer.is(Layers.PLAYER) ? container.ldp.uuid : null, district.getLayerId(layer));
+						ck.owner.set(layer, layer.is(Layers.PLAYER) ? container.ldp.uuid : district.getLayerId(layer));
 						ck.save();
 					}
 				}
@@ -566,7 +569,7 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 	}
 
 	public void sendToOwner(Mail mail){
-		if(owner.playerchunk){
+		if(owner.isPlayer()){
 			LDPlayer player = ResManager.getPlayer(owner.player, true);
 			player.addMailAndSave(mail);
 			return;
