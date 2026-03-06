@@ -723,7 +723,7 @@ public class County implements Saveable, Layer, LDUIModule {
 						ResManager.DISTRICTS.put(dis.id, dis);
 						nct.districts.add(dis.id);
 						chunk.district = dis;
-						chunk.owner.set(Layers.COUNTY, null, nct.id);
+						chunk.owner.set(Layers.COUNTY, null);
 						chunk.sell.price = 0;
 						chunk.save();
 						dis.owner.set(nct);
