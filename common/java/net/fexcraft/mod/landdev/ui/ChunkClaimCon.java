@@ -184,7 +184,12 @@ public class ChunkClaimCon extends ContainerInterface {
 					chunk.save();
 				}
 				else if(mode == Mode.SET_TYPE){
-
+					if(!chunk.can_manage(ldp)){
+						sendMsg(com, "landdev.gui.claim.set_type.no_perm");
+						return;
+					}
+					chunk.type = ChunkType.values()[pos.y];
+					chunk.save();
 				}
 				sendSync(com);
 			}
