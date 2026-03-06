@@ -2,6 +2,8 @@ package net.fexcraft.mod.landdev.cmd;
 
 import java.util.List;
 
+import net.fexcraft.lib.common.math.V3I;
+import net.fexcraft.mod.landdev.data.chunk.ChunkType;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.ui.LDKeys;
 import net.fexcraft.mod.landdev.util.AliasLoader;
@@ -96,6 +98,18 @@ public class CkCmd extends CommandBase {
 			}
 			else if(args[0].equals("lock")){
 				ent.openUI(LDKeys.CHUNK_LOCK, chunk.key.x, 0, chunk.key.z);
+			}
+			else if(args[0].equals("set-type")){
+				ChunkType type = ChunkType.get(args[1]);
+				ent.openUI(LDKeys.CHUNK_SET_TYPE, new V3I(chunk.key.x, type.ordinal(), chunk.key.z));
+			}
+			else{
+				ent.send("/ck claim (dis-id)");
+				ent.send("/ck transfer <dis-id>");
+				ent.send("/ck sell <price>");
+				ent.send("/ck buy <for>");
+				ent.send("/ck lock");
+				ent.send("/ck set-type <type>");
 			}
     	}
     	else{
