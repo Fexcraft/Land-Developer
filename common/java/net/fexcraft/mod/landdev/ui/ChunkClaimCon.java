@@ -132,7 +132,7 @@ public class ChunkClaimCon extends ContainerInterface {
 					if(chunk.district.id > -1) chunk.district.chunks -= 1;
 					chunk.district = district;
 					chunk.district.chunks += 1;
-					chunk.owner.set(district.owner.is_county ? Layers.COUNTY : Layers.MUNICIPALITY, null, district.owner.owid);
+					chunk.owner.set(district.owner.is_county ? Layers.COUNTY : Layers.MUNICIPALITY, null);
 					chunk.save();
 				}
 				else if(mode == Mode.SELL){
@@ -160,16 +160,13 @@ public class ChunkClaimCon extends ContainerInterface {
 					if(!account.getBank().processAction(Bank.Action.TRANSFER, ldp.entity, account, chunk.sell.price, chunk.owner.getAccount(chunk))) return;
 					com.set("msg", "landdev.gui.claim.bought");
 					if(layer.is(Layers.PLAYER)){
-						chunk.owner.set(layer, uuid, 0);
+						chunk.owner.set(layer, uuid);
 					}
 					else if(layer.is(Layers.COMPANY)){
 						//TODO
 					}
-					else if(layer.is(Layers.REGION)){
-						chunk.owner.set(layer, null, prix);
-					}
 					else{
-						chunk.owner.set(layer, null, district.getLayerId(layer));
+						chunk.owner.set(layer, null);
 					}
 					chunk.sell.price = 0;
 					chunk.save();
@@ -233,11 +230,11 @@ public class ChunkClaimCon extends ContainerInterface {
 	}
 
 	private boolean isNotOwner(Chunk_ chunk, District district, TagCW com){
-		if(chunk.owner.playerchunk && !chunk.owner.player.equals(uuid)){
+		if(chunk.owner.isPlayer() && !chunk.owner.player.equals(uuid)){
 			sendMsg(com, "landdev.gui.claim.sell.not_owner");
 			return true;
 		}
-		if(!chunk.owner.playerchunk){
+		if(!chunk.owner.isPlayer()){
 			if(!chunk.owner.owner.is(district.owner.layer())){
 				sendMsg(com, "landdev.gui.claim.sell.not_owner");
 				return true;
