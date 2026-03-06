@@ -175,6 +175,7 @@
     "landdev.gui.claim.municipality": "\u00A77Municipality of \u00A76%s",
     "landdev.gui.claim.county": "\u00A76%s \u00A77County",
     "landdev.gui.claim.locked": "\u00A7cChunk is Locked.",
+    "landdev.gui.claim.type": "\u00A77Type: \u00A76%s",
     "landdev.gui.claim.not_adjacent": "\u00A74Chunk is not adjacent to District Chunks.",
     "landdev.gui.claim.already_claimed": "\u00A74Chunk is already part of a District.",
     "landdev.gui.claim.not_claimed": "\u00A74Chunk is not part of a District yet.",
