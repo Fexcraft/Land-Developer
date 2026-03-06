@@ -76,7 +76,7 @@ public class ChunkClaimCon extends ContainerInterface {
 				TagLW list = pkt.getList("cks");
 				for(int i = 0; i < 15; i++){
 					for(int k = 0; k < 15; k++){
-						chunks[i][k] = new ChunkData(list.getCompound(k + i * 15), i - 7 + pos.x, k - 7 + pos.z);
+						chunks[i][k] = new ChunkData(list.getCompound(k + i * 15), i - 7 + pos.x, k - 7 + pos.z, mode);
 					}
 				}
 				dists.clear();
@@ -182,6 +182,9 @@ public class ChunkClaimCon extends ContainerInterface {
 					if(!ldp.adm) return;
 					chunk.locked = !chunk.locked;
 					chunk.save();
+				}
+				else if(mode == Mode.SET_TYPE){
+
 				}
 				sendSync(com);
 			}
@@ -302,6 +305,7 @@ public class ChunkClaimCon extends ContainerInterface {
 				else{
 					com.set("d", di = chunk.district.id);
 					if(mode.lock()) com.set("c", chunk.locked ? 0xeb4034 : 0x32a852);
+					else if(mode.stype()) com.set("c", chunk.type.ordinal());
 					else com.set("c", chunk.district.color.getInteger());
 					com.set("p", chunk.sell.price == 0 && chunk.district.id == -1 ? LDConfig.DEFAULT_CHUNK_PRICE : chunk.sell.price);
 					if(chunk.locked) com.set("l", true);
@@ -337,12 +341,17 @@ public class ChunkClaimCon extends ContainerInterface {
 	public static class ChunkData {
 
 		protected RGB color = new RGB();
+		protected ChunkType type;
 		protected long price;
 		protected int dis, x, z;
 		protected boolean locked;
 
-		public ChunkData(TagCW com, int x, int z){
+		public ChunkData(TagCW com, int x, int z, Mode mode){
 			color.packed = com.getInteger("c");
+			if(mode.stype()){
+				type = ChunkType.values()[color.packed];
+				color.packed = type.color;
+			}
 			dis = com.getInteger("d");
 			price = com.getLong("p");
 			locked = com.getBoolean("l");
@@ -372,7 +381,7 @@ public class ChunkClaimCon extends ContainerInterface {
 
 	public static enum Mode {
 
-		CLAIM, TRANSFER, SELL, BUY, LOCK;
+		CLAIM, TRANSFER, SELL, BUY, LOCK, SET_TYPE;
 
 		public static Mode fromKey(UIKey key){
 			switch(key.id){
@@ -381,6 +390,7 @@ public class ChunkClaimCon extends ContainerInterface {
 				case LDKeys.ID_CHUNK_SELL: return SELL;
 				case LDKeys.ID_CHUNK_BUY: return BUY;
 				case LDKeys.ID_CHUNK_LOCK: return LOCK;
+				case LDKeys.ID_CHUNK_SET_TYPE: return SET_TYPE;
 			}
 			return CLAIM;
 		}
@@ -391,6 +401,10 @@ public class ChunkClaimCon extends ContainerInterface {
 
 		public boolean lock(){
 			return this == LOCK;
+		}
+
+		public boolean stype(){
+			return this == SET_TYPE;
 		}
 
 	}
