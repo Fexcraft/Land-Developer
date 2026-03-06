@@ -21,6 +21,13 @@ public enum Layers {
 		return this == other;
 	}
 
+	public boolean is(Layers... other){
+		for(Layers layer : other){
+			if(is(layer)) return true;
+		}
+		return false;
+	}
+
 	public boolean isValidChunkOwner(){
 		return this != NONE && this.ordinal() > 1;
 	}
