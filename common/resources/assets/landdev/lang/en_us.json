@@ -189,6 +189,7 @@
     "landdev.gui.claim.buy.other_county": "\u00A74Chunk is in another County.",
     "landdev.gui.claim.buy.in_county": "\u00A74Chunk in in a County District.",
     "landdev.gui.claim.buy.other_municipality": "\u00A74Chunk is in another Municipality.",
+    "landdev.gui.claim.set_type.no_perm": "\u00A74No permission to change chunk type.",
     "landdev.gui.claim.pass": "\u00A7aChunk Claimed.",
     "landdev.gui.claim.transferred": "\u00A7aChunk transferred.",
     "landdev.gui.claim.price_set": "\u00A7aNew Chunk price set.",
