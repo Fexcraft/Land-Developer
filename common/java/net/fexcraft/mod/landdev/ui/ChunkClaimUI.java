@@ -137,6 +137,9 @@ public class ChunkClaimUI extends UserInterface {
 					if(ck.locked){
 						list.add(transformat("landdev.gui.claim.locked"));
 					}
+					if(con.mode.stype()){
+						list.add(transformat("landdev.gui.claim.type", ck.type));
+					}
 				}
 			}
 		}
