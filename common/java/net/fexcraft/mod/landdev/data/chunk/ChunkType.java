@@ -6,7 +6,7 @@ package net.fexcraft.mod.landdev.data.chunk;
 public enum ChunkType {
 	
 	PRIVATE(0x0d00ff),
-	NORMAL(0x00ff15),
+	NORMAL(0x1e943d),
 	RESTRICTED(0x6c0087),
 	PUBLIC(0xe6de00),
 	LOCKED(0xde4e00),
