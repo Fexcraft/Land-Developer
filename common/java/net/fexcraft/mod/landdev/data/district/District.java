@@ -635,8 +635,8 @@ public class District implements Saveable, Layer, PermInteractive, LDUIModule {
 		for(Chunk_ chunk : ResManager.CHUNKS.values()){
 			if(chunk.district.id != id) continue;
 			chunk.district = wil;
-			if(chunk.owner.layer() == owner.layer() && chunk.owner.owid == owner.owid){
-				chunk.owner.set(Layers.NONE, null, 0);
+			if(!chunk.owner.isPlayerOrCompany()){
+				chunk.owner.set(Layers.DISTRICT, null);
 			}
 			chunk.save();
 		}
