@@ -19,7 +19,8 @@ public class InteractHandler {
 		for(Property prop : chunk.propholder.properties){
 			if(prop.isInside(x, y, z)) return hasperm(prop, chunk, player, interact);
 		}
-		if(chunk.district.id < 0){
+		if(interact && chunk.access.interact) return true;
+		/*if(chunk.district.id < 0){
 			if(chunk.district.id == -1){
 				return LDConfig.EDIT_WILDERNESS;
 			}
@@ -31,12 +32,14 @@ public class InteractHandler {
 				player.entity.bar("interact.control.unknown_district");
 				return false;
 			}
+		}*/
+		if(chunk.district.id < 0 && chunk.owner.isNotPLayerOrCompany()){
+			return LDConfig.EDIT_WILDERNESS;
 		}
-		return hasperm(chunk, player, interact);
+		return hasperm(chunk, player);
 	}
 
-	public static boolean hasperm(Chunk_ chunk, LDPlayer player, boolean interact){
-		if(interact && chunk.access.interact) return true;
+	public static boolean hasperm(Chunk_ chunk, LDPlayer player){
 		if(chunk.locked) return player.adm;
 		boolean pass = false;
 		switch(chunk.type){
@@ -52,12 +55,10 @@ public class InteractHandler {
 						case COMPANY:
 							//TODO
 							break;
-						case COUNTY:
-							pass = chunk.district.owner.manageable().isManager(player.uuid);
-							break;
 						case DISTRICT:
 							pass = chunk.district.manage.isManager(player.uuid) || chunk.district.owner.manageable().isManager(player.uuid);
 							break;
+						case COUNTY:
 						case MUNICIPALITY:
 							pass = chunk.district.owner.manageable().isManager(player.uuid);
 							break;
@@ -77,12 +78,10 @@ public class InteractHandler {
 					case COMPANY:
 						//TODO
 						break;
-					case COUNTY:
-						pass = chunk.district.owner.manageable().isStaff(player.uuid);
-						break;
 					case DISTRICT:
 						pass = chunk.district.manage.isManager(player.uuid) || chunk.district.owner.manageable().isStaff(player.uuid);
 						break;
+					case COUNTY:
 					case MUNICIPALITY:
 						pass = chunk.district.owner.manageable().isStaff(player.uuid);
 						break;
