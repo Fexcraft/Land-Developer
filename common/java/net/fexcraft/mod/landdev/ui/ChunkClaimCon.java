@@ -43,6 +43,7 @@ public class ChunkClaimCon extends ContainerInterface {
 
 	public ChunkClaimCon(JsonMap map, UniEntity ply, V3I pos){
 		super(map, ply, pos);
+		if(ply.entity.isOnClient()) return;
 		ldp = ResManager.getPlayer(ply);
 		for(int i = 0; i < chunks.length; i++) for(int k = 0; k < chunks[i].length; k++) chunks[i][k] = new ChunkData();
 		ChunkKey key = new ChunkKey(ldp.entity.getPos());
