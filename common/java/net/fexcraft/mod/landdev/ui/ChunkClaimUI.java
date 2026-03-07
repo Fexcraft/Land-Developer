@@ -85,6 +85,7 @@ public class ChunkClaimUI extends UserInterface {
 		else{
 			for(int i = 0; i < con.chunks.length; i++){
 				for(int k = 0; k < con.chunks[i].length; k++){
+					if(con.chunks[i][k] == null) continue;
 					drawer.apply(con.chunks[i][k].color);
 					drawer.draw(gLeft + 6 + (i * 14), gTop + 20 + (k * 14), 6, 20, 12, 12);
 					drawer.applyWhite();
