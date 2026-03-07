@@ -118,4 +118,8 @@ public class ChunkOwner implements Saveable {
 		return player != null || comid >= 0;
 	}
 
+	public boolean isNotPLayerOrCompany(){
+		return player == null && comid < 0;
+	}
+
 }
