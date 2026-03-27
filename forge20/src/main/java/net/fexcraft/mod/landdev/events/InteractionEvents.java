@@ -31,7 +31,7 @@ public class InteractionEvents {
 		}
 	}
 
-	@SubscribeEvent(priority = EventPriority.HIGHEST)
+	/*@SubscribeEvent(priority = EventPriority.HIGHEST)
 	public static void onBlockPlace(BlockEvent.EntityPlaceEvent event){
 		if(event.getLevel().isClientSide()) return;
 		if(event.getEntity() instanceof Player == false) return;
@@ -40,7 +40,7 @@ public class InteractionEvents {
 			UniEntity.getEntity(event.getEntity()).bar("interact.place.noperm");
 			event.setCanceled(true);
 		}
-	}
+	}*/
 
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	public static void onBlockPlace(BlockEvent.EntityMultiPlaceEvent event){
