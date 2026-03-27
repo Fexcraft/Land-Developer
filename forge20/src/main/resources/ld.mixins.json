@@ -1,0 +1,12 @@
+{
+	"required": true,
+	"package": "net.fexcraft.mod.landdev.mixin",
+	"compatibilityLevel": "JAVA_17",
+	"refmap": "ld.mixins.refmap.json",
+	"mixins": [
+		"BlockItemMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}
