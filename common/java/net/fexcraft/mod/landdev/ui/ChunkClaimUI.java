@@ -129,6 +129,7 @@ public class ChunkClaimUI extends UserInterface {
 			for(int k = 0; k < 15; k++){
 				if(ckbuttons[i][k].hovered()){
 					ChunkClaimCon.ChunkData ck = con.chunks[i][k];
+					if(ck == null) continue;
 					list.add(transformat("landdev.gui.claim.chunk_coord", ck.x, ck.z));
 					if(ck.price > 0) list.add(transformat("landdev.gui.claim.chunk_price", Config.getWorthAsString(ck.price)));
 					ChunkClaimCon.DisData dis = con.dists.get(ck.dis);
