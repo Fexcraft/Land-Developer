@@ -6,26 +6,26 @@ import net.fexcraft.lib.common.utils.Formatter;
 import net.fexcraft.mod.fcl.util.ExternalTextures;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.ArrayList;
 
 public class LocationUpdate implements HudElement {
 	
-	public static final ResourceLocation ID = ResourceLocation.parse("landdev:locupd");
-	public static final ResourceLocation texture = ResourceLocation.parse("landdev:textures/ui/location.png");
+	public static final Identifier ID = Identifier.parse("landdev:locupd");
+	public static final Identifier texture = Identifier.parse("landdev:textures/ui/location.png");
 	public static ArrayList<String> lines = new ArrayList<>();
-	public static ArrayList<ResourceLocation> icons = new ArrayList<>();
+	public static ArrayList<Identifier> icons = new ArrayList<>();
 	public static int[] linelength = new int[4];
 	public static long till = Time.getDate();
 	private static int reswid;
 	private static boolean quadcon;
 
 	@Override
-	public void render(GuiGraphics gg, DeltaTracker delta){
+	public void extractRenderState(GuiGraphicsExtractor gg, DeltaTracker delta){
 		if(!shown()) return;
 		reswid = gg.guiWidth();
 		if(LDConfig.LOCUP_SIDE){
@@ -66,10 +66,10 @@ public class LocationUpdate implements HudElement {
 		for(int i = 0; i < lines.size(); i++){
 			if(lines.get(i).length() > 0){
 				if(LDConfig.LOCUP_SIDE){
-					gg.drawString(Minecraft.getInstance().font, lines.get(i), 2, 41 + (12 * i), 0xffffffff);
+					gg.text(Minecraft.getInstance().font, lines.get(i), 2, 41 + (12 * i), 0xffffffff);
 				}
 				else{
-					gg.drawString(Minecraft.getInstance().font, lines.get(i), reswid - linelength[i] - 2, 41 + (12 * i), 0xffffffff);
+					gg.text(Minecraft.getInstance().font, lines.get(i), reswid - linelength[i] - 2, 41 + (12 * i), 0xffffffff);
 				}
 			}
 		}
@@ -97,5 +97,5 @@ public class LocationUpdate implements HudElement {
 			lines.add(Formatter.format(tag.asString().get()));
 		});
 	}
-	
+
 }

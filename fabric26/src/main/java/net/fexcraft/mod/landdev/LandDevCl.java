@@ -1,9 +1,9 @@
 package net.fexcraft.mod.landdev;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.mod.landdev.util.CTagListener;
 import net.fexcraft.mod.landdev.util.LDConfig;
@@ -43,13 +43,13 @@ public class LandDevCl implements ClientModInitializer {
 					text = Component.literal(transformat(LDConfig.CHAT_OVERRIDE_LANG, c, list.getString(1), list.getString(2)));
 					break;
 			}
-			Minecraft.getInstance().gui.getChat().addMessage(text);
+			Minecraft.getInstance().gui.getChat().addClientSystemMessage(text);
 		});
 		CTagListener.TASKS.put("img_preview_url", (packet, player) -> {
 			//
 		});
 		HudElementRegistry.attachElementAfter(VanillaHudElements.HOTBAR, LocationUpdate.ID, new LocationUpdate());
-		WorldRenderEvents.AFTER_TRANSLUCENT.register(PropRenderer::renderProps);
+		LevelRenderEvents.AFTER_TRANSLUCENT_TERRAIN.register(PropRenderer::renderProps);
 	}
 
 }

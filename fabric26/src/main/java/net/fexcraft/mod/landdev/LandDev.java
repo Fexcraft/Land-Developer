@@ -8,9 +8,9 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLevelEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -18,7 +18,6 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fcl.FCL;
-import net.fexcraft.mod.fcl.UniFCL;
 import net.fexcraft.mod.fcl.util.PacketTag21;
 import net.fexcraft.mod.fsmm.FSMM;
 import net.fexcraft.mod.landdev.data.PermAction;
@@ -37,7 +36,6 @@ import net.fexcraft.mod.landdev.util.broad.Broadcaster;
 import net.fexcraft.mod.landdev.util.broad.DiscordTransmitter;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.UniEntity;
-import net.fexcraft.mod.uni.packet.PacketTag;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.EntityW;
 import net.minecraft.commands.CommandSourceStack;
@@ -85,13 +83,13 @@ public class LandDev implements ModInitializer {
 		});*/
 		ServerChunkEvents.CHUNK_UNLOAD.register((level, lvlck) -> {
 			if(level != FCL.SERVER.get().overworld()) return;
-			Chunk_ chunk = ResManager.getChunk(lvlck.getPos().x, lvlck.getPos().z);
-			if(chunk != null) ResManager.remChunk(lvlck.getPos().x, lvlck.getPos().z);
+			Chunk_ chunk = ResManager.getChunk(lvlck.getPos().x(), lvlck.getPos().z());
+			if(chunk != null) ResManager.remChunk(lvlck.getPos().x(), lvlck.getPos().z());
 		});
-		ServerWorldEvents.LOAD.register((server, world) -> {
+		ServerLevelEvents.LOAD.register((server, world) -> {
 			loadResManager();
 		});
-		ServerWorldEvents.UNLOAD.register(((server, world) -> {
+		ServerLevelEvents.UNLOAD.register(((server, world) -> {
 			if(world != server.overworld()) return;
 			LandDev.log("Unloading LandDev World Data...");
 			ResManager.saveAll(true);
@@ -99,7 +97,7 @@ public class LandDev implements ModInitializer {
 			LandDev.log("Unloaded LandDev World Data.");
 		}));
 		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
-			LDPlayer player = ResManager.getPlayer(handler.player.getGameProfile().getId(), true);
+			LDPlayer player = ResManager.getPlayer(handler.player.getGameProfile().id(), true);
 			player.entity = UniEntity.getEntity(handler.player);
 			player.offline = false;
 			player.login = Time.getDate();
@@ -108,7 +106,7 @@ public class LandDev implements ModInitializer {
 			Broadcaster.send(NO_INTERNAL, BroadcastChannel.SERVER, null, LDConfig.SERVLANG_JOINED.formatted(player.name_raw()));
 		});
 		ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
-			LDPlayer player = ResManager.getPlayer(handler.player.getGameProfile().getId(), false);
+			LDPlayer player = ResManager.getPlayer(handler.player.getGameProfile().id(), false);
 			if(player != null){
 				Broadcaster.send(NO_INTERNAL, BroadcastChannel.SERVER, null, LDConfig.SERVLANG_LEFT.formatted(player.name_raw()));
 				player.save();
@@ -120,11 +118,11 @@ public class LandDev implements ModInitializer {
 			}
 		});
 		ServerPlayerEvents.COPY_FROM.register((old, nw, al) -> {
-			LDPlayer player = ResManager.getPlayer(nw.getGameProfile().getId(), false);
+			LDPlayer player = ResManager.getPlayer(nw.getGameProfile().id(), false);
 			if(player != null) player.entity = UniEntity.getEntity(nw);
 		});
 		ServerPlayerEvents.AFTER_RESPAWN.register((old, nw, al) -> {
-			LDPlayer player = ResManager.getPlayer(nw.getGameProfile().getId(), false);
+			LDPlayer player = ResManager.getPlayer(nw.getGameProfile().id(), false);
 			if(player != null) player.entity = UniEntity.getEntity(nw);
 		});
 		//TODO chat
@@ -190,7 +188,7 @@ public class LandDev implements ModInitializer {
 				return 0;
 			}))
 			.then(literal("uuid").executes(cmd -> {
-				cmd.getSource().sendSystemMessage(Component.literal(cmd.getSource().getPlayerOrException().getGameProfile().getId().toString()));
+				cmd.getSource().sendSystemMessage(Component.literal(cmd.getSource().getPlayerOrException().getGameProfile().id().toString()));
 				return 0;
 			}))
 			.then(literal("reload").executes(cmd -> {

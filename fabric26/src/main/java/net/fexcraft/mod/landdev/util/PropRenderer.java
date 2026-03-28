@@ -1,7 +1,7 @@
 package net.fexcraft.mod.landdev.util;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext;
 import net.fexcraft.mod.fcl.util.FCLRenderTypes;
 import net.fexcraft.mod.fcl.util.Renderer21;
 import net.fexcraft.mod.landdev.data.prop.ClientPropCache;
@@ -18,13 +18,13 @@ public class PropRenderer {
 	private static IDL loc0 = IDLManager.getIDLCached("minecraft:textures/block/glowstone.png");
 	private static IDL loc1 = IDLManager.getIDLCached("minecraft:textures/block/diamond_block.png");
 
-	public static void renderProps(WorldRenderContext event){
+	public static void renderProps(LevelRenderContext event){
 		if(!ClientPropCache.visible && ClientPropCache.space == null) return;
-		Camera camera = event.camera();
-		double cx = camera.getPosition().x;
-		double cy = camera.getPosition().y;
-		double cz = camera.getPosition().z;
-		PoseStack pose = event.matrixStack();
+		Camera camera = event.gameRenderer().getMainCamera();
+		double cx = camera.position().x;
+		double cy = camera.position().y;
+		double cz = camera.position().z;
+		PoseStack pose = event.poseStack();
 		Renderer21.set(pose, Minecraft.getInstance().renderBuffers().bufferSource(), 0);
 		pose.pushPose();
 		pose.translate(-cx, -cy, -cz);
