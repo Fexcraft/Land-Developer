@@ -5,6 +5,9 @@ import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents;
 import net.fexcraft.lib.common.math.Time;
+import net.fexcraft.mod.fcl.FCLC;
+import net.fexcraft.mod.fcl.util.Renderer26;
+import net.fexcraft.mod.landdev.data.prop.ClientPropCache;
 import net.fexcraft.mod.landdev.util.CTagListener;
 import net.fexcraft.mod.landdev.util.LDConfig;
 import net.fexcraft.mod.landdev.util.LocationUpdate;
@@ -49,7 +52,16 @@ public class LandDevCl implements ClientModInitializer {
 			//
 		});
 		HudElementRegistry.attachElementAfter(VanillaHudElements.HOTBAR, LocationUpdate.ID, new LocationUpdate());
-		LevelRenderEvents.AFTER_TRANSLUCENT_TERRAIN.register(PropRenderer::renderProps);
+		LevelRenderEvents.COLLECT_SUBMITS.register(PropRenderer::renderProps);
+		FCLC.INIT_COMPLETE.add(() -> {
+			ClientPropCache.render = poly -> {
+				Renderer26.noco.submitCustomGeometry(Renderer26.stack, Renderer26.type, (pose, cons) -> {
+					Renderer26.pose = pose;
+					Renderer26.cons = cons;
+					Renderer26.RENDERER.render(poly);
+				});
+			};
+		});
 	}
 
 }
