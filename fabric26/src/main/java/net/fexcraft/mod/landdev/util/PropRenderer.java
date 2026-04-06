@@ -3,12 +3,11 @@ package net.fexcraft.mod.landdev.util;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext;
 import net.fexcraft.mod.fcl.util.FCLRenderTypes;
-import net.fexcraft.mod.fcl.util.Renderer21;
+import net.fexcraft.mod.fcl.util.Renderer26;
 import net.fexcraft.mod.landdev.data.prop.ClientPropCache;
 import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.IDLManager;
 import net.minecraft.client.Camera;
-import net.minecraft.client.Minecraft;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -25,15 +24,17 @@ public class PropRenderer {
 		double cy = camera.position().y;
 		double cz = camera.position().z;
 		PoseStack pose = event.poseStack();
-		Renderer21.set(pose, Minecraft.getInstance().renderBuffers().bufferSource(), 0);
+		Renderer26.stack = pose;
+		Renderer26.noco = event.submitNodeCollector();
+		Renderer26.light = 255;
 		pose.pushPose();
 		pose.translate(-cx, -cy, -cz);
 		if(ClientPropCache.space != null){
-			FCLRenderTypes.setCutout(loc1);
+			Renderer26.type = FCLRenderTypes.getCutout(loc1);
 			ClientPropCache.renderCube(ClientPropCache.space.pos, ClientPropCache.space.size);
 		}
 		if(ClientPropCache.visible){
-			FCLRenderTypes.setCutout(loc0);
+			Renderer26.type = FCLRenderTypes.getCutout(loc0);
 			for(ClientPropCache.PropCache prop : ClientPropCache.cache.values()){
 				ClientPropCache.renderCube(prop.pos, prop.size);
 			}
