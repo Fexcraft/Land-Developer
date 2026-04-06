@@ -7,6 +7,7 @@ import net.fexcraft.lib.frl.gen.Generator_Cuboid;
 import net.fexcraft.lib.frl.gen.ValueMap;
 
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
 
 import static net.fexcraft.lib.common.Static.sixteenth;
 import static net.fexcraft.lib.frl.Renderer.RENDERER;
@@ -20,6 +21,7 @@ public class ClientPropCache {
 	public static Polyhedron<?> polyx = new Polyhedron<>();
 	public static Polyhedron<?> polyy = new Polyhedron<>();
 	public static Polyhedron<?> polyz = new Polyhedron<>();
+	public static Consumer<Polyhedron<?>> render = Polyhedron::render;
 	public static boolean visible;
 	public static PropCache space;
 	static{
@@ -50,74 +52,74 @@ public class ClientPropCache {
 		//
 		RENDERER.push();
 		RENDERER.scale(size.x, 1, 1);
-		ClientPropCache.polyx.render();
+		render.accept(polyx);
 		RENDERER.pop();
 		//
 		RENDERER.push();
 		RENDERER.scale(1, size.y, 1);
-		ClientPropCache.polyy.render();
+		render.accept(polyy);
 		RENDERER.pop();
 		//
 		RENDERER.push();
 		RENDERER.scale(1, 1, size.z);
-		ClientPropCache.polyz.render();
+		render.accept(polyz);
 		RENDERER.pop();
 		//
 		RENDERER.translate(size.x, 0, 0);
 		//
 		RENDERER.push();
 		RENDERER.scale(1, size.y, 1);
-		ClientPropCache.polyy.render();
+		render.accept(polyy);
 		RENDERER.pop();
 		//
 		RENDERER.push();
 		RENDERER.scale(1, 1, size.z);
-		ClientPropCache.polyz.render();
+		render.accept(polyz);
 		RENDERER.pop();
 		//
 		RENDERER.translate(0, 0, size.z);
 		//
 		RENDERER.push();
 		RENDERER.scale(1, size.y, 1);
-		ClientPropCache.polyy.render();
+		render.accept(polyy);
 		RENDERER.pop();
 		//
 		RENDERER.translate(-size.x, 0, 0);
  		//
 		RENDERER.push();
 		RENDERER.scale(1, size.y, 1);
-		ClientPropCache.polyy.render();
+		render.accept(polyy);
 		RENDERER.pop();
 		//
 		RENDERER.push();
 		RENDERER.scale(size.x, 1, 1);
-		ClientPropCache.polyx.render();
+		render.accept(polyx);
 		RENDERER.pop();
 		//
 		RENDERER.translate(0, size.y, -size.z);
 		//
 		RENDERER.push();
 		RENDERER.scale(size.x, 1, 1);
-		ClientPropCache.polyx.render();
+		render.accept(polyx);
 		RENDERER.pop();
 		//
 		RENDERER.push();
 		RENDERER.scale(1, 1, size.z);
-		ClientPropCache.polyz.render();
+		render.accept(polyz);
 		RENDERER.pop();
 		//
 		RENDERER.translate(size.x, 0, 0);
 		//
 		RENDERER.push();
 		RENDERER.scale(1, 1, size.z);
-		ClientPropCache.polyz.render();
+		render.accept(polyz);
 		RENDERER.pop();
 		//
 		RENDERER.translate(-size.x, 0, size.z);
  		//
 		RENDERER.push();
 		RENDERER.scale(size.x, 1, 1);
-		ClientPropCache.polyx.render();
+		render.accept(polyx);
 		RENDERER.pop();
  		//
 		RENDERER.pop();
