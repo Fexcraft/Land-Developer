@@ -1,8 +1,6 @@
 package net.fexcraft.mod.landdev.util;
 
 import net.fexcraft.app.json.JsonMap;
-import net.fexcraft.app.json.JsonValue;
-import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.mod.fsmm.util.Config;
 import net.fexcraft.mod.landdev.data.IconHolder;
@@ -10,7 +8,6 @@ import net.fexcraft.mod.landdev.data.district.DistrictType;
 import net.fexcraft.mod.landdev.util.broad.Broadcaster;
 import net.fexcraft.mod.uni.ConfigBase;
 import net.fexcraft.mod.uni.EnvInfo;
-import net.fexcraft.mod.uni.ui.ContainerInterface;
 
 import java.io.File;
 import java.math.RoundingMode;
@@ -30,10 +27,11 @@ public class LDConfig extends ConfigBase {
 	public static boolean SAVE_SPACED_JSON;
 	public static boolean PROTECT_WILDERNESS;
 	public static boolean EDIT_WILDERNESS;
+	public static boolean BUY_WILDERNESS;
 	public static boolean NEW_REGIONS;
 	public static boolean LOCUP_SIDE;
 	public static boolean RUN_LOCATION_EVENT;
-	public static long DEFAULT_CHUNK_PRICE;
+	public static long CHUNK_CLAIM_FEE;
 	public static long REGION_CREATION_FEE;
 	public static long COUNTY_CREATION_FEE;
 	public static long MUNICIPALITY_CREATION_FEE;
@@ -113,6 +111,10 @@ public class LDConfig extends ConfigBase {
 			.info("If wilderness protection should be enabled.")
 			.cons((con, map) -> EDIT_WILDERNESS = !(PROTECT_WILDERNESS = con.getBoolean(map)))
 		);
+		entries.add(new ConfigEntry(this, GENERAL_CAT, "buy_in_wilderness", false)
+			.info("Should it be possible to buy chunks in Wilderness?")
+			.cons((con, map) -> BUY_WILDERNESS = con.getBoolean(map))
+		);
 		entries.add(new ConfigEntry(this, GENERAL_CAT, "chunk_link_limit", 3).rang(0, 64)
 			.info("How many chunks can be linked to another. Set to '0' to disable.")
 			.cons((con, map) -> CHUNK_LINK_LIMIT = con.getInteger(map))
@@ -156,9 +158,9 @@ public class LDConfig extends ConfigBase {
 			.req(false, false)
 		);
 		//
-		entries.add(new ConfigEntry(this, PRICES_CAT, "default.chunk", "100000")
-			.info("Default price for unclaimed chunks. (1000 = 1$)")
-			.cons((con, map) -> DEFAULT_CHUNK_PRICE = parse(con.getString(map), 100000))
+		entries.add(new ConfigEntry(this, PRICES_CAT, "claim.chunk", "100000")
+			.info("Default fee for claiming/assigning a chunk into a district. (1000 = 1$)")
+			.cons((con, map) -> CHUNK_CLAIM_FEE = parse(con.getString(map), 100000))
 		);
 		entries.add(new ConfigEntry(this, PRICES_CAT, "create.property", "100000")
 			.info("Server fee for creating a property.")
