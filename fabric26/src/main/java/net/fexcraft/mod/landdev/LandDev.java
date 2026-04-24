@@ -12,6 +12,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLevelEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
+import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.loader.api.FabricLoader;
@@ -41,6 +42,9 @@ import net.fexcraft.mod.uni.world.EntityW;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.level.block.SignBlock;
+import net.minecraft.world.level.block.state.BlockState;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -153,17 +157,17 @@ public class LandDev implements ModInitializer {
 			}
 			return true;
 		});
-		/*UseBlockCallback.EVENT.register((player, level, hand, hit) -> {
+		UseBlockCallback.EVENT.register((player, level, hand, hit) -> {
+			if(level.isClientSide()) return InteractionResult.PASS;
 			if(level != FCL.SERVER.get().overworld()) return InteractionResult.PASS;
-			if(hand == InteractionHand.OFF_HAND) return InteractionResult.PASS;
 			BlockState state = level.getBlockState(hit.getBlockPos());
 			boolean check = state.getBlock() instanceof SignBlock == false && Protector.INSTANCE.isProtected(state);
 			if(check && !control(hit.getBlockPos().getX(), hit.getBlockPos().getY(), hit.getBlockPos().getZ(), player, true)){
 				UniEntity.getEntity(player).bar("landdev.interact.interact.noperm");
-				return InteractionResult.FAIL;
+				return InteractionResult.SUCCESS;
 			}
-			return InteractionResult.SUCCESS;
-		});*/
+			return InteractionResult.PASS;
+		});
 		CommandRegistrationCallback.EVENT.register((dis, ctx, sel) -> regCmd(dis));
 	}
 
