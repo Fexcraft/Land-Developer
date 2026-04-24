@@ -36,7 +36,7 @@ public class BlockItemMixin extends Item {
 	public void _place(BlockPlaceContext context, CallbackInfoReturnable<InteractionResult> info){
 		if(!context.getLevel().isClientSide() && context.getLevel() == FCL.SERVER.get().overworld()){
 			if(!control(context.getClickedPos().getX(), context.getClickedPos().getY(), context.getClickedPos().getZ(), context.getPlayer(), false)){
-				UniEntity.getEntity(context.getPlayer()).bar("interact.place.noperm");
+				UniEntity.getEntity(context.getPlayer()).bar("landdev.interact.place.noperm");
 				info.setReturnValue(InteractionResult.FAIL);
 				info.cancel();
 			}
