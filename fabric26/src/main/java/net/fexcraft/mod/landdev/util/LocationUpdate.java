@@ -3,6 +3,7 @@ package net.fexcraft.mod.landdev.util;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.common.utils.Formatter;
+import net.fexcraft.mod.fcl.UniFCL;
 import net.fexcraft.mod.fcl.util.ExternalTextures;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
@@ -87,7 +88,9 @@ public class LocationUpdate implements HudElement {
 
 	public static void loadIcons(ListTag list){
 		list.forEach(tag -> {
-			icons.add(ExternalTextures.get("landdev", tag.asString().get()).local());
+			String adr = tag.asString().get();
+			if(adr.startsWith("server:")) icons.add(UniFCL.requestServerFile(null, adr).local());
+			else icons.add(ExternalTextures.get("landdev", adr).local());
 		});
 		quadcon = icons.size() > 3;
 	}
