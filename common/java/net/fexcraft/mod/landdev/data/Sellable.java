@@ -23,7 +23,7 @@ public class Sellable implements Saveable {
 
 	@Override
 	public void load(JsonMap map){
-		price = map.getLong("price", layer.is(Layers.CHUNK) ? LDConfig.DEFAULT_CHUNK_PRICE : 0);
+		price = map.getLong("price", 0);
 	}
 
 	public String price_formatted(){
