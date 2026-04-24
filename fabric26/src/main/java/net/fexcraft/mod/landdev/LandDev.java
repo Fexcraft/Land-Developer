@@ -13,6 +13,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
+import net.fabricmc.fabric.api.message.v1.ServerMessageEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.loader.api.FabricLoader;
@@ -128,6 +129,11 @@ public class LandDev implements ModInitializer {
 		ServerPlayerEvents.AFTER_RESPAWN.register((old, nw, al) -> {
 			LDPlayer player = ResManager.getPlayer(nw.getGameProfile().id(), false);
 			if(player != null) player.entity = UniEntity.getEntity(nw);
+		});
+		ServerMessageEvents.ALLOW_CHAT_MESSAGE.register((msg, sender, type) -> {
+			LDPlayer player = ResManager.getPlayer(sender);
+			Broadcaster.send(player, msg.signedContent());
+			return !LDConfig.CHAT_OVERRIDE;
 		});
 		//TODO chat
 		ServerTickEvents.END_SERVER_TICK.register(server -> {
