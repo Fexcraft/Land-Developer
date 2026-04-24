@@ -65,7 +65,7 @@ public class ChunkClaimCon extends ContainerInterface {
 		uuid = player.entity.getUUID();
 		if(!player.entity.isOnClient()){
 			if(mode != Mode.SELL && !(mode == Mode.BUY && pos.y < 0)) district = ResManager.getDistrict(pos.y);
-			if(mode == Mode.SELL) district = ldp.chunk_current.district;;
+			if(mode == Mode.SELL) district = ldp.chunk_current.district;
 		}
 		prix = pos.y;
 	}
@@ -113,9 +113,8 @@ public class ChunkClaimCon extends ContainerInterface {
 					}
 					if(isNotClaimable(chunk, district, com)) return;
 					//
-					long price = chunk.sell.price > 0 ? chunk.sell.price : LDConfig.DEFAULT_CHUNK_PRICE;
-					if(price > 0){
-						if(!district.owner.account().getBank().processAction(Bank.Action.TRANSFER, player.entity, district.account(), price, SERVER_ACCOUNT)) return;
+					if(LDConfig.CHUNK_CLAIM_FEE > 0){
+						if(!district.owner.account().getBank().processAction(Bank.Action.TRANSFER, player.entity, district.account(), LDConfig.CHUNK_CLAIM_FEE, SERVER_ACCOUNT)) return;
 					}
 					com.set("msg", "landdev.gui.claim.pass");
 					if(chunk.district.id < 0) chunk.created.setClaimer(player.entity.getUUID());
@@ -123,9 +122,6 @@ public class ChunkClaimCon extends ContainerInterface {
 					chunk.district = district;
 					chunk.district.chunks += 1;
 					chunk.sell.price = 0;
-					/*if(!chunk.owner.layer().isPlayerBased()){
-						chunk.owner.set(district.owner.is_county ? Layers.COUNTY : Layers.MUNICIPALITY, null, district.owner.owid);
-					}*/
 					chunk.type = ChunkType.NORMAL;
 					chunk.save();
 				}
@@ -246,6 +242,7 @@ public class ChunkClaimCon extends ContainerInterface {
 	}
 
 	private boolean isNotOwner(Chunk_ chunk, District district, TagCW com){
+		if(ldp.adm) return false;
 		if(chunk.owner.isPlayer() && !chunk.owner.player.equals(uuid)){
 			sendMsg(com, "landdev.gui.claim.sell.not_owner");
 			return true;
@@ -255,7 +252,7 @@ public class ChunkClaimCon extends ContainerInterface {
 				sendMsg(com, "landdev.gui.claim.sell.not_owner");
 				return true;
 			}
-			if(!ldp.adm && !chunk.district.can(MANAGE_DISTRICT, uuid)){
+			if(!chunk.district.can(MANAGE_DISTRICT, uuid)){
 				sendMsg(com, "landdev.gui.claim.sell.no_perm");
 				return true;
 			}
@@ -264,13 +261,19 @@ public class ChunkClaimCon extends ContainerInterface {
 	}
 
 	private boolean canNotBuy(Chunk_ chunk, District district, TagCW com){
-		if(chunk.sell.price == 0 && chunk.district.id >= 0){
+		if(chunk.sell.price == 0){
 			sendMsg(com, "landdev.gui.claim.buy.not_for_sale");
 			return true;
 		}
 		if(prix < 0){//-1 private, -2 company, -3 region
-			if(prix <= -2) return true;
-			//TODO
+			if(prix >= -2){
+				if(chunk.district.id < 0 && !LDConfig.BUY_WILDERNESS){
+					sendMsg(com, "landdev.gui.chunk.buy.wilderness_disabled");
+					return true;
+				}
+				return false;
+			}
+			if(prix == -3) return false; //TODO
 		}
 		else{
 			if(chunk.district.county() != district.county()){
@@ -313,7 +316,12 @@ public class ChunkClaimCon extends ContainerInterface {
 					if(mode.lock()) com.set("c", chunk.locked ? 0xeb4034 : 0x32a852);
 					else if(mode.stype()) com.set("c", chunk.type.ordinal());
 					else com.set("c", chunk.district.color.getInteger());
-					com.set("p", chunk.sell.price == 0 && chunk.district.id == -1 ? LDConfig.DEFAULT_CHUNK_PRICE : chunk.sell.price);
+					if(mode == Mode.CLAIM){
+						com.set("p", district.id < 0 ? LDConfig.CHUNK_CLAIM_FEE : 0);
+					}
+					else if(mode == Mode.BUY || mode == Mode.SELL){
+						com.set("p", chunk.sell.price);
+					}
 					if(chunk.locked) com.set("l", true);
 				}
 				list.add(com);
