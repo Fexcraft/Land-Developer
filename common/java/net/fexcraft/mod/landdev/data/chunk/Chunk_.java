@@ -479,6 +479,13 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 				}
 				String radio = req.getRadio();
 				Layers layer = radio.endsWith(".self") ? Layers.PLAYER : Layers.get(radio.replace("buy.", ""));
+				if(district.id < 0){
+					if(!layer.isPlayerBased()) break;
+					else if(!LDConfig.BUY_WILDERNESS){
+						container.msg("buy.wilderness_disabled");
+						break;
+					}
+				}
 				if(!layer.isValidChunkOwner()) break;
 				if(layer.is(Layers.MUNICIPALITY) && district.owner.is_county){
 					container.msg("landdev.district.not_part_of_municipality", false);
@@ -500,7 +507,7 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 						Chunk_ ck = ResManager.getChunk(lk);
 						if(ck.link == null || !key.equals(ck.link.root_key)) continue;
 						ck.sell.price = 0;
-						ck.type = ChunkType.PRIVATE;
+						ck.type = type;
 						ck.owner.set(layer, layer.is(Layers.PLAYER) ? container.ldp.uuid : district.getLayerId(layer));
 						ck.save();
 					}
