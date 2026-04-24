@@ -2,6 +2,7 @@ package net.fexcraft.mod.landdev.events;
 
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.common.utils.Formatter;
+import net.fexcraft.mod.fcl.UniFCL;
 import net.fexcraft.mod.fcl.util.ExternalTextures;
 import net.fexcraft.mod.landdev.util.LDConfig;
 import net.minecraft.client.Minecraft;
@@ -93,7 +94,9 @@ public class LocationUpdate {
 
 	public static void loadIcons(ListTag list){
 		list.forEach(tag -> {
-			icons.add(ExternalTextures.get("landdev", tag.getAsString()));
+			String adr = tag.getAsString();
+			if(adr.startsWith("server:")) icons.add(UniFCL.requestServerFile(null, adr).local());
+			else icons.add(ExternalTextures.get("landdev", adr).local());
 		});
 		quadcon = icons.size() > 3;
 	}
