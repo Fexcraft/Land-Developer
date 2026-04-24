@@ -6,6 +6,7 @@ import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.Time;
 import net.fexcraft.lib.common.utils.Formatter;
 import net.fexcraft.lib.mc.render.ExternalTextureHelper;
+import net.fexcraft.mod.fcl.UniFCL;
 import net.fexcraft.mod.landdev.util.LDConfig;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.client.Minecraft;
@@ -98,7 +99,9 @@ public class LocationUpdate extends GuiScreen {
 
 	public static void loadIcons(NBTTagList tag){
 		for(NBTBase base : tag){
-			icons.add(ExternalTextureHelper.get(((NBTTagString)base).getString()));
+			String adr = ((NBTTagString)base).getString();
+			if(adr.startsWith("server:")) icons.add(UniFCL.requestServerFile(null, adr).local());
+			else icons.add(ExternalTextureHelper.get(adr));
 		}
 		quadcon = icons.size() > 3;
 	}
