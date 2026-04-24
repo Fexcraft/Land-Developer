@@ -340,13 +340,13 @@ public class LandDev implements ModInitializer {
 			})).executes(cmd -> {
 				LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
 				Chunk_ chunk = ResManager.getChunk(player.entity);
-				player.entity.openUI(LDKeys.CHUNK_CLAIM, new V3I(chunk.key.x, chunk.district.id, chunk.key.z));
+				player.entity.openUI(LDKeys.CHUNK_TRANSFER, new V3I(chunk.key.x, chunk.district.id, chunk.key.z));
 				return 0;
 			}))
 			.then(literal("sell").then(argument("price", IntegerArgumentType.integer(-2)).executes(cmd -> {
 				LDPlayer player = ResManager.getPlayer(cmd.getSource().getPlayer());
 				Chunk_ chunk = ResManager.getChunk(player.entity);
-				player.entity.openUI(LDKeys.CHUNK_CLAIM, new V3I(chunk.key.x, cmd.getArgument("price", Integer.class), chunk.key.z));
+				player.entity.openUI(LDKeys.CHUNK_SELL, new V3I(chunk.key.x, cmd.getArgument("price", Integer.class), chunk.key.z));
 				return 0;
 			})))
 			.then(literal("buy").then(argument("for", StringArgumentType.greedyString()).executes(cmd -> {
@@ -377,7 +377,7 @@ public class LandDev implements ModInitializer {
 				if(arg.startsWith("county:")){
 					dis = Integer.parseInt(arg.replace("county:", ""));
 				}
-				player.entity.openUI(LDKeys.CHUNK_TRANSFER, new V3I(chunk.key.x, dis, chunk.key.z));
+				player.entity.openUI(LDKeys.CHUNK_BUY, new V3I(chunk.key.x, dis, chunk.key.z));
 				return 0;
 			})))
 			.then(literal("set-type").then(argument("to", StringArgumentType.greedyString()).executes(cmd -> {
