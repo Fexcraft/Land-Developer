@@ -26,7 +26,7 @@ public class InteractionEvents {
 		if(event.getLevel().isClientSide()) return;
 		if(event.getLevel() != FCL.SERVER.get().overworld()) return;
 		if(!control(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ(), event.getPlayer(), false)){
-			UniEntity.getEntity(event.getPlayer()).bar("interact.break.noperm");
+			UniEntity.getEntity(event.getPlayer()).bar("landdev.interact.break.noperm");
 			event.setCanceled(true);
 		}
 	}
@@ -48,7 +48,7 @@ public class InteractionEvents {
 		if(event.getEntity() instanceof Player == false) return;
 		if(event.getLevel() != FCL.SERVER.get().overworld()) return;
 		if(!control(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ(), event.getEntity(), false)){
-			UniEntity.getEntity(event.getEntity()).bar("interact.place.noperm");
+			UniEntity.getEntity(event.getEntity()).bar("landdev.interact.place.noperm");
 			event.setCanceled(true);
 		}
 	}
@@ -61,7 +61,7 @@ public class InteractionEvents {
 		BlockState state = event.getLevel().getBlockState(event.getPos());
 		boolean check = state.getBlock() instanceof SignBlock == false && Protector.INSTANCE.isProtected(state);
 		if(check && !control(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ(), event.getEntity(), true)){
-			UniEntity.getEntity(event.getEntity()).bar("interact.interact.noperm");
+			UniEntity.getEntity(event.getEntity()).bar("landdev.interact.interact.noperm");
 			event.setCanceled(true);
 		}
 	}
