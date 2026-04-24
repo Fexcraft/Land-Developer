@@ -148,7 +148,7 @@ public class LandDev implements ModInitializer {
 		PlayerBlockBreakEvents.BEFORE.register((level, player, pos, state, ent) -> {
 			if(level != FCL.SERVER.get().overworld()) return false;
 			if(!control(pos.getX(), pos.getY(), pos.getZ(), player, false)){
-				UniEntity.getEntity(player).bar("interact.break.noperm");
+				UniEntity.getEntity(player).bar("landdev.interact.break.noperm");
 				return false;
 			}
 			return true;
@@ -159,7 +159,7 @@ public class LandDev implements ModInitializer {
 			BlockState state = level.getBlockState(hit.getBlockPos());
 			boolean check = state.getBlock() instanceof SignBlock == false && Protector.INSTANCE.isProtected(state);
 			if(check && !control(hit.getBlockPos().getX(), hit.getBlockPos().getY(), hit.getBlockPos().getZ(), player, true)){
-				UniEntity.getEntity(player).bar("interact.interact.noperm");
+				UniEntity.getEntity(player).bar("landdev.interact.interact.noperm");
 				return InteractionResult.FAIL;
 			}
 			return InteractionResult.SUCCESS;
