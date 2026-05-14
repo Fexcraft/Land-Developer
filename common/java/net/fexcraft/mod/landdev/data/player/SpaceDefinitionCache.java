@@ -92,12 +92,14 @@ public class SpaceDefinitionCache {
 		}
 		Account acc = ck.owner.getAccount(ck);
 		long fee = ck.owner.isPlayer() ? ck.district.norms.get("new-property-fee").integer() : 0;
-		if(acc.getBalance() < fee + LDConfig.PROPERTY_CREATION_FEE){
-			ldp.entity.send("landdev.gui.property.create.not_enough_money", Config.getWorthAsString(fee + LDConfig.PROPERTY_CREATION_FEE));
-			return;
-		}
-		if(fee > 0 && !acc.getBank().processAction(Bank.Action.TRANSFER, ldp.entity, acc, fee, ck.district.account())){
-			return;
+		if(!ldp.adm){
+			if(acc.getBalance() < fee + LDConfig.PROPERTY_CREATION_FEE){
+				ldp.entity.send("landdev.gui.property.create.not_enough_money", Config.getWorthAsString(fee + LDConfig.PROPERTY_CREATION_FEE));
+				return;
+			}
+			if(fee > 0 && !acc.getBank().processAction(Bank.Action.TRANSFER, ldp.entity, acc, fee, ck.district.account())){
+				return;
+			}
 		}
 		if(!acc.getBank().processAction(Bank.Action.TRANSFER, ldp.entity, acc, LDConfig.PROPERTY_CREATION_FEE, SERVER_ACCOUNT)){
 			return;
