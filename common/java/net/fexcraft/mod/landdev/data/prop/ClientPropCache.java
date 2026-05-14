@@ -18,10 +18,10 @@ import static net.fexcraft.lib.frl.Renderer.RENDERER;
 public class ClientPropCache {
 
 	public static ConcurrentHashMap<Integer, PropCache> cache = new ConcurrentHashMap<>();
-	public static Polyhedron<?> polyx = new Polyhedron<>();
-	public static Polyhedron<?> polyy = new Polyhedron<>();
-	public static Polyhedron<?> polyz = new Polyhedron<>();
-	public static Consumer<Polyhedron<?>> render = Polyhedron::render;
+	public static Polyhedron polyx = new Polyhedron();
+	public static Polyhedron polyy = new Polyhedron();
+	public static Polyhedron polyz = new Polyhedron();
+	public static Consumer<Polyhedron> render = Polyhedron::render;
 	public static boolean visible;
 	public static PropCache space;
 	static{
