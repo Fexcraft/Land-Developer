@@ -77,6 +77,7 @@
     "landdev.interact.break.noperm": "No permission to break blocks here.",
     "landdev.interact.place.noperm": "No permission to place blocks here.",
     "landdev.interact.interact.noperm": "No permission to interact with blocks here.",
+    "landdev.interact.sign.noperm": "No permission to edit signs here.",
     "landdev.interact.control.unknown_district": "Unknown District",
     "landdev.interact.control.unknown_chunk_type": "Unknown Chunk Type",
     "landdev.server.player_join": "%s joined the server.",
