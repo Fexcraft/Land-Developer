@@ -1,41 +1,46 @@
 package net.fexcraft.mod.landdev.util;
 
+import net.fexcraft.mod.landdev.data.player.LDPlayer;
+import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.world.MessageSender;
+import net.fexcraft.mod.uni.world.WrapperHolder;
 
 public class Announcer {
 
 	public static void announce(Target target, int id, String string, Object... objs){
 		switch(target){
 			case GLOBAL:
-				//TODO Static.getServer().getPlayerList().getPlayers().forEach(player -> { announce(UniEntity.getEntity(player), string, objs); });
+				for(UniEntity player : WrapperHolder.getPlayers()){
+					announce(player.entity, string, objs);
+				}
 				break;
 			case LOCAL:
 				break;
 			case COMPANY:
 				break;
 			case DISTRICT:
-				/*Static.getServer().getPlayerList().getPlayers().forEach(player -> {
-					LDPlayer ply = ResManager.getPlayer(player.getGameProfile().getId(), true);
+				for(UniEntity player : WrapperHolder.getPlayers()){
+					LDPlayer ply = ResManager.getPlayer(player);
 					if(ply.isCurrentlyInDistrict(id)) announce(ply.entity, string, objs);
-				});*/
+				}
 				break;
 			case MUNICIPALITY:
-				/*Static.getServer().getPlayerList().getPlayers().forEach(player -> {
-					LDPlayer ply = ResManager.getPlayer(player.getGameProfile().getId(), true);
+				for(UniEntity player : WrapperHolder.getPlayers()){
+					LDPlayer ply = ResManager.getPlayer(player);
 					if(ply.municipality.id == id || ply.isCurrentlyInMunicipality(id)) announce(ply.entity, string, objs);
-				});*/
+				}
 				break;
 			case COUNTY:
-				/*Static.getServer().getPlayerList().getPlayers().forEach(player -> {
-					LDPlayer ply = ResManager.getPlayer(player.getGameProfile().getId(), true);
+				for(UniEntity player : WrapperHolder.getPlayers()){
+					LDPlayer ply = ResManager.getPlayer(player);
 					if(ply.county.id == id || ply.isCurrentlyInCounty(id)) announce(ply.entity, string, objs);
-				});*/
+				}
 				break;
 			case REGION:
-				/*Static.getServer().getPlayerList().getPlayers().forEach(player -> {
-					LDPlayer ply = ResManager.getPlayer(player.getGameProfile().getId(), true);
+				for(UniEntity player : WrapperHolder.getPlayers()){
+					LDPlayer ply = ResManager.getPlayer(player);
 					if(ply.county.region.id == id || ply.isCurrentlyInRegion(id)) announce(ply.entity, string, objs);
-				});*/
+				}
 				break;
 			default: return;
 		}
