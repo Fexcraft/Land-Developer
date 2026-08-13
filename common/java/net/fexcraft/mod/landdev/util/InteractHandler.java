@@ -1,7 +1,6 @@
 package net.fexcraft.mod.landdev.util;
 
 import net.fexcraft.lib.common.math.Time;
-import net.fexcraft.mod.landdev.data.chunk.ChunkType;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
 import net.fexcraft.mod.landdev.data.player.LDPlayer;
 import net.fexcraft.mod.landdev.data.prop.Property;
@@ -11,8 +10,12 @@ import net.fexcraft.mod.landdev.data.prop.Property;
  */
 public class InteractHandler {
 
+
 	public static boolean control(int x, int y, int z, Object entity, boolean interact){
-		LDPlayer player = ResManager.getPlayer(entity);
+		return control(x, y, z, ResManager.getPlayer(entity), interact);
+	}
+
+	public static boolean control(int x, int y, int z, LDPlayer player, boolean interact){
 		if(player == null) return false;
 		if(player.adm) return true;
 		Chunk_ chunk = ResManager.getChunkS(x, z);
