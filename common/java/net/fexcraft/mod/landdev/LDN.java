@@ -1,6 +1,7 @@
 package net.fexcraft.mod.landdev;
 
 import net.fexcraft.lib.common.math.Time;
+import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fcl.UniFCL;
 import net.fexcraft.mod.landdev.data.chunk.ChunkApp;
 import net.fexcraft.mod.landdev.data.chunk.ChunkRegion;
@@ -14,10 +15,12 @@ import net.fexcraft.mod.landdev.util.broad.Broadcaster;
 import net.fexcraft.mod.landdev.util.broad.DiscordTransmitter;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.UniChunk;
+import net.fexcraft.mod.uni.UniPerm;
 import net.fexcraft.mod.uni.UniReg;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.tag.TagLW;
 import net.fexcraft.mod.uni.ui.UIKey;
+import net.fexcraft.mod.uni.world.EntityW;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -49,6 +52,20 @@ public class LDN {
 
 	public static void init(LandDev inst){
 		FsmmEventHooks.init();
+		UniPerm.INSTANCE = new UniPerm(){
+			@Override
+			public boolean can_interact0(EntityW ent, V3I pos){
+				return InteractHandler.control(pos.x, pos.y, pos.z, ResManager.getPlayer(ent), true);
+			}
+			@Override
+			public boolean can_break0(EntityW ent, V3I pos){
+				return InteractHandler.control(pos.x, pos.y, pos.z, ResManager.getPlayer(ent), false);
+			}
+			@Override
+			public boolean can_place0(EntityW ent, V3I pos){
+				return InteractHandler.control(pos.x, pos.y, pos.z, ResManager.getPlayer(ent), false);
+			}
+		};
 		UniReg.registerMod(MODID, inst);
 		for(Map.Entry<UIKey, Class<? extends BaseCon>> entry : LDKeys.CONS.entrySet()){
 			UniReg.registerUI(entry.getKey(), BaseUI.class);
