@@ -19,6 +19,10 @@ public class Broadcaster {
 		send(TargetTransmitter.ALL, CHAT.name, player.name(), message, player.adm ? LDConfig.CHAT_ADMIN_COLOR : LDConfig.CHAT_PLAYER_COLOR);
 	}
 
+	public static void send(BroadcastChannel channel, String sender, String message, Object... args){
+		send(TargetTransmitter.ALL, channel.name, sender, message, args);
+	}
+
 	public static void send(TargetTransmitter target, BroadcastChannel channel, String sender, String message, Object... args){
 		send(target, channel.name, sender, message, args);
 	}
