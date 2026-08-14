@@ -3,6 +3,7 @@ package net.fexcraft.mod.landdev.util.broad;
 import net.fexcraft.mod.landdev.data.Layer;
 import net.fexcraft.mod.landdev.data.Manageable;
 import net.fexcraft.mod.landdev.data.player.LDPlayer;
+import net.fexcraft.mod.landdev.util.broad.Broadcaster.Message;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -19,6 +20,10 @@ public class Channel {
 		type = ct;
 		sub = s;
 		layer = lay;
+	}
+
+	public Message newMsg(){
+		return new Message(this);
 	}
 
 	public boolean isStaffOrManager(LDPlayer ply){

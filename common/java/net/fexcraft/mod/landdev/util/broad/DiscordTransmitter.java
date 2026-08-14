@@ -35,15 +35,15 @@ public class DiscordTransmitter implements Transmitter {
 	private static JsonMap map = new JsonMap();
 
 	@Override
-	public void transmit(net.fexcraft.mod.landdev.util.broad.Channel channel, String sender, String message, String tint, Object[] args){
+	public void transmit(Broadcaster.Message msg){
 		WrapperHolder.schedule(() -> {
 			if(fut != null && !fut.channel().isActive()) return;
 	        try{
 	        	JsonMap map = new JsonMap();
-	        	map.add("c", channel.type.name);
-	        	if(sender != null) map.add("s", sender.startsWith("&") ? sender.substring(2) : sender);
-	        	map.add("m", message);
-	            fut.channel().writeAndFlush(new Message("msg=" + JsonHandler.toString(map, PrintOption.FLAT)));
+	        	map.add("c", msg.channel.toString());
+	        	if(msg.sender != null) map.add("s", msg.sender.startsWith("&") ? msg.sender.substring(2) : msg.sender);
+	        	map.add("m", msg.message);
+	            fut.channel().writeAndFlush(new NettyMsg("msg=" + JsonHandler.toString(map, PrintOption.FLAT)));
 	        }
 	        catch(Exception e){
 	        	LandDev.log("Error on sending message to discord bot. " + map);
@@ -82,7 +82,7 @@ public class DiscordTransmitter implements Transmitter {
             });
 			fut = boot.connect(LDConfig.DISCORD_BOT_ADRESS, LDConfig.DISCORD_BOT_PORT).sync();
 			Channel channel = fut.sync().channel();
-			channel.writeAndFlush(new Message("token=" + LDConfig.DISCORD_BOT_TOKEN));
+			channel.writeAndFlush(new NettyMsg("token=" + LDConfig.DISCORD_BOT_TOKEN));
 			fut.channel().closeFuture().sync();
 		}
 		finally{
@@ -99,27 +99,29 @@ public class DiscordTransmitter implements Transmitter {
 
 		@Override
 		public void channelRead(ChannelHandlerContext ctx, Object obj) throws Exception {
-			Message msg = (Message)obj;
+			NettyMsg msg = (NettyMsg)obj;
 			if(msg.length <= 0) return;
 			if(!msg.value.startsWith("msg=")) LandDev.log("Discord bot response: " + msg.value);
 			JsonMap map = (JsonMap)JsonHandler.parse(msg.value.substring(4), true);
 			String user = map.getString("s", "DiscordUser");
 			if(map.has("m") && map.get("m").string_value().length() > 0){
-				Broadcaster.send(TargetTransmitter.NO_DISCORD, CHAT, "&2" + user, map.getString("m", "<MESSAGE_TEXT>"), LDConfig.CHAT_DISCORD_COLOR);
-				Broadcaster.send(TargetTransmitter.LOG_ONLY, CHAT, "D|" + user, map.getString("m", "<MESSAGE_TEXT>"), null);
+				new Broadcaster.Message().tint(LDConfig.CHAT_DISCORD_COLOR).set(map.getString("m", ""))
+					.sender("&2" + user).send(TargetTransmitter.NO_DISCORD)
+					.sender("D|" + user).send(TargetTransmitter.LOG_ONLY);
 			}
 			else{
-				if(!map.has("a")){
-					Broadcaster.send(TargetTransmitter.INTERNAL_ONLY, CHAT, "&2" + user, "&b[!] ERROR, check log for details.", LDConfig.CHAT_DISCORD_COLOR);
-				}
-				else Broadcaster.send(TargetTransmitter.INTERNAL_ONLY, CHAT, "&2" + user, "&b[!] &6Embeds: " + map.get("a").asArray().size(), LDConfig.CHAT_DISCORD_COLOR);
+				new Broadcaster.Message().sender("&2" + user).tint(LDConfig.CHAT_DISCORD_COLOR)
+					.set(map.has("a") ? "&b[!] &6Embeds: " + map.get("a").asArray().size() : "&b[!] ERROR, check log for details.")
+					.send(TargetTransmitter.INTERNAL_ONLY);
 			}
 			if(map.has("a")){
 				int[] idx = { 1 };
 				map.get("a").asArray().elements().forEach(elm -> {
 					JsonArray array = elm.asArray();
-					Broadcaster.send(TargetTransmitter.INTERNAL_ONLY, CHAT, "", "&l&6Embed " + idx[0]++ + ": ", "img", array.get(0).string_value(), array.get(1).string_value(), array.get(2).string_value());
-					Broadcaster.send(TargetTransmitter.LOG_ONLY, CHAT, "D|" + user, array.get(0).string_value(), null);
+					new Broadcaster.Message().tint(LDConfig.CHAT_DISCORD_COLOR).asImage()
+						.set("&l&6Embed " + idx[0]++ + ": ", array.get(0).string_value(), array.get(1).string_value(), array.get(2).string_value())
+						.sender("&2" + user).send(TargetTransmitter.INTERNAL_ONLY)
+						.sender("D|" + user).send(TargetTransmitter.LOG_ONLY);
 				});
 			}
 		}

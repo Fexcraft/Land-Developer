@@ -8,7 +8,6 @@ import net.fexcraft.mod.landdev.util.broad.Broadcaster.Transmitter;
 import net.fexcraft.mod.landdev.util.broad.Broadcaster.TransmitterType;
 import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.tag.TagCW;
-import net.fexcraft.mod.uni.tag.TagLW;
 import net.fexcraft.mod.uni.world.WrapperHolder;
 
 /**
@@ -19,30 +18,14 @@ import net.fexcraft.mod.uni.world.WrapperHolder;
 public class InternalTransmitter implements Transmitter {
 
 	@Override
-	public void transmit(Channel channel, String sender, String message, String tint, Object[] args){
-		if(channel == Channel.CHAT && !LDConfig.CHAT_OVERRIDE) return;
+	public void transmit(Broadcaster.Message msg){
+		if(msg.channel == Channel.CHAT && !LDConfig.CHAT_OVERRIDE) return;
 		TagCW com = TagCW.create();
 		com.set("task", "chat_message");
-		TagCW msg = TagCW.create();
-		TagLW lis = TagLW.create();
-		msg.set("c", channel.toString());
-		if(tint != null) msg.set("t", tint);
-		msg.set("s", sender);
-		msg.set("m", message);
-		if(args.length > 0 && args[0].equals("img")){
-			msg.set("i", true);
-			lis.add(args[1].toString());
-			lis.add(args[2].toString());
-			lis.add(args[3].toString());
-		}
-		else{
-			for(Object arg : args) lis.add(arg.toString());
-		}
-		msg.set("a", lis);
-		com.set("msg", msg);
-		switch(channel.sub){
+		com.set("msg", msg.toTag());
+		switch(msg.channel.sub){
 			case ALL:
-				switch(channel.type){
+				switch(msg.channel.type){
 					case CHAT:
 					case SERVER:
 						LandDev.sendToAll(com);
@@ -50,42 +33,42 @@ public class InternalTransmitter implements Transmitter {
 					case REGION:
 						for(UniEntity player : WrapperHolder.getPlayers()){
 							LDPlayer ply = ResManager.getPlayer(player);
-							if(ply.isCurrentlyInRegion(channel.layer.lid())) LandDev.sendTo(com, ply);
+							if(ply.isCurrentlyInRegion(msg.channel.layer.lid())) LandDev.sendTo(com, ply);
 						}
-						toMembers(channel, com);
+						toMembers(msg.channel, com);
 						break;
 					case COUNTY:
 						for(UniEntity player : WrapperHolder.getPlayers()){
 							LDPlayer ply = ResManager.getPlayer(player);
-							if(ply.isCurrentlyInCounty(channel.layer.lid())) LandDev.sendTo(com, ply);
+							if(ply.isCurrentlyInCounty(msg.channel.layer.lid())) LandDev.sendTo(com, ply);
 						}
-						toMembers(channel, com);
+						toMembers(msg.channel, com);
 						break;
 					case MUNICIPALITY:
 						for(UniEntity player : WrapperHolder.getPlayers()){
 							LDPlayer ply = ResManager.getPlayer(player);
-							if(ply.isCurrentlyInMunicipality(channel.layer.lid())) LandDev.sendTo(com, ply);
+							if(ply.isCurrentlyInMunicipality(msg.channel.layer.lid())) LandDev.sendTo(com, ply);
 						}
-						toMembers(channel, com);
+						toMembers(msg.channel, com);
 						break;
 					case DISTRICT:
 						for(UniEntity player : WrapperHolder.getPlayers()){
 							LDPlayer ply = ResManager.getPlayer(player);
-							if(ply.isCurrentlyInDistrict(channel.layer.lid())) LandDev.sendTo(com, ply);
+							if(ply.isCurrentlyInDistrict(msg.channel.layer.lid())) LandDev.sendTo(com, ply);
 						}
 						break;
 					case COMPANY:
-						toMembers(channel, com);
+						toMembers(msg.channel, com);
 						break;
 				}
 				break;
 			case MEMBER:
-				toMembers(channel, com);
+				toMembers(msg.channel, com);
 				break;
 			case STAFF:
 				for(UniEntity player : WrapperHolder.getPlayers()){
 					LDPlayer ply = ResManager.getPlayer(player);
-					if(channel.isStaffOrManager(ply)) LandDev.sendTo(com, ply);
+					if(msg.channel.isStaffOrManager(ply)) LandDev.sendTo(com, ply);
 				}
 				break;
 		}

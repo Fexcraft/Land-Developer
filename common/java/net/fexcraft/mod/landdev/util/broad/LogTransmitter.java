@@ -12,8 +12,8 @@ import net.fexcraft.mod.landdev.util.broad.Broadcaster.TransmitterType;
 public class LogTransmitter implements Transmitter {
 
 	@Override
-	public void transmit(Channel channel, String sender, String message, String tint, Object[] args){
-		LandDev.log("[" + channel + "] " + (sender.startsWith("&") ? sender.substring(2) : sender) + ": " + message);
+	public void transmit(Broadcaster.Message msg){
+		LandDev.log("[" + msg.channel + "] " + (msg.sender.startsWith("&") ? msg.sender.substring(2) : msg.sender) + ": " + msg.message);
 	}
 	
 	@Override

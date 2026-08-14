@@ -6,10 +6,10 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
 
-public class MsgEncoder extends MessageToByteEncoder<Message> {
+public class MsgEncoder extends MessageToByteEncoder<NettyMsg> {
 
 	@Override
-	protected void encode(ChannelHandlerContext ctx, Message msg, ByteBuf out) throws Exception {
+	protected void encode(ChannelHandlerContext ctx, NettyMsg msg, ByteBuf out) throws Exception {
 		out.writeInt(msg.length);
 		if(msg.length > 0) out.writeBytes(msg.value.getBytes(StandardCharsets.UTF_8));
 	}

@@ -16,11 +16,11 @@ import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.tag.TagLW;
 import net.fexcraft.mod.uni.world.EntityW;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -82,7 +82,7 @@ public class LandDev {
 					text.appendSibling(text2);
 				}
 				else{
-					String str = I18n.format(msg.getString("m"), (Object[])lis.toStringArray());
+					String str = I18n.translateToLocalFormatted(msg.getString("m"), (Object[])lis.toStringArray());
 					text = new TextComponentString(format(LDConfig.CHAT_OVERRIDE_LANG, c, msg.getString("s"), str));
 				}
 				Minecraft.getMinecraft().ingameGUI.getChatGUI().printChatMessage(text);

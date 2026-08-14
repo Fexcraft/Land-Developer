@@ -7,11 +7,11 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ReplayingDecoder;
 
-public class MsgDecoder extends ReplayingDecoder<Message> {
+public class MsgDecoder extends ReplayingDecoder<NettyMsg> {
 
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
-        Message data = new Message();
+        NettyMsg data = new NettyMsg();
         data.length = in.readInt();
         if(data.length <= 0){
         	out.add(data);
