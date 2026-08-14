@@ -87,26 +87,28 @@ landdev.server.player_left=%s left the server.
 landdev.server.started=Server has started. Running LandDeveloper v%s
 landdev.server.stopping=Server is closing.
 
-landdev.announce.region.created=&9[&2LD&9] &bThe Region &6%s &7(%s) &bjust got created!
-landdev.announce.region.staff.removed=&9[&2LD&9] &c%s &bis no longer Staff in &6%s &7(%s)
-landdev.announce.region.staff.added=&9[&2LD&9] &a%s &bis now Staff in &6%s &7(%s)
-landdev.announce.region.manager_set=&9[&2LD&9] &a%s &bis now Manager in &6%s &7(%s)
-landdev.announce.region.county.removed=&9[&2LD&9] &c%s &bis no longer a County in &6%s &7(%s)
+landdev.announce.generic=Announcement: %s
 
-landdev.announce.county.created=&9[&2LD&9] &bThe County &6%s &7(%s) &bjust got created!
-landdev.announce.county.staff.removed=&9[&2LD&9] &c%s &bis no longer Staff in &6%s &7(%s)
-landdev.announce.county.staff.added=&9[&2LD&9] &a%s &bis now Staff in &6%s &7(%s)
-landdev.announce.county.manager_set=&9[&2LD&9] &a%s &bis now Manager in &6%s &7(%s)
-landdev.announce.county.citizen.removed=&9[&2LD&9] &c%s &bis no longer Citizen in &6%s &7(%s)
-landdev.announce.county.municipality.removed=&9[&2LD&9] &c%s &bis no longer a Municipality in &6%s &7(%s)
+landdev.announce.region.created=&bThe Region &6%s &7(%s) &bjust got created!
+landdev.announce.region.staff.removed=&c%s &bis no longer Staff in &6%s &7(%s)
+landdev.announce.region.staff.added=&a%s &bis now Staff in &6%s &7(%s)
+landdev.announce.region.manager_set=&a%s &bis now Manager in &6%s &7(%s)
+landdev.announce.region.county.removed=&c%s &bis no longer a County in &6%s &7(%s)
 
-landdev.announce.municipality.created=&9[&2LD&9] &bThe Municipality &6%s &7(%s) &bjust got created!
-landdev.announce.municipality.staff.removed=&9[&2LD&9] &c%s &bis no longer Staff in &6%s &7(%s)
-landdev.announce.municipality.staff.added=&9[&2LD&9] &a%s &bis now Staff in &6%s &7(%s)
-landdev.announce.municipality.manager_set=&9[&2LD&9] &a%s &bis now Manager in &6%s &7(%s)
-landdev.announce.municipality.citizen.removed=&9[&2LD&9] &c%s &bis no longer Citizen in &6%s &7(%s)
+landdev.announce.county.created=&bThe County &6%s &7(%s) &bjust got created!
+landdev.announce.county.staff.removed=&c%s &bis no longer Staff in &6%s &7(%s)
+landdev.announce.county.staff.added=&a%s &bis now Staff in &6%s &7(%s)
+landdev.announce.county.manager_set=&a%s &bis now Manager in &6%s &7(%s)
+landdev.announce.county.citizen.removed=&c%s &bis no longer Citizen in &6%s &7(%s)
+landdev.announce.county.municipality.removed=&c%s &bis no longer a Municipality in &6%s &7(%s)
 
-landdev.announce.district.created=&9[&2LD&9] &bThe District &6%s &7(%s) &bjust got created!
+landdev.announce.municipality.created=&bThe Municipality &6%s &7(%s) &bjust got created!
+landdev.announce.municipality.staff.removed=&c%s &bis no longer Staff in &6%s &7(%s)
+landdev.announce.municipality.staff.added=&a%s &bis now Staff in &6%s &7(%s)
+landdev.announce.municipality.manager_set=&a%s &bis now Manager in &6%s &7(%s)
+landdev.announce.municipality.citizen.removed=&c%s &bis no longer Citizen in &6%s &7(%s)
+
+landdev.announce.district.created=&bThe District &6%s &7(%s) &bjust got created!
 
 landdev.mail.player.new=&6You have new mail!
 landdev.mail.player.unread=&6You have &3%s &eunread &6mails.

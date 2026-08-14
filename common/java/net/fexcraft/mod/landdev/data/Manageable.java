@@ -73,6 +73,14 @@ public class Manageable implements Saveable, PermInteractive {
 		return null;
 	}
 
+	public boolean isStaffOrManager(UUID uuid){
+		if(uuid.equals(manager)) return true;
+		for(Staff stf : staff){
+			if(stf.uuid.equals(uuid)) return true;
+		}
+		return false;
+	}
+
 	public void removeStaff(UUID uuid){
 		staff.removeIf(stf -> stf.uuid.equals(uuid));
 	}

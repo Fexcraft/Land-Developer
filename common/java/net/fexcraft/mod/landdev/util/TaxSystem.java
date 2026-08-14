@@ -19,9 +19,9 @@ import net.fexcraft.mod.landdev.data.player.LDPlayer;
 import net.fexcraft.mod.landdev.data.region.Region;
 import net.fexcraft.mod.landdev.event.LDEvent;
 import net.fexcraft.mod.landdev.event.CollectTaxEvent;
-import net.fexcraft.mod.landdev.util.broad.BroadcastChannel;
 import net.fexcraft.mod.landdev.util.broad.Broadcaster;
 import net.fexcraft.mod.landdev.util.broad.Broadcaster.TargetTransmitter;
+import net.fexcraft.mod.landdev.util.broad.Channel;
 import net.fexcraft.mod.uni.world.WrapperHolder;
 
 import java.io.File;
@@ -294,8 +294,8 @@ public class TaxSystem extends TimerTask {
 	}
 
 	private void broad(String str){
-		Broadcaster.send(TargetTransmitter.INTERNAL_ONLY, BroadcastChannel.ANNOUNCE, "&b" + CHATNAME, str, PREFIX);
-		Broadcaster.send(TargetTransmitter.NO_INTERNAL, BroadcastChannel.ANNOUNCE, CHATNAME, str);
+		Broadcaster.send(TargetTransmitter.INTERNAL_ONLY, Channel.SERVER, "&b" + CHATNAME, str, PREFIX, null);
+		Broadcaster.send(TargetTransmitter.NO_INTERNAL, Channel.SERVER, CHATNAME, str, null);
 	}
 
 	public TaxSystem load(){

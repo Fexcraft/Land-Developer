@@ -33,9 +33,10 @@ import net.fexcraft.mod.landdev.ui.modules.AppearModule;
 import net.fexcraft.mod.landdev.ui.modules.ModuleRequest;
 import net.fexcraft.mod.landdev.ui.modules.ModuleResponse;
 import net.fexcraft.mod.landdev.ui.modules.NormModule;
-import net.fexcraft.mod.landdev.util.Announcer;
 import net.fexcraft.mod.landdev.util.LDConfig;
 import net.fexcraft.mod.landdev.util.ResManager;
+import net.fexcraft.mod.landdev.util.broad.Broadcaster;
+import net.fexcraft.mod.landdev.util.broad.Channel;
 
 public class Region implements Saveable, Layer, LDUIModule {
 
@@ -50,6 +51,9 @@ public class Region implements Saveable, Layer, LDUIModule {
 	public Norms norms = new Norms();
 	public ArrayList<Integer> counties = new ArrayList<>();
 	public ExternalData external = new ExternalData(this);
+	public Channel channel_all;
+	public Channel channel_staff;
+	public Channel channel_member;
 	public long tax_collected;
 	public Account account;
 	public int seat = -1;
@@ -62,6 +66,9 @@ public class Region implements Saveable, Layer, LDUIModule {
 		norms.add(new BoolNorm("new-counties", false));
 		norms.add(new IntegerNorm("new-county-fee", 1000000));
 		norms.add(new FloatNorm("county-tax-percent", 10));
+		channel_all = new Channel(Channel.ChannelType.REGION, Channel.SubChannelType.ALL, this);
+		channel_staff = new Channel(Channel.ChannelType.REGION, Channel.SubChannelType.STAFF, this);
+		channel_member = new Channel(Channel.ChannelType.REGION, Channel.SubChannelType.MEMBER, this);
 	}
 
 	@Override
@@ -346,7 +353,8 @@ public class Region implements Saveable, Layer, LDUIModule {
 				cty.region = ResManager.getRegion(-1, true);
 				cty.save();
 				save();
-				Announcer.announce(Announcer.Target.MUNICIPALITY, id, "announce.region.county.removed", cty.name(), name(), id);
+				Broadcaster.announce(channel_member, "region.county.removed", cty.name(), name(), id);
+				Broadcaster.announce(cty.channel_member, "region.county.removed", cty.name(), name(), id);
 				container.open(UI_COUNTY_LIST);
 				break;
 			}
@@ -390,7 +398,7 @@ public class Region implements Saveable, Layer, LDUIModule {
 						mail.setTitle(name()).addMessage("landdev.mail.region.staff.removed", staff.getPlayerName());
 						stp.addMailAndSave(mail);
 					}
-					Announcer.announce(Announcer.Target.REGION, id, "announce.region.staff.removed", staff.getPlayerName(), name(), id);
+					Broadcaster.announce(channel_member, "region.staff.removed", staff.getPlayerName(), name(), id);
 				}
 				container.open(UI_STAFF_LIST);
 				break;
@@ -411,7 +419,7 @@ public class Region implements Saveable, Layer, LDUIModule {
 						mail.setTitle(name()).addMessage("landdev.mail.region.manager_set", staff.getPlayerName());
 						stp.addMailAndSave(mail);
 					}
-					Announcer.announce(Announcer.Target.REGION, id, "announce.region.manager_set", staff.getPlayerName(), name(), id);
+					Broadcaster.announce(channel_member, "region.manager_set", staff.getPlayerName(), name(), id);
 				}
 				container.open(UI_MAIN);
 				break;
@@ -483,7 +491,7 @@ public class Region implements Saveable, Layer, LDUIModule {
 				ResManager.bulkSave(reg, ct, player);
 				player.entity.closeUI();
 				player.entity.send("landdev.gui.region.create.complete");
-				Announcer.announce(Announcer.Target.GLOBAL, 0, "announce.region.created", name, newid);
+				Broadcaster.announce(Channel.SERVER, "region.created", name, newid);
 				break;
 			}
 			//

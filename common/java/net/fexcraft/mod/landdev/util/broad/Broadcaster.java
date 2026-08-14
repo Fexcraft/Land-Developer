@@ -1,14 +1,13 @@
 package net.fexcraft.mod.landdev.util.broad;
 
-import static net.fexcraft.mod.landdev.util.broad.BroadcastChannel.CHAT;
-
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.fexcraft.mod.landdev.data.player.LDPlayer;
 import net.fexcraft.mod.landdev.util.LDConfig;
 
 public class Broadcaster {
-	
+
+	public static String LD_SENDER = "\u00a79[\u00a72LD\u00a79]";
 	public static ConcurrentHashMap<TransmitterType, Transmitter> SENDERS = new ConcurrentHashMap<>();
 	static {
 		SENDERS.put(TransmitterType.INTERNAL, new InternalTransmitter());
@@ -16,28 +15,28 @@ public class Broadcaster {
 	}
 
 	public static void send(LDPlayer player, String message){
-		send(TargetTransmitter.ALL, CHAT.name, player.name(), message, player.adm ? LDConfig.CHAT_ADMIN_COLOR : LDConfig.CHAT_PLAYER_COLOR);
+		send(TargetTransmitter.ALL, Channel.CHAT, player.name(), message, player.adm ? LDConfig.CHAT_ADMIN_COLOR : LDConfig.CHAT_PLAYER_COLOR);
 	}
 
-	public static void send(BroadcastChannel channel, String sender, String message, Object... args){
-		send(TargetTransmitter.ALL, channel.name, sender, message, args);
+	public static void send(Channel channel, String sender, String message, String tint, Object... args){
+		send(TargetTransmitter.ALL, channel, sender, message, tint, args);
 	}
 
-	public static void send(TargetTransmitter target, BroadcastChannel channel, String sender, String message, Object... args){
-		send(target, channel.name, sender, message, args);
+	public static void announce(Channel channel, String message, Object... args){
+		send(TargetTransmitter.ALL, channel, LD_SENDER, "landdev.announce." + message, "&a", args);
 	}
 
-	public static void send(TargetTransmitter target, String channel, String sender, String message, Object... args){
-		Transmitter trs = null;
+	public static void send(TargetTransmitter target, Channel channel, String sender, String message, String tint, Object... args){
+		Transmitter trs;
 		for(TransmitterType type : target.types){
 			if((trs = SENDERS.get(type)) == null) continue;
-			trs.transmit(channel, sender, message, args);
+			trs.transmit(channel, sender, message, tint, args);
 		}
 	}
 
 	public static interface Transmitter {
 		
-		public void transmit(String channel, String sender, String msg, Object[] args);
+		public void transmit(Channel channel, String sender, String msg, String tint, Object[] args);
 
 		public default boolean internal(){ return false; }
 		

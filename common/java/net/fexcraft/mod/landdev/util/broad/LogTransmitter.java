@@ -12,7 +12,7 @@ import net.fexcraft.mod.landdev.util.broad.Broadcaster.TransmitterType;
 public class LogTransmitter implements Transmitter {
 
 	@Override
-	public void transmit(String channel, String sender, String message, Object[] args){
+	public void transmit(Channel channel, String sender, String message, String tint, Object[] args){
 		LandDev.log("[" + channel + "] " + (sender.startsWith("&") ? sender.substring(2) : sender) + ": " + message);
 	}
 	

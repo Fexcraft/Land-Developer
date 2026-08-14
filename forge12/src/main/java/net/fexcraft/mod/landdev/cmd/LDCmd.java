@@ -12,9 +12,12 @@ import net.fexcraft.mod.landdev.data.Layers;
 import net.fexcraft.mod.landdev.data.Mail;
 import net.fexcraft.mod.landdev.data.MailType;
 import net.fexcraft.mod.landdev.data.chunk.Chunk_;
+import net.fexcraft.mod.landdev.data.county.County;
 import net.fexcraft.mod.landdev.data.player.LDPlayer;
 import net.fexcraft.mod.landdev.ui.LDKeys;
 import net.fexcraft.mod.landdev.util.*;
+import net.fexcraft.mod.landdev.util.broad.Broadcaster;
+import net.fexcraft.mod.landdev.util.broad.Channel;
 import net.fexcraft.mod.landdev.util.broad.DiscordTransmitter;
 import net.fexcraft.mod.uni.impl.PacketTagHandler;
 import net.fexcraft.mod.uni.tag.TagCW;
@@ -146,6 +149,15 @@ public class LDCmd extends CommandBase {
 						mail.staff = type == MailType.INVITE;
 						player.mail.mails.add(mail);
 					}
+					return;
+				}
+				case "bulk-an":{
+					if(!player.adm) return;
+					County ct = ResManager.getCounty(-1, true);
+					Broadcaster.announce(ct.channel_all, "county.municipality.removed", "none", ct.name(), -1);
+					Broadcaster.announce(ct.channel_all, "generic", "test announcement here");
+					Broadcaster.announce(Channel.SERVER, "generic", "test announcement here");
+					Broadcaster.announce(Channel.CHAT, "generic", "test announcement here");
 					return;
 				}
 				case "force-tax":{

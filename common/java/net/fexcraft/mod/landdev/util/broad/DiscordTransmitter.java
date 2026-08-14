@@ -21,6 +21,8 @@ import net.fexcraft.mod.landdev.util.broad.Broadcaster.Transmitter;
 import net.fexcraft.mod.landdev.util.broad.Broadcaster.TransmitterType;
 import net.fexcraft.mod.uni.world.WrapperHolder;
 
+import static net.fexcraft.mod.landdev.util.broad.Channel.CHAT;
+
 /**
  * 
  * @author Ferdinand Calo' (FEX___96)
@@ -33,12 +35,12 @@ public class DiscordTransmitter implements Transmitter {
 	private static JsonMap map = new JsonMap();
 
 	@Override
-	public void transmit(String channel, String sender, String message, Object[] args){
+	public void transmit(net.fexcraft.mod.landdev.util.broad.Channel channel, String sender, String message, String tint, Object[] args){
 		WrapperHolder.schedule(() -> {
 			if(fut != null && !fut.channel().isActive()) return;
 	        try{
 	        	JsonMap map = new JsonMap();
-	        	map.add("c", channel);
+	        	map.add("c", channel.type.name);
 	        	if(sender != null) map.add("s", sender.startsWith("&") ? sender.substring(2) : sender);
 	        	map.add("m", message);
 	            fut.channel().writeAndFlush(new Message("msg=" + JsonHandler.toString(map, PrintOption.FLAT)));
@@ -103,21 +105,21 @@ public class DiscordTransmitter implements Transmitter {
 			JsonMap map = (JsonMap)JsonHandler.parse(msg.value.substring(4), true);
 			String user = map.getString("s", "DiscordUser");
 			if(map.has("m") && map.get("m").string_value().length() > 0){
-				Broadcaster.send(TargetTransmitter.NO_DISCORD, BroadcastChannel.CHAT, "&2" + user, map.getString("m", "<MESSAGE_TEXT>"), LDConfig.CHAT_DISCORD_COLOR);
-				Broadcaster.send(TargetTransmitter.LOG_ONLY, BroadcastChannel.CHAT, "D|" + user, map.getString("m", "<MESSAGE_TEXT>"));
+				Broadcaster.send(TargetTransmitter.NO_DISCORD, CHAT, "&2" + user, map.getString("m", "<MESSAGE_TEXT>"), LDConfig.CHAT_DISCORD_COLOR);
+				Broadcaster.send(TargetTransmitter.LOG_ONLY, CHAT, "D|" + user, map.getString("m", "<MESSAGE_TEXT>"), null);
 			}
 			else{
 				if(!map.has("a")){
-					Broadcaster.send(TargetTransmitter.INTERNAL_ONLY, BroadcastChannel.CHAT, "&2" + user, "&b[!] ERROR, check log for details.", LDConfig.CHAT_DISCORD_COLOR);
+					Broadcaster.send(TargetTransmitter.INTERNAL_ONLY, CHAT, "&2" + user, "&b[!] ERROR, check log for details.", LDConfig.CHAT_DISCORD_COLOR);
 				}
-				else Broadcaster.send(TargetTransmitter.INTERNAL_ONLY, BroadcastChannel.CHAT, "&2" + user, "&b[!] &6Embeds: " + map.get("a").asArray().size(), LDConfig.CHAT_DISCORD_COLOR);
+				else Broadcaster.send(TargetTransmitter.INTERNAL_ONLY, CHAT, "&2" + user, "&b[!] &6Embeds: " + map.get("a").asArray().size(), LDConfig.CHAT_DISCORD_COLOR);
 			}
 			if(map.has("a")){
 				int[] idx = { 1 };
 				map.get("a").asArray().elements().forEach(elm -> {
 					JsonArray array = elm.asArray();
-					Broadcaster.send(TargetTransmitter.INTERNAL_ONLY, BroadcastChannel.CHAT, "", "&l&6Embed " + idx[0]++ + ": ", "img", array.get(0).string_value(), array.get(1).string_value(), array.get(2).string_value());
-					Broadcaster.send(TargetTransmitter.LOG_ONLY, BroadcastChannel.CHAT, "D|" + user, array.get(0).string_value());
+					Broadcaster.send(TargetTransmitter.INTERNAL_ONLY, CHAT, "", "&l&6Embed " + idx[0]++ + ": ", "img", array.get(0).string_value(), array.get(1).string_value(), array.get(2).string_value());
+					Broadcaster.send(TargetTransmitter.LOG_ONLY, CHAT, "D|" + user, array.get(0).string_value(), null);
 				});
 			}
 		}

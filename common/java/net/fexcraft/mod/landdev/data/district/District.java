@@ -20,9 +20,10 @@ import net.fexcraft.mod.landdev.ui.modules.AppearModule;
 import net.fexcraft.mod.landdev.ui.modules.ModuleRequest;
 import net.fexcraft.mod.landdev.ui.modules.ModuleResponse;
 import net.fexcraft.mod.landdev.ui.modules.NormModule;
-import net.fexcraft.mod.landdev.util.Announcer;
 import net.fexcraft.mod.landdev.util.LDConfig;
 import net.fexcraft.mod.landdev.util.ResManager;
+import net.fexcraft.mod.landdev.util.broad.Broadcaster;
+import net.fexcraft.mod.landdev.util.broad.Channel;
 
 import java.util.UUID;
 
@@ -50,6 +51,8 @@ public class District implements Saveable, Layer, PermInteractive, LDUIModule {
 	public Norms norms = new Norms();
 	public DistrictOwner owner = new DistrictOwner();
 	public ExternalData external = new ExternalData(this);
+	public Channel channel_all;
+	public Channel channel_staff;
 	public boolean disbanded;
 	public boolean locked;
 	public long tax_collected;
@@ -65,6 +68,8 @@ public class District implements Saveable, Layer, PermInteractive, LDUIModule {
 		norms.add(new BoolNorm("municipality-can-form", false));
 		norms.add(new BoolNorm("county-can-form", false));
 		norms.add(new BoolNorm("unclaim-bankrupt", false));
+		channel_all = new Channel(Channel.ChannelType.DISTRICT, Channel.SubChannelType.ALL, this);
+		channel_staff = new Channel(Channel.ChannelType.DISTRICT, Channel.SubChannelType.STAFF, this);
 	}
 
 	@Override
@@ -616,7 +621,7 @@ public class District implements Saveable, Layer, PermInteractive, LDUIModule {
 				ResManager.bulkSave(dis.owner.is_county? dis.owner.county : dis.owner.municipality, dis, chunk, player);
 				player.entity.closeUI();
 				player.entity.send("landdev.gui.district.create.complete");
-				Announcer.announce(Announcer.Target.GLOBAL, 0, "announce.district.created", name, newid);
+				Broadcaster.announce(Channel.SERVER, "district.created", name, newid);
 				break;
 			}
 			case "appearance.submit":{

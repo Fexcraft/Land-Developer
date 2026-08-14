@@ -36,9 +36,10 @@ import net.fexcraft.mod.landdev.ui.modules.AppearModule;
 import net.fexcraft.mod.landdev.ui.modules.ModuleRequest;
 import net.fexcraft.mod.landdev.ui.modules.ModuleResponse;
 import net.fexcraft.mod.landdev.ui.modules.NormModule;
-import net.fexcraft.mod.landdev.util.Announcer;
 import net.fexcraft.mod.landdev.util.LDConfig;
 import net.fexcraft.mod.landdev.util.ResManager;
+import net.fexcraft.mod.landdev.util.broad.Broadcaster;
+import net.fexcraft.mod.landdev.util.broad.Channel;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -59,6 +60,9 @@ public class County implements Saveable, Layer, LDUIModule {
 	public Citizens citizens = new Citizens(COUNTY_CITIZEN);
 	public Joinable requests = new Joinable();
 	public ExternalData external = new ExternalData(this);
+	public Channel channel_all;
+	public Channel channel_staff;
+	public Channel channel_member;
 	public long tax_collected;
 	public Account account;
 	public Region region;
@@ -76,6 +80,9 @@ public class County implements Saveable, Layer, LDUIModule {
 		norms.add(new IntegerNorm("citizen-tax", 1000));
 		norms.add(new BoolNorm("kick-bankrupt", false));
 		norms.add(new IntegerNorm("min-municipality-distance", LDConfig.MIN_MUN_DIS));
+		channel_all = new Channel(Channel.ChannelType.COUNTY, Channel.SubChannelType.ALL, this);
+		channel_staff = new Channel(Channel.ChannelType.COUNTY, Channel.SubChannelType.STAFF, this);
+		channel_member = new Channel(Channel.ChannelType.COUNTY, Channel.SubChannelType.MEMBER, this);
 	}
 
 	@Override
@@ -471,7 +478,8 @@ public class County implements Saveable, Layer, LDUIModule {
 				}
 				muni.save();
 				save();
-				Announcer.announce(Announcer.Target.MUNICIPALITY, id, "announce.county.municipality.removed", muni.name(), name(), id);
+				Broadcaster.announce(channel_member, "county.municipality.removed", muni.name(), name(), id);
+				Broadcaster.announce(muni.channel_member, "county.municipality.removed", muni.name(), name(), id);
 				container.open(UI_MUNICIPALITY_LIST);
 				break;
 			}
@@ -552,7 +560,7 @@ public class County implements Saveable, Layer, LDUIModule {
 					mail = new Mail(MailType.SYSTEM, Layers.COUNTY, id, Layers.COUNTY, id).expireInDays(7);
 					mail.setTitle(name()).addMessage("landdev.mail.county.citizen.removed", cit.getPlayerName());
 					this.mail.mails.add(mail);
-					Announcer.announce(Announcer.Target.COUNTY, id, "announce.county.citizen.removed", cit.getPlayerName(), name(), id);
+					Broadcaster.announce(channel_member, "county.citizen.removed", cit.getPlayerName(), name(), id);
 				}
 				container.open(UI_CITIZEN_LIST);
 				break;
@@ -596,7 +604,7 @@ public class County implements Saveable, Layer, LDUIModule {
 						mail.setTitle(name()).addMessage("landdev.mail.county.staff.removed", staff.getPlayerName());
 						stp.addMailAndSave(mail);
 					}
-					Announcer.announce(Announcer.Target.COUNTY, id, "announce.county.staff.removed", staff.getPlayerName(), name(), id);
+					Broadcaster.announce(channel_member, "county.staff.removed", staff.getPlayerName(), name(), id);
 				}
 				container.open(UI_STAFF_LIST);
 				break;
@@ -617,7 +625,7 @@ public class County implements Saveable, Layer, LDUIModule {
 						mail.setTitle(name()).addMessage("landdev.mail.county.manager_set", staff.getPlayerName());
 						stp.addMailAndSave(mail);
 					}
-					Announcer.announce(Announcer.Target.COUNTY, id, "announce.county.manager_set", staff.getPlayerName(), name(), id);
+					Broadcaster.announce(channel_member, "county.manager_set", staff.getPlayerName(), name(), id);
 				}
 				container.open(UI_MAIN);
 				break;
@@ -744,7 +752,7 @@ public class County implements Saveable, Layer, LDUIModule {
 				ResManager.bulkSave(nct, region, player);
 				player.entity.closeUI();
 				player.entity.send("landdev.gui.county.create.complete");
-				Announcer.announce(Announcer.Target.GLOBAL, 0, "announce.county.created", name, newid);
+				Broadcaster.announce(Channel.SERVER, "county.created", name, newid);
 				break;
 			}
 			//
