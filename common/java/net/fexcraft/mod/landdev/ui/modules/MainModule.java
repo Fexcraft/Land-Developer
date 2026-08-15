@@ -34,7 +34,7 @@ public class MainModule implements LDUIModule {
 	}
 
 	public void on_interact(BaseCon container, ModuleRequest req){
-		Chunk_ chunk = ResManager.getChunk(container.pos.y, container.pos.z);
+		Chunk_ chunk = ResManager.getChunk(container.player.entity);
 		switch(req.event()){
 			case "player": container.open(PLAYER, 0, 0, 0); return;
 			case "mail": container.open(MAILBOX, Layers.PLAYER.ordinal(), 0, 0); return;
