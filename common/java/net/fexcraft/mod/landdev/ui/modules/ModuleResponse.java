@@ -5,11 +5,14 @@ import static net.fexcraft.mod.landdev.ui.LDUIButton.checkbox;
 import static net.fexcraft.mod.landdev.ui.LDUIButton.radio;
 import static net.fexcraft.mod.landdev.ui.LDUIRow.ELM_BLANK;
 
+import net.fexcraft.lib.common.math.V3I;
+import net.fexcraft.mod.landdev.ui.LDKeys;
 import net.fexcraft.mod.landdev.ui.LDUIButton;
 import net.fexcraft.mod.landdev.ui.LDUIRow;
 import net.fexcraft.mod.landdev.ui.LDUIModule;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.tag.TagLW;
+import net.fexcraft.mod.uni.ui.UIKey;
 
 import java.util.ArrayList;
 
@@ -23,6 +26,8 @@ public class ModuleResponse {
 	private int in_index = 0;
 	private boolean form;
 	private boolean nosubmit;
+	public V3I back_pos;
+	public UIKey back_ui;
 
 	public ModuleResponse(){
 		compound = TagCW.create();
@@ -42,6 +47,26 @@ public class ModuleResponse {
 
 	public void setNoBack(){
 		compound.set("noback", true);
+	}
+
+	public void setBackToMain(){
+		compound.rem("noback");
+		back_pos = new V3I(0, 0, 0);
+		back_ui = LDKeys.MAIN;
+	}
+
+	/** @param uiid can be null */
+	public void setBackTo(UIKey uiid, int x, int y, int z){
+		compound.rem("noback");
+		back_pos = new V3I(x, y, z);
+		back_ui = uiid;
+	}
+
+	/** @param uiid can be null */
+	public void setBackTo(UIKey uiid, V3I pos){
+		compound.rem("noback");
+		back_pos = pos;
+		back_ui = uiid;
 	}
 
 	public TagCW build(){
