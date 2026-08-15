@@ -82,6 +82,12 @@ public class MailboxUI extends UserInterface {
 				page(1);
 				return true;
 			}
+			case "back":{
+				TagCW com = TagCW.create();
+				com.set("go_back", true);
+				container.SEND_TO_SERVER.accept(com);
+				return true;
+			}
 		}
 		return false;
 	}
