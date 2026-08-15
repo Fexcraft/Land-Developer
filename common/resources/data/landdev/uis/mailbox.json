@@ -48,6 +48,12 @@
 			"size": [ 30, 13 ],
 			"pos": [ 182, 164 ],
 			"buttons": [ "prev", "next" ]
+		},
+		"back": {
+			"texture": "landdev:textures/ui/mail.png",
+			"size": [ 17, 13 ],
+			"pos": [ 33, 164 ],
+			"buttons": [ "back" ]
 		}
 	},
 	"buttons": {
@@ -178,6 +184,10 @@
 		"next": {
 			"size": [ 11, 11 ],
 			"pos": [ 198, 163 ]
+		},
+		"back": {
+			"size": [ 11, 11 ],
+			"pos": [ 36, 163 ]
 		}
 	},
 	"texts": {
