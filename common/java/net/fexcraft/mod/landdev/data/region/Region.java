@@ -52,6 +52,7 @@ public class Region implements Saveable, Layer, LDUIModule {
 	public ArrayList<Integer> counties = new ArrayList<>();
 	public ExternalData external = new ExternalData(this);
 	public Channel channel_all;
+	public Channel channel_inck;
 	public Channel channel_staff;
 	public Channel channel_member;
 	public long tax_collected;
@@ -67,6 +68,7 @@ public class Region implements Saveable, Layer, LDUIModule {
 		norms.add(new IntegerNorm("new-county-fee", 1000000));
 		norms.add(new FloatNorm("county-tax-percent", 10));
 		channel_all = new Channel(Channel.ChannelType.REGION, Channel.SubChannelType.ALL, this);
+		channel_inck = new Channel(Channel.ChannelType.REGION, Channel.SubChannelType.INCHUNK, this);
 		channel_staff = new Channel(Channel.ChannelType.REGION, Channel.SubChannelType.STAFF, this);
 		channel_member = new Channel(Channel.ChannelType.REGION, Channel.SubChannelType.MEMBER, this);
 	}
