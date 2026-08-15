@@ -227,12 +227,14 @@ public class LDPlayer implements Saveable, Layer, LDUIModule, Appendable<UniEnti
 				resp.addButton("nick", ELM_GENERIC, OPEN, nickname == null ? "" : nickname);
 				resp.addButton("color", ELM_GENERIC, OPEN, colorcode == null ? "" : colorcode);
 				resp.addBlank();
+				resp.addButton("mailbox", ELM_GENERIC, OPEN);
 				resp.addButton("company", ELM_GENERIC, EMPTY, "W-I-P");
 				if(municipality.id > -1){
 					resp.addButton("municipality", ELM_GENERIC, OPEN, municipality.name());
 				}
 				resp.addButton("county", ELM_GENERIC, OPEN, county.name());
 				resp.addButton("region", ELM_GENERIC, OPEN, county.region.name());
+				resp.setBackToMain();
 				break;
 			}
 			case UI_NICKNAME:{
@@ -255,6 +257,10 @@ public class LDPlayer implements Saveable, Layer, LDUIModule, Appendable<UniEnti
 			case "nick":
 			case "color":{
 				container.open(UI_NICKNAME);
+				break;
+			}
+			case "mailbox":{
+				container.open(LDKeys.MAILBOX, Layers.PLAYER.ordinal(), 0, 0);
 				break;
 			}
 			case "company":{
