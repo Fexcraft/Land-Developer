@@ -6,8 +6,8 @@ import net.fexcraft.mod.landdev.data.player.LDPlayer;
 import net.fexcraft.mod.landdev.util.LDConfig;
 import net.fexcraft.mod.landdev.util.ResManager;
 import net.fexcraft.mod.landdev.util.TaxSystem;
-import net.fexcraft.mod.landdev.util.broad.BroadcastChannel;
 import net.fexcraft.mod.landdev.util.broad.Broadcaster;
+import net.fexcraft.mod.landdev.util.broad.Channel;
 import net.fexcraft.mod.uni.UniEntity;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.TickEvent;
@@ -33,7 +33,7 @@ public class PlayerEvents {
 		player.login = Time.getDate();
 		player.chunk_last = ResManager.getChunkP(event.getEntity());
 		TaxSystem.taxPlayer(player, null, false);
-		Broadcaster.send(NO_INTERNAL, BroadcastChannel.SERVER, null, LDConfig.SERVLANG_JOINED.formatted(player.name_raw()));
+		Broadcaster.newMessage(Channel.CHAT).set(LDConfig.SERVLANG_JOINED.formatted(player.name_raw())).send(NO_INTERNAL);
     }
     
 	@SubscribeEvent
@@ -41,7 +41,7 @@ public class PlayerEvents {
     	if(event.getEntity().level().isClientSide) return;
 		LDPlayer player = ResManager.getPlayer(event.getEntity().getGameProfile().getId(), false);
 		if(player != null){
-			Broadcaster.send(NO_INTERNAL, BroadcastChannel.SERVER, null, LDConfig.SERVLANG_LEFT.formatted(player.name_raw()));
+			Broadcaster.newMessage(Channel.CHAT).set(LDConfig.SERVLANG_LEFT.formatted(player.name_raw())).send(NO_INTERNAL);
 			player.save();
 			player.last_login = player.login;
 			player.last_logout = Time.getDate();
