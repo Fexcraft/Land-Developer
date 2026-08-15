@@ -30,6 +30,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
+import java.util.Arrays;
 
 import static net.fexcraft.lib.common.utils.Formatter.format;
 import static net.fexcraft.mod.landdev.LDN.PKT_RECEIVER_ID;
@@ -65,9 +66,8 @@ public class LandDev {
 				LocationUpdate.loadLines(packet.getList("lines").local());
 			});
 			CTagListener.TASKS.put("chat_message", (packet, player) -> {
-				log(packet);
 				TagCW msg = packet.getCompound("msg");
-				TagLW lis = packet.getList("a");
+				TagLW lis = msg.getList("a");
 				String c = msg.has("t") ? msg.getString("t") : "&a";
 				ITextComponent text = null;
 				if(msg.has("i")){
@@ -82,7 +82,7 @@ public class LandDev {
 					text.appendSibling(text2);
 				}
 				else{
-					String str = I18n.translateToLocalFormatted(msg.getString("m"), (Object[])lis.toStringArray());
+					String str = net.minecraft.client.resources.I18n.format(msg.getString("m"), lis.toArray());
 					text = new TextComponentString(format(LDConfig.CHAT_OVERRIDE_LANG, c, msg.getString("s"), str));
 				}
 				Minecraft.getMinecraft().ingameGUI.getChatGUI().printChatMessage(text);
