@@ -203,6 +203,7 @@ public class Chunk_ implements Saveable, Layer, LDUIModule {
 				if(!locked && container.ldp.adm){
 					resp.addButton("lock", ELM_RED, DISABLED);
 				}
+				resp.setBackToMain();
 				break;
 			case UI_LINK:
 				resp.setTitle("chunk.link.title");
