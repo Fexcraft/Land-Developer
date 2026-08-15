@@ -31,7 +31,6 @@ import java.time.LocalTime;
 import java.time.ZoneOffset;
 import java.util.*;
 
-import static net.fexcraft.mod.landdev.util.broad.Broadcaster.LD_SENDER;
 import static net.fexcraft.mod.landdev.util.broad.Broadcaster.TargetTransmitter.NO_INTERNAL;
 
 /**
