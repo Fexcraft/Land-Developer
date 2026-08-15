@@ -33,8 +33,8 @@ import net.fexcraft.mod.landdev.data.prop.Property;
 import net.fexcraft.mod.landdev.data.region.Region;
 import net.fexcraft.mod.landdev.ui.LDKeys;
 import net.fexcraft.mod.landdev.util.*;
-import net.fexcraft.mod.landdev.util.broad.BroadcastChannel;
 import net.fexcraft.mod.landdev.util.broad.Broadcaster;
+import net.fexcraft.mod.landdev.util.broad.Channel;
 import net.fexcraft.mod.landdev.util.broad.DiscordTransmitter;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.UniEntity;
@@ -108,12 +108,12 @@ public class LandDev implements ModInitializer {
 			player.login = Time.getDate();
 			player.chunk_last = ResManager.getChunkP(handler.player);
 			TaxSystem.taxPlayer(player, null, false);
-			Broadcaster.send(NO_INTERNAL, BroadcastChannel.SERVER, null, LDConfig.SERVLANG_JOINED.formatted(player.name_raw()));
+			Broadcaster.newMessage(Channel.CHAT).set(LDConfig.SERVLANG_JOINED.formatted(player.name_raw())).send(NO_INTERNAL);
 		});
 		ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
 			LDPlayer player = ResManager.getPlayer(handler.player.getGameProfile().id(), false);
 			if(player != null){
-				Broadcaster.send(NO_INTERNAL, BroadcastChannel.SERVER, null, LDConfig.SERVLANG_LEFT.formatted(player.name_raw()));
+				Broadcaster.newMessage(Channel.CHAT).set(LDConfig.SERVLANG_LEFT.formatted(player.name_raw())).send(NO_INTERNAL);
 				player.save();
 				player.last_login = player.login;
 				player.last_logout = Time.getDate();
@@ -135,7 +135,6 @@ public class LandDev implements ModInitializer {
 			Broadcaster.send(player, msg.signedContent());
 			return !LDConfig.CHAT_OVERRIDE;
 		});
-		//TODO chat
 		ServerTickEvents.END_SERVER_TICK.register(server -> {
 			long time;
 			boolean moved, label;
