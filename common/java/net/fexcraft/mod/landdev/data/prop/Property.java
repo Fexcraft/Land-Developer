@@ -151,6 +151,7 @@ public class Property implements Saveable, Layer, LDUIModule {
 					resp.addButton("set_amount", ELM_GENERIC, OPEN);
 					resp.addButton("set_duration", ELM_GENERIC, OPEN);
 				}
+				resp.setBackToMain();
 				break;
 			}
 			case UI_LABEL:{
