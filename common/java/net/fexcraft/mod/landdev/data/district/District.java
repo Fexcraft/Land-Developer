@@ -294,6 +294,7 @@ public class District implements Saveable, Layer, PermInteractive, LDUIModule {
 				if(!locked && container.ldp.adm){
 					resp.addButton("lock", ELM_RED, DISABLED);
 				}
+				resp.setBackToMain();
 				break;
 			case UI_TYPE:
 				resp.setTitle("district.type.title");
@@ -339,6 +340,7 @@ public class District implements Saveable, Layer, PermInteractive, LDUIModule {
 				break;
 			case UI_NORM_EDIT:{
 				NormModule.respNormEdit(norms, container, resp, "district", canman);
+				resp.setBackTo(null, UI_NORMS, container.pos.y, 0);
 				break;
 			}
 			case UI_MERGE:{
