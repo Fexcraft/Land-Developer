@@ -41,7 +41,8 @@ public class BaseCon extends ContainerInterface {
 	public LDPlayer ldp;
 	protected UIKey type;
 	protected String prefix;
-	protected int backto;
+	protected UIKey back_ui;
+	protected V3I back_pos;
 	protected BaseUI bui;
 	//
 	protected LinkedHashMap<String, String> sfields = new LinkedHashMap<>();
@@ -160,7 +161,7 @@ public class BaseCon extends ContainerInterface {
 			}
 		}
 		if(com.has("go_back")){
-			if(pos.x != 0) open(backto);
+			if(type != MAIN) open(back_ui, back_pos);
 			else{
 				Chunk_ chunk = ResManager.getChunk(player.entity);
 				open(MAIN, 0, chunk.key.x, chunk.key.z);
@@ -183,7 +184,6 @@ public class BaseCon extends ContainerInterface {
 		else bui.texts.get("title").translate();
 		//
 		if(type != MAIN && !com.has("noback")){
-			backto = com.has("backto") ? com.getInteger("backto") : 0;
 			bui.tabs.get("back").visible(true);
 		}
 		else bui.tabs.get("back").visible(false);
@@ -325,6 +325,8 @@ public class BaseCon extends ContainerInterface {
 			resp.getCompound().set("gui_icon", holder.getnn());
 			resp.getCompound().set("gui_color", color.getInteger());
 		}
+		back_pos = resp.back_pos == null ? new V3I(0, pos.y, pos.z) : resp.back_pos;
+		back_ui = resp.back_ui == null ? type : resp.back_ui;
 		SEND_TO_CLIENT.accept(resp.build(), player);
 	}
 
@@ -338,6 +340,10 @@ public class BaseCon extends ContainerInterface {
 
 	public void open(UIKey type, int x, int y, int z){
 		player.entity.openUI(type, x, y, z);
+	}
+
+	public void open(UIKey type, V3I pos){
+		player.entity.openUI(type, pos);
 	}
 
 	public void msg(String string, boolean addprefix){
