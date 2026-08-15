@@ -9,11 +9,13 @@ import net.fexcraft.mod.landdev.util.CTagListener;
 import net.fexcraft.mod.landdev.util.LDConfig;
 import net.fexcraft.mod.landdev.util.LocationUpdate;
 import net.fexcraft.mod.landdev.util.PropRenderer;
+import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.tag.TagLW;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 
-import static net.fexcraft.mod.uni.ui.ContainerInterface.transformat;
+import static net.fexcraft.lib.common.utils.Formatter.format;
+import static net.fexcraft.mod.uni.ui.ContainerInterface.TRANSFORMAT;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -30,18 +32,17 @@ public class LandDevCl implements ClientModInitializer {
 			LocationUpdate.loadLines(packet.getList("lines").local());
 		});
 		CTagListener.TASKS.put("chat_message", (packet, player) -> {
-			TagLW list = packet.getList("msg");
-			String c = list.size() > 3 ? list.getString(3) : "\u00A7a";
+			TagCW msg = packet.getCompound("msg");
+			TagLW lis = msg.getList("a");
+			String c = msg.has("t") ? msg.getString("t") : "&a";
 			Component text = null;
-			switch(list.getString(0)){
-				case "chat_img":
-					text = Component.literal(list.getString(2));
-					//TODO
-					break;
-				case "chat":
-				default:
-					text = Component.literal(transformat(LDConfig.CHAT_OVERRIDE_LANG, c, list.getString(1), list.getString(2)));
-					break;
+			if(msg.has("i")){
+				text = Component.literal(lis.getString(1));
+				//TODO
+			}
+			else{
+				String str = TRANSFORMAT.apply(msg.getString("m"), lis.toArray());
+				text = Component.literal(format(LDConfig.CHAT_OVERRIDE_LANG, c, msg.getString("s"), str));
 			}
 			Minecraft.getInstance().gui.getChat().addClientSystemMessage(text);
 		});
