@@ -12,7 +12,6 @@ import net.fexcraft.mod.uni.tag.TagLW;
  */
 public class Broadcaster {
 
-	public static String LD_SENDER = "\u00a79\u00a7lLD";
 	public static ConcurrentHashMap<TransmitterType, Transmitter> SENDERS = new ConcurrentHashMap<>();
 	static {
 		SENDERS.put(TransmitterType.INTERNAL, new InternalTransmitter());
@@ -34,7 +33,7 @@ public class Broadcaster {
 
 	public static class Message {
 
-		public String sender = LD_SENDER;
+		public String sender;
 		public String message;
 		public String tint = "&a";
 		public Object[] args;
@@ -47,6 +46,44 @@ public class Broadcaster {
 
 		public Message(Channel ch){
 			channel = ch;
+			switch(channel.type){
+				case CHAT:
+					sender = "\u00a7c\u00a7lERR";
+					break;
+				case SERVER:
+					sender = "\u00a79\u00a7lLD";
+					break;
+				case REGION:
+					sender = "\u00a79\u00a7lRG";
+					break;
+				case COUNTY:
+					sender = "\u00a79\u00a7lCT";
+					break;
+				case MUNICIPALITY:
+					sender = "\u00a79\u00a7lMN";
+					break;
+				case DISTRICT:
+					sender = "\u00a79\u00a7lDT";
+					break;
+				case COMPANY:
+					sender = "\u00a79\u00a7lCM";
+					break;
+			}
+			if(channel.type.ordinal() < 2) return;
+			switch(channel.sub){
+				case ALL:
+					sender += "|A";
+					break;
+				case INCHUNK:
+					sender += "|C";
+					break;
+				case MEMBER:
+					sender += "|M";
+					break;
+				case STAFF:
+					sender += "|S";
+					break;
+			}
 		}
 
 		public Message set(String msg, Object... objs){
