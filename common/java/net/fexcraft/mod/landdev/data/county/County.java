@@ -61,6 +61,7 @@ public class County implements Saveable, Layer, LDUIModule {
 	public Joinable requests = new Joinable();
 	public ExternalData external = new ExternalData(this);
 	public Channel channel_all;
+	public Channel channel_inck;
 	public Channel channel_staff;
 	public Channel channel_member;
 	public long tax_collected;
@@ -81,6 +82,7 @@ public class County implements Saveable, Layer, LDUIModule {
 		norms.add(new BoolNorm("kick-bankrupt", false));
 		norms.add(new IntegerNorm("min-municipality-distance", LDConfig.MIN_MUN_DIS));
 		channel_all = new Channel(Channel.ChannelType.COUNTY, Channel.SubChannelType.ALL, this);
+		channel_inck = new Channel(Channel.ChannelType.COUNTY, Channel.SubChannelType.INCHUNK, this);
 		channel_staff = new Channel(Channel.ChannelType.COUNTY, Channel.SubChannelType.STAFF, this);
 		channel_member = new Channel(Channel.ChannelType.COUNTY, Channel.SubChannelType.MEMBER, this);
 	}
