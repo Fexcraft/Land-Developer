@@ -1,5 +1,6 @@
 package net.fexcraft.mod.landdev.ui;
 
+import net.fexcraft.mod.landdev.data.Layers;
 import net.fexcraft.mod.uni.ui.UIKey;
 
 import java.util.HashMap;
@@ -65,6 +66,22 @@ public class LDKeys {
 		CONS.put(POLL, BaseCon.PollBaseCon.class);
 		//CONS.put(KEY_MAILBOX, BaseCon.MBBaseCon.class);
 		CONS.put(MAIL, BaseCon.MailBaseCon.class);
+	}
+
+	public static UIKey forLayer(Layers layer){
+		switch(layer){
+			case PROPERTY: return PROPERTY;
+			case CHUNK: return CHUNK;
+			case COMPANY: return COMPANY;
+			case DISTRICT: return DISTRICT;
+			case MUNICIPALITY: return MUNICIPALITY;
+			case COUNTY: return COUNTY;
+			case REGION: return REGION;
+			case INTER: return MAIN;
+			case PLAYER: return PLAYER;
+			case NONE:
+			default: return MAIN;
+		}
 	}
 
 }
