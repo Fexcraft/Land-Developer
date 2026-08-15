@@ -754,7 +754,7 @@ public class County implements Saveable, Layer, LDUIModule {
 				ResManager.bulkSave(nct, region, player);
 				player.entity.closeUI();
 				player.entity.send("landdev.gui.county.create.complete");
-				Broadcaster.announce(Channel.SERVER, "county.created", name, newid);
+				Broadcaster.announce(Channel.CHAT, "county.created", name, newid);
 				break;
 			}
 			//

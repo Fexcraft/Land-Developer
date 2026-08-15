@@ -11,7 +11,7 @@ import net.fexcraft.mod.landdev.util.broad.Broadcaster.Message;
 public class Channel {
 
 	public static final Channel CHAT = new Channel(ChannelType.CHAT, SubChannelType.ALL, null);
-	public static final Channel SERVER = new Channel(ChannelType.SERVER, SubChannelType.ALL, null);
+	//public static final Channel SERVER = new Channel(ChannelType.SERVER, SubChannelType.ALL, null);
 	public final ChannelType type;
 	public final SubChannelType sub;
 	public final Layer layer;
@@ -84,7 +84,7 @@ public class Channel {
 
 	@Override
 	public String toString(){
-		if(this == CHAT || this == SERVER) return type.name;
+		if(this == CHAT) return type.name;
 		return type + ":" + sub + ":" + layer.lid();
 	}
 

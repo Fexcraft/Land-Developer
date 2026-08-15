@@ -41,7 +41,12 @@ public class DiscordTransmitter implements Transmitter {
 	        try{
 	        	JsonMap map = new JsonMap();
 	        	map.add("c", msg.channel.toString());
-	        	if(msg.sender != null) map.add("s", msg.sender.startsWith("&") ? msg.sender.substring(2) : msg.sender);
+	        	if(msg.sender != null){
+					String sender = msg.sender;
+					while(sender.contains("&")) sender = sender.substring(sender.indexOf("&") + 2);
+					while(sender.contains("\u00a7")) sender = sender.substring(sender.indexOf("\u00a7") + 2);
+					map.add("s", sender);
+				}
 	        	map.add("m", msg.message);
 	            fut.channel().writeAndFlush(new NettyMsg("msg=" + JsonHandler.toString(map, PrintOption.FLAT)));
 	        }

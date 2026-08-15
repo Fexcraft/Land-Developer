@@ -623,7 +623,7 @@ public class District implements Saveable, Layer, PermInteractive, LDUIModule {
 				ResManager.bulkSave(dis.owner.is_county? dis.owner.county : dis.owner.municipality, dis, chunk, player);
 				player.entity.closeUI();
 				player.entity.send("landdev.gui.district.create.complete");
-				Broadcaster.announce(Channel.SERVER, "district.created", name, newid);
+				Broadcaster.announce(Channel.CHAT, "district.created", name, newid);
 				break;
 			}
 			case "appearance.submit":{

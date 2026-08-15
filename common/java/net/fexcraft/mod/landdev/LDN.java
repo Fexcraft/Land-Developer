@@ -127,7 +127,7 @@ public class LDN {
 		long mid = midnight.toInstant(ZoneOffset.UTC).toEpochMilli();
 		setupTaxTimer(mid);
 		setupGenericTimer(mid);
-		Broadcaster.newMessage(Channel.SERVER).set(String.format(LDConfig.SERVLANG_STARTED, "1.x.x")).send(NO_INTERNAL);
+		Broadcaster.newMessage(Channel.CHAT).set(String.format(LDConfig.SERVLANG_STARTED, "1.x.x")).send(NO_INTERNAL);
 	}
 
 	private static void setupTaxTimer(long mid){
@@ -174,7 +174,7 @@ public class LDN {
 	}
 
 	public static void onServerStopping(){
-		Broadcaster.newMessage(Channel.SERVER).set(String.format(LDConfig.SERVLANG_STOPPING)).send(NO_INTERNAL);
+		Broadcaster.newMessage(Channel.CHAT).set(String.format(LDConfig.SERVLANG_STOPPING)).send(NO_INTERNAL);
 		if(TAX_TIMER != null) TAX_TIMER.cancel();
 		if(GENERIC_TIMER != null) GENERIC_TIMER.cancel();
 	}

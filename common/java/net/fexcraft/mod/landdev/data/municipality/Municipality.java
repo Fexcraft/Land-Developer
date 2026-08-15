@@ -804,7 +804,7 @@ public class Municipality implements Saveable, Layer, LDUIModule {
 				ResManager.bulkSave(mnew, county, player, mold, cold);
 				player.entity.closeUI();
     			player.entity.send("landdev.gui.municipality.create.complete");
-				Broadcaster.announce(Channel.SERVER, "municipality.created", name, newid);
+				Broadcaster.announce(Channel.CHAT, "municipality.created", name, newid);
 				break;
 			}
 			case "appearance.submit":{

@@ -493,7 +493,7 @@ public class Region implements Saveable, Layer, LDUIModule {
 				ResManager.bulkSave(reg, ct, player);
 				player.entity.closeUI();
 				player.entity.send("landdev.gui.region.create.complete");
-				Broadcaster.announce(Channel.SERVER, "region.created", name, newid);
+				Broadcaster.announce(Channel.CHAT, "region.created", name, newid);
 				break;
 			}
 			//

@@ -159,7 +159,7 @@ public class LDCmd extends CommandBase {
 					Broadcaster.announce(ct.channel_inck, "generic", "inchunk msg");
 					Broadcaster.announce(ct.channel_member, "generic", "member msg");
 					Broadcaster.announce(ct.channel_staff, "generic", "staff msg");
-					Broadcaster.announce(Channel.SERVER, "generic", "server msg");
+					Broadcaster.announce(Channel.CHAT, "generic", "server msg");
 					return;
 				}
 				case "force-tax":{

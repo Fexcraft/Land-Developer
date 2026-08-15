@@ -294,7 +294,7 @@ public class TaxSystem extends TimerTask {
 	}
 
 	private void broad(String str){
-		Broadcaster.newMessage(Channel.SERVER).tint(PREFIX).set(str)
+		Broadcaster.newMessage(Channel.CHAT).tint(PREFIX).set(str)
 			.sender("&b" + CHATNAME).send(TargetTransmitter.INTERNAL_ONLY)
 			.sender(CHATNAME).send(TargetTransmitter.NO_INTERNAL);
 	}
