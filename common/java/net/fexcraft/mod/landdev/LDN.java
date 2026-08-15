@@ -10,8 +10,8 @@ import net.fexcraft.mod.landdev.db.Database;
 import net.fexcraft.mod.landdev.db.JsonFileDB;
 import net.fexcraft.mod.landdev.util.*;
 import net.fexcraft.mod.landdev.ui.*;
-import net.fexcraft.mod.landdev.util.broad.BroadcastChannel;
 import net.fexcraft.mod.landdev.util.broad.Broadcaster;
+import net.fexcraft.mod.landdev.util.broad.Channel;
 import net.fexcraft.mod.landdev.util.broad.DiscordTransmitter;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.UniChunk;
@@ -127,7 +127,7 @@ public class LDN {
 		long mid = midnight.toInstant(ZoneOffset.UTC).toEpochMilli();
 		setupTaxTimer(mid);
 		setupGenericTimer(mid);
-		Broadcaster.send(NO_INTERNAL, BroadcastChannel.SERVER, null, String.format(LDConfig.SERVLANG_STARTED, "1.x.x"));
+		Broadcaster.newMessage(Channel.CHAT).set(String.format(LDConfig.SERVLANG_STARTED, "1.x.x")).send(NO_INTERNAL);
 	}
 
 	private static void setupTaxTimer(long mid){
@@ -174,7 +174,7 @@ public class LDN {
 	}
 
 	public static void onServerStopping(){
-		Broadcaster.send(NO_INTERNAL, BroadcastChannel.SERVER, null, LDConfig.SERVLANG_STOPPING);
+		Broadcaster.newMessage(Channel.CHAT).set(String.format(LDConfig.SERVLANG_STOPPING)).send(NO_INTERNAL);
 		if(TAX_TIMER != null) TAX_TIMER.cancel();
 		if(GENERIC_TIMER != null) GENERIC_TIMER.cancel();
 	}

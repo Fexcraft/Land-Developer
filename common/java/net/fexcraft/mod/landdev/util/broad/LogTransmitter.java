@@ -4,6 +4,8 @@ import net.fexcraft.mod.landdev.LandDev;
 import net.fexcraft.mod.landdev.util.broad.Broadcaster.Transmitter;
 import net.fexcraft.mod.landdev.util.broad.Broadcaster.TransmitterType;
 
+import java.util.Arrays;
+
 /**
  * 
  * @author Ferdinand Calo' (FEX___96)
@@ -12,8 +14,8 @@ import net.fexcraft.mod.landdev.util.broad.Broadcaster.TransmitterType;
 public class LogTransmitter implements Transmitter {
 
 	@Override
-	public void transmit(String channel, String sender, String message, Object[] args){
-		LandDev.log("[" + channel + "] " + (sender.startsWith("&") ? sender.substring(2) : sender) + ": " + message);
+	public void transmit(Broadcaster.Message msg){
+		LandDev.log("[" + msg.channel + "] " + (msg.sender.startsWith("&") ? msg.sender.substring(2) : msg.sender) + ": " + msg.message + (msg.args != null ? " / " + Arrays.toString(msg.args) : ""));
 	}
 	
 	@Override

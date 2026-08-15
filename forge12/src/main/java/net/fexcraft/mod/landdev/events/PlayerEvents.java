@@ -10,8 +10,8 @@ import net.fexcraft.mod.landdev.event.PlayerLocationEvent;
 import net.fexcraft.mod.landdev.util.ResManager;
 import net.fexcraft.mod.landdev.util.LDConfig;
 import net.fexcraft.mod.landdev.util.TaxSystem;
-import net.fexcraft.mod.landdev.util.broad.BroadcastChannel;
 import net.fexcraft.mod.landdev.util.broad.Broadcaster;
+import net.fexcraft.mod.landdev.util.broad.Channel;
 import net.fexcraft.mod.uni.UniChunk;
 import net.fexcraft.mod.uni.UniEntity;
 import net.minecraftforge.event.ServerChatEvent;
@@ -35,7 +35,7 @@ public class PlayerEvents {
 		player.login = Time.getDate();
 		player.chunk_last = ResManager.getChunkP(event.player);
 		TaxSystem.taxPlayer(player, null, false);
-		Broadcaster.send(NO_INTERNAL, BroadcastChannel.SERVER, null, "landdev.server.player_join", player.name_raw());
+		Broadcaster.newMessage(Channel.CHAT).set("landdev.server.player_join", player.name_raw()).send(NO_INTERNAL);
     }
     
 	@SubscribeEvent
@@ -43,7 +43,7 @@ public class PlayerEvents {
     	if(event.player.world.isRemote) return;
 		LDPlayer player = ResManager.getPlayer(event.player.getGameProfile().getId(), false);
 		if(player != null){
-			Broadcaster.send(NO_INTERNAL, BroadcastChannel.SERVER, null, "landdev.server.player_left", player.name_raw());
+			Broadcaster.newMessage(Channel.CHAT).set("landdev.server.player_left", player.name_raw()).send(NO_INTERNAL);
 			player.save();
 			player.last_login = player.login;
 			player.last_logout = Time.getDate();

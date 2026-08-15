@@ -1,14 +1,17 @@
 package net.fexcraft.mod.landdev.util.broad;
 
-import static net.fexcraft.mod.landdev.util.broad.BroadcastChannel.CHAT;
-
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.fexcraft.mod.landdev.data.player.LDPlayer;
 import net.fexcraft.mod.landdev.util.LDConfig;
+import net.fexcraft.mod.uni.tag.TagCW;
+import net.fexcraft.mod.uni.tag.TagLW;
 
+/**
+ * @author Ferdinand Calo' (FEX___96)
+ */
 public class Broadcaster {
-	
+
 	public static ConcurrentHashMap<TransmitterType, Transmitter> SENDERS = new ConcurrentHashMap<>();
 	static {
 		SENDERS.put(TransmitterType.INTERNAL, new InternalTransmitter());
@@ -16,28 +19,121 @@ public class Broadcaster {
 	}
 
 	public static void send(LDPlayer player, String message){
-		send(TargetTransmitter.ALL, CHAT.name, player.name(), message, player.adm ? LDConfig.CHAT_ADMIN_COLOR : LDConfig.CHAT_PLAYER_COLOR);
+		new Message(Channel.CHAT).sender(player.name()).tint(player.adm ? LDConfig.CHAT_ADMIN_COLOR : LDConfig.CHAT_PLAYER_COLOR)
+			.set(message).send(TargetTransmitter.ALL);
 	}
 
-	public static void send(BroadcastChannel channel, String sender, String message, Object... args){
-		send(TargetTransmitter.ALL, channel.name, sender, message, args);
+	public static void announce(Channel channel, String message, Object... args){
+		new Message(channel).tint("&b").set("landdev.announce." + message, args).send(TargetTransmitter.ALL);
 	}
 
-	public static void send(TargetTransmitter target, BroadcastChannel channel, String sender, String message, Object... args){
-		send(target, channel.name, sender, message, args);
+	public static Message newMessage(Channel channel){
+		return new Message(channel);
 	}
 
-	public static void send(TargetTransmitter target, String channel, String sender, String message, Object... args){
-		Transmitter trs = null;
-		for(TransmitterType type : target.types){
-			if((trs = SENDERS.get(type)) == null) continue;
-			trs.transmit(channel, sender, message, args);
+	public static class Message {
+
+		public String sender;
+		public String message;
+		public String tint = "&a";
+		public Object[] args;
+		public Channel channel;
+		public boolean img;
+
+		public Message(){
+			channel = Channel.CHAT;
 		}
+
+		public Message(Channel ch){
+			channel = ch;
+			switch(channel.type){
+				case CHAT:
+					sender = "\u00a7c\u00a7lERR";
+					break;
+				case SERVER:
+					sender = "\u00a79\u00a7lLD";
+					break;
+				case REGION:
+					sender = "\u00a79\u00a7lRG";
+					break;
+				case COUNTY:
+					sender = "\u00a79\u00a7lCT";
+					break;
+				case MUNICIPALITY:
+					sender = "\u00a79\u00a7lMN";
+					break;
+				case DISTRICT:
+					sender = "\u00a79\u00a7lDT";
+					break;
+				case COMPANY:
+					sender = "\u00a79\u00a7lCM";
+					break;
+			}
+			if(channel.type.ordinal() < 2) return;
+			switch(channel.sub){
+				case ALL:
+					sender += "|A";
+					break;
+				case INCHUNK:
+					sender += "|C";
+					break;
+				case MEMBER:
+					sender += "|M";
+					break;
+				case STAFF:
+					sender += "|S";
+					break;
+			}
+		}
+
+		public Message set(String msg, Object... objs){
+			message = msg;
+			args = objs;
+			return this;
+		}
+
+		public Message sender(String s){
+			sender = s;
+			return this;
+		}
+
+		public Message tint(String c){
+			tint = c;
+			return this;
+		}
+
+		public Message asImage(){
+			img = true;
+			return this;
+		}
+
+		public Message send(TargetTransmitter target){
+			Transmitter trs;
+			for(TransmitterType type : target.types){
+				if((trs = SENDERS.get(type)) == null) continue;
+				trs.transmit(this);
+			}
+			return this;
+		}
+
+		public TagCW toTag(){
+			TagCW com = TagCW.create();
+			TagLW lis = TagLW.create();
+			com.set("c", channel.toString());
+			if(tint != null) com.set("t", tint);
+			com.set("s", sender);
+			com.set("m", message);
+			if(img) com.set("i", true);
+			for(Object arg : args) lis.add(arg.toString());
+			com.set("a", lis);
+			return com;
+		}
+
 	}
 
 	public static interface Transmitter {
 		
-		public void transmit(String channel, String sender, String msg, Object[] args);
+		public void transmit(Message msg);
 
 		public default boolean internal(){ return false; }
 		
