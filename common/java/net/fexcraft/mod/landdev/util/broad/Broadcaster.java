@@ -48,9 +48,9 @@ public class Broadcaster {
 			channel = ch;
 			switch(channel.type){
 				case CHAT:
-					sender = "\u00a7c\u00a7lERR";
+					/*sender = "\u00a7c\u00a7lERR";
 					break;
-				case SERVER:
+				case SERVER:*/
 					sender = "\u00a79\u00a7lLD";
 					break;
 				case REGION:
