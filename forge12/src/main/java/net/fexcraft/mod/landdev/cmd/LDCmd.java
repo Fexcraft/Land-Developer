@@ -155,9 +155,11 @@ public class LDCmd extends CommandBase {
 					if(!player.adm) return;
 					County ct = ResManager.getCounty(-1, true);
 					Broadcaster.announce(ct.channel_all, "county.municipality.removed", "none", ct.name(), -1);
-					Broadcaster.announce(ct.channel_all, "generic", "test announcement here");
-					Broadcaster.announce(Channel.SERVER, "generic", "test announcement here");
-					Broadcaster.announce(Channel.CHAT, "generic", "test announcement here");
+					Broadcaster.announce(ct.channel_all, "generic", "all msg");
+					Broadcaster.announce(ct.channel_inck, "generic", "inchunk msg");
+					Broadcaster.announce(ct.channel_member, "generic", "member msg");
+					Broadcaster.announce(ct.channel_staff, "generic", "staff msg");
+					Broadcaster.announce(Channel.SERVER, "generic", "server msg");
 					return;
 				}
 				case "force-tax":{
