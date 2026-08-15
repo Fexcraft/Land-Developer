@@ -27,7 +27,7 @@ public class Channel {
 	}
 
 	public boolean isStaffOrManager(LDPlayer ply){
-		return ((Manageable)layer).isStaffOrManager(ply.uuid);
+		return layer.manageable().isStaffOrManager(ply.uuid);
 	}
 
 	public boolean isMember(LDPlayer ply){
@@ -67,7 +67,7 @@ public class Channel {
 
 	public static enum SubChannelType {
 
-		ALL, MEMBER, STAFF;
+		ALL, INCHUNK, MEMBER, STAFF;
 
 		public String name;
 
