@@ -58,6 +58,9 @@ public class MailboxCon extends ContainerInterface {
 				mailbox.mails.remove(com.getInteger("delete"));
 				sendSync();
 			}
+			else if(com.has("go_back")){
+				player.entity.openUI(LDKeys.forLayer(Layers.values()[pos.x]), 0, pos.y, 0);
+			}
 		}
 	}
 
