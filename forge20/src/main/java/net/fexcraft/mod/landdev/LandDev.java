@@ -23,10 +23,10 @@ import net.fexcraft.mod.landdev.util.broad.DiscordTransmitter;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.packet.PacketTag;
 import net.fexcraft.mod.uni.tag.TagCW;
+import net.fexcraft.mod.uni.tag.TagLW;
 import net.fexcraft.mod.uni.world.EntityW;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
@@ -45,12 +45,13 @@ import org.slf4j.Logger;
 
 import java.io.File;
 
+import static net.fexcraft.lib.common.utils.Formatter.format;
 import static net.fexcraft.mod.fsmm.local.FsmmCmd.isOp;
 import static net.fexcraft.mod.fsmm.util.Config.getWorthAsString;
 import static net.fexcraft.mod.landdev.LDN.PKT_RECEIVER_ID;
 import static net.fexcraft.mod.landdev.data.PermAction.CREATE_COUNTY;
 import static net.fexcraft.mod.landdev.data.PermAction.CREATE_MUNICIPALITY;
-import static net.fexcraft.mod.uni.ui.ContainerInterface.transformat;
+import static net.fexcraft.mod.uni.ui.ContainerInterface.TRANSFORMAT;
 import static net.minecraft.commands.Commands.argument;
 import static net.minecraft.commands.Commands.literal;
 
@@ -115,20 +116,19 @@ public class LandDev {
 				LocationUpdate.loadLines(packet.getList("lines").local());
 			});
 			CTagListener.TASKS.put("chat_message", (packet, player) -> {
-				ListTag list = packet.getList("msg").local();
-					String c = list.size() > 3 ? list.getString(3) : "\u00A7a";
-					Component text = null;
-					switch(list.getString(0)){
-						case "chat_img":
-							text = Component.literal(list.getString(2));
-							//TODO
-							break;
-						case "chat":
-						default:
-							text = Component.literal(transformat(LDConfig.CHAT_OVERRIDE_LANG, c, list.getString(1), list.getString(2)));
-							break;
-					}
-					Minecraft.getInstance().gui.getChat().addMessage(text);
+				TagCW msg = packet.getCompound("msg");
+				TagLW lis = msg.getList("a");
+				String c = msg.has("t") ? msg.getString("t") : "&a";
+				Component text = null;
+				if(msg.has("i")){
+					text = Component.literal(lis.getString(1));
+					//TODO
+				}
+				else{
+					String str = TRANSFORMAT.apply(msg.getString("m"), lis.toArray());
+					text = Component.literal(format(LDConfig.CHAT_OVERRIDE_LANG, c, msg.getString("s"), str));
+				}
+				Minecraft.getInstance().gui.getChat().addMessage(text);
 			});
 			CTagListener.TASKS.put("img_preview_url", (packet, player) -> {
 				//
