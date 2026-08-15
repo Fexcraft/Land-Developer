@@ -52,6 +52,7 @@ public class District implements Saveable, Layer, PermInteractive, LDUIModule {
 	public DistrictOwner owner = new DistrictOwner();
 	public ExternalData external = new ExternalData(this);
 	public Channel channel_all;
+	public Channel channel_inck;
 	public Channel channel_staff;
 	public boolean disbanded;
 	public boolean locked;
@@ -69,6 +70,7 @@ public class District implements Saveable, Layer, PermInteractive, LDUIModule {
 		norms.add(new BoolNorm("county-can-form", false));
 		norms.add(new BoolNorm("unclaim-bankrupt", false));
 		channel_all = new Channel(Channel.ChannelType.DISTRICT, Channel.SubChannelType.ALL, this);
+		channel_inck = new Channel(Channel.ChannelType.DISTRICT, Channel.SubChannelType.INCHUNK, this);
 		channel_staff = new Channel(Channel.ChannelType.DISTRICT, Channel.SubChannelType.STAFF, this);
 	}
 
