@@ -33,6 +33,7 @@ public class MailModule implements LDUIModule {
 		resp.setTitle("mail.title");
 		resp.setNoBack();
 		MailData mailbox = getMailbox(container.ldp, container.pos.x, container.pos.y);
+		resp.setBackTo(LDKeys.MAILBOX, container.pos.x, container.pos.y, 0);
 		if(mailbox == null){
 			resp.addRow("boxnotfound", ELM_GENERIC);
 			return;
@@ -70,7 +71,7 @@ public class MailModule implements LDUIModule {
 				resp.addButton("request.timeout", ELM_YELLOW, REM, LDConfig.REQUEST_TIMEOUT_DAYS);
 			}
 		}
-		resp.addButton("goback", ELM_GENERIC, LIST);
+		//resp.addButton("goback", ELM_GENERIC, LIST);
 	}
 
 	public void on_interact(BaseCon container, ModuleRequest req){
