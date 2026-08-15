@@ -87,7 +87,7 @@ landdev.server.player_left=%s left the server.
 landdev.server.started=Server has started. Running LandDeveloper v%s
 landdev.server.stopping=Server is closing.
 
-landdev.announce.generic=Announcement: %s
+landdev.announce.generic=&l%s
 
 landdev.announce.region.created=&bThe Region &6%s &7(%s) &bjust got created!
 landdev.announce.region.staff.removed=&c%s &bis no longer Staff in &6%s &7(%s)
