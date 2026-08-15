@@ -43,7 +43,7 @@ public class Channel {
 	public static enum ChannelType {
 
 		CHAT,
-		SERVER,
+		//SERVER,
 
 		REGION,
 		COUNTY,
