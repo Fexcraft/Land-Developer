@@ -204,6 +204,7 @@ public class Region implements Saveable, Layer, LDUIModule {
 				}
 				resp.addButton("norms", ELM_GREEN, OPEN);
 				resp.addButton("appearance", ELM_YELLOW, OPEN);
+				resp.setBackToMain();
 				break;
 			}
 			//
@@ -282,6 +283,7 @@ public class Region implements Saveable, Layer, LDUIModule {
 				break;
 			case UI_NORM_EDIT:{
 				NormModule.respNormEdit(norms, container, resp, "region", canman);
+				resp.setBackTo(null, UI_NORMS, container.pos.y, 0);
 				break;
 			}
 			case UI_CREATE:
