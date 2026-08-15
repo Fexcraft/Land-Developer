@@ -84,7 +84,7 @@
     "landdev.server.player_left": "%s left the server.",
     "landdev.server.started": "Server has started. Running LandDeveloper v%s",
     "landdev.server.stopping": "Server is closing.",
-    "landdev.announce.generic": "Announcement: %s",
+    "landdev.announce.generic": "\u00A7l%s",
     "landdev.announce.region.created": "\u00A7bThe Region \u00A76%s \u00A77(%s) \u00A7bjust got created!",
     "landdev.announce.region.staff.removed": "\u00A7c%s \u00A7bis no longer Staff in \u00A76%s \u00A77(%s)",
     "landdev.announce.region.staff.added": "\u00A7a%s \u00A7bis now Staff in \u00A76%s \u00A77(%s)",
