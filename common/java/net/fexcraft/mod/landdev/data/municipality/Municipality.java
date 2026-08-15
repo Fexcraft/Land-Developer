@@ -59,6 +59,7 @@ public class Municipality implements Saveable, Layer, LDUIModule {
 	public Joinable requests = new Joinable();
 	public ExternalData external = new ExternalData(this);
 	public Channel channel_all;
+	public Channel channel_inck;
 	public Channel channel_staff;
 	public Channel channel_member;
 	public boolean abandoned;
@@ -76,6 +77,7 @@ public class Municipality implements Saveable, Layer, LDUIModule {
 		norms.add(new IntegerNorm("citizen-tax", 1000));
 		norms.add(new BoolNorm("kick-bankrupt", false));
 		channel_all = new Channel(Channel.ChannelType.MUNICIPALITY, Channel.SubChannelType.ALL, this);
+		channel_inck = new Channel(Channel.ChannelType.MUNICIPALITY, Channel.SubChannelType.INCHUNK, this);
 		channel_staff = new Channel(Channel.ChannelType.MUNICIPALITY, Channel.SubChannelType.STAFF, this);
 		channel_member = new Channel(Channel.ChannelType.MUNICIPALITY, Channel.SubChannelType.MEMBER, this);
 	}
