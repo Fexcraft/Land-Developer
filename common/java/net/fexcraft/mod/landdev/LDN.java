@@ -39,6 +39,7 @@ import static net.fexcraft.mod.landdev.util.broad.Broadcaster.TargetTransmitter.
 public class LDN {
 
 	public static final String MODID = "landdev";
+	public static final String VERSION = "1.7.6";
 	public static final String PKT_RECEIVER_ID = "landdev:util";
 	public static Database DB = new JsonFileDB();
 	public static LDConfig CONFIG;
@@ -127,7 +128,7 @@ public class LDN {
 		long mid = midnight.toInstant(ZoneOffset.UTC).toEpochMilli();
 		setupTaxTimer(mid);
 		setupGenericTimer(mid);
-		Broadcaster.newMessage(Channel.CHAT).set(String.format(LDConfig.SERVLANG_STARTED, "1.x.x")).send(NO_INTERNAL);
+		Broadcaster.newMessage(Channel.CHAT).set(String.format(LDConfig.SERVLANG_STARTED, VERSION)).send(NO_INTERNAL);
 	}
 
 	private static void setupTaxTimer(long mid){
