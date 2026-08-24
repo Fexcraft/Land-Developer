@@ -108,7 +108,7 @@ public class DistrictType implements Saveable {
 
 	public static void loadConfig(File path){
 		File file = new File(path, "/landdev/district_types.json");
-		JsonMap map = JsonHandler.parse(file);
+		JsonMap map = file.exists() ? JsonHandler.parse(file) : new JsonMap();
 		TYPES.clear();
 		boolean found = false;
 		String def = map.getString("default", null);
