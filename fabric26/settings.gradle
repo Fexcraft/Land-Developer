@@ -13,3 +13,9 @@ include ':FCL'
 project(':FCL').projectDir = new File('../../FCL/fabric26')
 include ':FSMM'
 project(':FSMM').projectDir = new File('../../FSMM/fabric26')
+File file = new File('../../FSMM-Shop/fabric26');
+if(file.exists()){
+	println("FSMM Shop Found")
+	include ':FSMM-Shop'
+	project(':FSMM-Shop').projectDir = file;
+}
