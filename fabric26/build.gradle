@@ -39,6 +39,10 @@ dependencies {
 
 	implementation project(path: ':FCL')
 	implementation project(path: ':FSMM')
+	if(project(':FSMM-Shop') != null){
+		println("FSMM Shop Found")
+		implementation project(path: ':FSMM-Shop')
+	}
 	compileOnly files("libs/Dynmap-3.7-beta-11-fabric-1.21.6.jar")
 
 }
