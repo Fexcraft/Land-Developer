@@ -13,6 +13,8 @@ import net.fexcraft.mod.landdev.data.norm.IntegerNorm;
 import net.fexcraft.mod.landdev.data.norm.StringNorm;
 import net.fexcraft.mod.landdev.data.player.LDPlayer;
 import net.fexcraft.mod.landdev.data.region.Region;
+import net.fexcraft.mod.landdev.event.CreateLayerEvent;
+import net.fexcraft.mod.landdev.event.LDEvent;
 import net.fexcraft.mod.landdev.ui.BaseCon;
 import net.fexcraft.mod.landdev.ui.LDKeys;
 import net.fexcraft.mod.landdev.ui.LDUIModule;
@@ -626,7 +628,8 @@ public class District implements Saveable, Layer, PermInteractive, LDUIModule {
 				player.entity.closeUI();
 				player.entity.send("landdev.gui.district.create.complete");
 				Broadcaster.announce(Channel.CHAT, "district.created", name, newid);
-				break;
+                LDEvent.run(new CreateLayerEvent(dis, player));
+                break;
 			}
 			case "appearance.submit":{
 				if(!canman) break;

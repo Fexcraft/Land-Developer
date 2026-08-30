@@ -26,6 +26,8 @@ import net.fexcraft.mod.landdev.data.norm.FloatNorm;
 import net.fexcraft.mod.landdev.data.norm.IntegerNorm;
 import net.fexcraft.mod.landdev.data.norm.StringNorm;
 import net.fexcraft.mod.landdev.data.player.LDPlayer;
+import net.fexcraft.mod.landdev.event.CreateLayerEvent;
+import net.fexcraft.mod.landdev.event.LDEvent;
 import net.fexcraft.mod.landdev.ui.BaseCon;
 import net.fexcraft.mod.landdev.ui.LDKeys;
 import net.fexcraft.mod.landdev.ui.LDUIModule;
@@ -496,7 +498,8 @@ public class Region implements Saveable, Layer, LDUIModule {
 				player.entity.closeUI();
 				player.entity.send("landdev.gui.region.create.complete");
 				Broadcaster.announce(Channel.CHAT, "region.created", name, newid);
-				break;
+                LDEvent.run(new CreateLayerEvent(reg, player));
+                break;
 			}
 			//
 			case "norm_submit":{

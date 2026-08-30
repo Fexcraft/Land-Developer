@@ -21,6 +21,8 @@ import net.fexcraft.mod.landdev.data.norm.IntegerNorm;
 import net.fexcraft.mod.landdev.data.norm.StringNorm;
 import net.fexcraft.mod.landdev.data.player.LDPlayer;
 import net.fexcraft.mod.landdev.data.player.Permit;
+import net.fexcraft.mod.landdev.event.CreateLayerEvent;
+import net.fexcraft.mod.landdev.event.LDEvent;
 import net.fexcraft.mod.landdev.ui.BaseCon;
 import net.fexcraft.mod.landdev.ui.LDKeys;
 import net.fexcraft.mod.landdev.ui.LDUIModule;
@@ -801,13 +803,15 @@ public class Municipality implements Saveable, Layer, LDUIModule {
 					chunk.save();
 					dis.owner.set(mnew);
 					dis.save();
+                    LDEvent.run(new CreateLayerEvent(dis, player));
 				}
 				SERVER_ACCOUNT.getBank().processAction(Action.TRANSFER, null, SERVER_ACCOUNT, LDConfig.MUNICIPALITY_CREATION_FEE / 2, mnew.account);
 				ResManager.bulkSave(mnew, county, player, mold, cold);
 				player.entity.closeUI();
     			player.entity.send("landdev.gui.municipality.create.complete");
 				Broadcaster.announce(Channel.CHAT, "municipality.created", name, newid);
-				break;
+                LDEvent.run(new CreateLayerEvent(mnew, player));
+                break;
 			}
 			case "appearance.submit":{
 				if(!canman) break;
