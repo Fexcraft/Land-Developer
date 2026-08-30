@@ -29,6 +29,8 @@ import net.fexcraft.mod.landdev.data.norm.StringNorm;
 import net.fexcraft.mod.landdev.data.player.LDPlayer;
 import net.fexcraft.mod.landdev.data.player.Permit;
 import net.fexcraft.mod.landdev.data.region.Region;
+import net.fexcraft.mod.landdev.event.CreateLayerEvent;
+import net.fexcraft.mod.landdev.event.LDEvent;
 import net.fexcraft.mod.landdev.ui.BaseCon;
 import net.fexcraft.mod.landdev.ui.LDUIModule;
 import net.fexcraft.mod.landdev.ui.LDKeys;
@@ -740,6 +742,7 @@ public class County implements Saveable, Layer, LDUIModule {
 						chunk.save();
 						dis.owner.set(nct);
 						dis.save();
+                        LDEvent.run(new CreateLayerEvent(dis, player));
 					}
 				}
 				else{
@@ -757,7 +760,8 @@ public class County implements Saveable, Layer, LDUIModule {
 				player.entity.closeUI();
 				player.entity.send("landdev.gui.county.create.complete");
 				Broadcaster.announce(Channel.CHAT, "county.created", name, newid);
-				break;
+				LDEvent.run(new CreateLayerEvent(nct, player));
+                break;
 			}
 			//
 			case "norm_submit":{
